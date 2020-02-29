@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/atom-one-dark.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+
+  <body>
+    <div id="content"></div>
+
+    <script src="js/highlight.min.js" type="application/javascript"></script>
+
+    <script>
+      function addScript(src, callback) {
+        var s = document.createElement('script');
+        s.setAttribute('src', src);
+        s.onload = callback;
+        document.body.appendChild(s);
+      }
+
+      function receiveMessage(event) {
+        try {
+          // Remove event listeners (if they exist)
+          window.removeEventListener('load', highlightCode);
+          window.removeEventListener('load', bindExpanders);
+          window.removeEventListener('load', bindMenuItems);
+        } catch (e) {
+          // We did our best...
+        }
+
+        switch (event.data.eventName) {
+          case 'content':
+            fetch('/html/generate', {
+                method: 'POST',
+                body: event.data.content,
+              })
+              .then(res => res.text())
+              .then(html => {
+                document.getElementById('content').innerHTML = html;
+              })
+            break;
+        }
+
+        addScript('js/main.js', function () {
+          window.dispatchEvent(new Event('load'));
+        });
+      }
+
+      window.addEventListener("message", receiveMessage, false);
+    </script>
+  </body>
+</html>

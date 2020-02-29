@@ -1,0 +1,15 @@
+{
+  "verbose": false,
+  "ignore": [
+    "node_modules",
+    ".next",
+    "src/components",
+    "src/pages",
+    "src/css",
+    "public"
+  ],
+  "watch": [
+    "**/*"
+  ],
+  "ext": "js json yaml"
+}

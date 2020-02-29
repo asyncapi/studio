@@ -1,0 +1,38 @@
+{
+  "name": "playground-react",
+  "version": "0.1.0",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "build": "next build",
+    "start": "next start"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@fullhuman/postcss-purgecss": "^2.1.0",
+    "@zeit/next-css": "^1.0.1",
+    "archiver": "^3.1.1",
+    "asyncapi-generator": "^0.31.0",
+    "autoprefixer": "^9.7.4",
+    "body-parser": "^1.19.0",
+    "codemirror": "^5.52.0",
+    "css-loader": "^3.4.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "lodash": "^4.17.15",
+    "morgan": "^1.9.1",
+    "next": "^9.2.2",
+    "node-yaml-config": "0.0.5",
+    "postcss-import": "^12.0.1",
+    "react": "^16.13.0",
+    "react-codemirror2": "^6.0.0",
+    "react-dom": "^16.13.0",
+    "react-icons": "^3.9.0",
+    "tailwindcss": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.3",
+    "nodemon": "^2.0.2"
+  }
+}

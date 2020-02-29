@@ -1,0 +1,7 @@
+default:
+  api:
+    port: 3000
+
+production:
+  api:
+    port: 5000
