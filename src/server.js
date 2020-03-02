@@ -1,9 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const redis = require('redis');
 const session = require('express-session');
-const config = require('./lib/config');
+const RedisStore = require('connect-redis')(session);
 const next = require('next');
 const morgan = require('morgan');
+const passport = require('passport');
+const config = require('./lib/config');
+const authRoute = require('./routes/auth');
 const htmlRoute = require('./routes/html');
 const markdownRoute = require('./routes/markdown');
 
@@ -11,7 +15,13 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// const apiRoutes = require('./server/routes/apiRoutes.js');
+const redisClient = redis.createClient({
+  host: config.session.host,
+  port: config.session.port,
+  db: 1,
+});
+redisClient.unref();
+redisClient.on('error', console.error);
 
 app.prepare().then(() => {
   const server = express();
@@ -20,29 +30,20 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(session({
-    secret: 'super-secret-key',
+    store: new RedisStore({ client: redisClient }),
+    secret: config.session.secret,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 }
   }));
+  server.use(passport.initialize());
+  server.use(passport.session());
+
+  if (dev) server.use(morgan('dev'));
 
   // Server-side
-
-  if (dev) {
-    server.use(morgan('dev'));
-  }
-
+  server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
-
-  server.use((req, res, next) => {
-    req.user = {
-      displayName: 'Fran Mendez',
-      avatar: 'https://secure.gravatar.com/avatar/f3bad9b06a1b0512c5c837f28dddd985',
-      organization: 'AsyncAPI Initiative'
-    }
-    next()
-  })
 
   server.get('*', (req, res) => {
     return handle(req, res);

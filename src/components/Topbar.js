@@ -15,7 +15,7 @@ export default function Topbar ({ active }) {
         <div className="flex items-center justify-between h-16 px-4 sm:px-0">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img className="inline-flex h-20" src="/img/logo.svg" alt="" />
+              <img className="inline-flex h-20" src="/img/logo-horizontal-white.svg" alt="" />
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline">

@@ -216,10 +216,12 @@ components:
 
 export default function Index () {
   let initCode
+  let initUrl = 'Streetlights API'
 
   try {
     if (typeof localStorage !== 'undefined') {
       initCode = localStorage.getItem('asyncapi-document') || yaml
+      initUrl = 'Untitled document (from local storage)'
     }
   } catch (e) {
     console.error('Could not read previous document from localStorage.')
@@ -227,7 +229,7 @@ export default function Index () {
 
   const [code, setCode] = useState(initCode)
   const [initialCode, setInitialCode] = useState(initCode)
-  const [fileUrl, setFileUrl] = useState('Streetlights API')
+  const [fileUrl, setFileUrl] = useState(initUrl)
   const [saved, setSaved] = useState(true)
 
   const updateSaved = () => {

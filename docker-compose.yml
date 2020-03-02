@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  session:
+    container_name: session
+    image: redis:5-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./cache/session:/data
+    restart: always
+  db:
+    container_name: db
+    build:
+      context: db
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./cache/db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_USER: dev
