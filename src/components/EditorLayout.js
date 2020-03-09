@@ -15,7 +15,7 @@ export default function EditorLayout ({ children }) {
         <div className="w-full bg-gray-800">
           <Topbar active="editor" />
         </div>
-        <main className="flex flex-col overflow-auto">
+        <main className="flex flex-col flex-1 overflow-auto">
           {children}
         </main>
       </div>

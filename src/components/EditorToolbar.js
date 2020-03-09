@@ -3,10 +3,11 @@ import { FaFileImport, FaTimes, FaSave } from 'react-icons/fa'
 import DownloadAsButton from './DownloadAsButton'
 
 export default function EditorToolbar ({
-  fileUrl = 'Untitled document',
   onImport = () => {},
+  onSave = () => {},
   code,
   saved = false,
+  api,
 }) {
   const [importing, setImporting] = useState(false)
   const [importUrl, setImportUrl] = useState('')
@@ -37,24 +38,65 @@ export default function EditorToolbar ({
   }
 
   const onClickSave = (e) => {
+    if (!api.anonymous) {
+      fetch(`/apis/${api.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...api,
+          ...{
+            asyncapi: code,
+          },
+        }),
+      })
+      .then(res => res.json())
+      .then(onSave)
+      .catch(console.error)
+    } else {
 
+    }
+  }
+
+  const renderFileName = () => {
+    if (api.anonymous) {
+      return (
+        <div className="text-sm text-gray-400 italic mt-2 pr-1 truncate" title={api.title}>{api.title}</div>
+      )
+    }
+
+    const classes = `text-sm text-gray-400 mt-2 pr-1 truncate ${!saved && 'italic'}`
+
+    return (
+      <>
+        <a href="/" className="mt-1 px-2 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" title="Stop editing this file">
+          <FaTimes className="text-md text-gray-400" />
+        </a>
+        <div className={classes} title={api.org_name}>{api.org_name}</div>
+        <div className={classes}>/</div>
+        <div className={classes} title={api.project_name}>{api.project_name}</div>
+        <div className={classes}>/</div>
+        <div className={classes} title={api.title}>{api.title}</div>
+      </>
+    )
   }
 
   return (
     <div style={{ height: '60px' }} className="flex flex-col bg-gray-800 shadow-md px-4 py-3 z-20">
-      <nav className="flex flex-row content-end flex-wrap">
+      <nav className="flex flex-row">
         { !importing ? (
           <>
             <div className="flex flex-1 truncate">
-              <div className="text-sm text-gray-600 italic mt-2 pr-1 truncate" title={fileUrl}>{fileUrl}</div>
+              {renderFileName()}
               {!saved && <span className="bg-orange-700 text-white text-xs rounded-md block w-2 h-2 mt-3 ml-2 mr-3" title="Not saved" />}
             </div>
             <div className="flex">
               <span className="block rounded-md shadow-sm">
-                <a onClick={onClickSave} href="/login" className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" title="Save">
+                <button onClick={onClickSave} className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" title="Save">
                   <FaSave className="text-md mt-1 mr-2" />
                   Save
-                </a>
+                </button>
               </span>
               <span className="block rounded-md shadow-sm">
                 <button onClick={() => { setImporting(true); setImportError(); }} type="button" className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" title="Import AsyncAPI document">

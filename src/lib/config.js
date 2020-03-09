@@ -1,7 +1,5 @@
-const path = require('path');
-const yaml_config = require('node-yaml-config');
 require('dotenv').config();
-const config = yaml_config.load(path.join(__dirname, '../../config/common.yaml'));
+const config = require('../../config/common.json');
 const env = process.env;
 override_with_env_vars(config);
 

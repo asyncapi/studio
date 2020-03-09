@@ -4,7 +4,137 @@ import Editor from '../components/Editor'
 import Preview from '../components/Preview'
 import EditorToolbar from '../components/EditorToolbar'
 
-const yaml = `asyncapi: 2.0.0
+export default function Index ({ initialAPI }) {
+  if (!initialAPI) initialAPI = getSampleAPI()
+  let initCode = initialAPI.asyncapi
+
+  const [api, setAPI] = useState(initialAPI)
+  const [code, setCode] = useState(initCode)
+  const [initialCode, setInitialCode] = useState(initCode)
+  const [saved, setSaved] = useState(true)
+
+  const updateSaved = async () => {
+    saveToLocalStorage(api, code)
+    setSaved(api.anonymous ? true : api.asyncapi === code)
+  }
+
+  const onCodeChange = (editor, data, value) => {
+    setCode(value)
+  }
+
+  const onImport = (e) => {
+    setAPI({
+      anonymous: true,
+      title: e.url,
+      asyncapi: e.content,
+    })
+    setInitialCode(e.content)
+  }
+
+  const onSave = (api) => {
+    setAPI({
+      ...initialAPI,
+      ...api,
+    })
+    setInitialCode(api.asyncapi)
+  }
+
+  useEffect(() => {
+    updateSaved()
+  }, [initialCode, code])
+
+  return (
+    <EditorLayout>
+      <EditorToolbar
+        api={api}
+        code={code}
+        saved={saved}
+        onSave={onSave}
+        onImport={onImport}
+      />
+      <div className="flex flex-row flex-1 overflow-auto">
+        <div className="flex flex-1 flex-col max-w-1/2">
+          <Editor initialCode={initialCode} onCodeChange={onCodeChange} />
+        </div>
+        <div className="flex flex-1 flex-col max-w-1/2">
+          <Preview code={code} />
+        </div>
+      </div>
+    </EditorLayout>
+  )
+}
+
+
+export async function getServerSideProps({ req }) {
+  if (!req.userPublicInfo || !req.query.api) return { props: {} }
+
+  const { get: getAPI } = require('../handlers/apis')
+
+  const initialAPI = await getAPI(Number(req.query.api), req.userPublicInfo.id)
+
+  return {
+    props: {
+      initialAPI,
+    },
+  }
+}
+
+const saveToLocalStorage = async (api, code) => {
+  try {
+    if (typeof localStorage !== 'undefined' && (api.anonymous || api.asyncapi !== code)) {
+      localStorage.setItem('asyncapi-document', code)
+      const doc = await parseAsyncAPI(code)
+      localStorage.setItem('asyncapi-parsed-document', JSON.stringify(doc.json()))
+    }
+  } catch (e) {
+    console.error('Could not store result in localStorage.')
+    console.error(e)
+  }
+}
+
+const parseAsyncAPI = async (asyncapiString) => {
+  let parse
+
+  if (typeof window === 'undefined') {
+    parse = require('asyncapi-parser').parse
+  } else {
+    require('asyncapi-parser/dist/bundle')
+    parse = window.AsyncAPIParser.parse
+  }
+
+  return parse(asyncapiString, {
+    resolve: {
+      file: false,
+    },
+    dereference: {
+      circular: 'ignore',
+    }
+  })
+}
+
+const getSampleAPI = () => {
+  const api = {
+    title: 'Streetlights API',
+    asyncapi: getSampleAsyncAPI(),
+    anonymous: true,
+  }
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      api.asyncapi = localStorage.getItem('asyncapi-document')
+      const computedAsyncapi = JSON.parse(localStorage.getItem('asyncapi-parsed-document') || '{}')
+      api.title = computedAsyncapi && computedAsyncapi.info && computedAsyncapi.info.title ? computedAsyncapi.info.title : 'Untitled document'
+      api.title += ' (from local storage)'
+    }
+  } catch (e) {
+    console.error('Could not read previous document from localStorage.')
+  }
+
+  return api
+}
+
+function getSampleAsyncAPI () {
+  return `asyncapi: 2.0.0
 info:
   title: Streetlights API
   version: '1.0.0'
@@ -213,62 +343,4 @@ components:
       bindings:
         kafka:
           clientId: my-app-id`
-
-export default function Index () {
-  let initCode
-  let initUrl = 'Streetlights API'
-
-  try {
-    if (typeof localStorage !== 'undefined') {
-      initCode = localStorage.getItem('asyncapi-document') || yaml
-      initUrl = 'Untitled document (from local storage)'
-    }
-  } catch (e) {
-    console.error('Could not read previous document from localStorage.')
-  }
-
-  const [code, setCode] = useState(initCode)
-  const [initialCode, setInitialCode] = useState(initCode)
-  const [fileUrl, setFileUrl] = useState(initUrl)
-  const [saved, setSaved] = useState(true)
-
-  const updateSaved = () => {
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('asyncapi-document', code)
-      }
-    } catch (e) {
-      console.error('Could not store result in localStorage.')
-      console.error(e)
-    }
-
-    setSaved(code === initialCode)
-  }
-
-  const onCodeChange = (editor, data, value) => {
-    setCode(value)
-  }
-
-  const onImport = (e) => {
-    setFileUrl(e.url)
-    setInitialCode(e.content)
-  }
-
-  useEffect(() => {
-    updateSaved()
-  }, [initialCode, code])
-
-  return (
-    <EditorLayout>
-      <EditorToolbar code={code} saved={saved} fileUrl={fileUrl} onImport={onImport} />
-      <div className="flex flex-row flex-1 overflow-auto">
-        <div className="flex flex-1 flex-col max-w-1/2">
-          <Editor initialCode={initialCode} onCodeChange={onCodeChange} />
-        </div>
-        <div className="flex flex-1 flex-col max-w-1/2">
-          <Preview code={code} />
-        </div>
-      </div>
-    </EditorLayout>
-  )
 }

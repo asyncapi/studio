@@ -4,8 +4,13 @@ module.exports = {
       maxWidth: {
         '1/2': '50%',
       },
+      minWidth: {
+        '1/4': '25%',
+      },
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/ui'),
+  ],
 }

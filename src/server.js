@@ -10,6 +10,9 @@ const config = require('./lib/config');
 const authRoute = require('./routes/auth');
 const htmlRoute = require('./routes/html');
 const markdownRoute = require('./routes/markdown');
+const orgsRoute = require('./routes/orgs');
+const projectsRoute = require('./routes/projects');
+const apisRoute = require('./routes/apis');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -38,12 +41,35 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  if (dev) server.use(morgan('dev'));
+  if (dev) {
+    server.use(morgan('dev', {
+      skip: req => req.path.startsWith('/_next/'),
+    }));
+  }
+
+  server.use((req, res, next) => {
+    if (!req.user) return next();
+
+    req.userPublicInfo = {
+      id: req.user.id,
+      displayName: req.user.display_name,
+      email: req.user.email,
+      avatar: req.user.avatar,
+      company: req.user.company,
+    };
+
+    next();
+  });
 
   // Server-side
   server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
+
+  // API
+  server.use('/orgs', orgsRoute);
+  server.use('/projects', projectsRoute);
+  server.use('/apis', apisRoute);
 
   server.get('*', (req, res) => {
     return handle(req, res);

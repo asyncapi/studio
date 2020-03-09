@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const config = require('../lib/config');
+const users = require('../handlers/users');
 
 module.exports = router;
 
@@ -18,13 +19,20 @@ passport.use(new GitHubStrategy({
   clientSecret: config.github.client_secret,
   callbackURL: config.github.callback_url,
 }, (accessToken, refreshToken, profile, done) => {
-  return done(null, {
+  users.createFromGithub({
     displayName: profile.displayName,
     email: profile._json.email,
+    username: profile.username,
     avatar: profile._json.avatar_url,
     company: profile._json.company,
-    github: profile._json,
-  });
+    githubId: profile.id,
+    githubAccessToken: accessToken,
+    githubRefreshToken: refreshToken,
+  })
+  .then((user) => {
+    done(null, user);
+  })
+  .catch(done);
 }
 ));
 
