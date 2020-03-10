@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FaFileImport, FaTimes, FaSave } from 'react-icons/fa'
 import DownloadAsButton from './DownloadAsButton'
+import SaveAPIModal from './SaveAPIModal'
 
 export default function EditorToolbar ({
   onImport = () => {},
@@ -8,10 +9,12 @@ export default function EditorToolbar ({
   code,
   saved = false,
   api,
+  projects = [],
 }) {
   const [importing, setImporting] = useState(false)
   const [importUrl, setImportUrl] = useState('')
   const [importError, setImportError] = useState()
+  const [showSaveModal, setShowSaveModal] = useState(false)
 
   const onImportFormSubmit = (e) => {
     e.preventDefault()
@@ -37,26 +40,35 @@ export default function EditorToolbar ({
     setImportError()
   }
 
-  const onClickSave = (e) => {
-    if (!api.anonymous) {
-      fetch(`/apis/${api.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...api,
-          ...{
-            asyncapi: code,
-          },
-        }),
-      })
+  const saveAPI = () => {
+    fetch(`/apis/${api.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...api,
+        ...{
+          asyncapi: code,
+        }
+      }),
+    })
       .then(res => res.json())
       .then(onSave)
       .catch(console.error)
-    } else {
+  }
 
+  const onClickSave = (e) => {
+    if (!api.anonymous) {
+      saveAPI()
+    } else {
+      setShowSaveModal(true)
     }
+  }
+
+  const onSaveAnonymous = (savedAPI) => {
+    setShowSaveModal(false)
+    window.location.href = `/?api=${savedAPI.id}`
   }
 
   const renderFileName = () => {
@@ -84,6 +96,19 @@ export default function EditorToolbar ({
 
   return (
     <div style={{ height: '60px' }} className="flex flex-col bg-gray-800 shadow-md px-4 py-3 z-20">
+      { showSaveModal &&
+        <SaveAPIModal
+          api={{
+            ...api,
+            ...{
+              asyncapi: code,
+            }
+          }}
+          projects={projects}
+          onCancel={() => { setShowSaveModal(false) }}
+          onSave={onSaveAnonymous}
+        />
+      }
       <nav className="flex flex-row">
         { !importing ? (
           <>

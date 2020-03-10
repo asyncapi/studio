@@ -9,7 +9,7 @@ orgs.list = async (userId) => {
     [userId]
   );
 
-  return result.rows;
+  return JSON.parse(JSON.stringify(result.rows));
 };
 
 orgs.get = async (id) => {
@@ -18,7 +18,7 @@ orgs.get = async (id) => {
     [id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 orgs.getForUser = async (userId, orgId) => {
@@ -36,7 +36,7 @@ orgs.getForUser = async (userId, orgId) => {
     );
   }
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 orgs.CreateError = class CreateError extends Error {
@@ -54,7 +54,7 @@ orgs.create = async (name, slug, creatorId) => {
 
   await orgs.addUser(creatorId, result.rows[0].id, 'admin');
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 orgs.patch = async (id, changedFields) => {
@@ -66,7 +66,7 @@ orgs.patch = async (id, changedFields) => {
     [...updateValues, id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 orgs.findUserByEmail = async (email, organizationId) => {

@@ -8,7 +8,7 @@ projects.list = async (userId) => {
     [userId]
   );
 
-  return result.rows;
+  return JSON.parse(JSON.stringify(result.rows));
 };
 
 projects.create = async (name, creatorId, organizationId) => {
@@ -17,5 +17,5 @@ projects.create = async (name, creatorId, organizationId) => {
     [name, creatorId, organizationId]
   );
 
-  return result.rows;
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };

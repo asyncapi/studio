@@ -9,7 +9,7 @@ apis.list = async (userId) => {
     [userId]
   );
 
-  return result.rows;
+  return JSON.parse(JSON.stringify(result.rows));
 };
 
 apis.create = async (title, asyncapiString, projectId, creatorId) => {
@@ -35,7 +35,7 @@ channels: {}`;
     [title, asyncapiString, computedAsyncapi, doc.info().version(), projectId, creatorId]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 apis.get = async (id, userId) => {
@@ -44,7 +44,7 @@ apis.get = async (id, userId) => {
     [userId, id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 apis.patch = async (id, asyncapiString) => {
@@ -76,5 +76,5 @@ apis.patch = async (id, asyncapiString) => {
     [...values, id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };

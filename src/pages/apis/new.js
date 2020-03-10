@@ -1,4 +1,5 @@
 import AppLayout from '../../components/AppLayout'
+import ProjectList from '../../components/ProjectList'
 
 export default function CreateAPI ({ projects = [] }) {
   return (
@@ -11,14 +12,7 @@ export default function CreateAPI ({ projects = [] }) {
         <div className="flex mt-4">
           <div className="flex-1 mr-2">
             <label className="block text-sm font-medium leading-5 text-gray-700">Organization / Project</label>
-            <select name="project" className="form-select mt-2 relative block w-full rounded-md bg-transparent focus:z-10 transition ease-in-out duration-150 sm:text-sm sm:leading-5" aria-label="Project">
-              <option value="-1" selected>No project</option>
-              {
-                projects.map(project => (
-                  <option key={project.id} value={project.id}>{project.org_name} / {project.name}</option>
-                ))
-              }
-            </select>
+            <ProjectList projects={projects} />
           </div>
           <div className="flex-1 ml-2">
             <label className="block text-sm font-medium leading-5 text-gray-700">Name of the API</label>

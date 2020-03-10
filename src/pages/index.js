@@ -4,7 +4,7 @@ import Editor from '../components/Editor'
 import Preview from '../components/Preview'
 import EditorToolbar from '../components/EditorToolbar'
 
-export default function Index ({ initialAPI }) {
+export default function Index ({ initialAPI, projects }) {
   if (!initialAPI) initialAPI = getSampleAPI()
   let initCode = initialAPI.asyncapi
 
@@ -50,6 +50,7 @@ export default function Index ({ initialAPI }) {
         code={code}
         saved={saved}
         onSave={onSave}
+        projects={projects}
         onImport={onImport}
       />
       <div className="flex flex-row flex-1 overflow-auto">
@@ -66,15 +67,24 @@ export default function Index ({ initialAPI }) {
 
 
 export async function getServerSideProps({ req }) {
-  if (!req.userPublicInfo || !req.query.api) return { props: {} }
+  const { list: listProjects } = require('../handlers/projects')
+  const projects = await listProjects(req.userPublicInfo.id)
+
+  if (!req.userPublicInfo || !req.query.api) {
+    return {
+      props: {
+        projects,
+      }
+    }
+  }
 
   const { get: getAPI } = require('../handlers/apis')
-
   const initialAPI = await getAPI(Number(req.query.api), req.userPublicInfo.id)
 
   return {
     props: {
       initialAPI,
+      projects,
     },
   }
 }

@@ -11,7 +11,7 @@ users.findById = async (id) => {
     [id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 users.findByIdWithOrganization = async (id) => {
@@ -20,7 +20,7 @@ users.findByIdWithOrganization = async (id) => {
     [id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 users.findByEmail = async (email) => {
@@ -29,7 +29,7 @@ users.findByEmail = async (email) => {
     [email]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 users.findByEmailWithOrganization = async (email, org_id) => {
@@ -47,7 +47,7 @@ users.findByEmailWithOrganization = async (email, org_id) => {
     );
   }
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
 
 users.createFromGithub = async ({ displayName, email, username, avatar, company, githubId, githubAccessToken, githubRefreshToken }) => {
@@ -62,7 +62,7 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company,
     await projects.create('default', result.rows[0].id, org.id);
     await db.query('COMMIT');
 
-    return result.rows[0];
+    return JSON.parse(JSON.stringify(result.rows[0]));
   } catch (e) {
     if (e.constraint === 'users_email') {
       return users.updateFromGithub({ email, githubId, githubAccessToken, githubRefreshToken });
@@ -81,7 +81,7 @@ users.updateFromGithub = async ({ email, githubId, githubAccessToken, githubRefr
       [githubId, crypto.hashPassword(githubAccessToken), githubRefreshToken ? crypto.hashPassword(githubRefreshToken) : '', email]
     );
 
-    return result.rows[0];
+    return JSON.parse(JSON.stringify(result.rows[0]));
   } catch (e) {
     console.error(e);
     throw e;
@@ -99,5 +99,5 @@ users.patch = async (id, changedFields) => {
     [...updateValues, id]
   );
 
-  return result.rows[0];
+  return JSON.parse(JSON.stringify(result.rows[0]));
 };
