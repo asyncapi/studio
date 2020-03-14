@@ -3,13 +3,37 @@ const db = require('../lib/db');
 
 const apis = module.exports;
 
-apis.list = async (userId) => {
+const formatAPI = (api) => {
+  if (api.created_at) api.created_at = String(api.created_at);
+  return api;
+}
+
+const formatList = (list) => {
+  if (Array.isArray(list)) return list.map(formatAPI);
+  return list;
+}
+
+apis.list = async (userId, filters = {}) => {
+  const keys = []
+  const values = []
+
+  if (filters.org) {
+    keys.push('o.id')
+    values.push(Number(filters.org))
+  }
+
+  if (filters.project) {
+    keys.push('a.project_id')
+    values.push(Number(filters.project))
+  }
+
+  const where = keys.length ? keys.map((k, i) => ` AND ${k} = $${i + 2}`) : ''
   const result = await db.query(
-    'SELECT a.*, o.name as org_name FROM apis a INNER JOIN projects p ON a.project_id = p.id OR a.project_id = NULL LEFT JOIN organizations_users ou ON p.organization_id = ou.organization_id LEFT JOIN organizations o ON o.id = p.organization_id WHERE ou.user_id = $1 OR p.creator_id = $1',
-    [userId]
+    `SELECT a.*, o.name as org_name FROM apis a INNER JOIN projects p ON a.project_id = p.id OR a.project_id = NULL LEFT JOIN organizations_users ou ON p.organization_id = ou.organization_id LEFT JOIN organizations o ON o.id = p.organization_id WHERE (ou.user_id = $1 OR p.creator_id = $1)${where}`,
+    [userId, ...values]
   );
 
-  return JSON.parse(JSON.stringify(result.rows));
+  return formatList(result.rows);
 };
 
 apis.create = async (title, asyncapiString, projectId, creatorId) => {
@@ -35,7 +59,7 @@ channels: {}`;
     [title, asyncapiString, computedAsyncapi, doc.info().version(), projectId, creatorId]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatAPI(result.rows[0]);
 };
 
 apis.get = async (id, userId) => {
@@ -44,7 +68,7 @@ apis.get = async (id, userId) => {
     [userId, id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatAPI(result.rows[0]);
 };
 
 apis.patch = async (id, asyncapiString) => {
@@ -64,6 +88,9 @@ apis.patch = async (id, asyncapiString) => {
     fields.push('title');
     values.push(doc.info().title());
 
+    fields.push('version');
+    values.push(doc.info().version());
+
     fields.push('asyncapi');
     values.push(asyncapiString);
 
@@ -76,5 +103,5 @@ apis.patch = async (id, asyncapiString) => {
     [...values, id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatAPI(result.rows[0]);
 };

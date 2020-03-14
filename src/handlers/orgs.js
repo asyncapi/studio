@@ -3,13 +3,23 @@ const users = require('./users');
 
 const orgs = module.exports;
 
+const formatOrg = (api) => {
+  if (api.created_at) api.created_at = String(api.created_at);
+  return api;
+}
+
+const formatList = (list) => {
+  if (Array.isArray(list)) return list.map(formatOrg);
+  return list;
+}
+
 orgs.list = async (userId) => {
   const result = await db.query(
     'SELECT * FROM organizations_users ou LEFT JOIN organizations o ON ou.organization_id = o.id WHERE ou.user_id = $1',
     [userId]
   );
 
-  return JSON.parse(JSON.stringify(result.rows));
+  return formatList(result.rows);
 };
 
 orgs.get = async (id) => {
@@ -18,7 +28,7 @@ orgs.get = async (id) => {
     [id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatOrg(result.rows[0]);
 };
 
 orgs.getForUser = async (userId, orgId) => {
@@ -36,7 +46,7 @@ orgs.getForUser = async (userId, orgId) => {
     );
   }
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatOrg(result.rows[0]);
 };
 
 orgs.CreateError = class CreateError extends Error {
@@ -46,15 +56,27 @@ orgs.CreateError = class CreateError extends Error {
   }
 }
 
+orgs.createWithTransaction = async (name, slug, creatorId) => {
+  await db.query('BEGIN');
+  try {
+    const org = await orgs.create(name, slug, creatorId);
+    await db.query('COMMIT');
+    return org;
+  } catch (e) {
+    console.error(e);
+    await db.query('ROLLBACK');
+  }
+}
+
 orgs.create = async (name, slug, creatorId) => {
   const result = await db.query(
     `INSERT INTO organizations (name, slug) VALUES ($1, $2) ON CONFLICT ON CONSTRAINT organizations_slug DO NOTHING RETURNING *`,
-    [name, `${slug}-${Buffer.from(String(creatorId), 'utf8').toString('hex')}`]
+    [name, slug]
   );
 
   await orgs.addUser(creatorId, result.rows[0].id, 'admin');
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatOrg(result.rows[0]);
 };
 
 orgs.patch = async (id, changedFields) => {
@@ -66,7 +88,7 @@ orgs.patch = async (id, changedFields) => {
     [...updateValues, id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatOrg(result.rows[0]);
 };
 
 orgs.findUserByEmail = async (email, organizationId) => {

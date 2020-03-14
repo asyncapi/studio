@@ -28,6 +28,7 @@ export default function Index ({ initialAPI, projects }) {
       title: e.url,
       asyncapi: e.content,
     })
+    setCode(e.content)
     setInitialCode(e.content)
   }
 
@@ -41,7 +42,7 @@ export default function Index ({ initialAPI, projects }) {
 
   useEffect(() => {
     updateSaved()
-  }, [initialCode, code])
+  }, [initialCode, code, api])
 
   return (
     <EditorLayout>

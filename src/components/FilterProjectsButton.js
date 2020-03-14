@@ -17,9 +17,16 @@ export default function FilterProjectsButton({ projects = [], selected }) {
       )
     }
 
-    return projects.map(project => (
-      <a href={`?${queryParamsFor({ project: project.id })}`} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.name}</a>
-    ))
+    return (
+      <>
+        <a href={`?${queryParamsFor({})}`} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Select project</a>
+        {
+          projects.map(project => (
+            <a href={`?${queryParamsFor({ project: project.id })}`} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.name}</a>
+          ))
+        }
+      </>
+    )
   }
 
   return (

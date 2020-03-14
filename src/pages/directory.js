@@ -50,17 +50,28 @@ export async function getServerSideProps ({ req }) {
   const { list:listAPIs } = require('../handlers/apis')
 
   const orgs = await listOrgs(req.userPublicInfo.id)
-  const projects = await listProjects(req.userPublicInfo.id)
-  const apis = await listAPIs(req.userPublicInfo.id)
+  let selectedOrg = null
+  if (req.query.org) selectedOrg = orgs.find(o => o.id === Number(req.query.org)) || null
+
+  const projects = await listProjects(req.userPublicInfo.id, {
+    org: req.query.org,
+  })
+
+  let selectedProject = null
+  if (req.query.project) selectedProject = projects.find(p => p.id === Number(req.query.project)) || null
+
+  const apis = await listAPIs(req.userPublicInfo.id, {
+    org: req.query.org,
+    project: req.query.project,
+  })
 
   const data = {
     orgs,
     projects,
     apis,
+    selectedOrg,
+    selectedProject,
   }
-
-  if (req.query.org) data.selectedOrg = data.orgs.find(o => o.id === Number(req.query.org))
-  if (req.query.project) data.selectedProject = data.projects.find(p => p.id === Number(req.query.project))
 
   return {
     props: data,

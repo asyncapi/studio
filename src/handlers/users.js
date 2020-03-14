@@ -5,13 +5,18 @@ const projects = require('./projects');
 
 const users = module.exports = {};
 
+const formatUser = (api) => {
+  if (api.created_at) api.created_at = String(api.created_at);
+  return api;
+}
+
 users.findById = async (id) => {
   const result = await db.query(
     'SELECT * FROM users WHERE id = $1',
     [id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatUser(result.rows[0]);
 };
 
 users.findByIdWithOrganization = async (id) => {
@@ -20,7 +25,7 @@ users.findByIdWithOrganization = async (id) => {
     [id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatUser(result.rows[0]);
 };
 
 users.findByEmail = async (email) => {
@@ -29,7 +34,7 @@ users.findByEmail = async (email) => {
     [email]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatUser(result.rows[0]);
 };
 
 users.findByEmailWithOrganization = async (email, org_id) => {
@@ -47,7 +52,7 @@ users.findByEmailWithOrganization = async (email, org_id) => {
     );
   }
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatUser(result.rows[0]);
 };
 
 users.createFromGithub = async ({ displayName, email, username, avatar, company, githubId, githubAccessToken, githubRefreshToken }) => {
@@ -62,7 +67,7 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company,
     await projects.create('default', result.rows[0].id, org.id);
     await db.query('COMMIT');
 
-    return JSON.parse(JSON.stringify(result.rows[0]));
+    return formatUser(result.rows[0]);
   } catch (e) {
     if (e.constraint === 'users_email') {
       return users.updateFromGithub({ email, githubId, githubAccessToken, githubRefreshToken });
@@ -81,7 +86,7 @@ users.updateFromGithub = async ({ email, githubId, githubAccessToken, githubRefr
       [githubId, crypto.hashPassword(githubAccessToken), githubRefreshToken ? crypto.hashPassword(githubRefreshToken) : '', email]
     );
 
-    return JSON.parse(JSON.stringify(result.rows[0]));
+    return formatUser(result.rows[0]);
   } catch (e) {
     console.error(e);
     throw e;
@@ -99,5 +104,5 @@ users.patch = async (id, changedFields) => {
     [...updateValues, id]
   );
 
-  return JSON.parse(JSON.stringify(result.rows[0]));
+  return formatUser(result.rows[0]);
 };

@@ -67,7 +67,7 @@ app.prepare().then(() => {
   server.use('/markdown', markdownRoute);
 
   // API
-  server.use('/orgs', orgsRoute);
+  server.use('/organizations', orgsRoute);
   server.use('/projects', projectsRoute);
   server.use('/apis', apisRoute);
 

@@ -1,13 +1,15 @@
 const router = require('express').Router();
-const { list } = require('../handlers/orgs');
+const slug = require('../lib/slug');
+const { create } = require('../handlers/orgs');
 
 module.exports = router;
 
-// router.get('/', async (req, res, next) => {
-//   try {
-//     const orgList = await list(req.user.id);
-//     res.send({ data: orgList });
-//   } catch (e) {
-//     next(e);
-//   }
-// });
+router.post('/new', async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    const org = await create(name, slug(name), req.user.id);
+    res.redirect(`/organizations/${org.slug}`);
+  } catch (e) {
+    next(e);
+  }
+});
