@@ -105,3 +105,10 @@ apis.patch = async (id, asyncapiString) => {
 
   return formatAPI(result.rows[0]);
 };
+
+apis.remove = async (id, userId) => {
+  return db.query(
+    'DELETE FROM apis WHERE id = $1 AND creator_id = $2',
+    [id, userId]
+  );
+};

@@ -3,33 +3,31 @@ import EditorLayout from '../components/EditorLayout'
 import Editor from '../components/Editor'
 import Preview from '../components/Preview'
 import EditorToolbar from '../components/EditorToolbar'
+import parseAsyncAPI from '../components/helpers/parse-asyncapi'
 
 export default function Index ({ initialAPI, projects }) {
   if (!initialAPI) initialAPI = getSampleAPI()
-  let initCode = initialAPI.asyncapi
+  const initCode = initialAPI.asyncapi
 
   const [api, setAPI] = useState(initialAPI)
-  const [code, setCode] = useState(initCode)
   const [initialCode, setInitialCode] = useState(initCode)
-  const [saved, setSaved] = useState(true)
+  const [currentUnsavedCode, setCurrentUnsavedCode] = useState(initialCode)
 
-  const updateSaved = async () => {
-    saveToLocalStorage(api, code)
-    setSaved(api.anonymous ? true : api.asyncapi === code)
+  const isSaved = () => {
+    return api.anonymous ? true : api.asyncapi === currentUnsavedCode
   }
 
   const onCodeChange = (editor, data, value) => {
-    setCode(value)
+    setCurrentUnsavedCode(value)
   }
 
-  const onImport = (e) => {
-    setAPI({
-      anonymous: true,
-      title: e.url,
-      asyncapi: e.content,
-    })
-    setCode(e.content)
+  const onImport = async (e) => {
     setInitialCode(e.content)
+
+    setAPI({
+      ...initialAPI,
+      ...api,
+    })
   }
 
   const onSave = (api) => {
@@ -37,29 +35,44 @@ export default function Index ({ initialAPI, projects }) {
       ...initialAPI,
       ...api,
     })
-    setInitialCode(api.asyncapi)
   }
 
   useEffect(() => {
-    updateSaved()
-  }, [initialCode, code, api])
+    saveToLocalStorage(currentUnsavedCode)
+
+    ;(async function () {
+      try {
+        const parsedDocument = await parseAsyncAPI(currentUnsavedCode)
+        if (parsedDocument.info().title() !== api.title) {
+          setAPI({
+            ...api,
+            ...{
+              title: parsedDocument.info().title(),
+            },
+          })
+        }
+      } catch (e) {
+        // We did our best.
+      }
+    })()
+  }, [currentUnsavedCode])
 
   return (
     <EditorLayout>
       <EditorToolbar
         api={api}
-        code={code}
-        saved={saved}
+        code={currentUnsavedCode}
+        saved={isSaved()}
         onSave={onSave}
         projects={projects}
         onImport={onImport}
       />
       <div className="flex flex-row flex-1 overflow-auto">
         <div className="flex flex-1 flex-col max-w-1/2">
-          <Editor initialCode={initialCode} onCodeChange={onCodeChange} />
+          <Editor code={initialCode} onCodeChange={onCodeChange} />
         </div>
         <div className="flex flex-1 flex-col max-w-1/2">
-          <Preview code={code} />
+          <Preview code={currentUnsavedCode} />
         </div>
       </div>
     </EditorLayout>
@@ -68,10 +81,12 @@ export default function Index ({ initialAPI, projects }) {
 
 
 export async function getServerSideProps({ req }) {
+  if (!req.userPublicInfo) return { props: {} }
+
   const { list: listProjects } = require('../handlers/projects')
   const projects = await listProjects(req.userPublicInfo.id)
 
-  if (!req.userPublicInfo || !req.query.api) {
+  if (!req.query.api) {
     return {
       props: {
         projects,
@@ -90,9 +105,9 @@ export async function getServerSideProps({ req }) {
   }
 }
 
-const saveToLocalStorage = async (api, code) => {
+const saveToLocalStorage = async (code) => {
   try {
-    if (typeof localStorage !== 'undefined' && (api.anonymous || api.asyncapi !== code)) {
+    if (typeof localStorage !== 'undefined') {
       localStorage.setItem('asyncapi-document', code)
       const doc = await parseAsyncAPI(code)
       localStorage.setItem('asyncapi-parsed-document', JSON.stringify(doc.json()))
@@ -101,26 +116,6 @@ const saveToLocalStorage = async (api, code) => {
     console.error('Could not store result in localStorage.')
     console.error(e)
   }
-}
-
-const parseAsyncAPI = async (asyncapiString) => {
-  let parse
-
-  if (typeof window === 'undefined') {
-    parse = require('asyncapi-parser').parse
-  } else {
-    require('asyncapi-parser/dist/bundle')
-    parse = window.AsyncAPIParser.parse
-  }
-
-  return parse(asyncapiString, {
-    resolve: {
-      file: false,
-    },
-    dereference: {
-      circular: 'ignore',
-    }
-  })
 }
 
 const getSampleAPI = () => {
@@ -135,7 +130,7 @@ const getSampleAPI = () => {
       api.asyncapi = localStorage.getItem('asyncapi-document')
       const computedAsyncapi = JSON.parse(localStorage.getItem('asyncapi-parsed-document') || '{}')
       api.title = computedAsyncapi && computedAsyncapi.info && computedAsyncapi.info.title ? computedAsyncapi.info.title : 'Untitled document'
-      api.title += ' (from local storage)'
+      api.fromLocalStorage = true
     }
   } catch (e) {
     console.error('Could not read previous document from localStorage.')

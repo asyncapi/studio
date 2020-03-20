@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { create, patch } = require('../handlers/apis');
+const { create, patch, remove } = require('../handlers/apis');
 
 module.exports = router;
 
@@ -29,6 +29,16 @@ router.patch('/:id', async (req, res, next) => {
     const { asyncapi } = req.body;
     const api = await patch(id, asyncapi, req.user.id);
     res.send(api);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    await remove(id, req.user.id);
+    res.status(204).send();
   } catch (e) {
     next(e);
   }

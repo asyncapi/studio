@@ -1,6 +1,6 @@
 import { debounce } from 'lodash'
 
-export default ({ initialCode, onCodeChange = () => {} }) => {
+export default ({ code, onCodeChange = () => {} }) => {
   // Render on the browser only
   if (typeof navigator === 'undefined') return null
 
@@ -29,7 +29,7 @@ export default ({ initialCode, onCodeChange = () => {} }) => {
         }
       `}</style>
       <CodeMirror
-        value={initialCode}
+        value={code}
         options={options}
         onChange={debounce(onCodeChange, 500)}
         className="w-full flex-1 overflow-auto"

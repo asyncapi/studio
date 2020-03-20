@@ -41,7 +41,7 @@ export default function DownloadAsButton ({ code }) {
 
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} type="button" className="flex px-3 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+      <button onClick={() => setOpen(!open)} type="button" className="flex px-3 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150">
         <FaCloudDownloadAlt className="text-md mt-1 mr-2" />
         Download
         <FaCaretDown className="text-md mt-1 ml-1" />
