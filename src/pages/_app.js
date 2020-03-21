@@ -18,6 +18,7 @@ class MyApp extends App {
         url: {
           full: ctx.req.url,
           query: ctx.req.query,
+          path: ctx.req.path,
         },
       }
     }

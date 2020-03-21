@@ -8,7 +8,17 @@ export default function FilterProjectsButton({ projects = [], selected }) {
   const { url } = useContext(AppContext)
   const title = selected && selected.name ? selected.name : 'Select project'
 
-  const queryParamsFor = (obj) => new URLSearchParams({ ...url.query, ...obj }).toString()
+  const queryParamsFor = (obj) => {
+    const urlQuery = url.query
+    if (!obj.project) delete urlQuery.project
+    return new URLSearchParams({ ...urlQuery, ...obj }).toString()
+  }
+
+  const queryStringFor = (obj) => {
+    const qs = `?${queryParamsFor(obj)}`
+    if (qs === '?') return url.path
+    return qs
+  }
 
   const renderProjects = () => {
     if (!projects.length) {
@@ -19,10 +29,10 @@ export default function FilterProjectsButton({ projects = [], selected }) {
 
     return (
       <>
-        <a href={`?${queryParamsFor({})}`} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Select project</a>
+        <a href={queryStringFor({})} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Select project</a>
         {
           projects.map(project => (
-            <a href={`?${queryParamsFor({ project: project.id })}`} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.name}</a>
+            <a href={queryStringFor({ project: project.id })} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.name}</a>
           ))
         }
       </>

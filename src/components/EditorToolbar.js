@@ -71,7 +71,7 @@ export default function EditorToolbar ({
 
   const onSaveAnonymous = (savedAPI) => {
     setShowSaveModal(false)
-    window.location.href = `/?api=${savedAPI.id}`
+    window.location.href = `/apis/${savedAPI.id}`
   }
 
   const onClickDeleteAPI = () => {
@@ -154,9 +154,12 @@ export default function EditorToolbar ({
                 </button>
               </span>
               <DownloadAsButton code={code} />
-              <Dropdown title="" showCaret={false} icon={<FaEllipsisV className="text-md mt-1 mr-2" />}>
-                <a onClick={onClickDeleteAPI} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Delete API</a>
-              </Dropdown>
+              { !api.anonymous && (
+                  <Dropdown title="" showCaret={false} icon={<FaEllipsisV className="text-md mt-1 mr-2" />}>
+                    <a onClick={onClickDeleteAPI} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Delete API</a>
+                  </Dropdown>
+                )
+              }
             </div>
           </>
         ) : (

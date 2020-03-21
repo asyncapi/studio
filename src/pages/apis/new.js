@@ -1,7 +1,7 @@
 import AppLayout from '../../components/AppLayout'
 import ProjectList from '../../components/ProjectList'
 
-export default function CreateAPI ({ projects = [] }) {
+export default function CreateApiPage ({ projects = [] }) {
   return (
     <AppLayout
       title="New API"

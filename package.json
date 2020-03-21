@@ -34,7 +34,6 @@
     "react-codemirror2": "^6.0.0",
     "react-dom": "^16.13.0",
     "react-icons": "^3.9.0",
-    "react-markdown-it": "^1.0.2",
     "redis": "^3.0.2",
     "slugify": "^1.4.0",
     "tailwindcss": "^1.2.0",
