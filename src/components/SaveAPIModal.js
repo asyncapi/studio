@@ -10,40 +10,23 @@ export default function SaveAPIModal ({
   const [project, setProject] = useState(projects[0].id || null)
   const [title, setTitle] = useState(api.title)
 
-  const updateAPI = () => {
-    fetch(`/apis/${api.id}`, {
-      method: 'PATCH',
+  const onClickSave = () => {
+    fetch(`/apis`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(api),
+      body: JSON.stringify({
+        ...api,
+        ...{
+          project_id: project,
+          title,
+        }
+      }),
     })
       .then(res => res.json())
       .then(onSave)
       .catch(console.error)
-  }
-
-  const onClickSave = () => {
-    if (api.anonymous) {
-      fetch(`/apis`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...api,
-          ...{
-            project_id: project,
-            title,
-          }
-        }),
-      })
-        .then(res => res.json())
-        .then(onSave)
-        .catch(console.error)
-    } else {
-      updateAPI()
-    }
   }
 
   return (
