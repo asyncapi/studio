@@ -13,6 +13,7 @@ const markdownRoute = require('./routes/markdown');
 const orgsRoute = require('./routes/orgs');
 const projectsRoute = require('./routes/projects');
 const apisRoute = require('./routes/apis');
+const userRoute = require('./routes/user');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -47,12 +48,24 @@ app.prepare().then(() => {
     }));
   }
 
+  // API
+  server.use('/organizations', orgsRoute);
+  server.use('/projects', projectsRoute);
+  server.use('/apis', apisRoute);
+
+  // Server-side
+  server.use('/', userRoute);
+  server.use('/auth', authRoute);
+  server.use('/html', htmlRoute);
+  server.use('/markdown', markdownRoute);
+
   server.use((req, res, next) => {
     if (!req.user) return next();
 
     req.userPublicInfo = {
       id: req.user.id,
       displayName: req.user.display_name,
+      username: req.user.username,
       email: req.user.email,
       avatar: req.user.avatar,
       company: req.user.company,
@@ -60,16 +73,6 @@ app.prepare().then(() => {
 
     next();
   });
-
-  // Server-side
-  server.use('/auth', authRoute);
-  server.use('/html', htmlRoute);
-  server.use('/markdown', markdownRoute);
-
-  // API
-  server.use('/organizations', orgsRoute);
-  server.use('/projects', projectsRoute);
-  server.use('/apis', apisRoute);
 
   server.get('*', (req, res) => {
     return handle(req, res);

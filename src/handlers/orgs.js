@@ -5,11 +5,23 @@ const orgs = module.exports;
 
 const formatOrg = (api) => {
   if (api.created_at) api.created_at = String(api.created_at);
+  if (api.joined_organization_at) api.joined_organization_at = String(api.joined_organization_at);
   return api;
 }
 
 const formatList = (list) => {
   if (Array.isArray(list)) return list.map(formatOrg);
+  return list;
+}
+
+const formatUser = (user) => {
+  if (user.created_at) user.created_at = String(user.created_at);
+  if (user.joined_organization_at) user.joined_organization_at = String(user.joined_organization_at);
+  return user;
+}
+
+const formatUserList = (list) => {
+  if (Array.isArray(list)) return list.map(formatUser);
   return list;
 }
 
@@ -116,7 +128,7 @@ orgs.listUsers = async (organizationId) => {
     [organizationId]
   );
 
-  return result.rows;
+  return formatUserList(result.rows);
 };
 
 orgs.makeUserAdmin = async (organizationId, userId) => {

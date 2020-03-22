@@ -21,6 +21,7 @@ export default function Topbar ({ active }) {
               <div className="ml-10 flex items-baseline">
                 <a href="/" className={active === 'editor' ? activeClasses : regularClasses}>Editor</a>
                 <a href="/directory" className={active === 'directory' ? activeClasses : regularClasses}>Directory</a>
+                <a href="/portal" className={active === 'portal' ? activeClasses : regularClasses}>Developer Portal</a>
               </div>
             </div>
           </div>

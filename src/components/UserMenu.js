@@ -68,8 +68,8 @@ export default function UserMenu () {
           { open &&
             <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-30">
               <div className="py-1 rounded-md bg-white shadow-xs">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                <a href="/settings/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                <a href="/settings/invitations" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Invite</a>
                 <a onClick={onClickLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Sign out</a>
               </div>
             </div>
