@@ -15,8 +15,8 @@ router.post('/new', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const { title, project_id } = req.body;
-    const api = await create(title, null, project_id, req.user.id);
+    const { title, project_id, asyncapi } = req.body;
+    const api = await create(title, asyncapi, project_id, req.user.id);
     res.send(api);
   } catch (e) {
     next(e);

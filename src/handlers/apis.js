@@ -37,12 +37,6 @@ apis.list = async (userId, filters = {}) => {
 };
 
 apis.create = async (title, asyncapiString, projectId, creatorId) => {
-  asyncapiString = asyncapiString || `asyncapi: 2.0.0
-info:
-  title: ${title}
-  version: 0.1.0
-channels: {}`;
-
   const doc = await asyncapi.parse(asyncapiString, {
     resolve: {
       file: false,
