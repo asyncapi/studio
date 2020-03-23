@@ -7,7 +7,7 @@ router.post('/new', async (req, res, next) => {
   try {
     const { name, project } = req.body;
     const api = await create(name, null, project, req.user.id);
-    res.redirect(`/?api=${api.id}`);
+    res.redirect(`/apis/${api.id}`);
   } catch (e) {
     next(e);
   }

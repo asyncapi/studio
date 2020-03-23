@@ -13,6 +13,27 @@ const formatList = (list) => {
   return list;
 }
 
+const defaultAsyncAPI = (title) => `asyncapi: 2.0.0
+info:
+  title: '${title}'
+  version: 0.1.0
+
+channels:
+  example:
+    subscribe:
+      message:
+        headers:
+          type: object
+          properties:
+            myHeader:
+              type: integer
+        payload:
+          type: object
+          properties:
+            exampleField:
+              type: string
+`;
+
 apis.list = async (userId, filters = {}) => {
   const keys = []
   const values = []
@@ -27,7 +48,7 @@ apis.list = async (userId, filters = {}) => {
     values.push(Number(filters.project))
   }
 
-  const where = keys.length ? keys.map((k, i) => ` AND ${k} = $${i + 2}`) : ''
+  const where = keys.length ? keys.map((k, i) => ` AND ${k} = $${i + 2}`).join('') : ''
   const result = await db.query(
     `SELECT a.*, o.id as org_id, o.name as org_name, p.id as project_id, p.name as project_name FROM apis a INNER JOIN projects p ON a.project_id = p.id OR a.project_id = NULL LEFT JOIN organizations_users ou ON p.organization_id = ou.organization_id LEFT JOIN organizations o ON o.id = p.organization_id WHERE (ou.user_id = $1 OR p.creator_id = $1)${where}`,
     [userId, ...values]
@@ -37,6 +58,8 @@ apis.list = async (userId, filters = {}) => {
 };
 
 apis.create = async (title, asyncapiString, projectId, creatorId) => {
+  asyncapiString = asyncapiString || defaultAsyncAPI(title);
+
   const doc = await asyncapi.parse(asyncapiString, {
     resolve: {
       file: false,
