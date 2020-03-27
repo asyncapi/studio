@@ -50,7 +50,7 @@ apis.list = async (userId, filters = {}) => {
 
   const where = keys.length ? keys.map((k, i) => ` AND ${k} = $${i + 2}`).join('') : ''
   const result = await db.query(
-    `SELECT a.*, o.id as org_id, o.name as org_name, p.id as project_id, p.name as project_name FROM apis a INNER JOIN projects p ON a.project_id = p.id OR a.project_id = NULL LEFT JOIN organizations_users ou ON p.organization_id = ou.organization_id LEFT JOIN organizations o ON o.id = p.organization_id WHERE (ou.user_id = $1 OR p.creator_id = $1)${where}`,
+    `SELECT DISTINCT a.*, o.id as org_id, o.name as org_name, p.id as project_id, p.name as project_name FROM apis a INNER JOIN projects p ON a.project_id = p.id OR a.project_id = NULL LEFT JOIN organizations_users ou ON p.organization_id = ou.organization_id LEFT JOIN organizations o ON o.id = p.organization_id WHERE (ou.user_id = $1 OR p.creator_id = $1)${where}`,
     [userId, ...values]
   );
 

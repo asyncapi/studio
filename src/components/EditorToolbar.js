@@ -140,7 +140,7 @@ export default function EditorToolbar ({
               {renderFileName()}
               {!saved && <span className="bg-orange-700 text-white text-xs rounded-md block w-2 h-2 mt-3 ml-2 mr-3" title="Not saved" />}
             </div>
-            <div className="flex">
+            <div className="flex text-gray-500">
               <span className="block rounded-md shadow-sm">
                 <button onClick={onClickSave} className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150" title="Save">
                   <FaSave className="text-md mt-1 mr-2" />

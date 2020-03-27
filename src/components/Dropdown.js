@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FaCaretDown } from 'react-icons/fa'
 
-export default function Dropdown ({ title = 'Select', icon, showCaret = true, children }) {
+export default function Dropdown ({ title = 'Select', icon, showCaret = true, className = 'relative', buttonHoverClassName, children }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -9,26 +9,28 @@ export default function Dropdown ({ title = 'Select', icon, showCaret = true, ch
   }, [open])
 
   const registerClickAway = () => {
-    document.removeEventListener("click", unregisterClickAway);
-    document.addEventListener("click", unregisterClickAway);
+    document.removeEventListener("click", unregisterClickAway)
+    document.addEventListener("click", unregisterClickAway)
 
     document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
-      iframe.contentWindow.document.addEventListener("click", unregisterClickAway);
+      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway)
+      iframe.contentWindow.document.addEventListener("click", unregisterClickAway)
     })
   }
 
   const unregisterClickAway = () => {
     setOpen(false)
-    document.removeEventListener("click", unregisterClickAway);
+    document.removeEventListener("click", unregisterClickAway)
     document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
+      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway)
     })
   }
 
+  buttonHoverClassName = buttonHoverClassName || 'hover:text-white'
+
   return (
-    <div className="relative">
-      <button onClick={() => setOpen(!open)} type="button" className="flex px-3 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150">
+    <div className={className}>
+      <button onClick={() => setOpen(!open)} type="button" className={`flex px-3 py-2 text-sm rounded-md ${buttonHoverClassName} focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150`}>
         { icon }
         { title }
         { showCaret && <FaCaretDown className="text-md mt-1 ml-1" /> }

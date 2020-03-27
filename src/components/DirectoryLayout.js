@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import { FaSearch } from 'react-icons/fa'
 import Topbar from './Topbar'
 import CreateButton from './CreateButton'
 import FilterProjectsButton from './FilterProjectsButton'
@@ -27,7 +26,7 @@ export default function DirectoryLayout ({ children, notLoggedIn = false, page, 
             <Topbar active={page} />
             { !notLoggedIn && (
               <div className="px-4 sm:px-6 lg:px-8 pb-3 pt-3">
-                <nav className="flex flex-row justify-end">
+                <nav className="flex flex-row justify-end text-gray-500">
                   <FilterOrganizationsButton orgs={orgs} selected={selectedOrg} />
                   <FilterProjectsButton projects={projects} selected={selectedProject} />
                   <CreateButton />
