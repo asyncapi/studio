@@ -1,4 +1,4 @@
-import DeleteModal from './DeleteModal'
+import ConfirmModal from './ConfirmModal'
 
 export default function DeleteAPIModal ({
   api,
@@ -14,10 +14,12 @@ export default function DeleteAPIModal ({
   }
 
   return (
-  <DeleteModal
-    text="Are you sure you want to delete this API?"
-    onClickCancel={onCancel}
-    onClickDelete={onClickDelete}
-  />
+    <ConfirmModal
+      text="Are you sure you want to delete this API?"
+      okText="Delete"
+      type="danger"
+      onClickCancel={onCancel}
+      onClickOK={onClickDelete}
+    />
   )
 }

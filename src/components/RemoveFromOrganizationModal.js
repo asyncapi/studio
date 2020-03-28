@@ -1,4 +1,4 @@
-import DeleteModal from './DeleteModal'
+import ConfirmModal from './ConfirmModal'
 
 export default function RemoveFromOrganizationModal ({
   user,
@@ -15,11 +15,12 @@ export default function RemoveFromOrganizationModal ({
   }
 
   return (
-  <DeleteModal
-    text={`Are you sure you want to remove ${user.displayName} from the ${organization.name} organization?`}
-    deleteText="Remove"
+  <ConfirmModal
+    text={(<span>Are you sure you want to remove <strong>{user.displayName}</strong> from the <strong>{organization.name}</strong> organization?</span>)}
+    okText="Remove"
+    type="danger"
     onClickCancel={onCancel}
-    onClickDelete={onClickDelete}
+    onClickOK={onClickDelete}
   />
   )
 }

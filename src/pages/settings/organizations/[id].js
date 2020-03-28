@@ -4,9 +4,11 @@ import { FaCheckCircle, FaUsers, FaRegEnvelope, FaEllipsisV } from 'react-icons/
 import SettingsLayout from '../../../components/SettingsLayout'
 import Dropdown from '../../../components/Dropdown'
 import RemoveFromOrganizationModal from '../../../components/RemoveFromOrganizationModal'
+import ChangeUserRoleModal from '../../../components/ChangeUserRoleModal'
 
 export default function OrganizationPage ({ organizations, selectedOrg, users = [] }) {
   const [showRemoveFromOrganizationModal, setShowRemoveFromOrganizationModal] = useState()
+  const [changeRoleModalDetails, showChangeRoleModal] = useState()
 
   const admins = users.filter(m => m.role === 'admin')
   const org = organizations.find(o => o.id == selectedOrg)
@@ -23,6 +25,15 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
           organization={org}
           onCancel={() => setShowRemoveFromOrganizationModal(false)}
           onRemove={() => window.location.reload()}
+        />
+      ) }
+      { changeRoleModalDetails && (
+        <ChangeUserRoleModal
+          user={changeRoleModalDetails.user}
+          organization={org}
+          role={changeRoleModalDetails.role}
+          onCancel={() => showChangeRoleModal(false)}
+          onChange={() => window.location.reload()}
         />
       ) }
       <div>
@@ -69,8 +80,9 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
                               className=""
                               buttonHoverClassName="hover:text-gray-600"
                             >
-                              <a onClick={() => {}} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Change role...</a>
-                              <a onClick={() => setShowRemoveFromOrganizationModal(user)} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Remove from organization</a>
+                              { user.role === 'admin' && (<a onClick={() => showChangeRoleModal({ user, role: 'member' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make member...</a>) }
+                              { user.role === 'member' && (<a onClick={() => showChangeRoleModal({ user, role: 'admin' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make admin...</a>) }
+                              <a onClick={() => setShowRemoveFromOrganizationModal(user)} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Remove from organization...</a>
                             </Dropdown>
                           </div>
                         </div>
