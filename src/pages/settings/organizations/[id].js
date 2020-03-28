@@ -5,13 +5,25 @@ import SettingsLayout from '../../../components/SettingsLayout'
 import Dropdown from '../../../components/Dropdown'
 import RemoveFromOrganizationModal from '../../../components/RemoveFromOrganizationModal'
 import ChangeUserRoleModal from '../../../components/ChangeUserRoleModal'
+import Invite from '../../../components/Invite'
+import InvitationList from '../../../components/InvitationList'
 
-export default function OrganizationPage ({ organizations, selectedOrg, users = [] }) {
+export default function OrganizationPage ({ organizations, selectedOrg, users = [], invitations = [] }) {
   const [showRemoveFromOrganizationModal, setShowRemoveFromOrganizationModal] = useState()
   const [changeRoleModalDetails, showChangeRoleModal] = useState()
+  const [invitationList, setInvitations] = useState(invitations)
 
   const admins = users.filter(m => m.role === 'admin')
   const org = organizations.find(o => o.id == selectedOrg)
+
+  const onInvite = (invitation) => {
+    setInvitations([invitation, ...invitationList])
+  }
+
+  const onRemoveInvitation = (invitationId) => {
+    const invites = invitationList.filter(i => i.id !== invitationId)
+    setInvitations(invites)
+  }
 
   return (
     <SettingsLayout
@@ -37,7 +49,23 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
         />
       ) }
       <div>
-        <h3 className="text-xl mb-4">Members</h3>
+        <h3 className="text-xl mb-4">Create invitation link</h3>
+        <Invite
+          organization={org}
+          onInvite={onInvite}
+        />
+
+        { !!invitationList.length && (
+          <>
+            <h3 className="text-xl mt-12 mb-4">Active invitation links</h3>
+            <InvitationList
+              invitations={invitationList}
+              onRemoveInvitation={onRemoveInvitation}
+            />
+          </>
+        )}
+
+        <h3 className="text-xl mt-12 mb-4">Members</h3>
         <ul>
           { users.map((user, index) => (
           <li key={index}>
@@ -108,10 +136,14 @@ export async function getServerSideProps ({ req, params }) {
   let users = await listUsers(params.id)
   users = users.map(user => formatUser(user))
 
+  const { list: listInvitations } = require('../../../handlers/invitations')
+  const invitations = await listInvitations(params.id, req.userPublicInfo.id)
+
   return {
     props: {
       organizations,
       selectedOrg: params.id,
+      invitations,
       users,
     },
   }

@@ -104,10 +104,12 @@ CREATE TABLE "invitations" (
     "id" integer DEFAULT nextval('invitations_id_seq') NOT NULL,
     "organization_id" integer NOT NULL,
     "inviter_id" integer NOT NULL,
-    "email" citext NOT NULL,
+    "uuid" character varying NOT NULL,
     "role" character varying NOT NULL,
-    "status" character varying NOT NULL,
+    "scope" character varying DEFAULT 'one',
+    "expires_at" timestamp NOT NULL,
     "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "invitations_organization_id_fkey" FOREIGN KEY (organization_id) REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
-    CONSTRAINT "invitations_inviter_id_fkey" FOREIGN KEY (inviter_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE
+    CONSTRAINT "invitations_inviter_id_fkey" FOREIGN KEY (inviter_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE NOT DEFERRABLE,
+    CONSTRAINT "invitations_uuid_unique" UNIQUE ("uuid")
 ) WITH (oids = false);

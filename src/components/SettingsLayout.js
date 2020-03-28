@@ -30,12 +30,6 @@ export default function SettingsLayout ({ children, active, organizations = [], 
               </span>
             </a>
 
-            <a href="/settings/invitations" className={active === 'invitations' ? activeClasses : regularClasses}>
-              <span className="truncate">
-                Invitations
-              </span>
-            </a>
-
             <div className="mt-8">
               <h3 className="px-3 text-xs leading-4 font-semibold text-gray-500 uppercase tracking-wider">
                 Organizations

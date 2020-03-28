@@ -10,7 +10,6 @@ class MyApp extends App {
     let pageProps = {}
     const { getServerSideProps } = Component
     if (isServer && getServerSideProps) pageProps = await getServerSideProps(ctx)
-
     return {
       pageProps: pageProps.props,
       context: {

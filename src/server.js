@@ -14,6 +14,7 @@ const orgsRoute = require('./routes/orgs');
 const projectsRoute = require('./routes/projects');
 const apisRoute = require('./routes/apis');
 const userRoute = require('./routes/user');
+const invitationsRoute = require('./routes/invitations');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -52,6 +53,7 @@ app.prepare().then(() => {
   server.use('/organizations', orgsRoute);
   server.use('/projects', projectsRoute);
   server.use('/apis', apisRoute);
+  server.use('/invitations', invitationsRoute);
 
   // Server-side
   server.use('/', userRoute);

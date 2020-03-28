@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FaCaretDown } from 'react-icons/fa'
 
-export default function Dropdown ({ title = 'Select', icon, showCaret = true, className = 'relative', buttonHoverClassName, children }) {
+export default function Dropdown ({ title = 'Select', icon, showCaret = true, className = 'relative', buttonHoverClassName, align = 'right', children }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Dropdown ({ title = 'Select', icon, showCaret = true, cl
         { showCaret && <FaCaretDown className="text-md mt-1 ml-1" /> }
       </button>
       { open && (
-        <div className="origin-top-right absolute right-0 mt-1 mr-3 w-56 rounded-md shadow-lg">
+        <div className={`origin-top-right absolute ${align === 'right' && 'right-0'} ${align === 'left' && 'left-0'} mt-1 mr-3 w-56 rounded-md shadow-lg z-50`}>
           <div className="rounded-md bg-white shadow-xs">
             <div className="py-1">
               { children }
