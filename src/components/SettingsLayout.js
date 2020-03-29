@@ -1,6 +1,6 @@
 import AppLayout from '../components/AppLayout'
 
-export default function SettingsLayout ({ children, active, organizations = [], selectedOrg }) {
+export default function SettingsLayout ({ children, active, organizations = [], selectedOrg, selectedSection = 'basic' }) {
   const getTitle = () => {
     switch(active) {
       case 'profile':
@@ -36,11 +36,18 @@ export default function SettingsLayout ({ children, active, organizations = [], 
               </h3>
               <div className="mt-1">
                 {organizations.map((org, index) => (
-                  <a href={`/settings/organizations/${org.id}`} key={index} className={`group flex items-center px-3 py-2 text-sm leading-5 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150 ${selectedOrg == org.id ? 'font-bold' : 'font-normal'}`}>
-                    <span className="truncate">
-                      {org.name}
-                    </span>
-                  </a>
+                  <>
+                    <a href={`/settings/organizations/${org.id}`} key={index} className={`group flex items-center px-3 py-2 text-sm leading-5 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150 ${selectedOrg == org.id ? 'font-medium' : 'font-normal'}`}>
+                      <span className="truncate">{org.name}</span>
+                    </a>
+                    { selectedOrg == org.id && (
+                      <div className="pl-4">
+                        <a href={`/settings/organizations/${org.id}`} className={`block truncate px-3 py-1 text-sm leading-5 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150 ${selectedSection === 'basic' ? 'font-bold' : 'font-normal'}`}>Basic information</a>
+                        <a href={`/settings/organizations/${org.id}/invitations`} className={`block truncate px-3 py-1 text-sm leading-5 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150 ${selectedSection === 'invitations' ? 'font-bold' : 'font-normal'}`}>Invitations</a>
+                        <a href={`/settings/organizations/${org.id}/members`} className={`block truncate px-3 py-1 text-sm leading-5 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150 ${selectedSection === 'members' ? 'font-bold' : 'font-normal'}`}>Members</a>
+                      </div>
+                    ) }
+                  </>
                 ))}
               </div>
             </div>

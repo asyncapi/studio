@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const slug = require('../lib/slug');
-const { create, removeUser, makeUserAdmin, makeUserMember } = require('../handlers/orgs');
+const { create, rename, removeUser, makeUserAdmin, makeUserMember } = require('../handlers/orgs');
 
 module.exports = router;
 
@@ -39,6 +39,17 @@ router.post('/:orgId/users/:userId/makeMember', async (req, res, next) => {
     const { orgId, userId } = req.params;
     await makeUserMember(orgId, userId, req.user.id);
     res.send('OK');
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.patch('/:orgId', async (req, res, next) => {
+  try {
+    const { orgId } = req.params;
+    const { name } = req.body;
+    const org = await rename(orgId, name);
+    res.send(org);
   } catch (e) {
     next(e);
   }

@@ -148,3 +148,10 @@ orgs.removeUser = async (organizationId, userId) => {
     [Number(organizationId), Number(userId)]
   );
 };
+
+orgs.rename = async (organizationId, name) => {
+  await db.query(
+    'UPDATE organizations SET name = $1 WHERE id = $2 RETURNING *',
+    [name, Number(organizationId)]
+  );
+};

@@ -1,28 +1,85 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import moment from 'moment'
-import { FaCheckCircle, FaUsers, FaRegEnvelope, FaEllipsisV } from 'react-icons/fa'
 import SettingsLayout from '../../../components/SettingsLayout'
-import Dropdown from '../../../components/Dropdown'
-import RemoveFromOrganizationModal from '../../../components/RemoveFromOrganizationModal'
-import ChangeUserRoleModal from '../../../components/ChangeUserRoleModal'
-import Invite from '../../../components/Invite'
-import InvitationList from '../../../components/InvitationList'
+import AppContext from '../../../contexts/AppContext'
 
-export default function OrganizationPage ({ organizations, selectedOrg, users = [], invitations = [] }) {
-  const [showRemoveFromOrganizationModal, setShowRemoveFromOrganizationModal] = useState()
-  const [changeRoleModalDetails, showChangeRoleModal] = useState()
-  const [invitationList, setInvitations] = useState(invitations)
+export default function OrganizationPage ({ organizations, selectedOrg, users = [] }) {
+  const org = organizations.find(o => o.id == selectedOrg)
+  const [name, setName] = useState(org.name)
+  const [changingName, setChangingName] = useState(false)
+  const { user: loggedInUser } = useContext(AppContext)
 
   const admins = users.filter(m => m.role === 'admin')
-  const org = organizations.find(o => o.id == selectedOrg)
+  const loggedInUserIsAdmin = admins.find(a => a.id === loggedInUser.id)
 
-  const onInvite = (invitation) => {
-    setInvitations([invitation, ...invitationList])
+  const onSubmitChangeName = (e) => {
+    e.preventDefault()
+    setChangingName(true)
+
+    fetch(`/organizations/${selectedOrg}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    })
+      .then(res => res.json())
+      .then(() => {
+        setChangingName(false)
+        window.location.reload()
+      })
+      .catch(e => {
+        console.error(e)
+        setChangingName(false)
+        window.location.reload()
+      })
   }
 
-  const onRemoveInvitation = (invitationId) => {
-    const invites = invitationList.filter(i => i.id !== invitationId)
-    setInvitations(invites)
+  const onInputName = (e) => {
+    setName(e.target.value)
+  }
+
+  const renderWithPermissions = () => {
+    return (
+      <div className="mb-12">
+        <h3 className="text-xl mb-4">Basic information</h3>
+        <div>
+          <label htmlFor="orgNameInput" className="block mb-2 text-sm font-medium leading-5 text-gray-700">Name</label>
+          <form className="flex w-1/2 mt-1" onSubmit={onSubmitChangeName}>
+            <span className="mr-2 relative flex-1 rounded-md shadow-sm">
+              <input id="orgNameInput" onInput={onInputName} className="form-input block w-full sm:text-sm sm:leading-5" defaultValue={org.name} required />
+            </span>
+            <span className="inline-block rounded-md shadow-sm sm:col-start-2">
+              <button type="submit" className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium shadow-sm focus:outline-none transition ease-in-out duration-150 sm:text-sm sm:leading-5 bg-indigo-600 text-white hover:bg-indigo-500 focus:border-indigo-700 focus:shadow-outline-indigo disabled:opacity-50" disabled={changingName}>
+                Change name
+              </button>
+            </span>
+          </form>
+        </div>
+        <div className="mt-4">
+          <label className="block mb-1 text-sm font-medium leading-5 text-gray-700">Created on</label>
+          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.created_at).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
+        </div>
+      </div>
+    )
+  }
+
+  const renderNoPermissions = () => {
+    return (
+      <div className="mb-12">
+        <h3 className="text-xl mb-4">Basic information</h3>
+        <div>
+          <label className="block mb-1 text-sm font-medium leading-5 text-gray-700">Name</label>
+          <span className="inline-block sm:text-sm sm:leading-5">{org.name}</span>
+        </div>
+        <div className="mt-4">
+          <label className="block mb-1 text-sm font-medium leading-5 text-gray-700">Created on</label>
+          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.created_at).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -30,100 +87,9 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
       active="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
+      selectedSection="basic"
     >
-      { showRemoveFromOrganizationModal && (
-        <RemoveFromOrganizationModal
-          user={showRemoveFromOrganizationModal}
-          organization={org}
-          onCancel={() => setShowRemoveFromOrganizationModal(false)}
-          onRemove={() => window.location.reload()}
-        />
-      ) }
-      { changeRoleModalDetails && (
-        <ChangeUserRoleModal
-          user={changeRoleModalDetails.user}
-          organization={org}
-          role={changeRoleModalDetails.role}
-          onCancel={() => showChangeRoleModal(false)}
-          onChange={() => window.location.reload()}
-        />
-      ) }
-      <div>
-        <h3 className="text-xl mb-4">Create invitation link</h3>
-        <Invite
-          organization={org}
-          onInvite={onInvite}
-        />
-
-        { !!invitationList.length && (
-          <>
-            <h3 className="text-xl mt-12 mb-4">Active invitation links</h3>
-            <InvitationList
-              invitations={invitationList}
-              onRemoveInvitation={onRemoveInvitation}
-            />
-          </>
-        )}
-
-        <h3 className="text-xl mt-12 mb-4">Members</h3>
-        <ul>
-          { users.map((user, index) => (
-          <li key={index}>
-            <div className="mb-4 bg-white shadow overflow-hidden sm:rounded-md">
-              <div className="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
-                <div className="flex items-center px-4 py-4 sm:px-6">
-                  <div className="min-w-0 flex-1 flex items-center">
-                    <div className="flex-shrink-0">
-                      <img className="h-12 w-12 rounded-full object-cover" src={user.avatar} title={`${user.displayName}'s avatar`} />
-                    </div>
-                    <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
-                      <div>
-                        <div className="text-sm leading-5 font-medium text-indigo-600 truncate">{user.displayName}</div>
-                        <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
-                          <FaRegEnvelope className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                          <span className="truncate" title={user.email}>{user.email}</span>
-                        </div>
-                      </div>
-                      <div className="hidden md:block">
-                        <div className="m-auto">
-                          <div className="text-sm leading-5 text-gray-900">
-                            <FaCheckCircle className="text-green-400 inline-block mr-2" />
-                            Joined on
-                            <time dateTime={user.joinedOrganizationAt} className="ml-1">{moment(user.joinedOrganizationAt).format('MMMM Do YYYY')}</time>
-                          </div>
-                          <div className={`text-sm leading-5 text-gray-500 ${user.role === 'admin' && 'font-bold'} mt-2`}>
-                            <FaUsers className="text-gray-400 inline-block mr-2" />
-                            { user.role === 'admin' && 'Administrator' }
-                            { user.role === 'member' && 'Member' }
-                          </div>
-                        </div>
-                      </div>
-                      { admins.find(a => a.id !== user.id) && (
-                        <div className="flex flex-row items-center">
-                          <div className="flex flex-1 flex-col items-end text-gray-400">
-                            <Dropdown
-                              title=""
-                              showCaret={false}
-                              icon={<FaEllipsisV className="text-md mt-1 mr-2 hover:text-gray-600" />}
-                              className=""
-                              buttonHoverClassName="hover:text-gray-600"
-                            >
-                              { user.role === 'admin' && (<a onClick={() => showChangeRoleModal({ user, role: 'member' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make member...</a>) }
-                              { user.role === 'member' && (<a onClick={() => showChangeRoleModal({ user, role: 'admin' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make admin...</a>) }
-                              <a onClick={() => setShowRemoveFromOrganizationModal(user)} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Remove from organization...</a>
-                            </Dropdown>
-                          </div>
-                        </div>
-                      ) }
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          ))}
-        </ul>
-      </div>
+      { loggedInUserIsAdmin ? renderWithPermissions() : renderNoPermissions() }
     </SettingsLayout>
   )
 }
@@ -136,14 +102,10 @@ export async function getServerSideProps ({ req, params }) {
   let users = await listUsers(params.id)
   users = users.map(user => formatUser(user))
 
-  const { list: listInvitations } = require('../../../handlers/invitations')
-  const invitations = await listInvitations(params.id, req.userPublicInfo.id)
-
   return {
     props: {
       organizations,
       selectedOrg: params.id,
-      invitations,
       users,
     },
   }

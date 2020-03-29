@@ -1,4 +1,5 @@
 import UserMenu from './UserMenu'
+import CreateButton from './CreateButton'
 
 export default function Topbar ({ active }) {
   const classes = 'px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 mr-4'
@@ -20,7 +21,10 @@ export default function Topbar ({ active }) {
               </div>
             </div>
           </div>
-          <UserMenu />
+          <div className="flex text-gray-500">
+            <CreateButton showTitle={false} />
+            <UserMenu />
+          </div>
         </div>
       </div>
     </nav>
