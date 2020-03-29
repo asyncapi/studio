@@ -52,16 +52,16 @@ export default function UserMenu () {
     <div className="hidden md:block">
       <div className="ml-4 flex items-center md:ml-6">
         <div className="ml-3 relative">
-          <button onClick={() => setOpen(!open)} className="flex text-left">
+          <button onClick={() => setOpen(!open)} className="flex text-left focus:outline-none">
             <div className="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
               <img className="h-8 w-8 rounded-full" src={avatar} alt="" />
             </div>
-            <div className="ml-3">
+            <div className="ml-3 -mt-0.5">
               <p className="text-sm leading-5 font-medium text-gray-500 group-hover:text-gray-900">
                 {displayName}
               </p>
               <p className="text-xs leading-4 font-medium text-gray-600 group-hover:text-gray-700 group-focus:underline transition ease-in-out duration-150">
-                {company}
+                {company || 'Unknown'}
               </p>
             </div>
           </button>

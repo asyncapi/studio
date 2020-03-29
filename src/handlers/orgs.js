@@ -103,16 +103,13 @@ orgs.patch = async (id, changedFields) => {
   return formatOrg(result.rows[0]);
 };
 
-orgs.findUserByEmail = async (email, organizationId) => {
-  const user = await users.findByEmail(email);
-  if (!user) return;
-
+orgs.findUser = async (userId, organizationId) => {
   const result = await db.query(
     'SELECT * FROM organizations_users WHERE organization_id = $1 AND user_id = $2',
-    [organizationId, user.id]
+    [organizationId, userId]
   );
 
-  if (result.rows.length) return user;
+  return result.rows[0];
 };
 
 orgs.addUser = async (userId, organizationId, role) => {

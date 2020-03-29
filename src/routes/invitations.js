@@ -1,7 +1,23 @@
 const router = require('express').Router();
-const { create, remove } = require('../handlers/invitations');
+const { create, remove, accept } = require('../handlers/invitations');
+const buildInvitationUrl = require('../lib/build-invitation-url.js');
 
 module.exports = router;
+
+router.get('/:uuid/accept', async (req, res, next) => {
+  try {
+    const { uuid } = req.params;
+    if (req.isAuthenticated()) {
+      await accept(uuid, req.user.id);
+      res.redirect('/');
+    } else {
+      req.session.redirectUrl = buildInvitationUrl(uuid);
+      res.redirect('/auth/signin');
+    }
+  } catch (e) {
+    next(e);
+  }
+});
 
 router.post('/', async (req, res, next) => {
   try {

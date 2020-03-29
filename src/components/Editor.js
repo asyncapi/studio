@@ -100,13 +100,16 @@ const getSampleAPI = () => {
 
   try {
     if (typeof localStorage !== 'undefined') {
-      api.asyncapi = localStorage.getItem('asyncapi-document')
-      const computedAsyncapi = JSON.parse(localStorage.getItem('asyncapi-parsed-document') || '{}')
-      api.title = computedAsyncapi && computedAsyncapi.info && computedAsyncapi.info.title ? computedAsyncapi.info.title : 'Untitled document'
-      api.fromLocalStorage = true
+      if (localStorage.getItem('asyncapi-document')) {
+        api.asyncapi = localStorage.getItem('asyncapi-document')
+        const computedAsyncapi = JSON.parse(localStorage.getItem('asyncapi-parsed-document') || '{}')
+        api.title = computedAsyncapi && computedAsyncapi.info && computedAsyncapi.info.title ? computedAsyncapi.info.title : 'Untitled document'
+        api.fromLocalStorage = true
+      }
     }
   } catch (e) {
     console.error('Could not read previous document from localStorage.')
+    console.error(e)
   }
 
   return api

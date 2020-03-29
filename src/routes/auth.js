@@ -36,6 +36,11 @@ passport.use(new GitHubStrategy({
 }
 ));
 
+router.get('/signin', (req, res, next) => {
+  if (req.user) return res.redirect('/');
+  next(); // Handled by Next.js
+});
+
 router.post('/logout', (req, res, next) => {
   req.logOut();
   res.redirect('/');
@@ -44,7 +49,9 @@ router.post('/logout', (req, res, next) => {
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
+  passport.authenticate('github', { failureRedirect: '/signin' }),
   (req, res, next) => {
-    res.redirect('/');
+    const redirectUrl = req.session.redirectUrl || null;
+    req.session.redirectUrl = null;
+    res.redirect(redirectUrl || '/');
   });

@@ -3,9 +3,9 @@ import Head from 'next/head'
 import moment from 'moment'
 import { FaUserAlt, FaUsers, FaUserCog, FaRegCalendarAlt } from 'react-icons/fa'
 import getRoleNiceName from './helpers/get-role-nice-name'
+import buildInvitationUrl from '../lib/build-invitation-url'
 
 export default function Invite ({ invitations = [], onRemoveInvitation = () => {} }) {
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const [showCopied, setShowCopied] = useState(false)
 
   const onClickRemoveLink = (id) => {
@@ -21,7 +21,7 @@ export default function Invite ({ invitations = [], onRemoveInvitation = () => {
   const onCopy = (e, uuid) => {
     e.preventDefault()
     if (e.clipboardData) {
-      e.clipboardData.setData("text/plain", `${origin}/${uuid}`)
+      e.clipboardData.setData("text/plain", buildInvitationUrl(uuid))
       setShowCopied(true)
       setTimeout(() => { setShowCopied(false) }, 2000)
     }
@@ -39,7 +39,7 @@ export default function Invite ({ invitations = [], onRemoveInvitation = () => {
               <div className="flex-1">
                 <div>
                   <span onCopy={e => { onCopy(e, invitation.uuid) }} onClick={() => { document.execCommand('copy') }} className="text-sm leading-5 font-medium text-indigo-600 truncate">
-                    {origin}/{invitation.uuid}
+                    {buildInvitationUrl(invitation.uuid)}
                   </span>
                   <span className={`ml-2 text-gray-600 text-sm select-none ${showCopied ? 'inline-block animated tada' : 'hidden'}`}>Copied!</span>
                 </div>

@@ -28,13 +28,13 @@ const formatInvitations = (list) => {
   return list;
 }
 
-invitations.get = async (id) => {
+invitations.get = async (uuid, onlyActive = false) => {
   const results = await db.query(
-    'SELECT * FROM invitations WHERE id = $1',
-    [id]
+    `SELECT * FROM invitations WHERE uuid = $1${!!onlyActive && ' AND expires_at >= NOW()'}`,
+    [uuid]
   );
 
-  return results.rows[0];
+  return formatInvitation(results.rows[0]);
 };
 
 invitations.create = async (uuid, organizationId, role, scope, expiration, inviterId) => {
@@ -81,15 +81,30 @@ invitations.listForUser = async (email, status = 'pending') => {
   return results.rows;
 };
 
-invitations.accept = async (id, user) => {
-  const invitation = await invitations.get(id);
+invitations.accept = async (uuid, userId) => {
+  await db.query('BEGIN');
 
-  await db.query(
-    'UPDATE invitations SET status = $1 WHERE id = $2 AND email = $3',
-    ['accepted', id, user.email]
-  );
+  try {
+    const invitation = await invitations.get(uuid, true);
+    const user = await organizations.findUser(userId, invitation.organizationId);
+    if (user) return true; // User is already in the org
 
-  await organizations.addUser(user, invitation.organization_id, invitation.role);
+    await organizations.addUser(userId, invitation.organizationId, invitation.role);
+
+    if (invitation.scope === 'one') {
+      await db.query(
+        'DELETE FROM invitations WHERE uuid = $1',
+        [uuid]
+      );
+    }
+
+    await db.query('COMMIT');
+    return true;
+  } catch (e) {
+    console.error(e);
+    await db.query('ROLLBACK');
+    return false;
+  }
 };
 
 invitations.decline = async (id, user) => {

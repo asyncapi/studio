@@ -3,6 +3,8 @@ import Head from 'next/head'
 import { v4 as uuidV4 } from 'uuid'
 import Dropdown from './Dropdown'
 import getRoleNiceName from './helpers/get-role-nice-name'
+import isBrowser from './helpers/is-browser'
+import buildInvitationUrl from '../lib/build-invitation-url'
 
 export default function Invite ({ organization, onInvite = () => {} }) {
   const [role, setRole] = useState('member')
@@ -10,8 +12,6 @@ export default function Invite ({ organization, onInvite = () => {} }) {
   const [expiration, setExpiration] = useState('1d')
   const [linkUrl, setLinkUrl] = useState()
   const [showCopied, setShowCopied] = useState(false)
-
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
   const onCopy = (e) => {
     e.preventDefault();
@@ -42,7 +42,7 @@ export default function Invite ({ organization, onInvite = () => {} }) {
       .then((invitation) => {
         const uuid = invitation.uuid
         onInvite(invitation)
-        setLinkUrl(`${origin}/${uuid}`)
+        setLinkUrl(buildInvitationUrl(uuid))
       })
       .catch(console.error)
 
@@ -92,7 +92,7 @@ export default function Invite ({ organization, onInvite = () => {} }) {
           <a onClick={() => setExpiration('1w')} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{getExpirationNiceName('1w')}</a>
         </Dropdown>
       </span>
-      { origin && (
+      { isBrowser() && (
         <div>
           { linkUrl && (
             <div>
