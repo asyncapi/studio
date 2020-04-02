@@ -1,12 +1,16 @@
 const db = require('../lib/db');
-const users = require('./users');
 
 const orgs = module.exports;
 
-const formatOrg = (api) => {
-  if (api.created_at) api.created_at = String(api.created_at);
-  if (api.joined_organization_at) api.joined_organization_at = String(api.joined_organization_at);
-  return api;
+const formatOrg = (org) => {
+  if (!org) return org;
+  if (org.created_at) org.created_at = String(org.created_at);
+  if (org.joined_organization_at) org.joined_organization_at = String(org.joined_organization_at);
+  if (org.developer_portal_visibility) {
+    org.developerPortalVisibility = String(org.developer_portal_visibility);
+    delete org.developer_portal_visibility;
+  }
+  return org;
 }
 
 const formatList = (list) => {
@@ -43,17 +47,26 @@ orgs.get = async (id) => {
   return formatOrg(result.rows[0]);
 };
 
+orgs.getBySlug = async (slug) => {
+  const result = await db.query(
+    'SELECT * FROM organizations WHERE slug = $1',
+    [slug]
+  );
+
+  return formatOrg(result.rows[0]);
+};
+
 orgs.getForUser = async (userId, orgId) => {
   let result;
 
   if (orgId) {
     result = await db.query(
-      'SELECT * FROM organizations o INNER JOIN organizations_users ou ON o.id = ou.organization_id WHERE o.id = $1 AND ou.user_id = $2',
+      'SELECT o.* FROM organizations o INNER JOIN organizations_users ou ON o.id = ou.organization_id WHERE o.id = $1 AND ou.user_id = $2',
       [orgId, userId]
     );
   } else {
     result = await db.query(
-      'SELECT * FROM organizations o INNER JOIN organizations_users ou ON o.id = ou.organization_id WHERE ou.user_id = $1',
+      'SELECT o.* FROM organizations o INNER JOIN organizations_users ou ON o.id = ou.organization_id WHERE ou.user_id = $1',
       [userId]
     );
   }
@@ -92,8 +105,8 @@ orgs.create = async (name, slug, creatorId) => {
 };
 
 orgs.patch = async (id, changedFields) => {
-  const updateValues = Object.values(changedFields);
-  const updateString = Object.keys(changedFields).map((k, i) => `${k}=$${i + 1}`).join(',');
+  const updateValues = Object.values(changedFields).filter(Boolean);
+  const updateString = Object.keys(changedFields).filter(k => changedFields[k] !== undefined).map((k, i) => `${k}=$${i + 1}`).join(',');
 
   const result = await db.query(
     `UPDATE organizations SET ${updateString} WHERE id = $${updateValues.length + 1} RETURNING *`,
@@ -146,12 +159,5 @@ orgs.removeUser = async (organizationId, userId) => {
   await db.query(
     'DELETE FROM organizations_users WHERE organization_id = $1 AND user_id = $2',
     [Number(organizationId), Number(userId)]
-  );
-};
-
-orgs.rename = async (organizationId, name) => {
-  await db.query(
-    'UPDATE organizations SET name = $1 WHERE id = $2 RETURNING *',
-    [name, Number(organizationId)]
   );
 };

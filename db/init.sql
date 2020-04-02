@@ -26,6 +26,8 @@ CREATE TABLE "organizations" (
     "id" integer DEFAULT nextval('organizations_id_seq') NOT NULL,
     "name" character varying NOT NULL,
     "slug" character varying NOT NULL,
+    "developer_portal_visibility" character varying DEFAULT 'hidden',
+    "feature_flags" jsonb NOT NULL DEFAULT '{}'::jsonb,
     "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "organizations_id" PRIMARY KEY ("id"),
     CONSTRAINT "organizations_slug" UNIQUE ("slug")

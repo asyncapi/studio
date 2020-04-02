@@ -1,6 +1,8 @@
 {
   "api": {
-    "port": 3000
+    "protocol": "http",
+    "port": 3000,
+    "hostname": "asyncapi.local"
   },
   "session": {
     "host": "localhost",
@@ -21,6 +23,11 @@
   "github": {
     "client_id": null,
     "client_secret": null,
-    "callback_url": "http://localhost:3000/auth/github/callback"
+    "callback_url": "http://asyncapi.local:3000/auth/github/callback"
+  },
+  "developer_portal": {
+    "protocol": "http",
+    "port": 5000,
+    "hostname": "test.asyncapi.local"
   }
 }

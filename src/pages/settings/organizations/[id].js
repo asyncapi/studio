@@ -46,16 +46,18 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
       <div className="mb-12">
         <h3 className="text-xl mb-4">Basic information</h3>
         <div>
-          <label htmlFor="orgNameInput" className="block mb-2 text-sm font-medium leading-5 text-gray-700">Name</label>
-          <form className="flex w-1/2 mt-1" onSubmit={onSubmitChangeName}>
-            <span className="mr-2 relative flex-1 rounded-md shadow-sm">
-              <input id="orgNameInput" onInput={onInputName} className="form-input block w-full sm:text-sm sm:leading-5" defaultValue={org.name} required />
-            </span>
-            <span className="inline-block rounded-md shadow-sm sm:col-start-2">
-              <button type="submit" className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium shadow-sm focus:outline-none transition ease-in-out duration-150 sm:text-sm sm:leading-5 bg-indigo-600 text-white hover:bg-indigo-500 focus:border-indigo-700 focus:shadow-outline-indigo disabled:opacity-50" disabled={changingName}>
-                Change name
-              </button>
-            </span>
+          <form className="w-1/2 mt-1" onSubmit={onSubmitChangeName}>
+            <label htmlFor="orgNameInput" className="block mb-2 text-sm font-medium leading-5 text-gray-700">Name</label>
+            <div className="flex">
+              <span className="mr-2 relative flex-1 rounded-md shadow-sm">
+                <input id="orgNameInput" onInput={onInputName} className="form-input block w-full sm:text-sm sm:leading-5" defaultValue={org.name} required />
+              </span>
+              <span className="inline-block rounded-md shadow-sm sm:col-start-2">
+                <button type="submit" className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium shadow-sm focus:outline-none transition ease-in-out duration-150 sm:text-sm sm:leading-5 bg-indigo-600 text-white hover:bg-indigo-500 focus:border-indigo-700 focus:shadow-outline-indigo disabled:opacity-50" disabled={changingName}>
+                  Change name
+                </button>
+              </span>
+            </div>
           </form>
         </div>
         <div className="mt-4">
@@ -87,6 +89,7 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
       active="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
+      featureFlags={org.feature_flags}
       selectedSection="basic"
     >
       { loggedInUserIsAdmin ? renderWithPermissions() : renderNoPermissions() }

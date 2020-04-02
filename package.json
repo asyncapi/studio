@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
+    "dev": "nodemon src/main.js",
     "build": "next build",
     "start": "next start"
   },
