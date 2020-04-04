@@ -5,9 +5,10 @@ const projects = require('./projects');
 
 const users = module.exports = {};
 
-const formatUser = (api) => {
-  if (api.created_at) api.created_at = String(api.created_at);
-  return api;
+const formatUser = (user) => {
+  if (user.created_at) user.created_at = String(user.created_at);
+
+  return user;
 }
 
 users.findById = async (id) => {

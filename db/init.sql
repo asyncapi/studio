@@ -12,6 +12,7 @@ CREATE TABLE "users" (
     "github_id" character varying,
     "github_access_token" character varying,
     "github_refresh_token" character varying,
+    "feature_flags" jsonb NOT NULL DEFAULT '{}'::jsonb,
     "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "users_id" PRIMARY KEY ("id"),
     CONSTRAINT "users_email" UNIQUE ("email"),

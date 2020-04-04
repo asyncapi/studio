@@ -1,5 +1,5 @@
 {
-  "api": {
+  "app": {
     "protocol": "http",
     "port": 3000,
     "hostname": "asyncapi.local"

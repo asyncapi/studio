@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { create, remove, accept } = require('../handlers/invitations');
 const buildInvitationUrl = require('../lib/build-invitation-url.js');
+const isAuthenticated = require('../middlewares/is-authenticated');
 
 module.exports = router;
 
@@ -19,7 +20,7 @@ router.get('/:uuid/accept', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated, async (req, res, next) => {
   try {
     const { uuid, orgId, role, scope, expiration } = req.body;
     const invitation = await create(uuid, orgId, role, scope, expiration, req.user.id);
@@ -29,7 +30,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAuthenticated, async (req, res, next) => {
   try {
     const { id } = req.params;
     await remove(id);

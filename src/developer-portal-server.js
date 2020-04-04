@@ -30,7 +30,7 @@ app.prepare().then(() => {
 
   server.get('/', async (req, res, next) => {
     const host = req.header('host');
-    const parts = host.split(`.${config.api.hostname}`);
+    const parts = host.split(`.${config.app.hostname}`);
     if (parts.length <= 1) return res.status(404).send();
     const orgSlug = parts[0];
 

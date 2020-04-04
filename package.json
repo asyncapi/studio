@@ -31,6 +31,7 @@
     "passport-github2": "^0.1.11",
     "pg": "^7.18.2",
     "postcss-import": "^12.0.1",
+    "problem-json": "^0.3.0",
     "react": "^16.13.0",
     "react-codemirror2": "^6.0.0",
     "react-dom": "^16.13.0",

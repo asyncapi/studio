@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { FaFileImport, FaTimes, FaSave, FaEllipsisV } from 'react-icons/fa'
 import DownloadAsButton from './DownloadAsButton'
 import SaveAPIModal from './SaveAPIModal'
 import DeleteAPIModal from './DeleteAPIModal'
 import Dropdown from './Dropdown'
+import AppContext from '../contexts/AppContext'
+import apiCall from './helpers/api-call'
 
 export default function EditorToolbar ({
   onImport = () => {},
@@ -18,6 +20,7 @@ export default function EditorToolbar ({
   const [importError, setImportError] = useState()
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [showDeleteAPIModal, setShowDeleteAPIModal] = useState(false)
+  const { user: loggedInUser } = useContext(AppContext)
 
   const onImportFormSubmit = (e) => {
     e.preventDefault()
@@ -44,24 +47,23 @@ export default function EditorToolbar ({
   }
 
   const saveAPI = () => {
-    fetch(`/apis/${api.id}`, {
+    apiCall(`/apis/${api.id}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         ...api,
         ...{
           asyncapi: code,
         }
       }),
-    })
-      .then(res => res.json())
-      .then(onSave)
-      .catch(console.error)
+    }).then(onSave)
   }
 
   const onClickSave = async (e) => {
+    if (!loggedInUser) {
+      window.location.href = '/auth/signin'
+      return
+    }
+
     if (!api.anonymous) {
       saveAPI()
     } else {

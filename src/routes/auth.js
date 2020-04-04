@@ -3,6 +3,7 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const config = require('../lib/config');
 const users = require('../handlers/users');
+const isAuthenticated = require('../middlewares/is-authenticated');
 
 module.exports = router;
 
@@ -41,7 +42,7 @@ router.get('/signin', (req, res, next) => {
   next(); // Handled by Next.js
 });
 
-router.post('/logout', (req, res, next) => {
+router.post('/logout', isAuthenticated, (req, res, next) => {
   req.logOut();
   res.redirect('/');
 });
@@ -49,8 +50,11 @@ router.post('/logout', (req, res, next) => {
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/signin' }),
-  (req, res, next) => {
+  passport.authenticate('github', { failureRedirect: '/auth/signin' }),
+  (req, res) => {
+    if (!req.user.feature_flags.betaActivated) {
+      return res.redirect('/waiting-list');
+    }
     const redirectUrl = req.session.redirectUrl || null;
     req.session.redirectUrl = null;
     res.redirect(redirectUrl || '/');

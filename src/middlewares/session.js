@@ -11,6 +11,6 @@ module.exports = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    domain: config.api.hostname,
+    domain: config.app.hostname,
   },
 });

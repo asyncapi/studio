@@ -1,10 +1,6 @@
 import DirectoryLayout from '../components/DirectoryLayout'
 
-export default function Directory ({ notLoggedIn = false, orgs = [], selectedOrg, projects = [], selectedProject, apis = [] }) {
-  if (notLoggedIn) {
-    return <DirectoryLayout notLoggedIn={true} />
-  }
-
+export default function Directory ({ orgs = [], selectedOrg, projects = [], selectedProject, apis = [] }) {
   const truncate = text => {
     const limit = 100
     if (text && text.length > limit) return `${text.substr(0, limit)}...`
@@ -75,7 +71,7 @@ export default function Directory ({ notLoggedIn = false, orgs = [], selectedOrg
 }
 
 export async function getServerSideProps ({ req }) {
-  if (!req.userPublicInfo) return { props: { notLoggedIn: true } }
+  if (!req.userPublicInfo) return { props: {} }
 
   const { list:listOrgs } = require('../handlers/orgs')
   const { list:listProjects } = require('../handlers/projects')

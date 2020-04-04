@@ -4,6 +4,7 @@ const next = require('next');
 const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
+const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
 const authRoute = require('./routes/auth');
@@ -35,28 +36,39 @@ app.prepare().then(() => {
     }));
   }
 
-  // API
-  server.use('/organizations', orgsRoute);
-  server.use('/projects', projectsRoute);
-  server.use('/apis', apisRoute);
-  server.use('/invitations', invitationsRoute);
-
-  // Server-side
   server.use('/', userRoute);
   server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
 
-  server.use(userPublicInfoMiddleware);
+  server.use((req, res, next) => {
+    if (req.user && !req.user.feature_flags.betaActivated) {
+      req.logout();
+    }
 
+    next();
+  });
+
+  // SESSION REQUIRED
+  server.use('/organizations', isAuthenticated, orgsRoute);
+  server.use('/projects', isAuthenticated, projectsRoute);
+  server.use('/apis', isAuthenticated, apisRoute);
+  server.use('/invitations', invitationsRoute);
+
+  // Front-end routes where session is required...
+  server.use('/settings', isAuthenticated);
+  server.use('/directory', isAuthenticated);
+  // End
+
+  server.use(userPublicInfoMiddleware);
   server.get('*', (req, res) => {
     return handle(req, res);
   });
 
   /* eslint-disable no-console */
-  server.listen(config.api.port, (err) => {
+  server.listen(config.app.port, (err) => {
     if (err) throw err;
-    const { protocol, hostname, port } = config.api;
+    const { protocol, hostname, port } = config.app;
     console.log(`App ready on ${protocol}://${hostname}:${port}`);
   });
 });
