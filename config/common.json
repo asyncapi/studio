@@ -29,5 +29,14 @@
     "protocol": "http",
     "port": 5000,
     "hostname": "test.asyncapi.local"
+  },
+  "mailchimp": {
+    "api_key": null,
+    "waiting_list": {
+      "audience_id": null
+    }
+  },
+  "segment": {
+    "write_key": null
   }
 }
