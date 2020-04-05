@@ -53,7 +53,7 @@ router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
     if (!req.user.feature_flags.betaActivated) {
-      return res.redirect('/waiting-list');
+      return res.redirect('/landing/waiting-list');
     }
     const redirectUrl = req.session.redirectUrl || null;
     req.session.redirectUrl = null;

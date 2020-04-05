@@ -41,6 +41,15 @@ app.prepare().then(() => {
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
 
+  server.get('/landing/waiting-list', (req, res) => {
+    if (!req.user) {
+      res.statusCode = 404;
+      return app.render(req, res, '/_error', {});
+    }
+
+    handle(req, res);
+  });
+
   server.use((req, res, next) => {
     if (req.user && !req.user.feature_flags.betaActivated) {
       req.logout();

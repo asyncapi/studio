@@ -23,7 +23,7 @@ export default function Directory ({ orgs = [], selectedOrg, projects = [], sele
           <p className="mt-2 mb-2 text-sm text-gray-400 text-center">Try changing the filters above or create a new API now.</p>
           <button type="submit" className="block w-full mt-4 text-center rounded-md shadow-sm px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
             Create an API now
-        </button>
+          </button>
         </div>
       </DirectoryLayout>
     )
