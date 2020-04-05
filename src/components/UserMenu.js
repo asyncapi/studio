@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { FaGithub } from 'react-icons/fa'
+import { FaGift } from 'react-icons/fa'
 import AppContext from '../contexts/AppContext'
 
 export default function UserMenu () {
@@ -8,9 +8,9 @@ export default function UserMenu () {
 
   if (!user) {
     return (
-      <a href="/auth/github" className="inline-flex self-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-        <FaGithub className="text-xl mr-2" />
-        Sign in using Github
+      <a href="/auth/signin" className="inline-flex self-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+        <FaGift className="text-xl mr-2" />
+        Request early access
       </a>
     )
   }
