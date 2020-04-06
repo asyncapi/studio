@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import CodeMirrorWrapper from '../components/CodeMirrorWrapper'
+import MonacoEditorWrapper from '../components/MonacoEditorWrapper'
 import Preview from '../components/Preview'
 import EditorToolbar from '../components/EditorToolbar'
 import parseAsyncAPI from '../components/helpers/parse-asyncapi'
@@ -16,7 +16,7 @@ export default function Editor ({ initialAPI, projects }) {
     return api.anonymous ? true : api.asyncapi === currentUnsavedCode
   }
 
-  const onCodeChange = (editor, data, value) => {
+  const onCodeChange = (ev, value) => {
     setCurrentUnsavedCode(value)
   }
 
@@ -68,7 +68,20 @@ export default function Editor ({ initialAPI, projects }) {
       />
       <div className="flex flex-row flex-1 overflow-auto">
         <div className="flex flex-1 flex-col max-w-1/2">
-          <CodeMirrorWrapper code={initialCode} onCodeChange={onCodeChange} />
+          {/* <CodeMirrorWrapper code={initialCode} onCodeChange={onCodeChange} /> */}
+          <MonacoEditorWrapper
+            language="yaml"
+            theme="asyncapi-theme"
+            onChange={onCodeChange}
+            value={initialCode}
+            className="bg-black"
+            options={{
+              minimap: {
+                enabled: false,
+              },
+              wordWrap: 'on',
+            }}
+          />
         </div>
         <div className="flex flex-1 flex-col max-w-1/2">
           <Preview code={currentUnsavedCode} />
