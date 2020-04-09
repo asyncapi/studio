@@ -11,9 +11,9 @@ COPY . /usr/src/app
 # Install app dependencies
 RUN npm install
 RUN npm run build
+RUN npm run db:migrate
+RUN npm install -g forever
 
 EXPOSE 5000
-
-RUN npm install -g forever
 
 CMD forever -c "npm start" ./

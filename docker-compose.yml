@@ -11,9 +11,7 @@ services:
     restart: always
   db:
     container_name: db
-    build:
-      context: db
-      dockerfile: Dockerfile
+    image: postgres:12-alpine
     ports:
       - "5432:5432"
     volumes:

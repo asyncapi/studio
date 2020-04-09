@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon src/main.js",
     "build": "next build",
-    "start": "node src/main.js"
+    "start": "node src/main.js",
+    "db:migrate": "node scripts/migrate.js"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -35,6 +36,7 @@
     "passport-github2": "^0.1.11",
     "pg": "^7.18.2",
     "postcss-import": "^12.0.1",
+    "postgres-migrations": "^4.0.3",
     "problem-json": "^0.3.0",
     "react": "^16.13.0",
     "react-codemirror2": "^6.0.0",

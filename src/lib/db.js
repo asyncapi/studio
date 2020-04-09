@@ -14,6 +14,4 @@ pool.on('connect', () => {
   console.log('Succesfully connected to database.');
 });
 
-pool.connect();
-
 module.exports = pool;
