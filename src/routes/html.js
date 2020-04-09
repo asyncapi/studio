@@ -23,6 +23,9 @@ router.post('/generate', async (req, res) => {
     res.send(html);
   } catch (e) {
     console.error(e);
+    console.log('Request body:', req.body);
+    console.log('Request headers:', req.headers);
+    console.log('OS Tmp dir:', os.tmpdir());
     return res.status(422).send({
       code: 'incorrect-format',
       message: e.message,
