@@ -4,7 +4,7 @@ const util = require('util');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const AsyncAPIGenerator = require('asyncapi-generator');
+const AsyncAPIGenerator = require('@asyncapi/generator');
 const archiver = require('archiver');
 
 const readFile = util.promisify(fs.readFile);
@@ -13,7 +13,7 @@ module.exports = router;
 
 router.post('/generate', async (req, res) => {
   try {
-    const generator = new AsyncAPIGenerator('html', os.tmpdir(), {
+    const generator = new AsyncAPIGenerator('@asyncapi/html-template', os.tmpdir(), {
       entrypoint: 'index.html',
       output: 'string',
       forceWrite: true,
@@ -49,7 +49,7 @@ router.get('/template/css/*', async (req, res) => {
   const filename = req.params[0];
 
   try {
-    const content = await AsyncAPIGenerator.getTemplateFile('html', `css/${filename}`);
+    const content = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', `css/${filename}`, path.resolve(__dirname, '../../node_modules'));
 
     res.header('Content-Type', 'text/css').send(content);
   } catch (e) {
@@ -62,7 +62,7 @@ router.get('/template/js/*', async (req, res) => {
   const filename = req.params[0];
 
   try {
-    const content = await AsyncAPIGenerator.getTemplateFile('html', `js/${filename}`);
+    const content = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', `js/${filename}`);
 
     res.header('Content-Type', 'application/javascript').send(content);
   } catch (e) {
@@ -81,7 +81,7 @@ router.post('/download', async (req, res, next) => {
 
     archive.append(req.body.data, { name: 'asyncapi.yml' });
 
-    const generator = new AsyncAPIGenerator('html', os.tmpdir(), {
+    const generator = new AsyncAPIGenerator('@asyncapi/html-template', os.tmpdir(), {
       entrypoint: 'index.html',
       output: 'string',
       forceWrite: true,
@@ -98,7 +98,7 @@ router.post('/download', async (req, res, next) => {
   }
 
   try {
-    const css = await AsyncAPIGenerator.getTemplateFile('html', 'css/tailwind.min.css');
+    const css = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', 'css/tailwind.min.css');
     archive.append(css, { name: 'css/tailwind.min.css' });
   } catch (e) {
     console.error(e);
@@ -110,7 +110,7 @@ router.post('/download', async (req, res, next) => {
   }
 
   try {
-    const css = await AsyncAPIGenerator.getTemplateFile('html', 'css/atom-one-dark.min.css');
+    const css = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', 'css/atom-one-dark.min.css');
     archive.append(css, { name: 'css/atom-one-dark.min.css' });
   } catch (e) {
     console.error(e);
@@ -122,7 +122,7 @@ router.post('/download', async (req, res, next) => {
   }
 
   try {
-    const css = await AsyncAPIGenerator.getTemplateFile('html', 'css/main.css');
+    const css = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', 'css/main.css');
     archive.append(css, { name: 'css/main.css' });
   } catch (e) {
     console.error(e);
@@ -134,7 +134,7 @@ router.post('/download', async (req, res, next) => {
   }
 
   try {
-    const js = await AsyncAPIGenerator.getTemplateFile('html', 'js/highlight.min.js');
+    const js = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', 'js/highlight.min.js');
     archive.append(js, { name: 'js/highlight.min.js' });
   } catch (e) {
     console.error(e);
@@ -146,7 +146,7 @@ router.post('/download', async (req, res, next) => {
   }
 
   try {
-    const js = await AsyncAPIGenerator.getTemplateFile('html', 'js/main.js');
+    const js = await AsyncAPIGenerator.getTemplateFile('@asyncapi/html-template/template', 'js/main.js');
     archive.append(js, { name: 'js/main.js' });
 
     archive.finalize();

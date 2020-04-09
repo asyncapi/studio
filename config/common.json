@@ -7,7 +7,6 @@
   "session": {
     "host": "localhost",
     "port": 6379,
-    "password": null,
     "secret": "keyboard cat"
   },
   "db": {

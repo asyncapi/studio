@@ -4,7 +4,7 @@ const util = require('util');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const AsyncAPIGenerator = require('asyncapi-generator');
+const AsyncAPIGenerator = require('@asyncapi/generator');
 const archiver = require('archiver');
 
 const readFile = util.promisify(fs.readFile);
@@ -13,7 +13,7 @@ module.exports = router;
 
 router.post('/generate', async (req, res) => {
   try {
-    const generator = new AsyncAPIGenerator('markdown', os.tmpdir(), {
+    const generator = new AsyncAPIGenerator('@asyncapi/markdown-template', os.tmpdir(), {
       entrypoint: 'asyncapi.md',
       output: 'string',
       forceWrite: true,
@@ -76,7 +76,7 @@ router.post('/download', async (req, res, next) => {
 
     archive.append(req.body.data, { name: 'asyncapi.yml' });
 
-    const generator = new AsyncAPIGenerator('markdown', os.tmpdir(), {
+    const generator = new AsyncAPIGenerator('@asyncapi/markdown-template', os.tmpdir(), {
       entrypoint: 'asyncapi.md',
       output: 'string',
       forceWrite: true,
