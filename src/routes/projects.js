@@ -7,7 +7,7 @@ router.post('/new', async (req, res, next) => {
   try {
     const { name, org } = req.body;
     const project = await create(name, req.user.id, org);
-    res.redirect(`/projects/${project.id}`);
+    res.redirect(`/directory?project=${project.id}`);
   } catch (e) {
     next(e);
   }

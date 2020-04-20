@@ -11,6 +11,9 @@
     <script src="js/highlight.min.js" type="application/javascript"></script>
 
     <script>
+      let abortController;
+      let signal;
+
       function addScript(src, callback) {
         var s = document.createElement('script');
         s.setAttribute('src', src);
@@ -30,14 +33,26 @@
 
         switch (event.data.eventName) {
           case 'content':
+            if (signal) controller.abort();
+            controller = new AbortController();
+            signal = controller.signal;
+
             fetch('/html/generate', {
                 method: 'POST',
                 body: event.data.content,
+                signal,
               })
-              .then(res => res.text())
-              .then(html => {
-                document.getElementById('content').innerHTML = html;
+              .then(async (res) => {
+                if (res.ok) {
+                  const data = await res.json();
+                  document.getElementById('content').innerHTML = data.html;
+                  window.dispatchEvent(new CustomEvent('content', { detail: data }));
+                } else {
+                  const json = await res.json();
+                  window.dispatchEvent(new CustomEvent('parsingError', { detail: json }));
+                }
               })
+              .catch(console.error)
             break;
         }
 

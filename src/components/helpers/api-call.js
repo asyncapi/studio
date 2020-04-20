@@ -2,6 +2,7 @@ export default function (url, options) {
   return new Promise((resolve, reject) => {
     options.headers = options.headers || {}
     options.headers.Accept = 'application/json'
+    options.headers['Content-Type'] = 'application/json'
 
     fetch(url, options)
       .catch((err) => {

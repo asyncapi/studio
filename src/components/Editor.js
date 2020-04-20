@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import MonacoEditorWrapper from '../components/MonacoEditorWrapper'
 import Preview from '../components/Preview'
 import EditorToolbar from '../components/EditorToolbar'
-import parseAsyncAPI from '../components/helpers/parse-asyncapi'
+import Spinner from '../components/Spinner'
 
 export default function Editor ({ initialAPI, projects }) {
   if (!initialAPI) initialAPI = getSampleAPI()
@@ -11,13 +11,35 @@ export default function Editor ({ initialAPI, projects }) {
   const [api, setAPI] = useState(initialAPI)
   const [initialCode, setInitialCode] = useState(initCode)
   const [currentUnsavedCode, setCurrentUnsavedCode] = useState(initialCode)
+  const [parsingError, setParsingError] = useState()
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false)
 
   const isSaved = () => {
     return api.anonymous ? true : api.asyncapi === currentUnsavedCode
   }
 
-  const onCodeChange = (ev, value) => {
+  const onCodeChange = async (ev, value) => {
     setCurrentUnsavedCode(value)
+    setIsLoadingPreview(true)
+  }
+
+  const onPreviewContentChange = async (ev) => {
+    setParsingError()
+    setIsLoadingPreview(false)
+    saveToLocalStorage(currentUnsavedCode, ev.parsedJSON)
+    if (ev.parsedJSON.info.title !== api.title) {
+      setAPI({
+        ...api,
+        ...{
+          title: ev.parsedJSON.info.title,
+        },
+      })
+    }
+  }
+
+  const onPreviewError = async (error) => {
+    setParsingError(error)
+    setIsLoadingPreview(false)
   }
 
   const onImport = async (e) => {
@@ -35,26 +57,6 @@ export default function Editor ({ initialAPI, projects }) {
       ...api,
     })
   }
-
-  useEffect(() => {
-    saveToLocalStorage(currentUnsavedCode)
-
-    ;(async function () {
-      try {
-        const parsedDocument = await parseAsyncAPI(currentUnsavedCode)
-        if (parsedDocument.info().title() !== api.title) {
-          setAPI({
-            ...api,
-            ...{
-              title: parsedDocument.info().title(),
-            },
-          })
-        }
-      } catch (e) {
-        // We did our best.
-      }
-    })()
-  }, [currentUnsavedCode])
 
   return (
     <>
@@ -75,6 +77,7 @@ export default function Editor ({ initialAPI, projects }) {
             onChange={onCodeChange}
             value={initialCode}
             className="bg-black"
+            error={parsingError}
             options={{
               minimap: {
                 enabled: false,
@@ -84,19 +87,32 @@ export default function Editor ({ initialAPI, projects }) {
           />
         </div>
         <div className="flex flex-1 flex-col max-w-1/2">
-          <Preview code={currentUnsavedCode} />
+          { (isLoadingPreview || parsingError) && (
+            <div className="absolute z-50 ml-2 mt-2">
+              {parsingError && (
+                <div className="mb-8 px-4 py-3 bg-red-500 text-white rounded border border-red-700 shadow-xl">
+                  <h3 className="font-bold">Your document contains errors</h3>
+                  <p className="text-sm">Check the instructions on the editor.</p>
+                </div>
+              )}
+
+              {isLoadingPreview && (
+                <div className="ml-6 mt-6"><Spinner /></div>
+              )}
+            </div>
+          )}
+          <Preview code={currentUnsavedCode} onContentChange={onPreviewContentChange} onError={onPreviewError} />
         </div>
       </div>
     </>
   )
 }
 
-const saveToLocalStorage = async (code) => {
+const saveToLocalStorage = async (code, parsedJSON) => {
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('asyncapi-document', code)
-      const doc = await parseAsyncAPI(code)
-      localStorage.setItem('asyncapi-parsed-document', JSON.stringify(doc.json()))
+      localStorage.setItem('asyncapi-parsed-document', JSON.stringify(parsedJSON))
     }
   } catch (e) {
     console.error('Could not store result in localStorage.')

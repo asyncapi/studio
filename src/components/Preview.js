@@ -1,15 +1,30 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-export default function Preview ({ code }) {
+export default function Preview ({ code, onError = () => {}, onContentChange = () => {} }) {
   // Render on the browser only
   if (typeof navigator === 'undefined') return null
+
+  const [isListeningEvents, setIsListeningEvents] = useState(false)
 
   let iframe
   const didMountRef = useRef(false)
   useEffect(() => {
+    if (!isListeningEvents) {
+      iframe.contentWindow.addEventListener('parsingError', errorEventListener)
+      iframe.contentWindow.addEventListener('content', contentEventListener)
+      setIsListeningEvents(true)
+    }
     if (didMountRef.current) sendContent()
     else didMountRef.current = true
-  })
+  }, [code])
+
+  function errorEventListener (error) {
+    onError(error.detail)
+  }
+
+  function contentEventListener (ev) {
+    onContentChange(ev.detail)
+  }
 
   const sendContent = () => {
     iframe.contentWindow.postMessage({

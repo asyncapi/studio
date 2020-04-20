@@ -1,4 +1,4 @@
-const asyncapi = require('asyncapi-parser');
+const asyncapi = require('@asyncapi/parser');
 const db = require('../lib/db');
 
 const apis = module.exports;
@@ -85,6 +85,8 @@ apis.get = async (id, userId) => {
     [userId, id]
   );
 
+  console.log(result.rows);
+
   return formatAPI(result.rows[0]);
 };
 
@@ -94,6 +96,7 @@ apis.patch = async (id, asyncapiString) => {
 
   if (typeof asyncapiString === 'string') {
     const doc = await asyncapi.parse(asyncapiString, {
+
       resolve: {
         file: false,
       },
@@ -113,14 +116,14 @@ apis.patch = async (id, asyncapiString) => {
 
     fields.push('computed_asyncapi');
     values.push(doc.json());
+
+    const result = await db.query(
+      `UPDATE apis SET ${fields.map((f, i) => `${f} = $${i + 1}`).join(', ')} WHERE id = $${fields.length + 1} RETURNING *`,
+      [...values, id]
+    );
+
+    return formatAPI(result.rows[0]);
   }
-
-  const result = await db.query(
-    `UPDATE apis SET ${fields.map((f, i) => `${f} = $${i + 1}`).join(', ')} WHERE id = $${fields.length + 1} RETURNING *`,
-    [...values, id]
-  );
-
-  return formatAPI(result.rows[0]);
 };
 
 apis.remove = async (id, userId) => {

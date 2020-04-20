@@ -15,6 +15,7 @@ const projectsRoute = require('./routes/projects');
 const apisRoute = require('./routes/apis');
 const userRoute = require('./routes/user');
 const invitationsRoute = require('./routes/invitations');
+const { get: getAPI } = require('./handlers/apis');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -35,6 +36,24 @@ app.prepare().then(() => {
       skip: req => req.path.startsWith('/_next/'),
     }));
   }
+
+  server.get('/:id.yaml', async (req, res, next) => {
+    if (req.hostname !== config.file_server.hostname) return next();
+    if (!(req.user && req.user.id)) return next();
+    const api = await getAPI(req.params.id, req.user.id);
+    if (!api) return res.status(404).send('File not found.');
+
+    res.header('Content-Type', 'application/json').send(api.computed_asyncapi);
+  });
+
+  server.get('/:id.json', async (req, res, next) => {
+    if (req.hostname !== config.file_server.hostname) return next();
+    if (!(req.user && req.user.id)) return next();
+    const api = await getAPI(req.params.id, req.user.id);
+    if (!api) return res.status(404).send('File not found.');
+
+    res.json(api.computed_asyncapi);
+  });
 
   server.use('/', userRoute);
   server.use('/auth', authRoute);

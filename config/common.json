@@ -4,6 +4,9 @@
     "port": 3000,
     "hostname": "asyncapi.local"
   },
+  "file_server": {
+    "hostname": "files.asyncapi.local"
+  },
   "session": {
     "host": "localhost",
     "port": 6379,
