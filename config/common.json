@@ -2,7 +2,8 @@
   "app": {
     "protocol": "http",
     "port": 3000,
-    "hostname": "asyncapi.local"
+    "hostname": "asyncapi.local",
+    "trusted_proxies": []
   },
   "file_server": {
     "protocol": "http",

@@ -24,6 +24,10 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
+  if (config.app.trusted_proxies.length) {
+    server.set('trust proxy', config.app.trusted_proxies);
+  }
+
   server.use(bodyParser.text());
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
