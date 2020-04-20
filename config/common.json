@@ -5,6 +5,8 @@
     "hostname": "asyncapi.local"
   },
   "file_server": {
+    "protocol": "http",
+    "port": 3000,
     "hostname": "files.asyncapi.local"
   },
   "session": {
