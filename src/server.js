@@ -24,9 +24,9 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  if (config.app.trusted_proxies.length) {
-    console.log('Trusted proxies', config.app.trusted_proxies);
-    server.set('trust proxy', config.app.trusted_proxies);
+  if (config.app.trust_proxy) {
+    console.log('Trusting proxy...');
+    server.set('trust proxy', true);
   }
 
   server.use(bodyParser.text());
