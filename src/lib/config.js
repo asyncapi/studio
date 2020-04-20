@@ -14,7 +14,7 @@ function override_with_env_vars(cfg, prefix) {
   for (const key in cfg) {
     const full_key = prefix + key.toUpperCase();
 
-    if (typeof cfg[key] === 'object' && cfg[key] !== null) {
+    if (typeof cfg[key] === 'object' && cfg[key] !== null && !Array.isArray(cfg[key])) {
       override_with_env_vars(cfg[key], `${full_key}_`);
     } else {
       if (!(full_key in env)) continue;

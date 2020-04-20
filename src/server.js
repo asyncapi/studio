@@ -25,6 +25,7 @@ app.prepare().then(() => {
   const server = express();
 
   if (config.app.trusted_proxies.length) {
+    console.log('Trusted proxies', config.app.trusted_proxies);
     server.set('trust proxy', config.app.trusted_proxies);
   }
 
