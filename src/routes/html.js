@@ -17,7 +17,7 @@ router.post('/generate', async (req, res) => {
   let parsed
 
   const parserOptions = {
-    path: `${config.file_server.protocol}://${config.file_server.hostname}:${config.file_server.port}/`,
+    path: `${config.file_server.protocol}://${config.file_server.hostname}:${config.file_server.port}`,
     resolve: {
       file: false,
       http: {
