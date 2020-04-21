@@ -3,6 +3,7 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const config = require('../lib/config');
 const mailchimp = require('../lib/mailchimp');
+const segment = require('../lib/segment');
 const users = require('../handlers/users');
 const isAuthenticated = require('../middlewares/is-authenticated');
 
@@ -54,8 +55,10 @@ router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
     if (!req.user.feature_flags.betaActivated) {
+      res.redirect('/landing/waiting-list');
       mailchimp.addUserToWaitingList(req.user);
-      return res.redirect('/landing/waiting-list');
+      segment.logAddUserToWaitlist(req.user);
+      return;
     }
     const redirectUrl = req.session.redirectUrl || null;
     req.session.redirectUrl = null;
