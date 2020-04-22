@@ -26,7 +26,7 @@ passport.use(new GitHubStrategy({
   console.log(profile);
   users.createFromGithub({
     displayName: profile.displayName,
-    email: profile._json.email || (profile.emails[0] && profile.emails[0].email ? profile.emails[0].email : `${profile.username}@failed-emails.com`),
+    email: profile._json.email || (profile.emails[0] && profile.emails[0].value ? profile.emails[0].value : `${profile.username}@failed-emails.com`),
     username: profile.username,
     avatar: profile._json.avatar_url,
     company: profile._json.company,
