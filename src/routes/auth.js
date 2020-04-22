@@ -21,10 +21,11 @@ passport.use(new GitHubStrategy({
   clientID: config.github.client_id,
   clientSecret: config.github.client_secret,
   callbackURL: config.github.callback_url,
+  scope: 'user:email',
 }, (accessToken, refreshToken, profile, done) => {
   users.createFromGithub({
     displayName: profile.displayName,
-    email: profile._json.email,
+    email: profile._json.email || (profile.emails[0] && profile.emails[0].email ? profile.emails[0].email : `${profile.username}@failed-emails.com`),
     username: profile.username,
     avatar: profile._json.avatar_url,
     company: profile._json.company,
