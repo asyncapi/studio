@@ -23,6 +23,7 @@ passport.use(new GitHubStrategy({
   callbackURL: config.github.callback_url,
   scope: 'user:email',
 }, (accessToken, refreshToken, profile, done) => {
+  console.log(profile);
   users.createFromGithub({
     displayName: profile.displayName,
     email: profile._json.email || (profile.emails[0] && profile.emails[0].email ? profile.emails[0].email : `${profile.username}@failed-emails.com`),
