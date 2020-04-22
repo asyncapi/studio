@@ -35,7 +35,6 @@ router.post('/generate', async (req, res) => {
   try {
     parsed = await AsyncAPIParser.parse(req.body, parserOptions)
   } catch (e) {
-    console.error(e);
     return res.status(422).header('Content-Type', 'application/json').send(e);
   }
 
