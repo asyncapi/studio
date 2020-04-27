@@ -68,7 +68,7 @@ export default function Editor ({ initialAPI, projects }) {
         projects={projects}
         onImport={onImport}
       />
-      <div className="flex flex-row flex-1 overflow-auto">
+      <div className="flex flex-row flex-1 overflow-hidden">
         <div className="flex flex-1 flex-col max-w-1/2">
           {/* <CodeMirrorWrapper code={initialCode} onCodeChange={onCodeChange} /> */}
           <MonacoEditorWrapper
