@@ -10,8 +10,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@asyncapi/generator": "^0.39.0",
-    "@asyncapi/html-template": "^0.3.0",
+    "@asyncapi/generator": "^0.44.0",
+    "@asyncapi/html-template": "^0.6.0",
     "@asyncapi/markdown-template": "^0.3.0",
     "@asyncapi/parser": "^0.18.1",
     "@fmvilas/pseudo-yaml-ast": "^0.2.0",
