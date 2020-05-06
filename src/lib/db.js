@@ -1,17 +1,7 @@
-const { Pool } = require('pg');
-const config = require('./config');
+const { PrismaClient } = require('@prisma/client');
 
-const pool = new Pool({
-  user: config.db.user,
-  host: config.db.host,
-  database: config.db.database,
-  password: config.db.password,
-  port: config.db.port,
+const prisma = new PrismaClient({
+  log: ['query'],
 });
 
-pool.on('error', console.error);
-pool.on('connect', () => {
-  console.log('Succesfully connected to database.');
-});
-
-module.exports = pool;
+module.exports = prisma;

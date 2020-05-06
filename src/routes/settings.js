@@ -1,16 +1,16 @@
 const router = require('express').Router();
-const { updateProfile } = require('../handlers/user');
+const { patch } = require('../handlers/users');
 
 module.exports = router;
 
 router.post('/profile', async (req, res, next) => {
   try {
     const { displayName, company } = req.body;
-    const profile = await updateProfile(displayName, company, req.user.id);
+    const profile = await patch(req.user.id, { displayName, company });
     const user = req.user;
-    user.display_name = profile.display_name;
+    user.displayName = profile.displayName;
     user.company = profile.company;
-    res.redirect('/profile');
+    res.redirect('/settings/profile');
   } catch (e) {
     next(e);
   }

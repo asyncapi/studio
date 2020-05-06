@@ -50,15 +50,15 @@ export default function Directory ({ orgs = [], selectedOrg, projects = [], sele
                 <span className="ml-3 bg-indigo-200 px-2 py-1 text-xs rounded bg-indigo-400 text-white" title={`Version: ${api.version}`}>{api.version}</span>
               </div>
               <div className="h-24 px-4 py-5 sm:px-6 text-gray-400">
-                <p className="h-16 text-gray-600 text-sm overflow-hidden" title={api.computed_asyncapi.info.description}>
-                  {truncate(api.computed_asyncapi.info.description) || (<span className="italic text-gray-400">(No description)</span>)}
+                <p className="h-16 text-gray-600 text-sm overflow-hidden" title={api.computedAsyncapi.info.description}>
+                  {truncate(api.computedAsyncapi.info.description) || (<span className="italic text-gray-400">(No description)</span>)}
                 </p>
               </div>
               <div className="border-t border-gray-100 px-4 py-4 sm:px-6">
                 <div className="flex text-xs text-gray-400">
-                  <span className="max-w-1/2 truncate overflow-hidden" title={api.org_name}>{api.org_name}</span>
+                  <span className="max-w-1/2 truncate overflow-hidden" title={api.project.organization.name}>{api.project.organization.name}</span>
                   <span className="ml-1 mr-1">/</span>
-                  <span className="max-w-1/2 truncate overflow-hidden" title={api.project_name}>{api.project_name}</span>
+                  <span className="max-w-1/2 truncate overflow-hidden" title={api.project.name}>{api.project.name}</span>
                 </div>
               </div>
             </div>

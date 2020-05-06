@@ -2,6 +2,9 @@
   "name": "playground-react",
   "version": "0.1.0",
   "main": "src/server.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "dev": "nodemon src/main.js",
     "build": "next build",
@@ -10,13 +13,14 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@asyncapi/generator": "^0.39.0",
+    "@asyncapi/generator": "^0.43.0",
     "@asyncapi/html-template": "^0.3.0",
     "@asyncapi/markdown-template": "^0.3.0",
     "@asyncapi/parser": "^0.18.1",
     "@fmvilas/pseudo-yaml-ast": "^0.2.0",
     "@fullhuman/postcss-purgecss": "^2.1.0",
     "@monaco-editor/react": "^3.2.1",
+    "@prisma/client": "^2.0.0-beta.4",
     "@tailwindcss/ui": "^0.1.3",
     "@zeit/next-css": "^1.0.1",
     "analytics-node": "^3.4.0-beta.1",
@@ -34,12 +38,10 @@
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "next": "^9.3.4",
+    "next": "^9.3.6",
     "passport": "^0.4.1",
     "passport-github2": "^0.1.11",
-    "pg": "^7.18.2",
     "postcss-import": "^12.0.1",
-    "postgres-migrations": "^4.0.3",
     "problem-json": "^0.3.0",
     "pseudo-yaml-ast": "^1.0.10",
     "react": "^16.13.0",
@@ -55,6 +57,7 @@
     "yaml-ast-parser": "0.0.43"
   },
   "devDependencies": {
+    "@prisma/cli": "^2.0.0-beta.4",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.3",
     "nodemon": "^2.0.2"

@@ -6,7 +6,7 @@ module.exports = router;
 router.post('/new', async (req, res, next) => {
   try {
     const { name, project } = req.body;
-    const api = await create(name, null, project, req.user.id);
+    const api = await create(name, null, Number(project), req.user.id);
     res.redirect(`/apis/${api.id}`);
   } catch (e) {
     next(e);
@@ -15,8 +15,8 @@ router.post('/new', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const { title, project_id, asyncapi } = req.body;
-    const api = await create(title, asyncapi, project_id, req.user.id);
+    const { title, projectId, asyncapi } = req.body;
+    const api = await create(title, asyncapi, projectId, req.user.id);
     res.send(api);
   } catch (e) {
     next(e);

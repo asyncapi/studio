@@ -62,7 +62,7 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
         </div>
         <div className="mt-4">
           <label className="block mb-1 text-sm font-medium leading-5 text-gray-700">Created on</label>
-          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.created_at).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
+          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.createdAt).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
         </div>
       </div>
     )
@@ -78,7 +78,7 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
         </div>
         <div className="mt-4">
           <label className="block mb-1 text-sm font-medium leading-5 text-gray-700">Created on</label>
-          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.created_at).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
+          <span className="inline-block sm:text-sm sm:leading-5">{moment(org.createdAt).format('dddd MMMM Do YYYY hh:mm:ss a')}</span>
         </div>
       </div>
     )
@@ -89,7 +89,7 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
       active="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
-      featureFlags={org.feature_flags}
+      featureFlags={org.featureFlags}
       selectedSection="basic"
     >
       { loggedInUserIsAdmin ? renderWithPermissions() : renderNoPermissions() }
@@ -103,7 +103,6 @@ export async function getServerSideProps ({ req, params }) {
   const { list: listOrgs, listUsers } = require('../../../handlers/orgs')
   const organizations = await listOrgs(req.userPublicInfo.id)
   let users = await listUsers(params.id)
-  users = users.map(user => formatUser(user))
 
   return {
     props: {
@@ -111,32 +110,5 @@ export async function getServerSideProps ({ req, params }) {
       selectedOrg: params.id,
       users,
     },
-  }
-}
-
-function formatUser (user) {
-  const result = user
-
-  result.displayName = result.display_name
-  delete result.display_name
-  result.joinedOrganizationAt = result.joined_organization_at
-  delete result.joined_organization_at
-
-  const {
-    id,
-    avatar,
-    displayName,
-    email,
-    joinedOrganizationAt,
-    role,
-  } = result
-
-  return {
-    id,
-    avatar,
-    displayName,
-    email,
-    joinedOrganizationAt,
-    role,
   }
 }

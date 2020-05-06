@@ -3,7 +3,7 @@ module.exports = (req, res, next) => {
 
   req.userPublicInfo = {
     id: req.user.id,
-    displayName: req.user.display_name,
+    displayName: req.user.displayName,
     username: req.user.username,
     email: req.user.email,
     avatar: req.user.avatar,

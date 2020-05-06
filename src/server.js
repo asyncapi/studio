@@ -13,7 +13,7 @@ const markdownRoute = require('./routes/markdown');
 const orgsRoute = require('./routes/orgs');
 const projectsRoute = require('./routes/projects');
 const apisRoute = require('./routes/apis');
-const userRoute = require('./routes/user');
+const settingsRoute = require('./routes/settings');
 const invitationsRoute = require('./routes/invitations');
 const { get: getAPI } = require('./handlers/apis');
 
@@ -60,7 +60,6 @@ app.prepare().then(() => {
     res.json(api.computed_asyncapi);
   });
 
-  server.use('/', userRoute);
   server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
@@ -75,7 +74,7 @@ app.prepare().then(() => {
   });
 
   server.use((req, res, next) => {
-    if (req.user && !req.user.feature_flags.betaActivated) {
+    if (req.user && !req.user.featureFlags?.betaActivated) {
       req.logout();
     }
 
@@ -83,6 +82,7 @@ app.prepare().then(() => {
   });
 
   // SESSION REQUIRED
+  server.use('/settings', isAuthenticated, settingsRoute);
   server.use('/organizations', isAuthenticated, orgsRoute);
   server.use('/projects', isAuthenticated, projectsRoute);
   server.use('/apis', isAuthenticated, apisRoute);

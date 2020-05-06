@@ -19,7 +19,7 @@ export default function SaveAPIModal ({
       body: JSON.stringify({
         ...api,
         ...{
-          project_id: project,
+          projectId: project,
           title,
         }
       }),

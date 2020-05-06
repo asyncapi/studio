@@ -123,8 +123,8 @@ export async function getServerSideProps({ req, params }) {
 function formatUser(user) {
   const result = user
 
-  result.displayName = result.display_name
-  delete result.display_name
+  result.displayName = result.displayName
+  delete result.displayName
   result.joinedOrganizationAt = result.joined_organization_at
   delete result.joined_organization_at
 

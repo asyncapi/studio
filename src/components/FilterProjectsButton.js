@@ -32,7 +32,7 @@ export default function FilterProjectsButton({ projects = [], selected }) {
         <a href={queryStringFor({})} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Select project</a>
         {
           projects.map(project => (
-            <a href={queryStringFor({ project: project.id })} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.org_name} / {project.name}</a>
+            <a href={queryStringFor({ project: project.id })} key={project.id} className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">{project.organization.name} / {project.name}</a>
           ))
         }
       </>

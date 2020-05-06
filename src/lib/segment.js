@@ -15,7 +15,7 @@ module.exports.logAddUserToWaitlist = async (user) => {
     email: user.email,
     event: 'New User added to Waiting List',
     properties: {
-      displayName: user.display_name,
+      displayName: user.displayName,
     },
   });
 };

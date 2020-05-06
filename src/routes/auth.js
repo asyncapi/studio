@@ -30,11 +30,9 @@ passport.use(new GitHubStrategy({
     username: profile.username,
     avatar: profile._json.avatar_url,
     company: profile._json.company,
-    githubId: profile.id,
-    githubAccessToken: accessToken,
-    githubRefreshToken: refreshToken,
   })
   .then((user) => {
+    user.featureFlags = JSON.parse(user.featureFlags || '{}');
     done(null, user);
   })
   .catch(done);
@@ -56,7 +54,7 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
-    if (!req.user.feature_flags.betaActivated) {
+    if (!req.user.featureFlags?.betaActivated) {
       res.redirect('/landing/waiting-list');
       mailchimp.addUserToWaitingList(req.user);
       segment.logAddUserToWaitlist(req.user);

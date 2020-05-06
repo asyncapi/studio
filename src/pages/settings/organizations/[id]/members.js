@@ -68,12 +68,12 @@ export default function OrganizationPage({ organizations, selectedOrg, users = [
                               <div className="text-sm leading-5 text-gray-900">
                                 <FaCheckCircle className="text-green-400 inline-block mr-2" />
                               Joined on
-                              <time dateTime={user.joinedOrganizationAt} className="ml-1">{moment(user.joinedOrganizationAt).format('MMMM Do YYYY')}</time>
+                              <time dateTime={user.organizationsForUser[0].createdAt} className="ml-1">{moment(user.organizationsForUser[0].createdAt).format('MMMM Do YYYY')}</time>
                               </div>
-                              <div className={`text-sm leading-5 text-gray-500 ${user.role === 'admin' && 'font-bold'} mt-2`}>
+                              <div className={`text-sm leading-5 text-gray-500 ${user.organizationsForUser[0].role === 'admin' && 'font-bold'} mt-2`}>
                                 <FaUsers className="text-gray-400 inline-block mr-2" />
-                                {user.role === 'admin' && 'Administrator'}
-                                {user.role === 'member' && 'Member'}
+                                {user.organizationsForUser[0].role === 'admin' && 'Administrator'}
+                                {user.organizationsForUser[0].role === 'member' && 'Member'}
                               </div>
                             </div>
                           </div>
@@ -87,8 +87,8 @@ export default function OrganizationPage({ organizations, selectedOrg, users = [
                                   className=""
                                   buttonHoverClassName="hover:text-gray-600"
                                 >
-                                  {user.role === 'admin' && (<a onClick={() => showChangeRoleModal({ user, role: 'member' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make member...</a>)}
-                                  {user.role === 'member' && (<a onClick={() => showChangeRoleModal({ user, role: 'admin' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make admin...</a>)}
+                                  {user.organizationsForUser[0].role === 'admin' && (<a onClick={() => showChangeRoleModal({ user, role: 'member' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make member...</a>)}
+                                  {user.organizationsForUser[0].role === 'member' && (<a onClick={() => showChangeRoleModal({ user, role: 'admin' })} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Make admin...</a>)}
                                   <a onClick={() => setShowRemoveFromOrganizationModal(user)} className="block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">Remove from organization...</a>
                                 </Dropdown>
                               </div>
@@ -113,8 +113,7 @@ export async function getServerSideProps({ req, params }) {
 
   const { list: listOrgs, listUsers } = require('../../../../handlers/orgs')
   const organizations = await listOrgs(req.userPublicInfo.id)
-  let users = await listUsers(params.id)
-  users = users.map(user => formatUser(user))
+  const users = await listUsers(params.id)
 
   const { list: listInvitations } = require('../../../../handlers/invitations')
   const invitations = await listInvitations(params.id, req.userPublicInfo.id)
@@ -126,32 +125,5 @@ export async function getServerSideProps({ req, params }) {
       invitations,
       users,
     },
-  }
-}
-
-function formatUser(user) {
-  const result = user
-
-  result.displayName = result.display_name
-  delete result.display_name
-  result.joinedOrganizationAt = result.joined_organization_at
-  delete result.joined_organization_at
-
-  const {
-    id,
-    avatar,
-    displayName,
-    email,
-    joinedOrganizationAt,
-    role,
-  } = result
-
-  return {
-    id,
-    avatar,
-    displayName,
-    email,
-    joinedOrganizationAt,
-    role,
   }
 }

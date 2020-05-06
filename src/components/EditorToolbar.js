@@ -99,9 +99,9 @@ export default function EditorToolbar ({
         <a href="/" className="mt-1 px-2 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150" title="Stop editing this file">
           <FaTimes className="text-md text-gray-400" />
         </a>
-        <div className={classes} title={api.org_name}>{api.org_name}</div>
+        <div className={classes} title={api.project.organization.name}>{api.project.organization.name}</div>
         <div className={classes}>/</div>
-        <div className={classes} title={api.project_name}>{api.project_name}</div>
+        <div className={classes} title={api.project.name}>{api.project.name}</div>
         <div className={classes}>/</div>
         <div className={classes} title={api.title}>{api.title}</div>
       </>

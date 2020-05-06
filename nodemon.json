@@ -11,5 +11,5 @@
   "watch": [
     "**/*"
   ],
-  "ext": "js json yaml"
+  "ext": "js json yaml prisma"
 }

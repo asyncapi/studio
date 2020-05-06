@@ -1,48 +1,31 @@
 const db = require('../lib/db');
 const organizations = require('./orgs');
+const { formatList, formatRow } = require('../lib/formatter');
 
 const invitations = module.exports = {};
 
-const formatInvitation = (invitation) => {
-  if (invitation.organization_id) {
-    invitation.organizationId = Number(invitation.organization_id);
-    delete invitation.organization_id;
-  }
-  if (invitation.inviter_id) {
-    invitation.inviterId = Number(invitation.inviter_id);
-    delete invitation.inviter_id;
-  }
-  if (invitation.expires_at) {
-    invitation.expiresAt = String(invitation.expires_at);
-    delete invitation.expires_at;
-  }
-  if (invitation.created_at) {
-    invitation.createdAt = String(invitation.created_at);
-    delete invitation.created_at;
-  }
-  return invitation;
-}
-
-const formatInvitations = (list) => {
-  if (Array.isArray(list)) return list.map(formatInvitation);
-  return list;
-}
-
 invitations.get = async (uuid, onlyActive = false) => {
-  const results = await db.query(
-    `SELECT * FROM invitations WHERE uuid = $1${!!onlyActive && ' AND expires_at >= NOW()'}`,
-    [uuid]
-  );
+  const result = await db.invitations.findMany({
+    where: {
+      uuid,
+      expiresAt: onlyActive ? {
+        gte: new Date().toISOString(),
+      } : undefined,
+    }
+  });
 
-  return formatInvitation(results.rows[0]);
+  return formatRow(result[0]);
 };
 
 invitations.create = async (uuid, organizationId, role, scope, expiration, inviterId) => {
-  if (!['admin', 'member'].includes(role.toLowerCase())) {
+  role = role.toLowerCase();
+  scope = scope.toLowerCase();
+
+  if (!['admin', 'member'].includes(role)) {
     throw new Error(`Organization role must be either 'admin' or 'member'.`);
   }
 
-  if (!['one', 'multiple', undefined].includes(scope.toLowerCase())) {
+  if (!['one', 'multiple', undefined].includes(scope)) {
     throw new Error(`Invitation scope must be either 'one' or 'multiple'.`);
   }
 
@@ -55,68 +38,73 @@ invitations.create = async (uuid, organizationId, role, scope, expiration, invit
     expiresAt.setDate(expiresAt.getDate() + 1);
   }
 
-  const result = await db.query(
-    'INSERT INTO invitations (uuid, inviter_id, organization_id, expires_at, role, scope) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-    [uuid, inviterId, organizationId, expiresAt, role.toLowerCase(), scope]
-  );
+  const result = await db.invitations.create({
+    data: {
+      uuid,
+      expiresAt,
+      role,
+      scope,
+      inviter: {
+        connect: {
+          id: inviterId,
+        },
+      },
+      organization: {
+        connect: {
+          id: organizationId,
+        },
+      },
+    }
+  });
 
-  return formatInvitation(result.rows[0]);
+  return formatRow(result);
 };
 
 invitations.list = async (organizationId) => {
-  const results = await db.query(
-    'SELECT * FROM invitations WHERE organization_id = $1 AND expires_at >= NOW() ORDER BY created_at DESC',
-    [organizationId]
-  );
+  organizationId = Number(organizationId);
 
-  return formatInvitations(results.rows);
-};
+  const result = await db.invitations.findMany({
+    where: {
+      expiresAt: {
+        gte: new Date().toISOString(),
+      },
+      organizationId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
 
-invitations.listForUser = async (email, status = 'pending') => {
-  const results = await db.query(
-    'SELECT *, o.name AS organization_name, i.id AS invitation_id, i.email AS invitation_email FROM invitations i INNER JOIN users u ON i.inviter_id = u.id INNER JOIN organizations o ON i.organization_id = o.id WHERE i.email = $1 AND i.status = $2 ORDER BY i.created_at DESC',
-    [email, status]
-  );
-
-  return results.rows;
+  return formatList(result);
 };
 
 invitations.accept = async (uuid, userId) => {
-  await db.query('BEGIN');
+  const { id, organizationId, role, scope } = await invitations.get(uuid, true);
 
-  try {
-    const invitation = await invitations.get(uuid, true);
-    const user = await organizations.findUser(userId, invitation.organizationId);
-    if (user) return true; // User is already in the org
-
-    await organizations.addUser(userId, invitation.organizationId, invitation.role);
-
-    if (invitation.scope === 'one') {
-      await db.query(
-        'DELETE FROM invitations WHERE uuid = $1',
-        [uuid]
-      );
+  const result = db.organizationsUsers.upsert({
+    where: {
+      userId,
+      organizationId,
+    },
+    create: {
+      userId,
+      organizationId,
+      role,
+    },
+    update: {
+      role,
     }
+  });
 
-    await db.query('COMMIT');
-    return true;
-  } catch (e) {
-    console.error(e);
-    await db.query('ROLLBACK');
-    return false;
-  }
-};
+  if (scope === 'one') invitations.remove(id);
 
-invitations.decline = async (id, user) => {
-  await db.query(
-    'UPDATE invitations SET status = $1 WHERE id = $2 AND email = $3',
-    ['declined', id, user.email]
-  );
+  return formatRow(result);
 };
 
 invitations.remove = async (id) => {
-  await db.query(
-    'DELETE FROM invitations WHERE id = $1',
-    [id]
-  );
+  await db.invitations.delete({
+    where: {
+      id,
+    },
+  });
 };

@@ -17,7 +17,7 @@ export default function WaitingList ({ displayName, email}) {
 export async function getServerSideProps ({ req }) {
   return {
     props: {
-      displayName: req.user.display_name,
+      displayName: req.user.displayName,
       email: req.user.email,
     },
   }
