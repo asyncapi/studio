@@ -74,7 +74,7 @@ app.prepare().then(() => {
   });
 
   server.use((req, res, next) => {
-    if (req.user && !req.user.featureFlags?.betaActivated) {
+    if (req.user && !(req.user.featureFlags && req.user.featureFlags.betaActivated)) {
       req.logout();
     }
 

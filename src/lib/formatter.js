@@ -7,7 +7,7 @@ formatter.formatRow = (row) => {
   if (typeof row.computedAsyncapi === 'string') {
     try {
       row.computedAsyncapi = JSON.parse(row.computedAsyncapi);
-    } catch {}
+    } catch (e) {}
   }
   Object.keys(row).forEach(key => {
     if (typeof row[key] === 'object' && row[key] !== null) row[key] = formatter.formatRow(row[key]);

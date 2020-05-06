@@ -54,7 +54,7 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
-    if (!req.user.featureFlags?.betaActivated) {
+    if (!req.user.featureFlags || !req.user.featureFlags.betaActivated) {
       res.redirect('/landing/waiting-list');
       mailchimp.addUserToWaitingList(req.user);
       segment.logAddUserToWaitlist(req.user);
