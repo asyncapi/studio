@@ -9,7 +9,8 @@
     "dev": "nodemon src/main.js",
     "build": "next build",
     "start": "node src/main.js",
-    "db:migrate": "node scripts/migrate.js"
+    "db:migrate": "node scripts/migrate.js",
+    "prisma:generate": "prisma generate"
   },
   "license": "Apache-2.0",
   "dependencies": {
