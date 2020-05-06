@@ -22,10 +22,10 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company 
       projects: {
         create: {
           name: 'default',
-          organizations: {
+          organization: {
             create: {
               name: `${displayName}'s org`,
-              users: {
+              creator: {
                 connect: {
                   email,
                 }
