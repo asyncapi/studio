@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 # set default node environment
 ENV NODE_ENV production
 
-COPY . /usr/src/app
+COPY . /usr/src/app/
+COPY CHECKS /app/
 
 # Install app dependencies
 RUN npm install
