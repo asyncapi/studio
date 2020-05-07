@@ -7,6 +7,7 @@ const config = require('./lib/config');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
+const healthRoute = require('./routes/health');
 const authRoute = require('./routes/auth');
 const htmlRoute = require('./routes/html');
 const markdownRoute = require('./routes/markdown');
@@ -60,6 +61,7 @@ app.prepare().then(() => {
     res.json(api.computed_asyncapi);
   });
 
+  server.use('/_health', healthRoute);
   server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);

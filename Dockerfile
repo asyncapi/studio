@@ -17,4 +17,4 @@ RUN npm install -g forever
 
 EXPOSE 5000
 
-CMD forever -c "npm start" ./
+CMD forever -c "npm start" --minUptime 1000 --spinSleepTime 1000 ./
