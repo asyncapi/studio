@@ -30,6 +30,16 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company 
                   email,
                 }
               },
+              organizationUsers: {
+                create: {
+                  role: 'admin',
+                  user: {
+                    connect: {
+                      email,
+                    }
+                  },
+                },
+              },
             },
           },
         },

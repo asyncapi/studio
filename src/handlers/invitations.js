@@ -1,5 +1,4 @@
 const db = require('../lib/db');
-const organizations = require('./orgs');
 const { formatList, formatRow } = require('../lib/formatter');
 
 const invitations = module.exports = {};
