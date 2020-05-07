@@ -1,19 +1,32 @@
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
-const { logLineWithBlock, logErrorLineWithBlock } = require('./lib/logger');
+const { logLineWithBlock, logSuccessLine, logErrorLine } = require('./lib/logger');
 const pipeline = require('./lib/pipeline');
 const { plugins } = require('../config/plugins.json');
 
 const readFile = promisify(fs.readFile);
 
 Promise.all(plugins.map(async (pluginPath) => {
-  let packageJSON = await readFile(path.resolve(__dirname, '..', pluginPath, 'package.json'));
+  let absolutePath;
+
+  if (pluginPath.startsWith(`.${path.sep}`)) {
+    absolutePath = path.resolve(__dirname, '..', pluginPath, 'package.json');
+  } else {
+    absolutePath = path.resolve(__dirname, '..', 'node_modules', pluginPath, 'package.json');
+  }
+
+  let packageJSON = await readFile(absolutePath);
   packageJSON = JSON.parse(packageJSON);
 
-  const config = packageJSON.asyncapihub;
-  const pluginName = packageJSON.name;
+  const { asyncapihub: config, pluginName, pluginVersion } = packageJSON;
 
+  logLineWithBlock('PLUGIN', `${pluginName}@${pluginVersion}`, 'Registering plugin...');
+
+  registerHooks(pluginName, pluginPath, config);
+}));
+
+function registerHooks(pluginName, pluginPath, config) {
   if (config.hooks) {
     const hookPoints = Object.keys(config.hooks);
     hookPoints.forEach(hookPoint => {
@@ -33,11 +46,11 @@ Promise.all(plugins.map(async (pluginPath) => {
           const hookTarget = require(path.resolve(__dirname, '..', pluginPath, hookTargetPath));
           pipeline.append(hookPoint, hookTarget, hookTargetParams);
 
-          logLineWithBlock('HOOK', hookPoint, hookTargetPath);
+          logSuccessLine(`Hook ${hookPoint} ${hookTargetPath}`, { highlightedWords: [hookPoint] });
         } catch (e) {
-          logErrorLineWithBlock('HOOK', hookPoint, hookTargetPath);
+          logErrorLine(`Hook ${hookPoint} ${hookTargetPath}`, { highlightedWords: [hookPoint] });
         }
       });
     });
   }
-}));
+}

@@ -76,7 +76,7 @@ app.prepare().then(() => {
 
   pipeline.get('server:routes').forEach(step => {
     if (!step.params.urlPath) {
-      logErrorLineWithBlock('HOOK', 'server:routes', `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, ['urlPath', step.params.pluginName]);
+      logErrorLineWithBlock('HOOK', 'server:routes', `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, { highlightedWords: ['urlPath', step.params.pluginName] });
       return;
     }
 
