@@ -19,21 +19,23 @@ Promise.all(plugins.map(async (pluginPath) => {
   let packageJSON = await readFile(absolutePath);
   packageJSON = JSON.parse(packageJSON);
 
-  const { asyncapihub: config, pluginName, pluginVersion } = packageJSON;
+  const { name, version } = packageJSON;
 
-  logLineWithBlock('PLUGIN', `${pluginName}@${pluginVersion}`, 'Registering plugin...');
+  logLineWithBlock('PLUGIN', `${name}@${version}`, 'Registering plugin...');
 
-  registerHooks(pluginName, pluginPath, config);
+  registerHooks(packageJSON, pluginPath);
 }));
 
-function registerHooks(pluginName, pluginPath, config) {
-  if (config.hooks) {
-    const hookPoints = Object.keys(config.hooks);
+function registerHooks(packageJSON, pluginPath) {
+  const { asyncapihub, name } = packageJSON;
+
+  if (asyncapihub.hooks) {
+    const hookPoints = Object.keys(asyncapihub.hooks);
     hookPoints.forEach(hookPoint => {
-      const hookTargetPathsOrObjects = config.hooks[hookPoint];
+      const hookTargetPathsOrObjects = asyncapihub.hooks[hookPoint];
       hookTargetPathsOrObjects.forEach(hookTargetPathOrObject => {
         let hookTargetPath;
-        let hookTargetParams = { pluginName };
+        let hookTargetParams = { name };
 
         try {
           if (typeof hookTargetPathOrObject === 'string') {

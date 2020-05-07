@@ -19,7 +19,7 @@ pipeline.append = (name, target, params = {}) => {
   return pipelines[name];
 };
 
-pipeline.get = name => pipelines[name];
+pipeline.get = name => (pipelines[name] || []);
 
 pipeline.exec = (name, info) => new Promise((resolve, reject) => {
   const wrappedPipeline = pipeline.get(name).map(step => {

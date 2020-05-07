@@ -4,8 +4,7 @@ const next = require('next');
 const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
-const pipeline = require('./lib/pipeline');
-const { logErrorLineWithBlock } = require('./lib/logger');
+const serverHooks = require('./lib/server-hooks');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
@@ -74,22 +73,9 @@ app.prepare().then(() => {
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
 
-  pipeline.get('server:routes').forEach(step => {
-    if (!step.params.urlPath) {
-      logErrorLineWithBlock('HOOK', 'server:routes', `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, { highlightedWords: ['urlPath', step.params.pluginName] });
-      return;
-    }
-
-    let method = 'get';
-    if (step.params.method && ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(step.params.method.toLowerCase())) {
-      method = step.params.method;
-    }
-    server[method](step.params.urlPath, step.target);
-  });
-
-  pipeline.get('server:middlewares').forEach(step => {
-    server.use(step.target);
-  });
+  serverHooks.configure(server);
+  server.use(userPublicInfoMiddleware);
+  serverHooks.configure(server, true);
 
   // SESSION REQUIRED
   server.use('/settings', isAuthenticated, settingsRoute);
@@ -103,7 +89,6 @@ app.prepare().then(() => {
   server.use('/directory', isAuthenticated);
   // End
 
-  server.use(userPublicInfoMiddleware);
   server.get('*', (req, res) => {
     return handle(req, res);
   });
