@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
-const chalk = require('chalk');
+const { logLineWithBlock, logErrorLineWithBlock } = require('./lib/logger');
 const pipeline = require('./lib/pipeline');
 const { plugins } = require('../config/plugins.json');
 
@@ -12,29 +12,30 @@ Promise.all(plugins.map(async (pluginPath) => {
   packageJSON = JSON.parse(packageJSON);
 
   const config = packageJSON.asyncapihub;
+  const pluginName = packageJSON.name;
 
   if (config.hooks) {
     const hookPoints = Object.keys(config.hooks);
     hookPoints.forEach(hookPoint => {
       const hookTargetPathsOrObjects = config.hooks[hookPoint];
       hookTargetPathsOrObjects.forEach(hookTargetPathOrObject => {
-        try {
-          let hookTargetPath;
-          let hookTargetParams = {};
+        let hookTargetPath;
+        let hookTargetParams = { pluginName };
 
+        try {
           if (typeof hookTargetPathOrObject === 'string') {
             hookTargetPath = hookTargetPathOrObject;
           } else {
             hookTargetPath = hookTargetPathOrObject.path;
-            hookTargetParams = hookTargetPathOrObject.params;
+            hookTargetParams = { ...hookTargetParams, ...hookTargetPathOrObject.params };
           }
 
           const hookTarget = require(path.resolve(__dirname, '..', pluginPath, hookTargetPath));
           pipeline.append(hookPoint, hookTarget, hookTargetParams);
 
-          console.log(chalk.reset.inverse.bold.green(' HOOK '), `${hookPoint} ${chalk.gray(hookTargetPath)}`);
+          logLineWithBlock('HOOK', hookPoint, hookTargetPath);
         } catch (e) {
-          console.log(chalk.reset.inverse.bold.red(' HOOK '), `${hookPoint} ${chalk.gray(hookTargetPath)}`);
+          logErrorLineWithBlock('HOOK', hookPoint, hookTargetPath);
         }
       });
     });

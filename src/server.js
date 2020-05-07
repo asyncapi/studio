@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
 const pipeline = require('./lib/pipeline');
+const { logErrorLineWithBlock } = require('./lib/logger');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
@@ -74,6 +75,11 @@ app.prepare().then(() => {
   server.use('/markdown', markdownRoute);
 
   pipeline.get('server:routes').forEach(step => {
+    if (!step.params.urlPath) {
+      logErrorLineWithBlock('HOOK', 'server:routes', `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, ['urlPath', step.params.pluginName]);
+      return;
+    }
+
     let method = 'get';
     if (step.params.method && ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(step.params.method.toLowerCase())) {
       method = step.params.method;

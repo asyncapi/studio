@@ -18,8 +18,10 @@
 |---|---|---|
 | Routes | JS Object | Add new routes to the server.
 
-### Server events
+### Server hooks
 
-|Event|Description|
+|Hook|Description|
 |---|---|
-| `user:signin:github` | Triggered when user signs in using Github.
+| `auth:github` | Triggered when user signs in using Github.
+| `server:middlewares` | Attach your plugin middlewares to the Express server pipeline.
+| `server:routes` | Attach your own plugin routes to the Express server.
