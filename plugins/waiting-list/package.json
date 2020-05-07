@@ -1,0 +1,27 @@
+{
+  "name": "@asyncapihub/plugin-waiting-list",
+  "version": "0.1.0",
+  "description": "Make AsyncAPI Hub implement a waiting list when someone signs up.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fran Mendez <fmvilas@gmail.com>",
+  "license": "Apache-2.0",
+  "asyncapihub": {
+    "hooks": {
+      "auth:github": ["src/hooks/signin.js"],
+      "server:middlewares": ["src/hooks/middleware.js"],
+      "server:routes": [{
+        "path": "src/hooks/route.js",
+        "params": { "urlPath": "/landing/waiting-list" }
+      }]
+    },
+    "pages": {
+      "/landing/waiting-list": {
+        "session": false,
+        "file": "src/pages/waiting-list.js"
+      }
+    }
+  }
+}

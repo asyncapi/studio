@@ -4,6 +4,7 @@ const next = require('next');
 const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
+const pipeline = require('./lib/pipeline');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
@@ -29,6 +30,12 @@ app.prepare().then(() => {
     console.log('Trusting proxy...');
     server.set('trust proxy', true);
   }
+
+  server.use((req, res, next) => {
+    req.nextApp = app;
+    req.nextHandle = handle;
+    next();
+  });
 
   server.use(bodyParser.text());
   server.use(bodyParser.json());
@@ -66,21 +73,16 @@ app.prepare().then(() => {
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
 
-  server.get('/landing/waiting-list', (req, res) => {
-    if (!req.user) {
-      res.statusCode = 404;
-      return app.render(req, res, '/_error', {});
+  pipeline.get('server:routes').forEach(step => {
+    let method = 'get';
+    if (step.params.method && ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(step.params.method.toLowerCase())) {
+      method = step.params.method;
     }
-
-    handle(req, res);
+    server[method](step.params.urlPath, step.target);
   });
 
-  server.use((req, res, next) => {
-    if (req.user && !(req.user.featureFlags && req.user.featureFlags.betaActivated)) {
-      req.logout();
-    }
-
-    next();
+  pipeline.get('server:middlewares').forEach(step => {
+    server.use(step.target);
   });
 
   // SESSION REQUIRED

@@ -3,6 +3,7 @@ module.exports = {
     "browser": true,
     "es6": true,
     "node": true,
+    "jest/globals": true,
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "globals": {
@@ -18,7 +19,8 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "jest",
   ],
   "rules": {
     "react/react-in-jsx-scope": "off",

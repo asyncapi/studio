@@ -9,6 +9,7 @@
     "dev": "nodemon src/main.js",
     "build": "next build",
     "start": "node src/main.js",
+    "test": "jest",
     "db:migrate": "node scripts/migrate.js",
     "prisma:generate": "prisma generate"
   },
@@ -27,8 +28,10 @@
     "@zeit/next-css": "^1.0.1",
     "analytics-node": "^3.4.0-beta.1",
     "archiver": "^3.1.1",
+    "async": "^3.2.0",
     "autoprefixer": "^9.7.4",
     "body-parser": "^1.19.0",
+    "chalk": "^4.0.0",
     "codemirror": "^5.52.0",
     "connect-redis": "^4.0.4",
     "css-loader": "^3.4.2",
@@ -60,7 +63,9 @@
   },
   "devDependencies": {
     "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^23.9.0",
     "eslint-plugin-react": "^7.18.3",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.2"
   }
 }

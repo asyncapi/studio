@@ -2,8 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const config = require('../lib/config');
-const mailchimp = require('../lib/mailchimp');
-const segment = require('../lib/segment');
+const pipeline = require('../lib/pipeline');
 const users = require('../handlers/users');
 const isAuthenticated = require('../middlewares/is-authenticated');
 
@@ -54,13 +53,9 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
-    if (!req.user.featureFlags || !req.user.featureFlags.betaActivated) {
-      res.redirect('/landing/waiting-list');
-      mailchimp.addUserToWaitingList(req.user);
-      segment.logAddUserToWaitlist(req.user);
-      return;
-    }
-    const redirectUrl = req.session.redirectUrl || null;
-    req.session.redirectUrl = null;
-    res.redirect(redirectUrl || '/');
+    pipeline.exec('auth:github', { req, res, config }).finally(() => {
+      const redirectUrl = req.session.redirectUrl || null;
+      req.session.redirectUrl = null;
+      res.redirect(redirectUrl || '/');
+    });
   });
