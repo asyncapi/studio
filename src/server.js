@@ -4,7 +4,7 @@ const next = require('next');
 const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
-const serverHooks = require('./lib/server-hooks');
+const serverPipelines = require('./lib/server-pipelines');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
@@ -73,9 +73,9 @@ app.prepare().then(() => {
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
 
-  serverHooks.configure(server);
+  serverPipelines.configure(server);
   server.use(userPublicInfoMiddleware);
-  serverHooks.configure(server, true);
+  serverPipelines.configure(server, true);
 
   // SESSION REQUIRED
   server.use('/settings', isAuthenticated, settingsRoute);
@@ -89,9 +89,12 @@ app.prepare().then(() => {
   server.use('/directory', isAuthenticated);
   // End
 
-  server.get('*', (req, res) => {
-    return handle(req, res);
+  server.get('/_plugins/*', (req, res, next) => {
+    res.status(404);
+    app.render(req, res, '/404.js', {});
   });
+
+  server.get('*', handle); // Next.js route handler
 
   /* eslint-disable no-console */
   server.listen(config.app.port, (err) => {

@@ -3,3 +3,5 @@ node_modules
 cache/*
 !cache/.gitkeep
 .env
+src/pages/_plugins/*
+!src/pages/_plugins/[...].js

@@ -10,17 +10,16 @@
   "license": "Apache-2.0",
   "asyncapihub": {
     "hooks": {
-      "auth:github": ["src/hooks/signin.js"],
-      "server:middlewares": ["src/hooks/middleware.js"],
-      "server:routes": [{
-        "path": "src/hooks/route.js",
-        "params": { "urlPath": "/landing/waiting-list" }
-      }]
+      "auth:github": ["src/hooks/signin.js"]
     },
+    "middlewares": [
+      { "path": "src/hooks/middleware.js", "session": false }
+    ],
     "pages": {
       "/landing/waiting-list": {
         "session": false,
-        "file": "src/pages/waiting-list.js"
+        "pagePath": "src/pages/waiting-list.js",
+        "routeHandlerPath": "src/routes/waiting-list.js"
       }
     }
   }

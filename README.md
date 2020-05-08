@@ -14,14 +14,16 @@
 
 ### Customizable server areas
 
-|Area|Type|Description|
-|---|---|---|
-| Routes | JS Object | Add new routes to the server.
+|Area|Description|
+|---|---|
+| Pages | Register new pages.
+| Routes | Register routes in the server.
+| Middlewares | Register middlewares in the server.
+| Events | Subscribe to server events and react accordingly.
+| Hooks | Subscribe to hooks and modify behavior.
 
-### Server hooks
+#### Server hooks
 
 |Hook|Description|
 |---|---|
 | `auth:github` | Triggered when user signs in using Github.
-| `server:middlewares` | Attach your plugin middlewares to the Express server pipeline.
-| `server:routes` | Attach your own plugin routes to the Express server.
