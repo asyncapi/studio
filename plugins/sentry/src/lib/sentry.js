@@ -25,3 +25,10 @@ sentry.captureMessage = (reason, severity) => {
   if (isDevelopment() || !isInitialized) return;
   Sentry.captureMessage(reason, severity);
 };
+
+sentry.setUser = (user) => {
+  if (!user) return Sentry.setUser(null);
+  Sentry.setUser({ id: user.id, email: user.email });
+};
+
+

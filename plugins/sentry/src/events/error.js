@@ -1,6 +1,7 @@
-const { init, captureException } = require('../lib/sentry');
+const { init, captureException, setUser } = require('../lib/sentry');
 
-module.exports = ({ error, config }) => {
+module.exports = ({ user, error, config }) => {
   init(config);
+  setUser(user);
   captureException(error);
 };

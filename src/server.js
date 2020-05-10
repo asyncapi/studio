@@ -99,7 +99,7 @@ app.prepare().then(() => {
   server.get('*', handle); // Next.js route handler
 
   server.use((error, req, res, next) => {
-    events.emit('server:error', { error, config });
+    events.emit('server:error', { req, user: req.user, error, config });
 
     if (req.accepts('html')) {
       res.status(error.status || 500);
