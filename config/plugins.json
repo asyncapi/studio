@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "./plugins/waiting-list",
-    "./plugins/sentry"
+    "@asyncapihub/plugin-waiting-list",
+    "@asyncapihub/plugin-sentry"
   ]
 }

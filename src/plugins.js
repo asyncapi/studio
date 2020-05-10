@@ -18,25 +18,25 @@ const FORBIDDEN_HOOKS = [ROUTES_PIPELINE_NAME, AUTH_ROUTES_PIPELINE_NAME, MW_PIP
 
 (async function () {
   for (let pluginPath of plugins) {
-    let absolutePath;
+    let absolutePluginPath;
 
     if (pluginPath.startsWith(`.${path.sep}`)) {
-      absolutePath = path.resolve(__dirname, '..', pluginPath, 'package.json');
+      absolutePluginPath = path.resolve(__dirname, '..', pluginPath);
     } else {
-      absolutePath = path.resolve(__dirname, '..', 'node_modules', pluginPath, 'package.json');
+      absolutePluginPath = path.resolve(__dirname, '..', 'node_modules', pluginPath);
     }
 
-    let packageJSON = await readFile(absolutePath);
+    let packageJSON = await readFile(path.resolve(absolutePluginPath, 'package.json'));
     packageJSON = JSON.parse(packageJSON);
 
     const { name, version } = packageJSON;
 
     logLineWithBlock('PLUGIN', `${name}@${version}`, 'Registering plugin...');
 
-    registerHooks(packageJSON, pluginPath);
-    registerMiddlewares(packageJSON, pluginPath);
-    registerEvents(packageJSON, pluginPath);
-    await registerPages(packageJSON, pluginPath);
+    registerHooks(packageJSON, absolutePluginPath);
+    registerMiddlewares(packageJSON, absolutePluginPath);
+    registerEvents(packageJSON, absolutePluginPath);
+    await registerPages(packageJSON, absolutePluginPath);
   }
 })();
 
