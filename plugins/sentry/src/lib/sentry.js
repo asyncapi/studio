@@ -7,11 +7,12 @@ function isDevelopment() {
   return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 }
 
-sentry.init = (config) => {
+sentry.init = (config, packageJSON) => {
   if (isDevelopment() || isInitialized) return;
   Sentry.init({
     dsn: config.plugins.sentry.dsn,
     environment: process.env.NODE_ENV || 'development',
+    release: `${packageJSON.name}@${packageJSON.version}`,
   });
   isInitialized = true;
 };
