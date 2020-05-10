@@ -33,15 +33,15 @@ const FORBIDDEN_HOOKS = [ROUTES_PIPELINE_NAME, AUTH_ROUTES_PIPELINE_NAME, MW_PIP
 
     logLineWithBlock('PLUGIN', `${name}@${version}`, 'Registering plugin...');
 
-    registerHooks(packageJSON, absolutePluginPath);
-    registerMiddlewares(packageJSON, absolutePluginPath);
-    registerEvents(packageJSON, absolutePluginPath);
+    registerHooks(packageJSON);
+    registerMiddlewares(packageJSON);
+    registerEvents(packageJSON);
     await registerPages(packageJSON, absolutePluginPath);
   }
 })();
 
-function registerHooks(packageJSON, pluginPath) {
-  const { asyncapihub } = packageJSON;
+function registerHooks(packageJSON) {
+  const { asyncapihub, name: pluginName } = packageJSON;
 
   if (asyncapihub.hooks) {
     const hookPoints = Object.keys(asyncapihub.hooks).filter(hookName => !FORBIDDEN_HOOKS.includes(hookName));
@@ -49,7 +49,7 @@ function registerHooks(packageJSON, pluginPath) {
       const hookTargetPaths = asyncapihub.hooks[hookPoint];
       hookTargetPaths.forEach(hookTargetPath => {
         try {
-          const hookTarget = require(path.resolve(__dirname, '..', pluginPath, hookTargetPath));
+          const hookTarget = require(path.join(pluginName, hookTargetPath));
           pipeline.append(hookPoint, hookTarget);
 
           logSuccessLine(`Hook ${hookPoint} ${hookTargetPath}`, { highlightedWords: [hookPoint] });
@@ -61,15 +61,15 @@ function registerHooks(packageJSON, pluginPath) {
   }
 }
 
-function registerEvents(packageJSON, pluginPath) {
-  const { asyncapihub } = packageJSON;
+function registerEvents(packageJSON) {
+  const { asyncapihub, name: pluginName } = packageJSON;
 
   if (asyncapihub.events) {
     Object.keys(asyncapihub.events).forEach(eventName => {
       const eventTargetPaths = asyncapihub.events[eventName];
       eventTargetPaths.forEach(eventTargetPath => {
         try {
-          const eventHandler = require(path.resolve(__dirname, '..', pluginPath, eventTargetPath));
+          const eventHandler = require(path.join(pluginName, eventTargetPath));
           events.on(eventName, eventHandler);
 
           logSuccessLine(`Event ${eventName} ${eventTargetPath}`, { highlightedWords: [eventName] });
@@ -81,8 +81,8 @@ function registerEvents(packageJSON, pluginPath) {
   }
 }
 
-function registerMiddlewares(packageJSON, pluginPath) {
-  const { asyncapihub } = packageJSON;
+function registerMiddlewares(packageJSON) {
+  const { asyncapihub, name: pluginName } = packageJSON;
 
   if (asyncapihub.middlewares) {
     asyncapihub.middlewares.forEach(middlewareObject => {
@@ -91,7 +91,7 @@ function registerMiddlewares(packageJSON, pluginPath) {
       try {
         middlewarePath = middlewareObject.path;
         const needsAuth = !!middlewareObject.session;
-        const middleware = require(path.resolve(__dirname, '..', pluginPath, middlewarePath));
+        const middleware = require(path.join(pluginName, middlewarePath));
         pipeline.append(`__server:middlewares${needsAuth ? ':authenticated' : ''}__`, middleware);
 
         logSuccessLine(`Middleware ${middlewarePath} ${needsAuth ? 'requires' : 'does not require' } authentication`, { highlightedWords: [middlewarePath] });
@@ -102,14 +102,14 @@ function registerMiddlewares(packageJSON, pluginPath) {
   }
 }
 
-async function registerPages(packageJSON, pluginPath) {
+async function registerPages(packageJSON, absolutePluginPath) {
   const { asyncapihub, name: pluginName } = packageJSON;
 
   if (asyncapihub.pages) {
     const pagePaths = Object.keys(asyncapihub.pages);
     await Promise.all(pagePaths.map(async (pagePath) => {
       const pageDefinition = asyncapihub.pages[pagePath];
-      const linkTarget = path.resolve(pluginPath, pageDefinition.pagePath);
+      const linkTarget = path.resolve(absolutePluginPath, pageDefinition.pagePath);
       const linkPath = path.resolve(__dirname, 'pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
       const relativeTargetPath = path.relative(path.resolve(__dirname, '..'), linkTarget);
 
@@ -130,7 +130,7 @@ async function registerPages(packageJSON, pluginPath) {
       }
 
       try {
-        const routeHandlerPath = require(path.resolve(pluginPath, pageDefinition.routeHandlerPath));
+        const routeHandlerPath = require(path.join(pluginName, pageDefinition.routeHandlerPath));
         pipeline.append(`__server:routes${pageDefinition.session ? ':authenticated' : ''}__`, routeHandlerPath, { urlPath: pagePath, pluginName });
       } catch (e) {
         logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });

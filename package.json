@@ -1,5 +1,5 @@
 {
-  "name": "playground-react",
+  "name": "asyncapihub",
   "version": "0.1.0",
   "main": "src/server.js",
   "scripts": {

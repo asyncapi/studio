@@ -99,7 +99,7 @@ app.prepare().then(() => {
   server.get('*', handle); // Next.js route handler
 
   server.use((error, req, res, next) => {
-    events.emit('server:error', { req, user: req.user, error, config });
+    events.emit('server:error', { req, user: req.user, error });
 
     console.error(error);
 
@@ -129,8 +129,8 @@ app.prepare().then(() => {
 
 process
   .on('unhandledRejection', (reason, promise) => {
-    events.emit('process:unhandledRejection', { reason, promise, config });
+    events.emit('process:unhandledRejection', { reason, promise });
   })
   .on('uncaughtException', error => {
-    events.emit('process:uncaughtException', { error, config });
+    events.emit('process:uncaughtException', { error });
   });
