@@ -2,9 +2,6 @@
   "name": "playground-react",
   "version": "0.1.0",
   "main": "src/server.js",
-  "engines": {
-    "node": "14.x"
-  },
   "scripts": {
     "dev": "nodemon src/main.js",
     "build": "next build",
