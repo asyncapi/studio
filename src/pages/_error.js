@@ -16,9 +16,11 @@ export default function ErrorPage({ title, detail, type, url }) {
           <p className="text-gray-400">
             {detail}
           </p>
-          <p className="text-gray-600">
-            <a href={url} className="hover:text-teal-400 transition duration-500 ease-in-out" target="_blank" rel="noopener noreferrer">{type} <FaExternalLinkAlt className="inline-block text-xs ml-1 mb-1" /></a>
-          </p>
+          { url && (
+            <p className="text-gray-600">
+              <a href={url} className="hover:text-teal-400 transition duration-500 ease-in-out" target="_blank" rel="noopener noreferrer">{type} <FaExternalLinkAlt className="inline-block text-xs ml-1 mb-1" /></a>
+            </p>
+          ) }
         </div>
       </div>
     </div>
@@ -26,7 +28,12 @@ export default function ErrorPage({ title, detail, type, url }) {
 }
 
 export async function getServerSideProps({ req }) {
+  const error = req.err && req.err.toJS ? req.err.toJS() : {
+    title: 'Unexpected Error',
+    detail: req.err ? req.err.message : 'Something went wrong on our side.',
+  };
+
   return {
-    props: req.err.toJS(),
+    props: error,
   }
 }

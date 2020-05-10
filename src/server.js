@@ -101,6 +101,8 @@ app.prepare().then(() => {
   server.use((error, req, res, next) => {
     events.emit('server:error', { req, user: req.user, error, config });
 
+    console.error(error);
+
     if (req.accepts('html')) {
       res.status(error.status || 500);
       req.err = error;

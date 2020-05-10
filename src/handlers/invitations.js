@@ -1,5 +1,6 @@
 const db = require('../lib/db');
 const { formatList, formatRow } = require('../lib/formatter');
+const orgs = require('./orgs');
 
 const invitations = module.exports = {};
 
@@ -80,21 +81,7 @@ invitations.list = async (organizationId) => {
 invitations.accept = async (uuid, userId) => {
   const { id, organizationId, role, scope } = await invitations.get(uuid, true);
 
-  const result = db.organizationsUsers.upsert({
-    where: {
-      userId,
-      organizationId,
-    },
-    create: {
-      userId,
-      organizationId,
-      role,
-    },
-    update: {
-      role,
-    }
-  });
-
+  const result = await orgs.addUser(userId, organizationId, role);
   if (scope === 'one') invitations.remove(id);
 
   return formatRow(result);

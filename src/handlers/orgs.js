@@ -26,19 +26,33 @@ orgs.list = async (userId) => {
 };
 
 orgs.get = async (id, userId) => {
-  const result = await db.organizations.findMany({
+  if (userId) {
+    const result = await db.organizations.findMany({
+      where: {
+        OR: [{
+          creatorId: userId,
+          id,
+        }, {
+          id,
+          organizationUsers: {
+            some: {
+              userId,
+            }
+          },
+        }]
+      },
+      include: {
+        organizationUsers: true,
+        plan: true,
+      },
+    });
+
+    return formatRow(result[0]);
+  }
+
+  const result = await db.organizations.findOne({
     where: {
-      OR: [{
-        creatorId: userId,
-        id,
-      }, {
-        id,
-        organizationUsers: {
-          some: {
-            userId,
-          }
-        },
-      }]
+      id,
     },
     include: {
       organizationUsers: true,
@@ -46,7 +60,7 @@ orgs.get = async (id, userId) => {
     },
   });
 
-  return formatRow(result[0]);
+  return formatRow(result);
 };
 
 orgs.getForUser = async (userId, id) => {
@@ -139,29 +153,33 @@ orgs.patch = async (id, data, userId) => {
 };
 
 orgs.findUser = async (userId, organizationId) => {
-  return db.organizationsUsers.findOne({
+  const result = await db.organizationsUsers.findMany({
     where: {
       userId,
       organizationId,
     },
   });
+
+  return result[0];
 };
 
 orgs.addUser = async (userId, organizationId, role) => {
-  role = role.toLowerCase();
+  const userInOrg = await orgs.findUser(userId, organizationId);
+  if (userInOrg) return userInOrg;
 
-  return db.organizationsUsers.upsert({
-    where: {
-      userId,
-      organizationId,
-    },
-    create: {
-      userId,
-      organizationId,
-      role,
-    },
-    update: {
-      role,
+  return db.organizationsUsers.create({
+    data: {
+      role: role.toLowerCase(),
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+      organization: {
+        connect: {
+          id: organizationId,
+        },
+      },
     }
   });
 };

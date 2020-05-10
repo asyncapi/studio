@@ -12,7 +12,7 @@ router.get('/:uuid/accept', async (req, res, next) => {
     const { uuid } = req.params;
     if (req.isAuthenticated()) {
       const invitation = await getInvitation(uuid, true);
-      const org = await getOrg(invitation.organizationId, req.user.id);
+      const org = await getOrg(invitation.organizationId);
       if (!org) {
         throw new HubError({
           type: 'organization-invite-org-not-found',

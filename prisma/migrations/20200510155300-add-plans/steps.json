@@ -31,6 +31,17 @@
       "arity": "Optional"
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "invitations",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
       "tag": "CreateField",
       "model": "organizations",
       "field": "planName",

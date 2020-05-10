@@ -23,7 +23,7 @@ model apis {
 model invitations {
   createdAt       DateTime?     @default(now()) @map(name: "created_at")
   expiresAt       DateTime      @map(name: "expires_at")
-  id              Int           @default(autoincrement())
+  id              Int           @default(autoincrement()) @id
   inviterId       Int           @map(name: "inviter_id")
   organizationId  Int           @map(name: "organization_id")
   role            String
