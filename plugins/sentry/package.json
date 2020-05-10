@@ -1,0 +1,27 @@
+{
+  "name": "@asyncapihub/plugin-sentry",
+  "version": "0.1.0",
+  "description": "Sends errors to Sentry",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fran Mendez <fmvilas@gmail.com>",
+  "license": "Apache-2.0",
+  "asyncapihub": {
+    "events": {
+      "server:error": [
+        "src/events/error.js"
+      ],
+      "process.uncaughtException": [
+        "src/events/error.js"
+      ],
+      "process:unhandledRejection": [
+        "src/events/unhandled-rejection.js"
+      ]
+    }
+  },
+  "dependencies": {
+    "@sentry/node": "^5.15.5"
+  }
+}

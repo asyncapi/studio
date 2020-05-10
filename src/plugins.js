@@ -3,6 +3,7 @@ const path = require('path');
 const { promisify } = require('util');
 const { logLineWithBlock, logSuccessLine, logErrorLine, logErrorLineWithLongMessage } = require('./lib/logger');
 const pipeline = require('./lib/pipeline');
+const events = require('./lib/events');
 const { plugins } = require('../config/plugins.json');
 
 const readFile = promisify(fs.readFile);
@@ -15,26 +16,29 @@ const MW_PIPELINE_NAME = '__server:middlewares__';
 const AUTH_MW_PIPELINE_NAME = '__server:middlewares:authenticated__';
 const FORBIDDEN_HOOKS = [ROUTES_PIPELINE_NAME, AUTH_ROUTES_PIPELINE_NAME, MW_PIPELINE_NAME, AUTH_MW_PIPELINE_NAME];
 
-Promise.all(plugins.map(async (pluginPath) => {
-  let absolutePath;
+(async function () {
+  for (let pluginPath of plugins) {
+    let absolutePath;
 
-  if (pluginPath.startsWith(`.${path.sep}`)) {
-    absolutePath = path.resolve(__dirname, '..', pluginPath, 'package.json');
-  } else {
-    absolutePath = path.resolve(__dirname, '..', 'node_modules', pluginPath, 'package.json');
+    if (pluginPath.startsWith(`.${path.sep}`)) {
+      absolutePath = path.resolve(__dirname, '..', pluginPath, 'package.json');
+    } else {
+      absolutePath = path.resolve(__dirname, '..', 'node_modules', pluginPath, 'package.json');
+    }
+
+    let packageJSON = await readFile(absolutePath);
+    packageJSON = JSON.parse(packageJSON);
+
+    const { name, version } = packageJSON;
+
+    logLineWithBlock('PLUGIN', `${name}@${version}`, 'Registering plugin...');
+
+    registerHooks(packageJSON, pluginPath);
+    registerMiddlewares(packageJSON, pluginPath);
+    registerEvents(packageJSON, pluginPath);
+    await registerPages(packageJSON, pluginPath);
   }
-
-  let packageJSON = await readFile(absolutePath);
-  packageJSON = JSON.parse(packageJSON);
-
-  const { name, version } = packageJSON;
-
-  logLineWithBlock('PLUGIN', `${name}@${version}`, 'Registering plugin...');
-
-  registerHooks(packageJSON, pluginPath);
-  registerMiddlewares(packageJSON, pluginPath);
-  registerPages(packageJSON, pluginPath);
-}));
+})();
 
 function registerHooks(packageJSON, pluginPath) {
   const { asyncapihub } = packageJSON;
@@ -51,6 +55,26 @@ function registerHooks(packageJSON, pluginPath) {
           logSuccessLine(`Hook ${hookPoint} ${hookTargetPath}`, { highlightedWords: [hookPoint] });
         } catch (e) {
           logErrorLine(`Hook ${hookPoint} ${hookTargetPath}`, { highlightedWords: [hookPoint] });
+        }
+      });
+    });
+  }
+}
+
+function registerEvents(packageJSON, pluginPath) {
+  const { asyncapihub } = packageJSON;
+
+  if (asyncapihub.events) {
+    Object.keys(asyncapihub.events).forEach(eventName => {
+      const eventTargetPaths = asyncapihub.events[eventName];
+      eventTargetPaths.forEach(eventTargetPath => {
+        try {
+          const eventHandler = require(path.resolve(__dirname, '..', pluginPath, eventTargetPath));
+          events.on(eventName, eventHandler);
+
+          logSuccessLine(`Event ${eventName} ${eventTargetPath}`, { highlightedWords: [eventName] });
+        } catch (e) {
+          logErrorLineWithLongMessage(`Event ${eventName} ${eventTargetPath}`, e.message, { highlightedWords: [eventName] });
         }
       });
     });
@@ -78,12 +102,12 @@ function registerMiddlewares(packageJSON, pluginPath) {
   }
 }
 
-function registerPages(packageJSON, pluginPath) {
+async function registerPages(packageJSON, pluginPath) {
   const { asyncapihub, name: pluginName } = packageJSON;
 
   if (asyncapihub.pages) {
     const pagePaths = Object.keys(asyncapihub.pages);
-    pagePaths.forEach(async (pagePath) => {
+    await Promise.all(pagePaths.map(async (pagePath) => {
       const pageDefinition = asyncapihub.pages[pagePath];
       const linkTarget = path.resolve(pluginPath, pageDefinition.pagePath);
       const linkPath = path.resolve(__dirname, 'pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
@@ -114,6 +138,6 @@ function registerPages(packageJSON, pluginPath) {
       }
 
       logSuccessLine(`Page ${pagePath} ${relativeTargetPath}`, { highlightedWords: [pagePath] });
-    });
+    }));
   }
 }

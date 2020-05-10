@@ -3,7 +3,7 @@ const Analytics = require('analytics-node');
 class Segment {
   constructor(config) {
     this.config = config;
-    this.analytics = new Analytics(config.segment.write_key);
+    this.analytics = new Analytics(config.plugins.segment.write_key);
   }
 
   logAddUserToWaitlist(user) {

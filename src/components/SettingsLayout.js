@@ -1,6 +1,6 @@
 import AppLayout from '../components/AppLayout'
 
-export default function SettingsLayout ({ children, active, organizations = [], selectedOrg, selectedSection = 'basic', featureFlags = {} }) {
+export default function SettingsLayout ({ children, active, organizations = [], selectedOrg, selectedSection = 'basic', plan = {} }) {
   const getTitle = () => {
     switch(active) {
       case 'profile':

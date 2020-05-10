@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const passport = require('passport');
 const config = require('./lib/config');
 const serverPipelines = require('./lib/server-pipelines');
+const logger = require('./lib/logger');
+const events = require('./lib/events');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
@@ -96,10 +98,37 @@ app.prepare().then(() => {
 
   server.get('*', handle); // Next.js route handler
 
+  server.use((error, req, res, next) => {
+    events.emit('server:error', { error, config });
+
+    if (req.accepts('html')) {
+      res.status(error.status || 500);
+      req.err = error;
+      return req.nextApp.render(req, res, '/_error');
+    }
+
+    res.status(error.status || 500).send(error.toJS ? error.toJS() : {
+      type: 'unexpected-error',
+      title: 'Unexpected error',
+      detail: 'Something went wrong on our side.',
+      status: 500,
+    });
+  });
+
   /* eslint-disable no-console */
   server.listen(config.app.port, (err) => {
     if (err) throw err;
     const { protocol, hostname, port } = config.app;
-    console.log(`App ready on ${protocol}://${hostname}:${port}`);
+    logger.logLineWithBlock('SERVER :rocket:', 'App is ready!', `${protocol}://${hostname}:${port}`, {
+      colorFn: logger.chalk.inverse.cyanBright.bold,
+    });
   });
 });
+
+process
+  .on('unhandledRejection', (reason, promise) => {
+    events.emit('process:unhandledRejection', { reason, promise, config });
+  })
+  .on('uncaughtException', error => {
+    events.emit('process:uncaughtException', { error, config });
+  });

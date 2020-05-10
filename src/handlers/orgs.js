@@ -16,13 +16,17 @@ orgs.list = async (userId) => {
         },
       }]
     },
+    include: {
+      organizationUsers: true,
+      plan: true,
+    },
   });
 
   return formatList(result);
 };
 
 orgs.get = async (id, userId) => {
-  const result = await db.organizations.findOne({
+  const result = await db.organizations.findMany({
     where: {
       OR: [{
         creatorId: userId,
@@ -36,9 +40,13 @@ orgs.get = async (id, userId) => {
         },
       }]
     },
+    include: {
+      organizationUsers: true,
+      plan: true,
+    },
   });
 
-  return formatRow(result);
+  return formatRow(result[0]);
 };
 
 orgs.getForUser = async (userId, id) => {
@@ -57,6 +65,9 @@ orgs.getForUser = async (userId, id) => {
           },
         }]
       },
+      include: {
+        plan: true,
+      },
     });
 
     return formatRow(result);
@@ -73,6 +84,9 @@ orgs.getForUser = async (userId, id) => {
           }
         },
       }]
+    },
+    include: {
+      plan: true,
     },
   });
 
@@ -98,6 +112,9 @@ orgs.create = async (name, creatorId) => {
           id: creatorId,
         }
       }
+    },
+    include: {
+      plan: true,
     }
   });
 
@@ -115,6 +132,9 @@ orgs.patch = async (id, data, userId) => {
       },
     },
     data,
+    include: {
+      plan: true,
+    },
   });
 };
 
@@ -163,6 +183,7 @@ orgs.listUsers = async (organizationId) => {
           organizationId,
         },
       },
+      plan: true,
     },
   });
 

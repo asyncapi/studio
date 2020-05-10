@@ -4,7 +4,12 @@ const users = module.exports = {};
 
 users.findById = async (id) => {
   return await db.users.findOne({
-    id,
+    where: {
+      id,
+    },
+    include: {
+      plan: true,
+    }
   });
 };
 
@@ -51,6 +56,18 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company 
       username,
       avatar,
       company,
+    },
+    include: {
+      plan: true,
+      organizationsForUser: {
+        include: {
+          organization: {
+            include: {
+              plan: true,
+            }
+          }
+        }
+      },
     }
   });
 };
@@ -61,5 +78,8 @@ users.patch = async (id, data) => {
       id,
     },
     data,
+    include: {
+      plan: true,
+    }
   });
 };

@@ -37,13 +37,18 @@
     "port": 5000,
     "hostname": "test.asyncapi.local"
   },
-  "mailchimp": {
-    "api_key": null,
+  "plugins": {
+    "sentry": {
+      "dsn": null
+    },
     "waiting_list": {
-      "audience_id": null
+      "segment": {
+        "write_key": null
+      },
+      "mailchimp": {
+        "api_key": null,
+        "audience_id": null
+      }
     }
-  },
-  "segment": {
-    "write_key": null
   }
 }

@@ -3,7 +3,7 @@ import moment from 'moment'
 import SettingsLayout from '../../../components/SettingsLayout'
 import AppContext from '../../../contexts/AppContext'
 
-export default function OrganizationPage ({ organizations, selectedOrg, users = [] }) {
+export default function OrganizationPage ({ organizations, selectedOrg, users = [], plan }) {
   const org = organizations.find(o => o.id == selectedOrg)
   const [name, setName] = useState(org.name)
   const [changingName, setChangingName] = useState(false)

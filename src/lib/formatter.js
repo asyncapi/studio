@@ -9,6 +9,11 @@ formatter.formatRow = (row) => {
       row.computedAsyncapi = JSON.parse(row.computedAsyncapi);
     } catch (e) {}
   }
+  if (typeof row.restrictions === 'string') {
+    try {
+      row.restrictions = JSON.parse(row.restrictions);
+    } catch (e) {}
+  }
   Object.keys(row).forEach(key => {
     if (typeof row[key] === 'object' && row[key] !== null) row[key] = formatter.formatRow(row[key]);
     if (Array.isArray(row[key])) row[key] = formatter.formatList(row[key]);

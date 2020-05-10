@@ -8,6 +8,8 @@ module.exports = (req, res, next) => {
     email: req.user.email,
     avatar: req.user.avatar,
     company: req.user.company,
+    plan: req.user.plan,
+    organizationsForUser: req.user.organizationsForUser,
   };
 
   next();
