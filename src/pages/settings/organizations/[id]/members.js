@@ -12,7 +12,7 @@ export default function OrganizationPage({ organizations, selectedOrg, users = [
   const [changeRoleModalDetails, showChangeRoleModal] = useState()
   const { user: loggedInUser } = useContext(AppContext)
 
-  const admins = users.filter(m => m.role === 'admin')
+  const admins = users.filter(u => u.organizationsForUser[0].role === 'admin')
   const org = organizations.find(o => o.id == selectedOrg)
 
   const loggedInUserIsAdmin = admins.find(a => a.id === loggedInUser.id)
