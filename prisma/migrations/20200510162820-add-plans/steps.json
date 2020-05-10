@@ -56,31 +56,6 @@
           "model": "organizations",
           "field": "planName"
         },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "organizations",
-          "field": "planName"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "\"free\""
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "organizations",
-          "field": "planName"
-        },
         "directive": "map"
       }
     },
@@ -150,31 +125,6 @@
       "field": "planName",
       "type": "String",
       "arity": "Optional"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "users",
-          "field": "planName"
-        },
-        "directive": "default"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "users",
-          "field": "planName"
-        },
-        "directive": "default"
-      },
-      "argument": "",
-      "value": "\"free\""
     },
     {
       "tag": "CreateDirective",
