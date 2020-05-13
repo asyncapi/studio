@@ -70,7 +70,6 @@ export default function Editor ({ initialAPI, projects }) {
       />
       <div className="flex flex-row flex-1 overflow-hidden">
         <div className="flex flex-1 flex-col max-w-1/2">
-          {/* <CodeMirrorWrapper code={initialCode} onCodeChange={onCodeChange} /> */}
           <MonacoEditorWrapper
             language="yaml"
             theme="asyncapi-theme"

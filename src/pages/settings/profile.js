@@ -3,7 +3,7 @@ import SettingsLayout from '../../components/SettingsLayout'
 export default function ProfilePage ({ displayName, username, email, company, avatar, organizations }) {
   return (
     <SettingsLayout
-      active="profile"
+      activeSection="profile"
       organizations={organizations}
     >
       <form method="POST">

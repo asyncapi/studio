@@ -9,7 +9,7 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
   const [changingName, setChangingName] = useState(false)
   const { user: loggedInUser } = useContext(AppContext)
 
-  const admins = users.filter(m => m.role === 'admin')
+  const admins = users.filter(u => u.organizationsForUser[0].role === 'admin')
   const loggedInUserIsAdmin = admins.find(a => a.id === loggedInUser.id)
 
   const onSubmitChangeName = (e) => {
@@ -86,11 +86,11 @@ export default function OrganizationPage ({ organizations, selectedOrg, users = 
 
   return (
     <SettingsLayout
-      active="orgs"
+      activeSection="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
       featureFlags={org.featureFlags}
-      selectedSection="basic"
+      selectedOrgSection="basic"
     >
       { loggedInUserIsAdmin ? renderWithPermissions() : renderNoPermissions() }
     </SettingsLayout>

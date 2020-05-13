@@ -13,8 +13,10 @@ export default function DownloadAsButton ({ code }) {
     document.addEventListener("click", unregisterClickAway);
 
     document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
-      iframe.contentWindow.document.addEventListener("click", unregisterClickAway);
+      if (iframe.attributes.src.value.startsWith('/') && !iframe.attributes.src.value.startsWith('//')) {
+        iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
+        iframe.contentWindow.document.addEventListener("click", unregisterClickAway);
+      }
     })
   }
 
@@ -22,7 +24,9 @@ export default function DownloadAsButton ({ code }) {
     setOpen(false)
     document.removeEventListener("click", unregisterClickAway);
     document.querySelectorAll('iframe').forEach(iframe => {
-      iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
+      if (iframe.attributes.src.value.startsWith('/') && !iframe.attributes.src.value.startsWith('//')) {
+        iframe.contentWindow.document.removeEventListener("click", unregisterClickAway);
+      }
     })
   }
 

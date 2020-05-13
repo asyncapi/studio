@@ -7,7 +7,7 @@ import RemoveFromOrganizationModal from '../../../../components/RemoveFromOrgani
 import ChangeUserRoleModal from '../../../../components/ChangeUserRoleModal'
 import AppContext from '../../../../contexts/AppContext'
 
-export default function OrganizationPage({ organizations, selectedOrg, users = [] }) {
+export default function OrganizationMembersPage({ organizations, selectedOrg, users = [] }) {
   const [showRemoveFromOrganizationModal, setShowRemoveFromOrganizationModal] = useState()
   const [changeRoleModalDetails, showChangeRoleModal] = useState()
   const { user: loggedInUser } = useContext(AppContext)
@@ -20,10 +20,10 @@ export default function OrganizationPage({ organizations, selectedOrg, users = [
 
   return (
     <SettingsLayout
-      active="orgs"
+      activeSection="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
-      selectedSection="members"
+      selectedOrgSection="members"
     >
       {showRemoveFromOrganizationModal && (
         <RemoveFromOrganizationModal

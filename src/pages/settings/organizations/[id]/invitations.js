@@ -39,10 +39,10 @@ export default function OrganizationPage ({ organizations, selectedOrg, invitati
 
     return (
       <SettingsLayout
-        active="orgs"
+        activeSection="orgs"
         organizations={organizations}
         selectedOrg={selectedOrg}
-        selectedSection="invitations"
+        selectedOrgSection="invitations"
       >
         <div className="mb-4">
           {message}
@@ -54,10 +54,10 @@ export default function OrganizationPage ({ organizations, selectedOrg, invitati
 
   return (
     <SettingsLayout
-      active="orgs"
+      activeSection="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
-      selectedSection="invitations"
+      selectedOrgSection="invitations"
     >
       <div className="mb-12">
         <h3 className="text-xl mb-4">Create invitation link</h3>

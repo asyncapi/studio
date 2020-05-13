@@ -1,5 +1,6 @@
 const db = require('../lib/db');
 const { formatList, formatRow } = require('../lib/formatter');
+const HubError = require('../error');
 
 const orgs = module.exports;
 
@@ -65,7 +66,7 @@ orgs.get = async (id, userId) => {
 
 orgs.getForUser = async (userId, id) => {
   if (id) {
-    const result = await db.organizations.findOne({
+    const result = await db.organizations.findMany({
       where: {
         OR: [{
           creatorId: userId,
@@ -84,7 +85,7 @@ orgs.getForUser = async (userId, id) => {
       },
     });
 
-    return formatRow(result);
+    return formatRow(result[0]);
   }
 
   const result = await db.organizations.findMany({
@@ -136,7 +137,9 @@ orgs.create = async (name, creatorId) => {
 };
 
 orgs.patch = async (id, data, userId) => {
-  return db.organizations.update({
+  id = Number(id);
+
+  const organization = await db.organizations.findMany({
     where: {
       id,
       organizationUsers: {
@@ -144,12 +147,27 @@ orgs.patch = async (id, data, userId) => {
           userId,
         }
       },
+    }
+  });
+
+  if (!organization[0]) throw new HubError({
+    type: 'organization-not-found',
+    title: 'Organization not found',
+    detail: `Could not update organization with id ${id}. It doesn't exist or you're not part of it.`,
+    status: 422,
+  });
+
+  const result = await db.organizations.update({
+    where: {
+      id,
     },
     data,
     include: {
       plan: true,
     },
   });
+
+  return formatRow(result[0]);
 };
 
 orgs.findUser = async (userId, organizationId) => {
@@ -209,7 +227,9 @@ orgs.listUsers = async (organizationId) => {
 };
 
 orgs.makeUserAdmin = async (organizationId, userId) => {
-  return db.organizationsUsers.update({
+  organizationId = Number(organizationId);
+  userId = Number(userId);
+  return db.organizationsUsers.updateMany({
     where: {
       organizationId,
       userId,
@@ -221,7 +241,9 @@ orgs.makeUserAdmin = async (organizationId, userId) => {
 };
 
 orgs.makeUserMember = async (organizationId, userId) => {
-  return db.organizationsUsers.update({
+  organizationId = Number(organizationId);
+  userId = Number(userId);
+  return db.organizationsUsers.updateMany({
     where: {
       organizationId,
       userId,

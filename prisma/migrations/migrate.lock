@@ -3,5 +3,5 @@
 # Prisma Migrate lockfile v1
 # Read more about conflict resolution here: TODO
 
-20200510162820-add-plans
-20200510163316-default-free-plan
+20200513160943-add-plugin-data
+20200513161100-default-feature-flags-as-empty-object

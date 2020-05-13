@@ -1,3 +1,4 @@
+const { fromNextToExpressRoute } = require('next-route-to-express-route');
 const pipeline = require('./pipeline');
 const { logErrorLineWithBlock } = require('./logger');
 const isAuthenticated = require('../middlewares/is-authenticated');
@@ -13,20 +14,26 @@ serverPipelines.configure = (server, authenticated = false) => {
 };
 
 serverPipelines.route = (pipelineName, server) => step => {
-  if (!step.params.urlPath) {
-    logErrorLineWithBlock('ROUTE', pipelineName, `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, { highlightedWords: ['urlPath', step.params.pluginName] });
-    return;
-  }
+  try {
+    if (!step.params.urlPath) {
+      logErrorLineWithBlock('ROUTE', pipelineName, `Missing mandatory urlPath param on plugin ${step.params.pluginName}. Skipping...`, { highlightedWords: ['urlPath', step.params.pluginName] });
+      return;
+    }
 
-  let method = 'get';
-  if (step.params.method && ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(step.params.method.toLowerCase())) {
-    method = step.params.method;
-  }
+    let method = 'get';
+    if (step.params.method && ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'].includes(step.params.method.toLowerCase())) {
+      method = step.params.method;
+    }
 
-  if (pipelineName.endsWith(':authenticated__')) {
-    server[method](step.params.urlPath, isAuthenticated, step.target);
-  } else {
-    server[method](step.params.urlPath, step.target);
+    let urlPath = fromNextToExpressRoute(step.params.urlPath);
+
+    if (pipelineName.endsWith(':authenticated__')) {
+      server[method](urlPath, isAuthenticated, step.target);
+    } else {
+      server[method](urlPath, step.target);
+    }
+  } catch (e) {
+    console.error(e);
   }
 };
 

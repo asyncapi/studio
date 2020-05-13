@@ -6,7 +6,9 @@
     "src/components",
     "src/pages",
     "src/css",
-    "public"
+    "public",
+    "config/ui.json",
+    "plugins/billing/src/pages"
   ],
   "watch": [
     "**/*"

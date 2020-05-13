@@ -1,26 +1,25 @@
 import React from 'react'
 import App from 'next/app'
 import ReactGA from 'react-ga'
-import AppContext from '../contexts/AppContext';
+import AppContext from '../contexts/AppContext'
 import '../css/tailwind.css'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/material-palenight.css'
 
-class MyApp extends App {
-  static async getInitialProps({ isServer, Component, ctx }) {
-    let pageProps = {}
-    const { getServerSideProps } = Component
-    if (isServer && getServerSideProps) pageProps = await getServerSideProps(ctx)
+class AsyncApiHub extends App {
+  static async getInitialProps({ ctx }) {
+    if (!ctx || !ctx.req) return {}
+
+    const user = await ctx.req.hub.users.getUserPublicInfo(ctx.req.user.id)
+
     return {
-      pageProps: pageProps.props,
       context: {
-        user: ctx.req.userPublicInfo,
+        user,
         url: {
           full: ctx.req.url,
           query: ctx.req.query,
           path: ctx.req.path,
         },
-      }
+        ui: ctx.req.hub.ui,
+      },
     }
   }
 
@@ -40,4 +39,4 @@ class MyApp extends App {
   }
 }
 
-export default MyApp
+export default AsyncApiHub

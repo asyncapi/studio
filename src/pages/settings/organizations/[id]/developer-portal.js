@@ -70,7 +70,7 @@ export default function OrganizationPage({ organizations, selectedOrg, users = [
 
   return (
     <SettingsLayout
-      active="orgs"
+      activeSection="orgs"
       organizations={organizations}
       selectedOrg={selectedOrg}
       selectedSection="developer-portal"

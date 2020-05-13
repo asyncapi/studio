@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const next = require('next');
 const morgan = require('morgan');
 const passport = require('passport');
+const flash = require('req-flash');
 const config = require('./lib/config');
 const serverPipelines = require('./lib/server-pipelines');
 const logger = require('./lib/logger');
@@ -10,6 +11,7 @@ const events = require('./lib/events');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
+const hubMiddleware = require('./middlewares/hub');
 const healthRoute = require('./routes/health');
 const authRoute = require('./routes/auth');
 const htmlRoute = require('./routes/html');
@@ -36,8 +38,13 @@ app.prepare().then(() => {
   server.use((req, res, next) => {
     req.nextApp = app;
     req.nextHandle = handle;
+    res.render = (routePath, params) => {
+      req.nextApp.render(req, res, `/_plugins${routePath}`, params);
+    };
     next();
   });
+
+  server.use(hubMiddleware);
 
   server.use(bodyParser.text());
   server.use(bodyParser.json());
@@ -45,6 +52,7 @@ app.prepare().then(() => {
   server.use(sessionMiddleware);
   server.use(passport.initialize());
   server.use(passport.session());
+  server.use(flash());
 
   if (dev) {
     server.use(morgan('dev', {
@@ -125,7 +133,8 @@ app.prepare().then(() => {
       colorFn: logger.chalk.inverse.cyanBright.bold,
     });
   });
-});
+})
+.catch(console.error);
 
 process
   .on('unhandledRejection', (reason, promise) => {

@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "user": {
+      "navigation": [
+        {
+          "id": "profile",
+          "path": "/profile",
+          "text": "Your profile"
+        }
+      ]
+    },
+    "organization": {
+      "navigation": [
+        {
+          "id": "basic",
+          "path": "/",
+          "text": "Basic Information"
+        },
+        {
+          "id": "invitations",
+          "path": "/invitations",
+          "text": "Invitations"
+        },
+        {
+          "id": "members",
+          "path": "/members",
+          "text": "Members"
+        }
+      ]
+    }
+  }
+}

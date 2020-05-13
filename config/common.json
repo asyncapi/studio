@@ -49,6 +49,14 @@
         "api_key": null,
         "audience_id": null
       }
+    },
+    "billing": {
+      "stripe": {
+        "public_key": null,
+        "secret_key": null,
+        "starter_plan": null,
+        "team_plan": null
+      }
     }
   }
 }

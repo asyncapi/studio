@@ -13,7 +13,7 @@ export default function CreateButton ({ showTitle = true }) {
     const restrictions = plan.restrictions || {}
     const maxOrgCount = restrictions['organizations.maxCount']
     const userOrgCount = Array.isArray(user.organizationsForUser) ? user.organizationsForUser.length : 0
-    canCreateOrg = typeof maxOrgCount === 'number' && userOrgCount < maxOrgCount
+    canCreateOrg = typeof maxOrgCount !== 'number' || userOrgCount < maxOrgCount
   }
 
   return (
@@ -24,7 +24,7 @@ export default function CreateButton ({ showTitle = true }) {
         canCreateOrg ? (
           <a href="/organizations/new" className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">New organization</a>
         ) : (
-          <a href="/upgrade" className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">
+          <a href="/settings/upgrade" className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 cursor-pointer">
             New organization
             <span className="bg-indigo-600 text-white text-xs rounded ml-4 px-2 py-1">Upgrade &nbsp;🚀</span>
           </a>

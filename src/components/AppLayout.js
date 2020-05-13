@@ -10,7 +10,7 @@ export default function AppLayout ({ title, children, page }) {
             height: 100%;
           }
         `}</style>
-        <title>{title}</title>
+        <title>{title ? `${title} | AsyncAPI Hub` : 'AsyncAPI Hub'}</title>
       </Head>
       <div className="flex flex-col">
         <header>
