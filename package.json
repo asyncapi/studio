@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "node src/main.js",
     "test": "jest",
-    "db:migrate": "node scripts/migrate.js",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "db:migrate:save": "prisma migrate save --experimental",
+    "db:migrate:up": "prisma migrate up --experimental",
+    "db:migrate:down": "prisma migrate down --experimental"
   },
   "license": "Apache-2.0",
   "dependencies": {
