@@ -189,8 +189,8 @@ export default function BillingPage({ user, status, plans = [], stripePublicKey,
       organizations={organizations}
     >
       <div>
-        <div className="mb-12 lg:w-2/3 md:w-full">
-          <h3 className="text-xl mb-4">Upgrade</h3>
+        <div className="mb-12 w-5xl">
+          <h3 className="text-xl mb-4">Upgrades</h3>
           { renderSuccess() || renderCancelled() || renderError() }
 
           { renderCurrentPlan() }

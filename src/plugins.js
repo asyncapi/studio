@@ -170,10 +170,7 @@ async function registerPages(packageJSON, absolutePluginPath) {
         try {
           await symlink(linkTarget, destination);
         } catch (e) {
-          if (e.code !== 'EEXIST') {
-            logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
-            return;
-          }
+          logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
         }
       }
 

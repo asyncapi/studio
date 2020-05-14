@@ -1,6 +1,6 @@
 {
   "name": "@asyncapihub/plugin-billing",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Adds billing to AsyncAPI Hub.",
   "main": "index.js",
   "author": "Fran Mendez <fmvilas@gmail.com>",
