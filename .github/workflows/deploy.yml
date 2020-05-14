@@ -1,0 +1,23 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+      - name: Deploy the application
+        uses: thadeu/easily-dokku-action@v1.0.8
+        env:
+          BRANCH: master
+          PROJECT: app
+          SSH_PRIVATE_KEY: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.PROD_PUBLIC_DEPLOY_KEY }}
+          SSH_HOST: hub.asyncapi.io
