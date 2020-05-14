@@ -13,11 +13,10 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 0
-      - name: Deploy the application
-        uses: thadeu/easily-dokku-action@v1.0.8
-        env:
-          BRANCH: master
-          PROJECT: app
-          SSH_PRIVATE_KEY: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
-          SSH_PUBLIC_KEY: ${{ secrets.PROD_PUBLIC_DEPLOY_KEY }}
-          SSH_HOST: hub.asyncapi.io
+      - id: deploy
+        name: Deploy the application
+        uses: idoberko2/dokku-deploy-github-action@v1
+        with:
+          ssh-private-key: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
+          dokku-host: 'hub.asyncapi.io'
+          app-name: 'app'
