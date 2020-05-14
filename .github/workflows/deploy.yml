@@ -16,6 +16,6 @@ jobs:
       - name: Deploy application
         uses: idoberko2/dokku-deploy-github-action@v1
         with:
-          ssh-private-key: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           dokku-host: 'hub.asyncapi.io'
           app-name: 'app'
