@@ -4,6 +4,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/main.js",
+    "prepare": "node scripts/prepare.js",
     "build": "next build",
     "start": "node src/main.js",
     "test": "jest",

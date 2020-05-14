@@ -12,6 +12,7 @@ COPY CHECKS /app/
 # Install app dependencies
 RUN npm install
 RUN npm run prisma:generate
+RUN npm run prepare
 RUN npm run build
 RUN npm install -g forever
 

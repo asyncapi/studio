@@ -1,17 +1,11 @@
-const fs = require('fs');
+const { promises: { readFile, writeFile, symlink, mkdir, unlink } } = require('fs');
 const path = require('path');
-const { promisify } = require('util');
 const mergeWith = require('lodash/mergeWith');
 const { logLineWithBlock, logSuccessLine, logErrorLine, logErrorLineWithLongMessage } = require('./lib/logger');
 const pipeline = require('./lib/pipeline');
 const events = require('./lib/events');
 const { plugins } = require('../config/plugins.json');
 const uiDefaults = require('../config/ui.defaults.json');
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-const symLink = promisify(fs.symlink);
-const mkdir = promisify(fs.mkdir);
 
 const ROUTES_PIPELINE_NAME = '__server:routes__';
 const AUTH_ROUTES_PIPELINE_NAME = '__server:routes:authenticated__';
@@ -148,24 +142,37 @@ async function registerPages(packageJSON, absolutePluginPath) {
       let linkPath;
       let relativeTargetPath;
 
-      try {
-        pageDefinition = asyncapihub.pages[pagePath];
-        linkTarget = path.resolve(absolutePluginPath, pageDefinition.pagePath);
-        linkPath = path.resolve(__dirname, 'pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
-        relativeTargetPath = path.relative(path.resolve(__dirname, '..'), linkTarget);
+      if (process.env.NODE_ENV !== 'production') {
+        try {
+          pageDefinition = asyncapihub.pages[pagePath];
+          linkTarget = path.resolve(absolutePluginPath, pageDefinition.pagePath);
+          linkPath = path.resolve(__dirname, 'pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
+          relativeTargetPath = path.relative(path.resolve(__dirname, '..'), linkTarget);
 
-        await mkdir(path.dirname(linkPath), { recursive: true });
-      } catch (e) {
-        logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
-        return;
-      }
-
-      try {
-        await symLink(linkTarget, linkPath.endsWith('.js') ? linkPath : `${linkPath}.js`);
-      } catch (e) {
-        if (e.code !== 'EEXIST') {
+          await mkdir(path.dirname(linkPath), { recursive: true });
+        } catch (e) {
           logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
           return;
+        }
+
+        const destination = linkPath.endsWith('.js') ? linkPath : `${linkPath}.js`;
+
+        try {
+          await unlink(destination);
+        } catch (e) {
+          if (e.code !== 'ENOENT') {
+            logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
+            return;
+          }
+        }
+
+        try {
+          await symlink(linkTarget, destination);
+        } catch (e) {
+          if (e.code !== 'EEXIST') {
+            logErrorLineWithLongMessage(`Page ${pagePath}`, e.message, { highlightedWords: [pagePath] });
+            return;
+          }
         }
       }
 

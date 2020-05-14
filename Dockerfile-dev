@@ -10,7 +10,8 @@ COPY . /usr/src/app
 
 # Install app dependencies
 RUN npm install
-RUN npx prisma generate
+RUN npm run prisma:generate
+RUN npm run prepare
 
 EXPOSE 5000
 

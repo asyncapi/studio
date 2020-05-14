@@ -36,6 +36,12 @@ logger.logSuccessLine = (message, { highlightedWords = [] } = {}) => {
   console.log(chalk.reset.green(' ✓'), chalk.gray(message));
 };
 
+logger.logSkippingLine = (message, { highlightedWords = [] } = {}) => {
+  message = highlightWords(highlightedWords, message);
+  message = emojis.unicode(message);
+  console.log(chalk.reset.cyan(' →'), chalk.gray(message));
+};
+
 logger.logErrorLine = (message, { highlightedWords = [] } = {}) => {
   message = highlightWords(highlightedWords, message);
   message = emojis.unicode(message);

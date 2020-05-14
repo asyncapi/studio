@@ -129,7 +129,7 @@ app.prepare().then(() => {
   server.listen(config.app.port, (err) => {
     if (err) throw err;
     const { protocol, hostname, port } = config.app;
-    logger.logLineWithBlock('SERVER :rocket:', 'App is ready!', `${protocol}://${hostname}:${port}`, {
+    logger.logLineWithBlock('SERVER', 'App is ready! :rocket:', `${protocol}://${hostname}:${port}`, {
       colorFn: logger.chalk.inverse.cyanBright.bold,
     });
   });
