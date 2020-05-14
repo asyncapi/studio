@@ -13,8 +13,7 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 0
-      - id: Deploy application
-        name: Deploy to dokku
+      - name: Deploy application
         uses: idoberko2/dokku-deploy-github-action@v1
         with:
           ssh-private-key: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
