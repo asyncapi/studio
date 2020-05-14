@@ -13,9 +13,10 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 0
-      - name: Push to dokku
-        uses: obrassard/action-dokku-deploy@v1.0.0
+      - id: Deploy application
+        name: Deploy to dokku
+        uses: idoberko2/dokku-deploy-github-action@v1
         with:
-          dokku_repo: 'ssh://dokku@hub.asyncapi.io:22/app'
-          ssh_key: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
-
+          ssh-private-key: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
+          dokku-host: 'hub.asyncapi.io'
+          app-name: 'app'
