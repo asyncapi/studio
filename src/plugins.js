@@ -142,9 +142,10 @@ async function registerPages(packageJSON, absolutePluginPath) {
       let linkPath;
       let relativeTargetPath;
 
+      pageDefinition = asyncapihub.pages[pagePath];
+
       if (process.env.NODE_ENV !== 'production') {
         try {
-          pageDefinition = asyncapihub.pages[pagePath];
           linkTarget = path.resolve(absolutePluginPath, pageDefinition.pagePath);
           linkPath = path.resolve(__dirname, 'pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
           relativeTargetPath = path.relative(path.resolve(__dirname, '..'), linkTarget);
