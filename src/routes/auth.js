@@ -31,7 +31,6 @@ passport.use(new GitHubStrategy({
     company: profile._json.company,
   })
   .then((user) => {
-    user.featureFlags = JSON.parse(user.featureFlags || '{}');
     done(null, user);
   })
   .catch(done);

@@ -8,7 +8,11 @@ class AsyncApiHub extends App {
   static async getInitialProps({ ctx }) {
     if (!ctx || !ctx.req) return {}
 
-    const user = await ctx.req.hub.users.getUserPublicInfo(ctx.req.user.id)
+    let user;
+
+    if (ctx.req.user && ctx.req.user.id) {
+      user = await ctx.req.hub.users.getUserPublicInfo(ctx.req.user.id)
+    }
 
     return {
       context: {

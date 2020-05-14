@@ -206,19 +206,6 @@ users.getPluginData = async (id, pluginName) => {
     });
   }
 
-  let result = {};
-
-  try {
-    const pluginData = JSON.parse(user.pluginData);
-    result = pluginData[pluginName] || {};
-  } catch (e) {
-    throw new HubError({
-      type: 'get-plugin-data-invalid-data',
-      title: 'Invalid data',
-      detail: `Could not parse data for plugin ${pluginName}.`,
-      status: 422,
-    });
-  }
-
+  let result = user.pluginData[pluginName] || {};
   return formatRow(result);
 };
