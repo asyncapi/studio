@@ -16,7 +16,7 @@ jobs:
       - name: Deploy the application
         uses: landmaj/github-action-dokku@master
         with:
-          PRIVATE_KEY: ${{ secrets.DOKKU_PRIVATE_KEY }}
-          PUBLIC_KEY: ${{ secrets.DOKKU_PUBLIC_KEY }}
+          PRIVATE_KEY: ${{ secrets.PROD_PRIVATE_DEPLOY_KEY }}
+          PUBLIC_KEY: ${{ secrets.PROD_PUBLIC_DEPLOY_KEY }}
           HOST: 'hub.asyncapi.io'
           PROJECT: app
