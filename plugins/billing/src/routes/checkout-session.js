@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     if (!['starter', 'team'].includes(req.body.planName)) throw new Error(`Unknown plan ${req.body.planName}`);
 
     const stripe = Stripe(stripeConfig.secret_key);
-    const urlPrefix = `${config.app.protocol}://${config.app.hostname}${config.app.port !== 80 ? `:${config.app.port}` : ''}`;
+    const urlPrefix = `${config.app.protocol}://${config.app.hostname}${process.env.NODE_ENV !== 'production' ? `:${config.app.port}` : ''}`;
 
     const sessionConfig = {
       payment_method_types: ['card'],

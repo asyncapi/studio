@@ -1,6 +1,6 @@
 {
   "name": "@asyncapihub/plugin-billing",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Adds billing to AsyncAPI Hub.",
   "main": "index.js",
   "author": "Fran Mendez <fmvilas@gmail.com>",
@@ -24,11 +24,6 @@
       }
     ],
     "pages": {
-      "/settings/billing": {
-        "session": true,
-        "pagePath": "src/pages/billing.js",
-        "routeHandlerPath": "src/routes/billing.js"
-      },
       "/settings/upgrade": {
         "session": true,
         "pagePath": "src/pages/upgrade.js",
