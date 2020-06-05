@@ -88,6 +88,7 @@ invitations.accept = async (uuid, userId) => {
 };
 
 invitations.remove = async (id) => {
+  id = Number(id)
   await db.invitations.delete({
     where: {
       id,
