@@ -23,10 +23,12 @@ export default function OrganizationPage ({ organizations, selectedOrg, invitati
 
   const plan = org.plan || {}
   const restrictions = plan.restrictions || {}
-  const maxOrgUsersCount = Number(restrictions['organizations.users.maxCount'])
+  const maxOrgUsersCount = restrictions['organizations.users.maxCount']
   const orgUsersCount = org.organizationUsers.length
   const canInvite = restrictions['organizations.invite'] !== false
-  const canInviteMoreUsers = orgUsersCount < maxOrgUsersCount
+  const canInviteMoreUsers = maxOrgUsersCount === undefined || orgUsersCount < Number(maxOrgUsersCount)
+
+  console.log(maxOrgUsersCount)
 
   if (!canInvite || !canInviteMoreUsers) {
     let message
