@@ -82,15 +82,15 @@ export async function getServerSideProps ({ req }) {
   if (req.query.org) selectedOrg = orgs.find(o => o.id === Number(req.query.org)) || null
 
   const projects = await listProjects(req.userPublicInfo.id, {
-    org: req.query.org,
+    org: Number(req.query.org) || undefined,
   })
 
   let selectedProject = null
   if (req.query.project) selectedProject = projects.find(p => p.id === Number(req.query.project)) || null
 
   const apis = await listAPIs(req.userPublicInfo.id, {
-    org: req.query.org,
-    project: req.query.project,
+    org: Number(req.query.org) || undefined,
+    projectId: Number(req.query.project) || undefined,
   })
 
   const data = {

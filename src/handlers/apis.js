@@ -28,21 +28,17 @@ channels:
 apis.list = async (userId, filters = {}) => {
   const result = await db.apis.findMany({
     where: {
-      OR: [{
-        creatorId: userId,
-      }, {
-        project: {
-          organization: {
-            organizationUsers: {
-              some: {
-                userId,
-              }
-            },
-            id: filters.org,
+      project: {
+        organization: {
+          organizationUsers: {
+            some: {
+              userId,
+            }
           },
-          id: filters.projectId,
+          id: filters.org || undefined,
         },
-      }]
+        id: filters.projectId || undefined,
+      },
     },
     include: {
       project: {

@@ -6,18 +6,14 @@ const projects = module.exports;
 projects.list = async (userId, filters = {}) => {
   const result = await db.projects.findMany({
     where: {
-      OR: [{
-        creatorId: userId,
-      }, {
-        organization: {
-          organizationUsers: {
-            some: {
-              userId,
-            }
-          },
-          id: filters.org,
+      organization: {
+        organizationUsers: {
+          some: {
+            userId,
+          }
         },
-      }]
+        id: filters.org || undefined,
+      },
     },
     include: {
       organization: true,
