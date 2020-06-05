@@ -64,10 +64,10 @@ router.post('/', isAuthenticated, async (req, res, next) => {
 
     const plan = org.plan || {};
     const restrictions = plan.restrictions || {};
-    const maxOrgUsersCount = Number(restrictions['organizations.users.maxCount']);
+    const maxOrgUsersCount = restrictions['organizations.users.maxCount'];
     const orgUsersCount = org.organizationUsers.length;
     const canInvite = restrictions['organizations.invite'] !== false;
-    const canInviteMoreUsers = orgUsersCount < maxOrgUsersCount;
+    const canInviteMoreUsers = maxOrgUsersCount === undefined || orgUsersCount < Number(maxOrgUsersCount);
 
     if (!canInvite || !canInviteMoreUsers) {
       throw new HubError({
