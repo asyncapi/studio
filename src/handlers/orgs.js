@@ -115,14 +115,14 @@ orgs.create = async (name, creatorId) => {
       organizationUsers: {
         create: {
           role: 'admin',
-          users: {
+          user: {
             connect: {
               id: creatorId,
             },
           }
         },
       },
-      users: {
+      creator: {
         connect: {
           id: creatorId,
         }
