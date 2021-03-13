@@ -20,5 +20,7 @@ module.exports = (req, res, next) => {
     users,
   };
 
+  req.hub.ui.enableAuth = config.app.enable_auth;
+
   next();
 };

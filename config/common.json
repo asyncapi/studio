@@ -3,7 +3,8 @@
     "protocol": "http",
     "port": 3000,
     "hostname": "localhost",
-    "trust_proxy": true
+    "trust_proxy": true,
+    "enable_auth": true
   },
   "file_server": {
     "protocol": "http",

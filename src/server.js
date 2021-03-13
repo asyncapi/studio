@@ -50,8 +50,10 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(sessionMiddleware);
-  server.use(passport.initialize());
-  server.use(passport.session());
+  if (config.app.enable_auth) {
+    server.use(passport.initialize());
+    server.use(passport.session());
+  }
   server.use(flash());
 
   if (dev) {

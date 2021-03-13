@@ -15,12 +15,12 @@ export default function EditorToolbar ({
   api,
   projects = [],
 }) {
+  const { user: loggedInUser, ui } = useContext(AppContext)
   const [importing, setImporting] = useState(false)
   const [importUrl, setImportUrl] = useState('')
   const [importError, setImportError] = useState()
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [showDeleteAPIModal, setShowDeleteAPIModal] = useState(false)
-  const { user: loggedInUser } = useContext(AppContext)
 
   const onImportFormSubmit = (e) => {
     e.preventDefault()
@@ -143,12 +143,14 @@ export default function EditorToolbar ({
               {!saved && <span className="bg-orange-700 text-white text-xs rounded-md block w-2 h-2 mt-3 ml-2 mr-3" title="Not saved" />}
             </div>
             <div className="flex text-gray-500">
-              <span className="block rounded-md shadow-sm">
-                <button onClick={onClickSave} className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150" title="Save">
-                  <FaSave className="text-md mt-1 mr-2" />
-                  Save
-                </button>
-              </span>
+              { ui.enableAuth && (
+                <span className="block rounded-md shadow-sm">
+                  <button onClick={onClickSave} className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150" title="Save">
+                    <FaSave className="text-md mt-1 mr-2" />
+                    Save
+                  </button>
+                </span>
+              ) }
               <span className="block rounded-md shadow-sm">
                 <button onClick={() => { setImporting(true); setImportError(); }} type="button" className="flex px-2 py-2 text-sm rounded-md text-gray-500 hover:text-white focus:outline-none transition ease-in-out duration-150" title="Import AsyncAPI document">
                   <FaFileImport className="text-md mt-1 mr-2" />
