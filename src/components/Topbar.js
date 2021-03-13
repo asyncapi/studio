@@ -22,7 +22,8 @@ export default function Topbar ({ active }) {
         <div className="flex items-center justify-between h-16 px-4 sm:px-0">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img className="inline-block h-20" src="/img/asyncapi-hub-horizontal-white.svg" alt="" />
+              <img className="inline-block h-20" src="/img/logo-horizontal-white.svg" alt="" />
+              <span className="inline-block text-xl text-pink-500 font-normal italic tracking-wide -ml-1 transform translate-y-0.5">studio</span>
             </div>
             <div>
               {
