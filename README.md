@@ -6,7 +6,7 @@
 
 ### Customizable UI areas
 
-|Area|Type|Description|Status|
+|Area|Type|Description|
 |---|---|---|
 | Settings > Organization > Sidebar Menu | JSON | Add new items to the menu.
 | Settings > Organization > Custom Page | Page | Where the Sidebar Menu item points to.
