@@ -2,7 +2,7 @@ import AppLayout from '../components/AppLayout'
 import { default as UserSettingsMenu, getItems as getUserMenuItems } from './settings/UserSettingsMenu'
 import { default as OrganizationMenu, getItems as getOrganizationMenuItems } from './settings/organizations/OrganizationMenu'
 
-export default function SettingsLayout ({ children, activeSection, organizations = [], selectedOrg, selectedOrgSection = 'basic', plan = {} }) {
+export default function SettingsLayout ({ children, activeSection, organizations = [], selectedOrg, selectedOrgSection = 'basic' }) {
   const org = organizations.find(o => o.id === Number(selectedOrg))
 
   const getTitle = () => {

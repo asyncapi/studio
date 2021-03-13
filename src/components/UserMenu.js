@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { FaGift } from 'react-icons/fa'
 import AppContext from '../contexts/AppContext'
 
 export default function UserMenu () {
@@ -8,13 +7,7 @@ export default function UserMenu () {
 
   if (!user) {
     return (
-      <>
-        <a href="/auth/signin" className="inline-flex self-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
-          <FaGift className="text-xl mr-2" />
-          Request early access
-        </a>
-        <a href="/auth/signin" className="px-3 py-2 ml-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-300 hover:text-white hover:bg-gray-700">Sign in</a>
-      </>
+      <a href="/auth/signin" className="px-3 py-2 ml-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-300 hover:text-white hover:bg-gray-700">Sign in</a>
     )
   }
 

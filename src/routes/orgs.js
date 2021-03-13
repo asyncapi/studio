@@ -75,18 +75,3 @@ router.get('/', async (req, res, next) => {
     next(e);
   }
 });
-
-router.get('/new', (req, res, next) => {
-  const plan = req.userPublicInfo.plan || {};
-  const restrictions = plan.restrictions || {};
-  const maxOrgCount = restrictions['organizations.maxCount'];
-
-  if (
-    typeof maxOrgCount === 'number'
-    && req.userPublicInfo.organizationsForUser.length >= maxOrgCount
-  ) {
-    return res.redirect('/upgrade');
-  }
-
-  next();
-});

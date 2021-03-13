@@ -22,21 +22,6 @@ router.get('/:uuid/accept', async (req, res, next) => {
         });
       }
 
-      const plan = org.plan || {};
-      const restrictions = plan.restrictions || {};
-      const maxOrgUsersCount = Number(restrictions['organizations.users.maxCount']);
-      const orgUsersCount = org.organizationUsers.length;
-      const canInviteMoreUsers = orgUsersCount < maxOrgUsersCount;
-
-      if (!canInviteMoreUsers) {
-        throw new HubError({
-          type: 'plan-restrictions-invite-users',
-          title: 'This organization has reached the maximum number of users',
-          detail: `The organization plan (${plan.name}) allows a maximum of ${maxOrgUsersCount} users and this organization already has ${orgUsersCount}.`,
-          status: 422,
-        });
-      }
-
       await accept(uuid, req.user.id);
       res.redirect('/');
     } else {
@@ -59,22 +44,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
         title: 'Organization not found',
         detail: `Could not find organization with id ${orgId}.`,
         status: 404,
-      });
-    }
-
-    const plan = org.plan || {};
-    const restrictions = plan.restrictions || {};
-    const maxOrgUsersCount = restrictions['organizations.users.maxCount'];
-    const orgUsersCount = org.organizationUsers.length;
-    const canInvite = restrictions['organizations.invite'] !== false;
-    const canInviteMoreUsers = maxOrgUsersCount === undefined || orgUsersCount < Number(maxOrgUsersCount);
-
-    if (!canInvite || !canInviteMoreUsers) {
-      throw new HubError({
-        type: 'plan-restrictions-invite-users',
-        title: 'This organization does not accept more invitations',
-        detail: `The organization plan (${plan.name}) doesn't allow you to add users or it reached the limit. Currently, it has ${orgUsersCount} users and the limit is ${maxOrgUsersCount}.`,
-        status: 422,
       });
     }
 

@@ -1,5 +1,5 @@
 {
-  "name": "@asyncapihub/plugin-waiting-list",
+  "name": "@asyncapistudio/plugin-waiting-list",
   "version": "0.1.0",
   "description": "Make AsyncAPI Hub implement a waiting list when someone signs up.",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "author": "Fran Mendez <fmvilas@gmail.com>",
   "license": "Apache-2.0",
-  "asyncapihub": {
+  "asyncapistudio": {
     "hooks": {
       "auth:github": [
         "src/hooks/signin.js"

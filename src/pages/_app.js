@@ -4,7 +4,7 @@ import ReactGA from 'react-ga'
 import AppContext from '../contexts/AppContext'
 import '../css/tailwind.css'
 
-class AsyncApiHub extends App {
+class AsyncApiStudio extends App {
   static async getInitialProps({ ctx }) {
     if (!ctx || !ctx.req) return {}
 
@@ -43,4 +43,4 @@ class AsyncApiHub extends App {
   }
 }
 
-export default AsyncApiHub
+export default AsyncApiStudio

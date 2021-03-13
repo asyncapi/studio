@@ -10,14 +10,9 @@ users.findById = async (id) => {
       id,
     },
     include: {
-      plan: true,
       organizationsForUser: {
         include: {
-          organization: {
-            include: {
-              plan: true,
-            }
-          }
+          organization: true,
         }
       },
     }
@@ -32,7 +27,6 @@ users.filterUserWithPublicInfo = (user) => {
     email: user.email,
     avatar: user.avatar,
     company: user.company,
-    plan: user.plan,
     organizationsForUser: user.organizationsForUser,
   };
 }
@@ -87,60 +81,13 @@ users.createFromGithub = async ({ displayName, email, username, avatar, company 
       company,
     },
     include: {
-      plan: true,
       organizationsForUser: {
         include: {
-          organization: {
-            include: {
-              plan: true,
-            }
-          }
+          organization: true,
         }
       },
     }
   });
-};
-
-users.changePlanTo = async (planName, userId) => {
-  const userWithOrgs = await db.users.findOne({
-    where: {
-      id: userId,
-    },
-    include: {
-      organizations: true,
-    },
-  });
-
-  if (userWithOrgs.organizations.length) {
-    const updateStatements = userWithOrgs.organizations.map(org => ({
-      data: {
-        plan: {
-          connect: {
-            name: planName,
-          },
-        },
-      },
-      where: {
-        id: org.id,
-      },
-    }));
-
-    await db.users.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        plan: {
-          connect: {
-            name: planName,
-          },
-        },
-        organizations: {
-          update: updateStatements,
-        },
-      },
-    });
-  }
 };
 
 users.patch = async (id, data) => {
@@ -149,9 +96,6 @@ users.patch = async (id, data) => {
       id,
     },
     data,
-    include: {
-      plan: true,
-    },
   });
 };
 

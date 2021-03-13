@@ -10,8 +10,8 @@ const { logLineWithBlock, logSuccessLine, logSkippingLine, logErrorLineWithLongM
       let packageJSON = await readFile(path.resolve(absolutePluginPath, 'package.json'));
       packageJSON = JSON.parse(packageJSON);
 
-      const { name, version, asyncapihub } = packageJSON;
-      const pagePaths = Object.keys(asyncapihub.pages || {});
+      const { name, version, asyncapistudio } = packageJSON;
+      const pagePaths = Object.keys(asyncapistudio.pages || {});
 
       logLineWithBlock('PLUGIN', `${name}@${version}`, 'Preparing plugin for production deploy...');
       if (!pagePaths.length) {
@@ -25,7 +25,7 @@ const { logLineWithBlock, logSuccessLine, logSkippingLine, logErrorLineWithLongM
         let relativeDestinationPath;
 
         try {
-          pageDefinition = asyncapihub.pages[pagePath];
+          pageDefinition = asyncapistudio.pages[pagePath];
           source = path.resolve(absolutePluginPath, pageDefinition.pagePath);
           destination = path.resolve(__dirname, '../src/pages/_plugins/', pagePath.startsWith('/') ? pagePath.substr(1) : pagePath);
           destination = destination.endsWith('.js') ? destination : `${destination}.js`;

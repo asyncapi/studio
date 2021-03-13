@@ -6,7 +6,6 @@ const orgs = require('../handlers/orgs');
 const invitations = require('../handlers/invitations');
 const projects = require('../handlers/projects');
 const users = require('../handlers/users');
-const plans = require('../handlers/plans');
 
 module.exports = (req, res, next) => {
   if (!req.hub) req.hub = {};
@@ -19,7 +18,6 @@ module.exports = (req, res, next) => {
     invitations,
     projects,
     users,
-    plans,
   };
 
   next();

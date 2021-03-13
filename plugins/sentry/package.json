@@ -1,5 +1,5 @@
 {
-  "name": "@asyncapihub/plugin-sentry",
+  "name": "@asyncapistudio/plugin-sentry",
   "version": "0.2.0",
   "description": "Sends errors to Sentry",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "author": "Fran Mendez <fmvilas@gmail.com>",
   "license": "Apache-2.0",
-  "asyncapihub": {
+  "asyncapistudio": {
     "events": {
       "server:error": [
         "src/events/error.js"

@@ -39,12 +39,12 @@ module.exports.init = async function () {
 };
 
 function registerHooks(packageJSON) {
-  const { asyncapihub, name: pluginName } = packageJSON;
+  const { asyncapistudio, name: pluginName } = packageJSON;
 
-  if (asyncapihub.hooks) {
-    const hookPoints = Object.keys(asyncapihub.hooks).filter(hookName => !FORBIDDEN_HOOKS.includes(hookName));
+  if (asyncapistudio.hooks) {
+    const hookPoints = Object.keys(asyncapistudio.hooks).filter(hookName => !FORBIDDEN_HOOKS.includes(hookName));
     hookPoints.forEach(hookPoint => {
-      const hookTargetPaths = asyncapihub.hooks[hookPoint];
+      const hookTargetPaths = asyncapistudio.hooks[hookPoint];
       hookTargetPaths.forEach(hookTargetPath => {
         try {
           const hookTarget = require(path.join(pluginName, hookTargetPath));
@@ -60,11 +60,11 @@ function registerHooks(packageJSON) {
 }
 
 function registerEvents(packageJSON) {
-  const { asyncapihub, name: pluginName } = packageJSON;
+  const { asyncapistudio, name: pluginName } = packageJSON;
 
-  if (asyncapihub.events) {
-    Object.keys(asyncapihub.events).forEach(eventName => {
-      const eventTargetPaths = asyncapihub.events[eventName];
+  if (asyncapistudio.events) {
+    Object.keys(asyncapistudio.events).forEach(eventName => {
+      const eventTargetPaths = asyncapistudio.events[eventName];
       eventTargetPaths.forEach(eventTargetPath => {
         try {
           const eventHandler = require(path.join(pluginName, eventTargetPath));
@@ -80,10 +80,10 @@ function registerEvents(packageJSON) {
 }
 
 function registerRoutes(packageJSON) {
-  const { asyncapihub, name: pluginName } = packageJSON;
+  const { asyncapistudio, name: pluginName } = packageJSON;
 
-  if (asyncapihub.routes) {
-    asyncapihub.routes.forEach(routeObject => {
+  if (asyncapistudio.routes) {
+    asyncapistudio.routes.forEach(routeObject => {
       let routePath;
       let urlPath;
       let method;
@@ -111,10 +111,10 @@ function registerRoutes(packageJSON) {
 }
 
 function registerMiddlewares(packageJSON) {
-  const { asyncapihub, name: pluginName } = packageJSON;
+  const { asyncapistudio, name: pluginName } = packageJSON;
 
-  if (asyncapihub.middlewares) {
-    asyncapihub.middlewares.forEach(middlewareObject => {
+  if (asyncapistudio.middlewares) {
+    asyncapistudio.middlewares.forEach(middlewareObject => {
       let middlewarePath;
 
       try {
@@ -132,17 +132,17 @@ function registerMiddlewares(packageJSON) {
 }
 
 async function registerPages(packageJSON, absolutePluginPath) {
-  const { asyncapihub, name: pluginName } = packageJSON;
+  const { asyncapistudio, name: pluginName } = packageJSON;
 
-  if (asyncapihub.pages) {
-    const pagePaths = Object.keys(asyncapihub.pages);
+  if (asyncapistudio.pages) {
+    const pagePaths = Object.keys(asyncapistudio.pages);
     await Promise.all(pagePaths.map(async (pagePath) => {
       let pageDefinition;
       let linkTarget;
       let linkPath;
       let relativeTargetPath;
 
-      pageDefinition = asyncapihub.pages[pagePath];
+      pageDefinition = asyncapistudio.pages[pagePath];
 
       if (process.env.NODE_ENV !== 'production') {
         try {
@@ -191,8 +191,8 @@ async function registerUI(packageJSON, defaultUI) {
   const uiConfig = defaultUI;
 
   try {
-    if (packageJSON.asyncapihub && packageJSON.asyncapihub.ui) {
-      mergeWith(uiConfig, packageJSON.asyncapihub.ui, (objValue, srcValue) => {
+    if (packageJSON.asyncapistudio && packageJSON.asyncapistudio.ui) {
+      mergeWith(uiConfig, packageJSON.asyncapistudio.ui, (objValue, srcValue) => {
         if (Array.isArray(objValue)) {
           return objValue.concat(srcValue);
         }

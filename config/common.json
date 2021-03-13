@@ -2,7 +2,7 @@
   "app": {
     "protocol": "http",
     "port": 3000,
-    "hostname": "asyncapi.local",
+    "hostname": "localhost",
     "trust_proxy": true
   },
   "file_server": {
@@ -40,23 +40,6 @@
   "plugins": {
     "sentry": {
       "dsn": null
-    },
-    "waiting_list": {
-      "segment": {
-        "write_key": null
-      },
-      "mailchimp": {
-        "api_key": null,
-        "audience_id": null
-      }
-    },
-    "billing": {
-      "stripe": {
-        "public_key": null,
-        "secret_key": null,
-        "starter_plan": null,
-        "team_plan": null
-      }
     }
   }
 }

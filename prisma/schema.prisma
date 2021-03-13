@@ -39,12 +39,10 @@ model organizations {
   id                          Int                   @default(autoincrement()) @id
   name                        String
   creatorId                   Int                   @map(name: "creator_id")
-  planName                    String?               @default("free") @map(name: "plan_name")
   invitations                 invitations[]
   organizationUsers           organizationsUsers[]
   projects                    projects[]
   creator                     users                 @relation(fields: [creatorId], references: [id])
-  plan                        plans?                @relation(fields: [planName], references: [name])
 }
 
 model organizationsUsers {
@@ -79,17 +77,10 @@ model users {
   featureFlags         Json?                 @default("{}") @map(name: "feature_flags")
   id                   Int                   @default(autoincrement()) @id
   username             String                @unique
-  planName             String?               @default("free") @map(name: "plan_name")
   pluginData           Json?                 @default("{}") @map(name: "plugin_data")
   apis                 apis[]
   invitations          invitations[]
   organizationsForUser organizationsUsers[]
   projects             projects[]
   organizations        organizations[]
-  plan                 plans?                @relation(fields: [planName], references: [name])
-}
-
-model plans {
-  name         String @unique
-  restrictions Json?
 }

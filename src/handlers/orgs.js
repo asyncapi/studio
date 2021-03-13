@@ -19,7 +19,6 @@ orgs.list = async (userId) => {
     },
     include: {
       organizationUsers: true,
-      plan: true,
     },
   });
 
@@ -44,7 +43,6 @@ orgs.get = async (id, userId) => {
       },
       include: {
         organizationUsers: true,
-        plan: true,
       },
     });
 
@@ -57,7 +55,6 @@ orgs.get = async (id, userId) => {
     },
     include: {
       organizationUsers: true,
-      plan: true,
     },
   });
 
@@ -80,9 +77,6 @@ orgs.getForUser = async (userId, id) => {
           },
         }]
       },
-      include: {
-        plan: true,
-      },
     });
 
     return formatRow(result[0]);
@@ -99,9 +93,6 @@ orgs.getForUser = async (userId, id) => {
           }
         },
       }]
-    },
-    include: {
-      plan: true,
     },
   });
 
@@ -128,9 +119,6 @@ orgs.create = async (name, creatorId) => {
         }
       }
     },
-    include: {
-      plan: true,
-    }
   });
 
   return formatRow(result);
@@ -162,9 +150,6 @@ orgs.patch = async (id, data, userId) => {
       id,
     },
     data,
-    include: {
-      plan: true,
-    },
   });
 
   return formatRow(result[0]);
@@ -219,7 +204,6 @@ orgs.listUsers = async (organizationId) => {
           organizationId,
         },
       },
-      plan: true,
     },
   });
 

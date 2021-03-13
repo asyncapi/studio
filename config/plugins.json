@@ -1,7 +1,4 @@
 {
   "plugins": [
-    "@asyncapihub/plugin-waiting-list",
-    "@asyncapihub/plugin-sentry",
-    "@asyncapihub/plugin-billing"
   ]
 }

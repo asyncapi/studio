@@ -52,10 +52,6 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/signin' }),
   (req, res) => {
-    if (req.user.plan && !req.user.plan.restrictions) {
-      req.user.plan.restrictions = {};
-    }
-
     pipeline.exec('auth:github', { req, res, config }).finally(() => {
       const redirectUrl = req.session.redirectUrl || null;
       req.session.redirectUrl = null;
