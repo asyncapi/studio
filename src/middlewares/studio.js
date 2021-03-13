@@ -8,8 +8,8 @@ const projects = require('../handlers/projects');
 const users = require('../handlers/users');
 
 module.exports = (req, res, next) => {
-  if (!req.hub) req.hub = {};
-  req.hub = {
+  if (!req.studio) req.studio = {};
+  req.studio = {
     config,
     ui,
     HubError,
@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
     users,
   };
 
-  req.hub.ui.enableAuth = config.app.enable_auth;
+  req.studio.ui.enableAuth = config.app.enable_auth;
 
   next();
 };

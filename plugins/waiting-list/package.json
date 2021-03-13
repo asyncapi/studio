@@ -1,7 +1,7 @@
 {
   "name": "@asyncapistudio/plugin-waiting-list",
-  "version": "0.1.0",
-  "description": "Make AsyncAPI Hub implement a waiting list when someone signs up.",
+  "version": "0.1.1",
+  "description": "Make AsyncAPI Studio implement a waiting list when someone signs up.",
   "main": "index.js",
   "publishConfig": {
     "access": "public"

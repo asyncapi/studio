@@ -11,7 +11,7 @@ class AsyncApiStudio extends App {
     let user;
 
     if (ctx.req.user && ctx.req.user.id) {
-      user = await ctx.req.hub.users.getUserPublicInfo(ctx.req.user.id)
+      user = await ctx.req.studio.users.getUserPublicInfo(ctx.req.user.id)
     }
 
     return {
@@ -22,7 +22,7 @@ class AsyncApiStudio extends App {
           query: ctx.req.query,
           path: ctx.req.path,
         },
-        ui: ctx.req.hub.ui,
+        ui: ctx.req.studio.ui,
       },
     }
   }

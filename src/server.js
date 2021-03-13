@@ -11,7 +11,7 @@ const events = require('./lib/events');
 const isAuthenticated = require('./middlewares/is-authenticated');
 const sessionMiddleware = require('./middlewares/session');
 const userPublicInfoMiddleware = require('./middlewares/user-public-info');
-const hubMiddleware = require('./middlewares/hub');
+const studioMiddleware = require('./middlewares/studio');
 const healthRoute = require('./routes/health');
 const authRoute = require('./routes/auth');
 const htmlRoute = require('./routes/html');
@@ -44,7 +44,7 @@ app.prepare().then(() => {
     next();
   });
 
-  server.use(hubMiddleware);
+  server.use(studioMiddleware);
 
   server.use(bodyParser.text());
   server.use(bodyParser.json());
