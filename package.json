@@ -56,7 +56,6 @@
     "pseudo-yaml-ast": "^1.0.10",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-ga": "^2.7.0",
     "react-icons": "^3.9.0",
     "redis": "^3.0.2",
     "req-flash": "0.0.3",
