@@ -1,6 +1,5 @@
 import React from 'react'
 import App from 'next/app'
-import ReactGA from 'react-ga'
 import AppContext from '../contexts/AppContext'
 import '../css/tailwind.css'
 
@@ -29,11 +28,6 @@ class AsyncApiStudio extends App {
 
   render() {
     const { Component, pageProps, context } = this.props
-
-    if (typeof window !== 'undefined') {
-      ReactGA.initialize('UA-109278936-4');
-      ReactGA.pageview(window.location.pathname + window.location.search);
-    }
 
     return (
       <AppContext.Provider value={context || {}}>
