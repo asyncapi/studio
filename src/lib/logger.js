@@ -48,7 +48,7 @@ logger.logErrorLine = (message, { highlightedWords = [] } = {}) => {
   console.log(chalk.reset.red(' ✕'), chalk.gray(message));
 };
 
-logger.logErrorLineWithLongMessage = (message, longMessage, options) => {
+logger.logErrorLineWithLongMessage = (message, longMessage, options = {}) => {
   logger.logErrorLine(message, options);
   message = emojis.unicode(message);
   longMessage = typeof longMessage === 'string' ? emojis.unicode(longMessage) : longMessage;

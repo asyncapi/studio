@@ -5,22 +5,13 @@ const { logLineWithBlock, logSuccessLine, logErrorLine, logErrorLineWithLongMess
 const pipeline = require('./lib/pipeline');
 const events = require('./lib/events');
 const uiDefaults = require('../config/ui.defaults.json');
-let { plugins } = require('../config/plugins.json');
-const { env } = require('process');
+const plugins = require('./lib/plugins');
 
 const ROUTES_PIPELINE_NAME = '__server:routes__';
 const AUTH_ROUTES_PIPELINE_NAME = '__server:routes:authenticated__';
 const MW_PIPELINE_NAME = '__server:middlewares__';
 const AUTH_MW_PIPELINE_NAME = '__server:middlewares:authenticated__';
 const FORBIDDEN_HOOKS = [ROUTES_PIPELINE_NAME, AUTH_ROUTES_PIPELINE_NAME, MW_PIPELINE_NAME, AUTH_MW_PIPELINE_NAME];
-const envPlugins = env.PLUGINS;
-
-if (envPlugins) plugins = plugins.concat(envPlugins.split(',').map(p => p.trim()))
-
-// Remove potentially duplicated plugins
-plugins = plugins.filter(function (p, pos) {
-  return plugins.indexOf(p) == pos;
-});
 
 module.exports.init = async function () {
   let defaultUI = uiDefaults;

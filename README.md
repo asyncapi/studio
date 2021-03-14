@@ -1,6 +1,28 @@
 # AsyncAPI Studio
 
-# :warning: THIS REPO IS STILL IN EARLY DEVELOPMENT. WE'RE DOCUMENTING IT NOW AND WE'LL BE SOON READY TO USE.
+> :warning: This repo is still in the early stages. We'll work on its documentation as soon as possible.
+
+## Requirements
+
+* Docker
+* Docker Compose
+* Node.js 14+
+
+## Using it locally
+
+If it's your first time, run:
+
+```
+npm install
+npm run dev:prepare
+docker-compose up -d session db
+```
+
+Then run the following command to start Studio:
+
+```
+npm run dev
+```
 
 ## Customizing it
 

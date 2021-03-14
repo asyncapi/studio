@@ -1,6 +1,6 @@
 const { promises: { copyFile, readFile, mkdir, unlink } } = require('fs');
 const path = require('path');
-const { plugins } = require('../config/plugins.json');
+const plugins = require('../src/lib/plugins');
 const { logLineWithBlock, logSuccessLine, logSkippingLine, logErrorLineWithLongMessage } = require('../src/lib/logger');
 
 (async () => {
