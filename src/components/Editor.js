@@ -85,7 +85,7 @@ export default function Editor ({ initialAPI, projects }) {
             }}
           />
         </div>
-        <div className="flex flex-1 flex-col max-w-1/2">
+        <div className="flex flex-1 flex-col max-w-1/2" style={{ overflowY: 'scroll' }}>
           { (isLoadingPreview || parsingError) && (
             <div className="absolute z-50 ml-2 mt-2">
               {parsingError && (

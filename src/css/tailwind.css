@@ -1,3 +1,4 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "https://unpkg.com/@asyncapi/react-component@0.20.1/lib/styles/fiori.css";
