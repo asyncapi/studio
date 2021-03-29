@@ -26,12 +26,12 @@ export default function Editor ({ initialAPI, projects }) {
   const onPreviewContentChange = async (ev) => {
     setParsingError()
     setIsLoadingPreview(false)
-    saveToLocalStorage(currentUnsavedCode, ev.parsedJSON)
-    if (ev.parsedJSON.info.title !== api.title) {
+    saveToLocalStorage(currentUnsavedCode, ev.parsedSchema)
+    if (ev.parsedSchema.info.title !== api.title) {
       setAPI({
         ...api,
         ...{
-          title: ev.parsedJSON.info.title,
+          title: ev.parsedSchema.info.title,
         },
       })
     }

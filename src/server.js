@@ -21,7 +21,7 @@ const projectsRoute = require('./routes/projects');
 const apisRoute = require('./routes/apis');
 const settingsRoute = require('./routes/settings');
 const invitationsRoute = require('./routes/invitations');
-const parserRoute = require('./routes/parser');
+const specRoute = require('./routes/spec');
 const { get: getAPI } = require('./handlers/apis');
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -85,7 +85,7 @@ app.prepare().then(() => {
   server.use('/auth', authRoute);
   server.use('/html', htmlRoute);
   server.use('/markdown', markdownRoute);
-  server.use('/parser', parserRoute);
+  server.use('/spec', specRoute);
 
   serverPipelines.configure(server);
   server.use(userPublicInfoMiddleware);
