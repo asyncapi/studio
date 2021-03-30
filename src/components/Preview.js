@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { AsyncAPIDocument } from '@asyncapi/parser';
 import AsyncAPIComponent from '@asyncapi/react-component';
 
 export default function Preview ({ code, onError = () => {}, onContentChange = () => {} }) {
@@ -9,22 +8,16 @@ export default function Preview ({ code, onError = () => {}, onContentChange = (
   const [parsedSchema, setParsedSchema] = useState(null);
 
   useEffect(() => {
-    fetch('/spec/parse', {
-      method: 'POST',
-      body: code,
-    })
-    .then(async res => {
-      if (res.ok) {
-        const data = await res.json();
-        const document = new AsyncAPIDocument(data);
+    AsyncAPIParser.parse(code)
+      .then(spec => {
+        const document = new AsyncAPIParser.AsyncAPIDocument(spec);
         setParsedSchema(document);
-        onContentChange({ parsedSchema: data });
-      } else {
-        const err = await res.json();
+        onContentChange({ parsedSchema: spec });
+      })
+      .catch(err => {
+        console.error(err);
         onError(err);
-      }
-    })
-    .catch(console.error);
+      });
   }, [code]);
 
   return parsedSchema && (
