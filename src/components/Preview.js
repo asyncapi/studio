@@ -1,26 +1,14 @@
-import { useEffect, useState } from 'react'
-import AsyncAPIComponent from '@asyncapi/react-component';
+import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
 export default function Preview ({ code, onError = () => {}, onContentChange = () => {} }) {
   // Render on the browser only
   if (typeof navigator === 'undefined') return null;
-
-  const [parsedSchema, setParsedSchema] = useState(null);
+  const AsyncAPIUI = dynamic(() => import('@asyncapi/react-component/bundles/umd'));
 
   useEffect(() => {
-    AsyncAPIParser.parse(code)
-      .then(spec => {
-        const document = new AsyncAPIParser.AsyncAPIDocument(spec);
-        setParsedSchema(document);
-        onContentChange({ parsedSchema: spec });
-      })
-      .catch(err => {
-        console.error(err);
-        onError(err);
-      });
-  }, [code]);
+    onContentChange();
+  }, [code, onContentChange]);
 
-  return parsedSchema && (
-    <AsyncAPIComponent schema={parsedSchema} />
-  );
+  return code && <AsyncAPIUI schema={code} />;
 }
