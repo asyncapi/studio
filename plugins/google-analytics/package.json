@@ -1,0 +1,22 @@
+{
+  "name": "@asyncapistudio/plugin-google-analytics",
+  "version": "1.0.0",
+  "description": "Make AsyncApi implements google analytics",
+  "main": "index.js",
+    "publishConfig": {
+    "access": "public"
+  },
+    "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "acebuild <devlopergene@gmail.com>",
+  "license": "Apache-2.0",
+  "asyncapistudio": {
+    "events": {
+      "page:render": ["src/events/render.js"]
+    }
+  },
+  "dependencies": {
+    "react-ga": "^3.3.0"
+  }
+}

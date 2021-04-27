@@ -20,6 +20,7 @@
     "@asyncapi/html-template": "^0.18.1",
     "@asyncapi/markdown-template": "^0.9.0",
     "@asyncapi/parser": "^0.18.3",
+    "@asyncapistudio/plugin-google-analytics": "^1.0.0",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
     "@fmvilas/pseudo-yaml-ast": "^0.2.0",

@@ -1,8 +1,13 @@
 import React from 'react'
 import AppContext from '../contexts/AppContext'
 import '../css/tailwind.css'
+import clientEvents from '../lib/client-events';
 
 function AsyncApiStudio({ Component, pageProps, context }) {
+  if (typeof window !== 'undefined') {
+    console.log(clientEvents.listeners);
+    clientEvents.emit("page:render", window);
+  }
   return (
     <AppContext.Provider value={context || {}}>
       <Component {...pageProps} />
