@@ -5,7 +5,6 @@ import clientEvents from '../lib/client-events';
 
 function AsyncApiStudio({ Component, pageProps, context }) {
   if (typeof window !== 'undefined') {
-    console.log(clientEvents.listeners);
     clientEvents.emit("page:render", window);
   }
   return (
