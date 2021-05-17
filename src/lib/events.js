@@ -18,3 +18,4 @@ events.emit = (eventName, eventPayload, ...args) => {
 
   eventEmitter.emit(eventName, newPayload, ...args)
 };
+events.names = eventEmitter.eventNames.bind(eventEmitter);

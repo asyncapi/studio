@@ -1,1 +1,5 @@
-module.exports = {}; // Placeholder to make it work with next-transpile-modules
+import init from './src/events/render';
+
+module.exports = {
+    init
+}; // Placeholder to make it work with next-transpile-modules

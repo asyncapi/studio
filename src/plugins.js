@@ -4,6 +4,7 @@ const mergeWith = require('lodash/mergeWith');
 const { logLineWithBlock, logSuccessLine, logErrorLine, logErrorLineWithLongMessage } = require('./lib/logger');
 const pipeline = require('./lib/pipeline');
 const events = require('./lib/events');
+const clientEvents = require('./lib/client-events');
 const uiDefaults = require('../config/ui.defaults.json');
 const plugins = require('./lib/plugins');
 
@@ -68,7 +69,11 @@ function registerEvents(packageJSON) {
       eventTargetPaths.forEach(eventTargetPath => {
         try {
           const eventHandler = require(path.join(pluginName, eventTargetPath));
+          console.log(path.join(pluginName, eventTargetPath));
+          console.log(eventName);
           events.on(eventName, eventHandler);
+          clientEvents.on(eventName, eventHandler);
+          console.log(clientEvents.eventNames());
 
           logSuccessLine(`Event ${eventName} ${eventTargetPath}`, { highlightedWords: [eventName] });
         } catch (e) {

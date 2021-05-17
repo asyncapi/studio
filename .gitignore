@@ -6,3 +6,4 @@ cache/*
 src/pages/_plugins/*
 !src/pages/_plugins/[...].js
 config/ui.json
+yarn-error.log

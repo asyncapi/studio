@@ -1,11 +1,13 @@
-import React from 'react'
+import React from 'react';
+import googleAnalytics from '@asyncapistudio/plugin-google-analytics';
 import AppContext from '../contexts/AppContext'
 import '../css/tailwind.css'
 import clientEvents from '../lib/client-events';
 
 function AsyncApiStudio({ Component, pageProps, context }) {
   if (typeof window !== 'undefined') {
-    clientEvents.emit("page:render", window);
+    clientEvents.on('page:render', () => googleAnalytics.init(window));
+    clientEvents.emit('page:render');
   }
   return (
     <AppContext.Provider value={context || {}}>
