@@ -20,7 +20,7 @@
     "@asyncapi/html-template": "^0.18.1",
     "@asyncapi/markdown-template": "^0.9.0",
     "@asyncapi/parser": "^1.4.4",
-    "@asyncapi/react-component": "file:../asyncapi-react/library/asyncapi-react-component-0.20.1.tgz",
+    "@asyncapi/react-component": "^1.0.0-next.1",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
     "@fmvilas/pseudo-yaml-ast": "^0.2.0",
