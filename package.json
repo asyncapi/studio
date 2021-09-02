@@ -19,7 +19,7 @@
     "@asyncapi/generator": "^1.8.4",
     "@asyncapi/html-template": "^0.18.1",
     "@asyncapi/markdown-template": "^0.14.4",
-    "@asyncapi/parser": "^1.8.0",
+    "@asyncapi/parser": "^1.8.1",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
     "@fmvilas/pseudo-yaml-ast": "^0.2.0",
