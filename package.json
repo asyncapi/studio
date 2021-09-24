@@ -1,0 +1,61 @@
+{
+  "name": "@asyncapi/studio",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^12.20.26",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.4.3",
+    "web-vitals": "^1.1.2",
+    "@asyncapi/converter": "^0.5.0",
+    "@asyncapi/parser": "^1.9.1",
+    "@asyncapi/react-component": "^1.0.0-next.18",
+    "@asyncapi/specs": "^2.8.1",
+    "@headlessui/react": "1.4.1",
+    "@hookstate/core": "^3.0.12",
+    "@monaco-editor/react": "^4.2.2",
+    "js-base64": "^3.7.2",
+    "js-file-download": "^0.4.12",
+    "js-yaml": "^4.1.0",
+    "monaco-editor": "^0.28.1",
+    "monaco-yaml": "^2.5.1",
+    "react-hot-toast": "2.1.1",
+    "react-icons": "^4.2.0",
+    "react-split-pane": "^0.1.92"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.3"
+  }
+}
