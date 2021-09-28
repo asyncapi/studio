@@ -18,7 +18,7 @@
   "dependencies": {
     "@asyncapi/generator": "^1.8.13",
     "@asyncapi/html-template": "^0.23.8",
-    "@asyncapi/markdown-template": "^0.14.7",
+    "@asyncapi/markdown-template": "^0.14.8",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
