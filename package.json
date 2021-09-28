@@ -16,7 +16,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@asyncapi/generator": "^1.8.12",
+    "@asyncapi/generator": "^1.8.13",
     "@asyncapi/html-template": "^0.23.8",
     "@asyncapi/markdown-template": "^0.14.7",
     "@asyncapi/parser": "^1.10.0",
