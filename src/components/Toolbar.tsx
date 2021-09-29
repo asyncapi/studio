@@ -1,16 +1,8 @@
 import React from 'react';
 
-import state from '../state';
-
 interface ToolbarProps {}
 
 export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
-  const sidebarState = state.useSidebarState();
-
-  if (sidebarState.show.get() === false) {
-    return null;
-  }
-
   return (
     <div>
       <div className="px-4 border-b border-gray-700 bg-gray-800">

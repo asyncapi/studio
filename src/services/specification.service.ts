@@ -1,10 +1,8 @@
 // @ts-ignore
-import { convert } from '@asyncapi/converter';
 import { parse, AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 
-import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 
 import state from '../state';
@@ -19,9 +17,6 @@ export class SpecificationService {
         parserState.errors.set([]);
 
         MonacoService.updateLanguageConfig(v);
-        if (this.shouldInformAboutConvert(v)) {
-          state.spec.shouldOpenConvertModal.set(true);
-        }
 
         return v;
       })
@@ -63,22 +58,6 @@ export class SpecificationService {
       errors.push(err);
     }
     return errors;
-  }
-
-  static async convertSpec(
-    spec: string,
-    version: string = this.getLastVersion(),
-  ): Promise<string> {
-    const language = FormatService.retrieveLangauge(spec);
-    try {
-      const convertedSpec = convert(spec, version);
-      return language === 'json'
-        ? FormatService.convertToJson(convertedSpec)
-        : convertedSpec;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
   }
 
   static getSpecs() {
@@ -130,27 +109,6 @@ export class SpecificationService {
       err &&
       err.type === 'https://github.com/asyncapi/parser-js/dereference-error'
     );
-  }
-
-  private static shouldInformAboutConvert(
-    asyncAPIDocument: AsyncAPIDocument,
-  ): boolean {
-    const oneDay = 24 * 60 * 60 * 1000; /* ms */
-
-    const nowDate = new Date();
-    let dateOfLastQuestion = nowDate;
-    const localStorageItem = localStorage.getItem('informed-about-convert');
-    if (localStorageItem) {
-      dateOfLastQuestion = new Date(localStorageItem);
-    }
-    const isOvertime =
-      nowDate === dateOfLastQuestion ||
-      nowDate.getTime() - dateOfLastQuestion.getTime() > oneDay;
-    if (isOvertime && asyncAPIDocument.version() !== this.getLastVersion()) {
-      localStorage.setItem('informed-about-convert', nowDate.toString());
-      return true;
-    }
-    return false;
   }
 
   private static isNotSupportedVersion(rawSpec: string): boolean {

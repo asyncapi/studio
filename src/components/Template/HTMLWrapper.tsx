@@ -18,7 +18,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   if (editorState.editorLoaded.get() === false) {
     return (
-      <div className="flex overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
         Loading...
       </div>
     );
@@ -26,7 +26,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   if (!parsedSpec) {
     return (
-      <div className="flex overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
         Empty or invalid document. Please fix errors/define AsyncAPI document.
       </div>
     );
