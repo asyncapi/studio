@@ -36,7 +36,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --passWithNoTests",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "echo \"No linter configured\"",
+    "generate:assets": "npm run build"
   },
   "eslintConfig": {
     "extends": [
