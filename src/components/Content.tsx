@@ -21,9 +21,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
     <SplitPane
       minSize={220}
       maxSize={360}
-      pane1Style={!navigationEnabled ? { width: '0px' } : { overflow: 'auto' }}
-      pane2Style={!editorEnabled ? { width: '0px' } : undefined}
-      primary={!editorEnabled ? 'second' : 'first'}
+      pane1Style={navigationEnabled ? { overflow: 'auto' } : { width: '0px' }}
+      pane2Style={editorEnabled ? undefined : { width: '0px' }}
+      primary={editorEnabled ? 'first' : 'second'}
       defaultSize={
         parseInt(localStorage.getItem('splitPos:left') || '0', 10) || 220
       }
@@ -42,12 +42,12 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
         <SplitPane
           minSize={0}
           pane1Style={
-            !navigationEnabled && !editorEnabled ? { width: '0px' } : undefined
+            navigationEnabled || editorEnabled ? undefined : { width: '0px' }
           }
           pane2Style={
-            !templateEnabled ? { width: '0px' } : { overflow: 'auto' }
+            templateEnabled ? { overflow: 'auto' } : { width: '0px' }
           }
-          primary={!templateEnabled ? 'second' : 'first'}
+          primary={templateEnabled ? 'first' : 'second'}
           defaultSize={
             parseInt(localStorage.getItem('splitPos:center') || '0', 10) ||
             '55%'

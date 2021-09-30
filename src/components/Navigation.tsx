@@ -26,11 +26,11 @@ export const Navigation: React.FunctionComponent<NavigationProps> = () => {
 
   useEffect(() => {
     // remove `#` char
-    setHash(window.location.hash.substring(1));
     const fn = () => {
       // remove `#` char
       setHash(window.location.hash.substring(1));
     };
+    fn();
     window.addEventListener('hashchange', fn);
     return () => {
       window.removeEventListener('hashchange', fn);
