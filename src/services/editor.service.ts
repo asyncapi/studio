@@ -50,4 +50,36 @@ export class EditorService {
       }
     }
   }
+
+  static async importFromURL(url: string): Promise<void> {
+    if (url) {
+      return fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          this.updateState(text, true);
+        })
+        .catch(err => {
+          console.error(err);
+          throw err;
+        });
+    }
+  }
+
+  static async importFile(files: FileList | null) {
+    if (files === null || files?.length !== 1) {
+      return;
+    }
+    const file = files.item(0);
+    if (!file) {
+      return;
+    }
+
+    const fileReader = new FileReader();
+    fileReader.onload = fileLoadedEvent => {
+      const content = fileLoadedEvent.target?.result;
+      console.log(content);
+      this.updateState(String(content), true);
+    };
+    fileReader.readAsText(file, 'UTF-8');
+  }
 }
