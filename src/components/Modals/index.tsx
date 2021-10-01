@@ -1,4 +1,6 @@
 export * from './ConfirmModal';
+export * from './ConverterModal';
+export * from './ImportBase64Modal';
 export * from './ImportURLModal';
 
 export interface IModalProps {

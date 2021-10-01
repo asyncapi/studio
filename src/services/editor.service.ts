@@ -1,6 +1,7 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { FormatService } from "./format.service";
+import { SpecificationService } from "./specification.service";
 
 import state from '../state';
 
@@ -51,6 +52,14 @@ export class EditorService {
     }
   }
 
+  static async convertSpec(version?: string) {
+    const converted = await SpecificationService.convertSpec(
+      this.getValue(),
+      version,
+    );
+    this.updateState(converted, true);
+  }
+
   static async importFromURL(url: string): Promise<void> {
     if (url) {
       return fetch(url)
@@ -81,5 +90,15 @@ export class EditorService {
       this.updateState(String(content), true);
     };
     fileReader.readAsText(file, 'UTF-8');
+  }
+
+  static async importBase64(content: string) {
+    try {
+      const decoded = FormatService.decodeBase64(content);
+      this.updateState(decoded, true);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 }

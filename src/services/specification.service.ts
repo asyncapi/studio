@@ -1,8 +1,10 @@
 // @ts-ignore
+import { convert } from '@asyncapi/converter';
 import { parse, AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 
+import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 
 import state from '../state';
@@ -28,36 +30,20 @@ export class SpecificationService {
       });
   }
 
-  private static filterErrors(err: any, rawSpec: string) {
-    let errors = [];
-    if (this.isUnsupportedVersionError(err)) {
-      errors.push({
-        type: err.type,
-        title: err.message,
-        location: err.validationErrors,
-      });
-      this.isNotSupportedVersion(rawSpec) &&
-        state.spec.shouldOpenConvertModal.set(true);
+  static async convertSpec(
+    spec: string,
+    version: string = this.getLastVersion(),
+  ): Promise<string> {
+    const language = FormatService.retrieveLangauge(spec);
+    try {
+      const convertedSpec = convert(spec, version);
+      return language === 'json'
+        ? FormatService.convertToJson(convertedSpec)
+        : convertedSpec;
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-    if (this.isValidationError(err)) {
-      errors.push(...err.validationErrors);
-    }
-    if (this.isYamlError(err) || this.isJsonError(err)) {
-      errors.push(err);
-    }
-    if (this.isDereferenceError(err)) {
-      errors.push(
-        ...err.refs.map((ref: any) => ({
-          type: err.type,
-          title: err.title,
-          location: { ...ref },
-        })),
-      );
-    }
-    if (errors.length === 0) {
-      errors.push(err);
-    }
-    return errors;
   }
 
   static getSpecs() {
@@ -118,4 +104,37 @@ export class SpecificationService {
     }
     return false;
   }
+
+  private static filterErrors(err: any, rawSpec: string) {
+    let errors = [];
+    if (this.isUnsupportedVersionError(err)) {
+      errors.push({
+        type: err.type,
+        title: err.message,
+        location: err.validationErrors,
+      });
+      this.isNotSupportedVersion(rawSpec) &&
+        state.spec.shouldOpenConvertModal.set(true);
+    }
+    if (this.isValidationError(err)) {
+      errors.push(...err.validationErrors);
+    }
+    if (this.isYamlError(err) || this.isJsonError(err)) {
+      errors.push(err);
+    }
+    if (this.isDereferenceError(err)) {
+      errors.push(
+        ...err.refs.map((ref: any) => ({
+          type: err.type,
+          title: err.title,
+          location: { ...ref },
+        })),
+      );
+    }
+    if (errors.length === 0) {
+      errors.push(err);
+    }
+    return errors;
+  }
+  
 }
