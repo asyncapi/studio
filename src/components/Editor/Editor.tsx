@@ -3,6 +3,7 @@ import SplitPane from 'react-split-pane';
 
 import { EditorSidebar } from './EditorSidebar';
 import { MonacoWrapper } from './MonacoWrapper';
+import { Terminal } from '../Terminal/Terminal';
 
 import state from '../../state';
 
@@ -25,6 +26,7 @@ export const Editor: React.FunctionComponent<EditorProps> = () => {
           <EditorSidebar />
           <MonacoWrapper />
         </div>
+        <Terminal />
       </SplitPane>
     </div>
   );
