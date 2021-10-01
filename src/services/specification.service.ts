@@ -111,12 +111,9 @@ export class SpecificationService {
     );
   }
 
+  private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
   private static isNotSupportedVersion(rawSpec: string): boolean {
-    if (
-      /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/.test(
-        rawSpec.trim(),
-      )
-    ) {
+    if (this.notSupportedVersions.test(rawSpec.trim())) {
       return true;
     }
     return false;
