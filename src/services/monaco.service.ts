@@ -8,7 +8,7 @@ import { SpecificationService } from './specification.service';
 import state from '../state';
 
 export class MonacoService {
-  private static actualVersion: string = '2.0.0';
+  private static actualVersion: string = SpecificationService.getLastVersion();
   private static Monaco: any = null;
   private static Editor: any = null;
 
