@@ -38,7 +38,7 @@ export class SpecificationService {
     try {
       const convertedSpec = convert(spec, version);
       return language === 'json'
-        ? FormatService.convertToJson(convertedSpec)
+        ? FormatService.convertToJSON(convertedSpec)
         : convertedSpec;
     } catch (err) {
       console.error(err);
@@ -97,13 +97,14 @@ export class SpecificationService {
     );
   }
 
-  private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
-  private static isNotSupportedVersion(rawSpec: string): boolean {
+  static isNotSupportedVersion(rawSpec: string): boolean {
     if (this.notSupportedVersions.test(rawSpec.trim())) {
       return true;
     }
     return false;
   }
+
+  private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
 
   private static filterErrors(err: any, rawSpec: string) {
     let errors = [];
@@ -136,5 +137,4 @@ export class SpecificationService {
     }
     return errors;
   }
-  
 }

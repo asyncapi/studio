@@ -55,7 +55,7 @@ export class EditorService {
   static async convertSpec(version?: string) {
     const converted = await SpecificationService.convertSpec(
       this.getValue(),
-      version,
+      version || SpecificationService.getLastVersion(),
     );
     this.updateState(converted, true);
   }

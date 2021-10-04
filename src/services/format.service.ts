@@ -12,7 +12,7 @@ export class FormatService {
     }
   }
 
-  static convertToJson(spec: string) {
+  static convertToJSON(spec: string) {
     try {
       // JSON or YAML String -> JS object
       const jsonContent = YAML.load(spec);
