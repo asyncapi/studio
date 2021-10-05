@@ -2,6 +2,7 @@ import React from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Toolbar } from './components';
+import { ConvertToLatestModal } from './components/Modals';
 
 export interface AsyncAPIStudioProps {}
 
@@ -14,6 +15,7 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
         <Content />
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
+      <ConvertToLatestModal />
     </div>
   );
 };

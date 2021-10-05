@@ -5,7 +5,7 @@ import { ConfirmModal } from './index';
 import { EditorService, SpecificationService } from '../../services';
 import state from '../../state';
 
-export const ConverterModal: React.FunctionComponent = () => {
+export const ConvertModal: React.FunctionComponent = () => {
   const [version, setVersion] = useState('');
   const parserState = state.useParserState();
 
