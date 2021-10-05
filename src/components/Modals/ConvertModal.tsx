@@ -36,7 +36,7 @@ export const ConvertModal: React.FunctionComponent = () => {
 
   return (
     <ConfirmModal
-      title="Convert AsyncAPI document"
+      title={`Convert AsyncAPI ${actualVersion} document`}
       confirmText="Convert"
       confirmDisabled={!version || allowedVersions.length === 0}
       opener={
@@ -66,12 +66,9 @@ export const ConvertModal: React.FunctionComponent = () => {
               value={version}
             >
               <option value="">Please Select</option>
-              {allowedVersions.length > 1 && (
-                <option value={latestVersion}>Latest ({latestVersion})</option>
-              )}
-              {allowedVersions.map(v => (
+              {allowedVersions.reverse().map(v => (
                 <option key={v} value={v}>
-                  {v}
+                  {v === latestVersion ? `${v} (latest)` : v}
                 </option>
               ))}
             </select>
