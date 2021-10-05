@@ -28,6 +28,7 @@ describe('SpecificationService', () => {
 
   describe('.shouldInformAboutLatestVersion', () => {
     test('should inform - case with non latest version, 2.1.0', () => {
+      sessionStorage.removeItem('informed-about-latest');
       const result = SpecificationService.shouldInformAboutLatestVersion('2.1.0');
       expect(result).toEqual(true);
     });
