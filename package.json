@@ -9,6 +9,8 @@
     "build": "next build",
     "start": "node src/main.js",
     "test": "jest",
+    "lint": "echo 'Not Implemented Yet'",
+		"generate:assets": "echo 'Nothing To Generate'",
     "prisma:generate": "prisma generate",
     "db:migrate:save": "prisma migrate save --experimental",
     "db:migrate:up": "prisma migrate up --experimental",
