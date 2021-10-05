@@ -13,6 +13,7 @@ export const ConvertModal: React.FunctionComponent = () => {
   const latestVersion = SpecificationService.getLastVersion();
   let allowedVersions = Object.keys(SpecificationService.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
+  const reservedAllowedVersions = allowedVersions.reverse();
 
   const onSubmit = () => {
     toast.promise(EditorService.convertSpec(version), {
@@ -50,31 +51,31 @@ export const ConvertModal: React.FunctionComponent = () => {
       }
       onSubmit={onSubmit}
     >
-      <div className="flex content-center justify-center">
+      <div>
         {allowedVersions.length > 0 ? (
-          <>
+          <div className="flex content-center justify-center mt-4">
             <label
               htmlFor="asyncapi-version"
-              className="flex justify-right items-center w-1/2 content-center  text-sm font-medium text-gray-700"
+              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
             >
               To version:
             </label>
             <select
               name="asyncapi-version"
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-md"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 rounded-md"
               onChange={e => setVersion(e.target.value)}
               value={version}
             >
               <option value="">Please Select</option>
-              {allowedVersions.reverse().map(v => (
+              {reservedAllowedVersions.map(v => (
                 <option key={v} value={v}>
                   {v === latestVersion ? `${v} (latest)` : v}
                 </option>
               ))}
             </select>
-          </>
+          </div>
         ) : (
-          <div>Uses the latest version.</div>
+          <div className="flex content-center justify-center">Uses the latest version.</div>
         )}
       </div>
     </ConfirmModal>
