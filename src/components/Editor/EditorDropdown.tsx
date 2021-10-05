@@ -10,10 +10,17 @@ import {
 import { Dropdown } from '../common';
 
 import { EditorService } from '../../services';
+import state from '../../state';
 
 interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
+  const editorState = state.useEditorState();
+  const parserState = state.useParserState();
+
+  const language = editorState.language.get();
+  const hasParserErrors = parserState.errors.get().length > 0;
+
   return (
     <Dropdown
       opener={<FaEllipsisH />}
@@ -59,7 +66,113 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
             <ImportBase64Modal />
           </li>
         </div>
+        <div className="border-b border-gray-700">
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title={`Save as ${language === 'yaml' ? 'YAML' : 'JSON'}`}
+              onClick={() => {
+                toast.promise(
+                  language === 'yaml'
+                    ? EditorService.saveAsYaml()
+                    : EditorService.saveAsJSON(),
+                  {
+                    loading: 'Saving...',
+                    success: (
+                      <div>
+                        <span className="block text-bold">
+                          Document succesfully saved!
+                        </span>
+                      </div>
+                    ),
+                    error: (
+                      <div>
+                        <span className="block text-bold text-red-400">
+                          Failed to save document.
+                        </span>
+                      </div>
+                    ),
+                  },
+                );
+              }}
+              disabled={hasParserErrors}
+            >
+              Save as {language === 'yaml' ? 'YAML' : 'JSON'}
+            </button>
+          </li>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title={`Convert and save as ${
+                language === 'yaml' ? 'JSON' : 'YAML'
+              }`}
+              onClick={() => {
+                toast.promise(
+                  language === 'yaml'
+                    ? EditorService.saveAsJSON()
+                    : EditorService.saveAsYaml(),
+                  {
+                    loading: 'Saving...',
+                    success: (
+                      <div>
+                        <span className="block text-bold">
+                          Document succesfully converted and saved!
+                        </span>
+                      </div>
+                    ),
+                    error: (
+                      <div>
+                        <span className="block text-bold text-red-400">
+                          Failed to convert and save document.
+                        </span>
+                      </div>
+                    ),
+                  },
+                );
+              }}
+              disabled={hasParserErrors}
+            >
+              Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
+            </button>
+          </li>
+        </div>
         <div>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title={`Convert to ${language === 'yaml' ? 'JSON' : 'YAML'}`}
+              onClick={() => {
+                toast.promise(
+                  language === 'yaml'
+                    ? EditorService.convertToJSON()
+                    : EditorService.convertToYaml(),
+                  {
+                    loading: 'Saving...',
+                    success: (
+                      <div>
+                        <span className="block text-bold">
+                          Document succesfully converted!
+                        </span>
+                      </div>
+                    ),
+                    error: (
+                      <div>
+                        <span className="block text-bold text-red-400">
+                          Failed to convert document.
+                        </span>
+                      </div>
+                    ),
+                  },
+                );
+              }}
+              disabled={hasParserErrors}
+            >
+              Convert to {language === 'yaml' ? 'JSON' : 'YAML'}
+            </button>
+          </li>
           <li className="hover:bg-gray-900">
             <ConvertModal />
           </li>
