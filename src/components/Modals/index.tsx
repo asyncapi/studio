@@ -1,5 +1,5 @@
 export * from './ConfirmModal';
-export * from './ConverterModal';
+export * from './ConvertModal';
 export * from './ImportBase64Modal';
 export * from './ImportURLModal';
 
