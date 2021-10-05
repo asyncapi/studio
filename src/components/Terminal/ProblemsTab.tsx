@@ -55,7 +55,7 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
         </div>
       ) : (
         <div className="py-2 px-4 w-full text-sm">
-          No problems have been detected in the specification so far.
+          No problems have been detected in the AsyncAPI document so far.
         </div>
       )}
     </div>

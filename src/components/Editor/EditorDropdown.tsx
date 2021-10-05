@@ -3,6 +3,8 @@ import toast from 'react-hot-toast';
 import { FaEllipsisH } from 'react-icons/fa';
 
 import {
+  ConvertModal,
+  ImportBase64Modal,
   ImportURLModal,
 } from '../Modals';
 import { Dropdown } from '../common';
@@ -52,6 +54,14 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
               />
               Import File
             </label>
+          </li>
+          <li className="hover:bg-gray-900">
+            <ImportBase64Modal />
+          </li>
+        </div>
+        <div>
+          <li className="hover:bg-gray-900">
+            <ConvertModal />
           </li>
         </div>
       </ul>
