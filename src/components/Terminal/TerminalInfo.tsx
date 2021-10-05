@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { SpecificationService } from '../../services';
 import state from '../../state';
 
 interface TerminalInfoProps {}
@@ -8,7 +9,17 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
 
+  const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
+  const latestVersion = SpecificationService.getLastVersion();
   const errors = parserState.errors.get();
+
+  function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation();
+    state.spec.set({
+      shouldOpenConvertModal: true,
+      forceConvertToLatest: true,
+    });
+  }
 
   return (
     <div className="flex flex-row px-2">
@@ -47,6 +58,16 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
             </svg>
           </span>
           <span>Valid</span>
+        </div>
+      )}
+      {actualVersion !== latestVersion && (
+        <div className="ml-3" onClick={onNonLatestClick}>
+          <span className="text-yellow-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </span>
+          <span>Not latest</span>
         </div>
       )}
       <div className="ml-3">

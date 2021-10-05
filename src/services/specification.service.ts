@@ -20,7 +20,10 @@ export class SpecificationService {
 
         MonacoService.updateLanguageConfig(asyncApiDoc);
         if (this.shouldInformAboutLatestVersion(asyncApiDoc.version())) {
-          state.spec.shouldOpenConvertModal.set(true);
+          state.spec.set({
+            shouldOpenConvertModal: true,
+            forceConvertToLatest: false,
+          })
         }
 
         return asyncApiDoc;
@@ -141,7 +144,10 @@ export class SpecificationService {
         location: err.validationErrors,
       });
       this.isNotSupportedVersion(rawSpec) &&
-        state.spec.shouldOpenConvertModal.set(true);
+        state.spec.set({
+          shouldOpenConvertModal: true,
+          forceConvertToLatest: false,
+        });
     }
     if (this.isValidationError(err)) {
       errors.push(...err.validationErrors);
