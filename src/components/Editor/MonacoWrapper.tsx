@@ -13,7 +13,7 @@ import {
 } from '../../services';
 import state from '../../state';
 
-export interface MonacoWrapperProps extends MonacoEditorProps {}
+export type MonacoWrapperProps = MonacoEditorProps
 
 export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   ...props
@@ -31,7 +31,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
     // apply save command
     editor.addCommand(
       monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KEY_S,
-      function() {
+      () => {
         const editorValue = EditorService.getValue();
         localStorage.setItem('document', editorValue);
         toast.success(

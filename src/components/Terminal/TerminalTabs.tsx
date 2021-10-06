@@ -34,19 +34,21 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
           if (!clientRects) return;
 
           const height = clientRects.height;
+          const calc160px = 'calc(100% - 160px)';
+          const calc36px = 'calc(100% - 36px)';
 
           editorState.height.set(prevHeight => {
             const newHeight =
-              height < 50 ? 'calc(100% - 160px)' : 'calc(100% - 36px)';
+              height < 50 ? calc160px : calc36px;
             if (
-              prevHeight === 'calc(100% - 160px)' &&
-              newHeight === 'calc(100% - 160px)'
+              prevHeight === calc160px &&
+              newHeight === calc160px
             ) {
               return 'calc(100% - 161px)';
             }
             if (
-              prevHeight === 'calc(100% - 36px)' &&
-              newHeight === 'calc(100% - 36px)'
+              prevHeight === calc36px &&
+              newHeight === calc36px
             ) {
               return 'calc(100% - 37px)';
             }

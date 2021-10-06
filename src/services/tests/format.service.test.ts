@@ -10,14 +10,14 @@ describe('FormatService', () => {
     });
 
     test('should work with valid stringified JSON', () => {
-      const json = `{"asyncapi": "2.2.0", "foobar": "barfoo"}`;
+      const json = '{"asyncapi": "2.2.0", "foobar": "barfoo"}';
       const result = FormatService.convertToYaml(json);
       expect(result).toEqual(validYAML);
     });
   });
 
   describe('.convertToJson', () => {
-    const validJSON = JSON.stringify({ asyncapi: "2.2.0", foobar: "barfoo" }, undefined, 2);
+    const validJSON = JSON.stringify({ asyncapi: '2.2.0', foobar: 'barfoo' }, undefined, 2);
 
     test('should work with valid yaml', () => {
       const result = FormatService.convertToJSON('asyncapi: 2.2.0\nfoobar: barfoo\n');
@@ -39,7 +39,7 @@ describe('FormatService', () => {
 
   describe('.decodeBase64', () => {
     test('should properly decode content from base64', () => {
-      const result = FormatService.decodeBase64(`aGVsbG8gd29ybGQh`);
+      const result = FormatService.decodeBase64('aGVsbG8gd29ybGQh');
       expect(result).toEqual('hello world!');
     });
   });
@@ -51,12 +51,12 @@ describe('FormatService', () => {
     });
 
     test('should check that content is json', () => {
-      const result = FormatService.retrieveLangauge(`{"asyncapi": "2.2.0", "foobar": "barfoo"}`);
+      const result = FormatService.retrieveLangauge('{"asyncapi": "2.2.0", "foobar": "barfoo"}');
       expect(result).toEqual('json');
     });
 
     test('should check that content is yaml - fallback for non json content', () => {
-      const result = FormatService.retrieveLangauge(``);
+      const result = FormatService.retrieveLangauge('');
       expect(result).toEqual('yaml');
     });
   });

@@ -18,7 +18,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
 
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0-rc2';
   const latestVersion = SpecificationService.getLastVersion();
-  let allowedVersions = Object.keys(SpecificationService.getSpecs());
+  const allowedVersions = Object.keys(SpecificationService.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = allowedVersions.reverse();
 
@@ -28,7 +28,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
 
   useEffect(() => {
     show === false && specState.shouldOpenConvertModal.set(false);
-  }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show]); // eslint-disable-line
 
   function onCancel() {
     setShow(false);
@@ -38,8 +38,6 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
     async function convert() {
       try {
         await EditorService.convertSpec(convertOnlyToLatest ? latestVersion : version);
-      } catch (e) {
-        throw e;
       } finally {
         specState.shouldOpenConvertModal.set(false);
         setShow(false);
@@ -63,12 +61,21 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
         </div>
       ),
     });
-  };
+  }
+
+  let content = '';
+  if (convertOnlyToLatest) {
+    content = `Your document is using not latest version of AsyncAPI. Convert your document to latest (${latestVersion}) version`;
+  } else if (forceConvert) {
+    content = 'Your document is using not supported version of AsyncAPI. Convert your document to newest version to continue.';
+  } else {
+    content = 'There is a new version of AsyncAPI. Convert your document to newest version if you want.';
+  }
 
   return (
     <ConfirmModal
       title={convertOnlyToLatest ? 'Convert AsyncAPI document to latest version' : 'Convert AsyncAPI document to newest version'}
-      confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : `Convert`}
+      confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : 'Convert'}
       confirmDisabled={convertOnlyToLatest ? false : !version || allowedVersions.length === 0}
       cancelDisabled={forceConvert}
       show={show}
@@ -77,12 +84,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
     >
       <div className="flex flex-col content-center justify-center text-center">
         <p>
-          {convertOnlyToLatest 
-            ? `Your document is using not latest version of AsyncAPI. Convert your document to latest (${latestVersion}) version`
-            : forceConvert
-              ? `Your document is using not supported version of AsyncAPI. Convert your document to newest version to continue.`
-              : `There is a new version of AsyncAPI. Convert your document to newest version if you want.`
-          }
+          {content}
         </p>
         <ul className="mt-4">
           {reservedAllowedVersions.map(version => version !== '2.0.0' && (

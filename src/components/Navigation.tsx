@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-nested-template-literals, sonarjs/no-duplicate-string */
+
 import React, { useEffect, useState } from 'react';
 
 import { AsyncAPIDocument } from '@asyncapi/parser';
@@ -13,108 +15,6 @@ interface NavigationSectionProps {
   language: string;
   hash: string;
 }
-
-export const Navigation: React.FunctionComponent<NavigationProps> = () => {
-  const [hash, setHash] = useState(window.location.hash);
-
-  const editorState = state.useEditorState();
-  const parserState = state.useParserState();
-
-  const rawSpec = editorState.editorValue.get();
-  const language = editorState.language.get();
-  const spec = parserState.parsedSpec.get();
-
-  useEffect(() => {
-    // remove `#` char
-    const fn = () => {
-      // remove `#` char
-      setHash(window.location.hash.substring(1));
-    };
-    fn();
-    window.addEventListener('hashchange', fn);
-    return () => {
-      window.removeEventListener('hashchange', fn);
-    };
-  }, []);
-
-  if (editorState.editorLoaded.get() === false) {
-    return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!rawSpec || !spec || typeof spec === 'string') {
-    return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        Empty or invalid document. Please fix errors/define AsyncAPI document.
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full">
-      <ul>
-        <li className="mb-4">
-          <div
-            className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-              hash === 'introduction' ? 'bg-gray-900' : ''
-            }`}
-            onClick={() =>
-              NavigationService.scrollTo(
-                '/info',
-                rawSpec,
-                'introduction',
-                language,
-              )
-            }
-          >
-            Introduction
-          </div>
-        </li>
-        {spec.hasServers() && (
-          <li className="mb-4">
-            <ServersNavigation
-              spec={spec}
-              rawSpec={rawSpec}
-              language={language}
-              hash={hash}
-            />
-          </li>
-        )}
-        <li className="mb-4">
-          <OperationsNavigation
-            spec={spec}
-            rawSpec={rawSpec}
-            language={language}
-            hash={hash}
-          />
-        </li>
-        {spec.hasComponents() && spec.components().hasMessages() && (
-          <li className="mb-4">
-            <MessagesNavigation
-              spec={spec}
-              rawSpec={rawSpec}
-              language={language}
-              hash={hash}
-            />
-          </li>
-        )}
-        {spec.hasComponents() && spec.components().hasSchemas() && (
-          <li className="mb-4">
-            <SchemasNavigation
-              spec={spec}
-              rawSpec={rawSpec}
-              language={language}
-              hash={hash}
-            />
-          </li>
-        )}
-      </ul>
-    </div>
-  );
-};
 
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
@@ -353,5 +253,107 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       </div>
       <ul>{schemas}</ul>
     </>
+  );
+};
+
+export const Navigation: React.FunctionComponent<NavigationProps> = () => {
+  const [hash, setHash] = useState(window.location.hash);
+
+  const editorState = state.useEditorState();
+  const parserState = state.useParserState();
+
+  const rawSpec = editorState.editorValue.get();
+  const language = editorState.language.get();
+  const spec = parserState.parsedSpec.get();
+
+  useEffect(() => {
+    // remove `#` char
+    const fn = () => {
+      // remove `#` char
+      setHash(window.location.hash.substring(1));
+    };
+    fn();
+    window.addEventListener('hashchange', fn);
+    return () => {
+      window.removeEventListener('hashchange', fn);
+    };
+  }, []);
+
+  if (editorState.editorLoaded.get() === false) {
+    return (
+      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!rawSpec || !spec || typeof spec === 'string') {
+    return (
+      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
+        Empty or invalid document. Please fix errors/define AsyncAPI document.
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full">
+      <ul>
+        <li className="mb-4">
+          <div
+            className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+              hash === 'introduction' ? 'bg-gray-900' : ''
+            }`}
+            onClick={() =>
+              NavigationService.scrollTo(
+                '/info',
+                rawSpec,
+                'introduction',
+                language,
+              )
+            }
+          >
+            Introduction
+          </div>
+        </li>
+        {spec.hasServers() && (
+          <li className="mb-4">
+            <ServersNavigation
+              spec={spec}
+              rawSpec={rawSpec}
+              language={language}
+              hash={hash}
+            />
+          </li>
+        )}
+        <li className="mb-4">
+          <OperationsNavigation
+            spec={spec}
+            rawSpec={rawSpec}
+            language={language}
+            hash={hash}
+          />
+        </li>
+        {spec.hasComponents() && spec.components().hasMessages() && (
+          <li className="mb-4">
+            <MessagesNavigation
+              spec={spec}
+              rawSpec={rawSpec}
+              language={language}
+              hash={hash}
+            />
+          </li>
+        )}
+        {spec.hasComponents() && spec.components().hasSchemas() && (
+          <li className="mb-4">
+            <SchemasNavigation
+              spec={spec}
+              rawSpec={rawSpec}
+              language={language}
+              hash={hash}
+            />
+          </li>
+        )}
+      </ul>
+    </div>
   );
 };

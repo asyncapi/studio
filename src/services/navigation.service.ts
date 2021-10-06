@@ -16,7 +16,7 @@ export class NavigationService {
     jsonPointer: any,
     spec: any,
     hash: string,
-    language: string = 'yaml',
+    language = 'yaml',
   ) {
     try {
       const location: LocationOf = getLocationOf(jsonPointer, spec, language);
@@ -44,7 +44,9 @@ export class NavigationService {
         typeof element.scrollIntoView === 'function' &&
           element.scrollIntoView({ behavior: 'smooth' });
       }
-    } catch (e) {}
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   static scrollToEditorLine(startLine: number) {
@@ -52,7 +54,9 @@ export class NavigationService {
       const editor = window.Editor;
       editor && editor.revealLineInCenter(startLine);
       editor && editor.setPosition({ column: 1, lineNumber: startLine });
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   private static emitHashChangeEvent(hash: string) {
