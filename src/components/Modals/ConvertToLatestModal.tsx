@@ -81,12 +81,12 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
             ? `Your document is using not latest version of AsyncAPI. Convert your document to latest (${latestVersion}) version`
             : forceConvert
               ? `Your document is using not supported version of AsyncAPI. Convert your document to newest version to continue.`
-              : `Your document is using not latest version of AsyncAPI. Convert your document to newest version if you want.`
+              : `There is a new version of AsyncAPI. Convert your document to newest version if you want.`
           }
         </p>
         <ul className="mt-4">
           {reservedAllowedVersions.map(version => version !== '2.0.0' && (
-            <li>
+            <li key={version}>
               <a
                 className="underline"
                 href={`https://www.asyncapi.com/blog/release-notes-${version}`}
