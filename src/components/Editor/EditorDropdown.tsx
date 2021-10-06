@@ -31,24 +31,24 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
           toast.promise(EditorService.importFile(event.target.files), {
-          loading: 'Importing...',
-          success: (
-            <div>
-              <span className="block text-bold">
+            loading: 'Importing...',
+            success: (
+              <div>
+                <span className="block text-bold">
                 Document succesfully imported!
-              </span>
-            </div>
-          ),
-          error: (
-            <div>
-              <span className="block text-bold text-red-400">
+                </span>
+              </div>
+            ),
+            error: (
+              <div>
+                <span className="block text-bold text-red-400">
                 Failed to import document.
-              </span>
-            </div>
-          ),
-        });
-      }}
-    />
+                </span>
+              </div>
+            ),
+          });
+        }}
+      />
       Import File
     </label>
   );

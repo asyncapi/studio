@@ -24,7 +24,7 @@ export class SpecificationService {
             shouldOpenConvertModal: true,
             convertOnlyToLatest: false,
             forceConvert: false,
-          })
+          });
         }
 
         return asyncApiDoc;
@@ -137,7 +137,7 @@ export class SpecificationService {
   private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
 
   private static filterErrors(err: any, rawSpec: string) {
-    let errors = [];
+    const errors = [];
     if (this.isUnsupportedVersionError(err)) {
       errors.push({
         type: err.type,

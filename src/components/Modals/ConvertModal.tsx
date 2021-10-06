@@ -11,7 +11,7 @@ export const ConvertModal: React.FunctionComponent = () => {
 
   const actualVersion = parserState.parsedSpec.get()?.version();
   const latestVersion = SpecificationService.getLastVersion();
-  let allowedVersions = Object.keys(SpecificationService.getSpecs());
+  const allowedVersions = Object.keys(SpecificationService.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = allowedVersions.reverse();
 

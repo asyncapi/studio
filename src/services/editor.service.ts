@@ -1,8 +1,8 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import fileDownload from 'js-file-download';
 
-import { FormatService } from "./format.service";
-import { SpecificationService } from "./specification.service";
+import { FormatService } from './format.service';
+import { SpecificationService } from './specification.service';
 
 import state from '../state';
 
@@ -20,7 +20,7 @@ export class EditorService {
 
   static updateState(
     content: string,
-    updateModel: boolean = false,
+    updateModel = false,
     language?: AllowedLanguages,
   ) {
     if (!content) {
@@ -33,14 +33,14 @@ export class EditorService {
     }
 
     switch (language) {
-      case 'yaml':
-      case 'yml': {
-        state.editor.language.set('yaml');
-        break;
-      }
-      default: {
-        state.editor.language.set('json');
-      }
+    case 'yaml':
+    case 'yml': {
+      state.editor.language.set('yaml');
+      break;
+    }
+    default: {
+      state.editor.language.set('json');
+    }
     }
     state.editor.editorValue.set(content);
 

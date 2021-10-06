@@ -8,7 +8,7 @@ import { SpecificationService } from './specification.service';
 import state from '../state';
 
 export class MonacoService {
-  private static actualVersion: string = 'X.X.X';
+  private static actualVersion = 'X.X.X';
   private static Monaco: any = null;
   private static Editor: any = null;
 
@@ -47,7 +47,7 @@ export class MonacoService {
         {
           uri: 'https://www.asyncapi.com/', // id of the schema
           fileMatch: ['*'], // associate with all models
-          schema: specs[asyncAPIVersion],
+          schema: specs[String(asyncAPIVersion)],
         },
       ],
     } as any;

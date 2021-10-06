@@ -1,10 +1,9 @@
-export function debounce(func: Function, wait: number, immediate?: boolean) {
-  let timeout: NodeJS.Timeout | null;
+export function debounce(func: (...args: any[]) => any, wait: number, immediate?: boolean) {
+  let timeout: number | null;
 
-  return function executedFunction() {
+  return function executedFunction(...args: any[]) {
     // @ts-ignore
     const context = this;
-    const args = arguments;
 
     const later = function() {
       timeout = null;
@@ -16,7 +15,7 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
     const callNow = immediate && !timeout;
 
     timeout && clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(later, wait) as unknown as number;
 
     if (callNow) {
       func.apply(context, args);
