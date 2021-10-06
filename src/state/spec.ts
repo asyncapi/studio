@@ -2,12 +2,14 @@ import { createState, useState } from '@hookstate/core';
 
 export interface SpecificationState {
   shouldOpenConvertModal: boolean;
-  forceConvertToLatest: boolean;
+  forceConvert: boolean;
+  convertOnlyToLatest: boolean;
 }
 
 export const specState = createState<SpecificationState>({
   shouldOpenConvertModal: false,
-  forceConvertToLatest: false,
+  forceConvert: false,
+  convertOnlyToLatest: false,
 });
 
 export function useSpecState() {

@@ -22,7 +22,8 @@ export class SpecificationService {
         if (this.shouldInformAboutLatestVersion(asyncApiDoc.version())) {
           state.spec.set({
             shouldOpenConvertModal: true,
-            forceConvertToLatest: false,
+            convertOnlyToLatest: false,
+            forceConvert: false,
           })
         }
 
@@ -146,7 +147,8 @@ export class SpecificationService {
       this.isNotSupportedVersion(rawSpec) &&
         state.spec.set({
           shouldOpenConvertModal: true,
-          forceConvertToLatest: false,
+          convertOnlyToLatest: false,
+          forceConvert: true,
         });
     }
     if (this.isValidationError(err)) {

@@ -17,7 +17,8 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
     e.stopPropagation();
     state.spec.set({
       shouldOpenConvertModal: true,
-      forceConvertToLatest: true,
+      convertOnlyToLatest: true,
+      forceConvert: false,
     });
   }
 
