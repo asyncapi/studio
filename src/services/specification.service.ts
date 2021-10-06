@@ -13,14 +13,21 @@ export class SpecificationService {
   static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
     const parserState = state.parser;
     return parse(rawSpec)
-      .then(v => {
-        parserState.parsedSpec.set(v);
+      .then(asyncApiDoc => {
+        parserState.parsedSpec.set(asyncApiDoc);
         parserState.valid.set(true);
         parserState.errors.set([]);
 
-        MonacoService.updateLanguageConfig(v);
+        MonacoService.updateLanguageConfig(asyncApiDoc);
+        if (this.shouldInformAboutLatestVersion(asyncApiDoc.version())) {
+          state.spec.set({
+            shouldOpenConvertModal: true,
+            convertOnlyToLatest: false,
+            forceConvert: false,
+          })
+        }
 
-        return v;
+        return asyncApiDoc;
       })
       .catch(err => {
         const errors = this.filterErrors(err, rawSpec);
@@ -104,6 +111,29 @@ export class SpecificationService {
     return false;
   }
 
+  static shouldInformAboutLatestVersion(
+    version: string,
+  ): boolean {
+    const oneDay = 24 * 60 * 60 * 1000; /* ms */
+
+    const nowDate = new Date();
+    let dateOfLastQuestion = nowDate;
+    const localStorageItem = sessionStorage.getItem('informed-about-latest');
+    if (localStorageItem) {
+      dateOfLastQuestion = new Date(localStorageItem);
+    }
+
+    const isOvertime =
+      nowDate === dateOfLastQuestion ||
+      nowDate.getTime() - dateOfLastQuestion.getTime() > oneDay;
+    if (isOvertime && version !== this.getLastVersion()) {
+      sessionStorage.setItem('informed-about-latest', nowDate.toString());
+      return true;
+    }
+
+    return false;
+  }
+
   private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
 
   private static filterErrors(err: any, rawSpec: string) {
@@ -115,7 +145,11 @@ export class SpecificationService {
         location: err.validationErrors,
       });
       this.isNotSupportedVersion(rawSpec) &&
-        state.spec.shouldOpenConvertModal.set(true);
+        state.spec.set({
+          shouldOpenConvertModal: true,
+          convertOnlyToLatest: false,
+          forceConvert: true,
+        });
     }
     if (this.isValidationError(err)) {
       errors.push(...err.validationErrors);

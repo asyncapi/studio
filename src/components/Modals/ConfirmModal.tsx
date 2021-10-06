@@ -1,12 +1,24 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { IModalProps } from './index';
 
-export const ConfirmModal: React.FunctionComponent<IModalProps> = ({
+interface ConfirmModalProps {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  confirmText?: React.ReactNode;
+  confirmDisabled?: boolean;
+  cancelDisabled?: boolean;
+  opener?: React.ReactNode;
+  show?: boolean;
+  onSubmit?: () => void;
+  onCancel?: () => void;
+}
+
+export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
   title,
   description,
   confirmText = 'Save',
   confirmDisabled = true,
+  cancelDisabled = false,
   opener,
   show = false,
   onSubmit,
@@ -104,6 +116,7 @@ export const ConfirmModal: React.FunctionComponent<IModalProps> = ({
                     type="button"
                     className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                     onClick={handleOnCancel}
+                    disabled={cancelDisabled}
                     ref={cancelButtonRef}
                   >
                     Cancel
