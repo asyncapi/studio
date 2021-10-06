@@ -10,7 +10,7 @@
     "start": "node src/main.js",
     "test": "jest",
     "lint": "echo 'Not Implemented Yet'",
-		"generate:assets": "echo 'Nothing To Generate'",
+    "generate:assets": "echo 'Nothing To Generate'",
     "prisma:generate": "prisma generate",
     "db:migrate:save": "prisma migrate save --experimental",
     "db:migrate:up": "prisma migrate up --experimental",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@asyncapi/generator": "^1.8.14",
     "@asyncapi/html-template": "^0.23.10",
-    "@asyncapi/markdown-template": "^0.14.8",
+    "@asyncapi/markdown-template": "^0.14.9",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
