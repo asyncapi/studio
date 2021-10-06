@@ -125,9 +125,8 @@ export class EditorService {
 
   static async saveAsYaml() {
     try {
-      const fileName = this.getFileName();
       const yamlContent = FormatService.convertToYaml(this.getValue());
-      yamlContent && this.downloadFile(yamlContent, `${fileName}.yaml`);
+      yamlContent && this.downloadFile(yamlContent, `${this.fileName}.yaml`);
     } catch (err) {
       console.error(err);
       throw err;
@@ -136,20 +135,17 @@ export class EditorService {
 
   static async saveAsJSON() {
     try {
-      const fileName = this.getFileName();
       const jsonContent = FormatService.convertToJSON(this.getValue());
-      jsonContent && this.downloadFile(jsonContent, `${fileName}.json`);
+      jsonContent && this.downloadFile(jsonContent, `${this.fileName}.json`);
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
+  private static fileName = 'asyncapi';
+
   private static downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
-  }
-
-  private static getFileName() {
-    return 'asyncapi';
   }
 }

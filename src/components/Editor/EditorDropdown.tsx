@@ -53,7 +53,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </label>
   );
 
-  const saveButton = (
+  const saveFileButton = (
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
@@ -88,7 +88,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </button>
   );
 
-  const convertAndSaveButton = (
+  const convertLangAndSaveButton = (
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
@@ -125,7 +125,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </button>
   );
 
-  const convertButton = (
+  const convertLangButton = (
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
@@ -179,15 +179,15 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
         </div>
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
-            {saveButton}
+            {saveFileButton}
           </li>
           <li className="hover:bg-gray-900">
-            {convertAndSaveButton}
+            {convertLangAndSaveButton}
           </li>
         </div>
         <div>
           <li className="hover:bg-gray-900">
-            {convertButton}
+            {convertLangButton}
           </li>
           <li className="hover:bg-gray-900">
             <ConvertModal />
