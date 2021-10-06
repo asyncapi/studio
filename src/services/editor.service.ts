@@ -1,4 +1,5 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import fileDownload from 'js-file-download';
 
 import { FormatService } from "./format.service";
 import { SpecificationService } from "./specification.service";
@@ -100,5 +101,51 @@ export class EditorService {
       console.error(err);
       throw err;
     }
+  }
+
+  static async convertToYaml() {
+    try {
+      const yamlContent = FormatService.convertToYaml(this.getValue());
+      yamlContent && this.updateState(yamlContent, true, 'yaml');
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async convertToJSON() {
+    try {
+      const jsonContent = FormatService.convertToJSON(this.getValue());
+      jsonContent && this.updateState(jsonContent, true, 'json');
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async saveAsYaml() {
+    try {
+      const yamlContent = FormatService.convertToYaml(this.getValue());
+      yamlContent && this.downloadFile(yamlContent, `${this.fileName}.yaml`);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async saveAsJSON() {
+    try {
+      const jsonContent = FormatService.convertToJSON(this.getValue());
+      jsonContent && this.downloadFile(jsonContent, `${this.fileName}.json`);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  private static fileName = 'asyncapi';
+
+  private static downloadFile(content: string, fileName: string) {
+    return fileDownload(content, fileName);
   }
 }
