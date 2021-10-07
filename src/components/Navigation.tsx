@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
-import state from '../state';
 import { NavigationService } from '../services';
+import state from '../state';
 
 interface NavigationProps {}
 
