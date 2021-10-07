@@ -4,6 +4,7 @@ import { parse, AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 
+import { EditorService } from './editor.service';
 import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 
@@ -14,9 +15,12 @@ export class SpecificationService {
     const parserState = state.parser;
     return parse(rawSpec)
       .then(asyncApiDoc => {
-        parserState.parsedSpec.set(asyncApiDoc);
-        parserState.valid.set(true);
-        parserState.errors.set([]);
+        parserState.set({
+          parsedSpec: asyncApiDoc,
+          lastParsedSpec: asyncApiDoc,
+          valid: true,
+          errors: [],
+        });
 
         MonacoService.updateLanguageConfig(asyncApiDoc);
         if (this.shouldInformAboutLatestVersion(asyncApiDoc.version())) {
@@ -27,13 +31,19 @@ export class SpecificationService {
           });
         }
 
+        EditorService.applyErrorMarkers([]);
         return asyncApiDoc;
       })
       .catch(err => {
         const errors = this.filterErrors(err, rawSpec);
-        parserState.parsedSpec.set(null);
-        parserState.valid.set(false);
-        parserState.errors.set(errors);
+
+        parserState.set({
+          parsedSpec: null,
+          lastParsedSpec: parserState.parsedSpec.get() || parserState.lastParsedSpec.get(),
+          valid: false,
+          errors,
+        });
+        EditorService.applyErrorMarkers(errors);
       });
   }
 
@@ -61,56 +71,6 @@ export class SpecificationService {
     return Object.keys(specs).pop() as string;
   }
 
-  static errorHasLocation(err: any) {
-    return (
-      this.isValidationError(err) ||
-      this.isJsonError(err) ||
-      this.isYamlError(err) ||
-      this.isDereferenceError(err) ||
-      this.isUnsupportedVersionError(err)
-    );
-  }
-
-  static isValidationError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/validation-errors'
-    );
-  }
-
-  static isJsonError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-json'
-    );
-  }
-
-  static isYamlError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-yaml'
-    );
-  }
-
-  static isUnsupportedVersionError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/unsupported-version'
-    );
-  }
-
-  static isDereferenceError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/dereference-error'
-    );
-  }
-
-  static isNotSupportedVersion(rawSpec: string): boolean {
-    if (this.notSupportedVersions.test(rawSpec.trim())) {
-      return true;
-    }
-    return false;
-  }
-
   static shouldInformAboutLatestVersion(
     version: string,
   ): boolean {
@@ -132,6 +92,16 @@ export class SpecificationService {
     }
 
     return false;
+  }
+
+  static errorHasLocation(err: any) {
+    return (
+      this.isValidationError(err) ||
+      this.isJsonError(err) ||
+      this.isYamlError(err) ||
+      this.isDereferenceError(err) ||
+      this.isUnsupportedVersionError(err)
+    );
   }
 
   private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
@@ -170,5 +140,45 @@ export class SpecificationService {
       errors.push(err);
     }
     return errors;
+  }
+
+  private static isValidationError(err: any) {
+    return (
+      err &&
+      err.type === 'https://github.com/asyncapi/parser-js/validation-errors'
+    );
+  }
+
+  private static isJsonError(err: any) {
+    return (
+      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-json'
+    );
+  }
+
+  private static isYamlError(err: any) {
+    return (
+      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-yaml'
+    );
+  }
+
+  private static isUnsupportedVersionError(err: any) {
+    return (
+      err &&
+      err.type === 'https://github.com/asyncapi/parser-js/unsupported-version'
+    );
+  }
+
+  private static isDereferenceError(err: any) {
+    return (
+      err &&
+      err.type === 'https://github.com/asyncapi/parser-js/dereference-error'
+    );
+  }
+
+  private static isNotSupportedVersion(rawSpec: string): boolean {
+    if (this.notSupportedVersions.test(rawSpec.trim())) {
+      return true;
+    }
+    return false;
   }
 }

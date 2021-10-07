@@ -85,6 +85,7 @@ export interface EditorState {
   editorValue: string;
   monacoLoaded: boolean;
   editorLoaded: boolean;
+  decorations: Array<any>;
 }
 
 export const editorState = createState<EditorState>({
@@ -94,6 +95,7 @@ export const editorState = createState<EditorState>({
   editorValue: schema,
   monacoLoaded: false,
   editorLoaded: false,
+  decorations: [],
 });
 
 export function useEditorState() {

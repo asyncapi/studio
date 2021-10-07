@@ -143,6 +143,65 @@ export class EditorService {
     }
   }
 
+  static applyErrorMarkers(errors: any[] = []) {
+    const editor = this.getInstance();
+    const Monaco = window.Monaco;
+
+    if (!editor || !Monaco) {
+      return;
+    }
+
+    const model = editor.getModel();
+    if (!model) {
+      return;
+    }
+    const oldDecorations = state.editor.decorations.get();
+
+    editor.deltaDecorations(oldDecorations, []);
+    Monaco.editor.setModelMarkers(model, 'asyncapi', []);
+    if (errors.length === 0) {
+      return;
+    }
+
+    const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
+    const newMarkers: monacoAPI.editor.IMarkerData[] = [];
+    errors.forEach(err => {
+      const { title, detail } = err;
+      let location = err.location;
+
+      if (!location) {
+        const fullRange = model.getFullModelRange();
+        location = {};
+        location.startLine = fullRange.startLineNumber;
+        location.startColumn = fullRange.startColumn;
+        location.endLine = fullRange.endLineNumber;
+        location.endColumn = fullRange.endColumn;
+      }
+      const { startLine, startColumn, endLine, endColumn } = location;
+  
+      newMarkers.push({
+        startLineNumber: startLine,
+        startColumn,
+        endLineNumber: typeof endLine === 'number' ? endLine : startLine,
+        endColumn: typeof endColumn === 'number' ? endColumn : startColumn,
+        severity: monacoAPI.MarkerSeverity.Error,
+        message: `${title}${detail ? `\n${detail}` : ''}`, // eslint-disable-line sonarjs/no-nested-template-literals
+      });
+  
+      if (typeof endLine === 'number' && typeof endColumn === 'number') {
+        newDecorations.push({
+          id: 'asyncapi',
+          ownerId: 0,
+          range: new Monaco.Range(startLine, startColumn, endLine, endColumn),
+          options: { inlineClassName: 'bg-red-500-20' },
+        });
+      }
+    });
+  
+    Monaco.editor.setModelMarkers(model, 'asyncapi', newMarkers);
+    editor.deltaDecorations(oldDecorations, newDecorations);
+  }
+
   private static fileName = 'asyncapi';
 
   private static downloadFile(content: string, fileName: string) {
