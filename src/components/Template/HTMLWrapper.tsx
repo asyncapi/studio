@@ -13,7 +13,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   const editorLoaded = editorState.editorLoaded.get();
 
-  // using "json()"" for removing proxy from value
+  // using "json()" for removing proxy from value
   let parsedSpec = parserState.parsedSpec.value;
   parsedSpec = parsedSpec
     ? new (AsyncAPIDocument as any)(parsedSpec.json())
