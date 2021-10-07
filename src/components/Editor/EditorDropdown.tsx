@@ -4,6 +4,7 @@ import { FaEllipsisH } from 'react-icons/fa';
 
 import {
   ConvertModal,
+  GeneratorModal,
   ImportBase64Modal,
   ImportURLModal,
 } from '../Modals';
@@ -175,6 +176,11 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           </li>
           <li className="hover:bg-gray-900">
             <ImportBase64Modal />
+          </li>
+        </div>
+        <div className="border-b border-gray-700">
+          <li className="hover:bg-gray-900">
+            <GeneratorModal />
           </li>
         </div>
         <div className="border-b border-gray-700">
