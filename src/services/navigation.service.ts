@@ -65,20 +65,20 @@ export class NavigationService {
 
   static isReadOnly(strict = false) {
     const urlParams = new URLSearchParams(window.location.search);
-    const isReadonly = urlParams.get('readOnly') || urlParams.get('readOnly') === ''
+    const isReadonly = urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === ''
       ? true
       : false;
 
     if (strict === false) {
       return isReadonly;
     }
-    return isReadonly && !!(urlParams.get('url') || urlParams.get('base64'));
+    return isReadonly && !!(urlParams.get('url') || urlParams.get('load') || urlParams.get('base64'));
   }
 
   static async onInitApp() {
     const urlParams = new URLSearchParams(window.location.search);
 
-    const documentUrl = urlParams.get('url');
+    const documentUrl = urlParams.get('url') || urlParams.get('load');
     const base64Document = urlParams.get('base64');
 
     if (!documentUrl && !base64Document) {
