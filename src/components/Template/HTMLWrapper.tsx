@@ -49,7 +49,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
             schema={parsedSpec}
             config={{ 
               show: { 
-                sidebar: NavigationService.isReadOnly(),
+                sidebar: NavigationService.isReadOnly(true),
                 errors: false,
               },
             }}
