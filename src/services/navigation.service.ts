@@ -63,11 +63,16 @@ export class NavigationService {
     }
   }
 
-  static isReadOnly() {
+  static isReadOnly(strict = false) {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('readOnly') || urlParams.get('readOnly') === ''
+    const isReadonly = urlParams.get('readOnly') || urlParams.get('readOnly') === ''
       ? true
       : false;
+
+    if (strict === false) {
+      return isReadonly;
+    }
+    return isReadonly && !!(urlParams.get('url') || urlParams.get('base64'));
   }
 
   static async onInitApp() {

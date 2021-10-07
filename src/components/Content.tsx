@@ -5,7 +5,6 @@ import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
 
-import { NavigationService } from '../services';
 import { debounce } from '../helpers';
 import state from '../state';
 
@@ -13,12 +12,6 @@ interface ContentProps {}
 
 export const Content: React.FunctionComponent<ContentProps> = () => {
   const sidebarState = state.useSidebarState();
-
-  if (NavigationService.isReadOnly()) {
-    return (
-      <Template />
-    );
-  }
 
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();

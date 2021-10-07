@@ -1,23 +1,21 @@
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { Content, Sidebar, Toolbar } from './components';
+import { Content, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
 import { NavigationService } from './services';
 
 export interface AsyncAPIStudioProps {}
 
 const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
-  const isReadOnly = NavigationService.isReadOnly();
-
   useEffect(() => {
     NavigationService.onInitApp();
   }, []);
 
-  if (isReadOnly) {
+  if (NavigationService.isReadOnly(true)) {
     return (
       <div className="flex flex-row flex-1 overflow-hidden h-full w-full h-screen">
-        <Content />
+        <Template />
       </div>
     );
   }
