@@ -1,6 +1,17 @@
 import { NavigationService } from '../navigation.service';
 
 describe('NavigationService', () => {
+  function updateLocation(search: string) {
+    const location = {
+      ...window.location,
+      search,
+    };
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: location,
+    });
+  }
+
   describe('.isReadOnly', () => {
     test('should return false if reaOnly flag is not defined', () => {
       updateLocation('?url=some-url.json');
@@ -51,14 +62,3 @@ describe('NavigationService', () => {
     });
   });
 });
-
-function updateLocation(search: string) {
-  const location = {
-    ...window.location,
-    search,
-  };
-  Object.defineProperty(window, 'location', {
-    writable: true,
-    value: location,
-  });
-}
