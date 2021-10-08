@@ -1,4 +1,5 @@
 import React from 'react';
+import { IoGlobeOutline, IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
 
 interface ToolbarProps {}
 
@@ -19,6 +20,23 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               </span>
             </div>
           </div>
+          <ul className="flex items-center text-pink-500">
+            <li className="text-2xl opacity-75 hover:opacity-100">
+              <a href='https://asyncapi.com' title='AsyncAPI Website'>
+                <IoGlobeOutline />
+              </a>
+            </li>
+            <li className="text-2xl ml-2 opacity-75 hover:opacity-100">
+              <a href='https://github.com/asyncapi/asyncapi' title='AsyncAPI Github Organization'>
+                <IoLogoGithub />
+              </a>
+            </li>
+            <li className="text-2xl ml-2 opacity-75 hover:opacity-100">
+              <a href='https://asyncapi.com/slack-invite' title='AsyncAPI Slack Workspace'>
+                <IoLogoSlack />
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
