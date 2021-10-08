@@ -143,7 +143,7 @@ export class EditorService {
     }
   }
 
-  static applyErrorMarkers(errors: any[] = []) {
+  static applyErrorMarkers(errors: any[] = []) { // eslint-disable-line sonarjs/cognitive-complexity
     const editor = this.getInstance();
     const Monaco = window.Monaco;
 
@@ -155,8 +155,8 @@ export class EditorService {
     if (!model) {
       return;
     }
+    
     const oldDecorations = state.editor.decorations.get();
-
     editor.deltaDecorations(oldDecorations, []);
     Monaco.editor.setModelMarkers(model, 'asyncapi', []);
     if (errors.length === 0) {
@@ -168,8 +168,9 @@ export class EditorService {
     errors.forEach(err => {
       const { title, detail } = err;
       let location = err.location;
+      console.log(location);
 
-      if (!location) {
+      if (!location || location.jsonPointer === '/') {
         const fullRange = model.getFullModelRange();
         location = {};
         location.startLine = fullRange.startLineNumber;

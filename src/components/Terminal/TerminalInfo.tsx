@@ -11,6 +11,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
 
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
   const latestVersion = SpecificationService.getLastVersion();
+  const documentValid = parserState.valid.get();
   const errors = parserState.errors.get();
 
   function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -61,7 +62,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {actualVersion !== latestVersion && (
+      {actualVersion !== latestVersion && documentValid === true && (
         <div className="ml-3" onClick={onNonLatestClick}>
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">

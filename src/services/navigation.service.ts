@@ -40,6 +40,10 @@ export class NavigationService {
     hash = hash || window.location.hash.substring(1);
     try {
       const escapedHash = CSS.escape(hash);
+      if (!escapedHash || escapedHash === '#') {
+        return;
+      }
+
       const items = document.querySelectorAll(
         escapedHash.startsWith('#') ? escapedHash : `#${escapedHash}`,
       );

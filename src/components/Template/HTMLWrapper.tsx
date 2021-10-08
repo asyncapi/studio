@@ -11,6 +11,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
 
+  const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
 
   // using "json()" for removing proxy from value
@@ -33,10 +34,10 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     );
   }
 
-  if (!parsedSpec) {
+  if (!documentValid) {
     return (
       <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
-        Empty or invalid document. Please fix errors/define AsyncAPI document.
+        <p>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
       </div>
     );
   }
