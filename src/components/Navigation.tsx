@@ -315,6 +315,23 @@ export const Navigation: React.FunctionComponent<NavigationProps> = () => {
             Introduction
           </div>
         </li>
+        <li className="mb-4">
+          <div
+            className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+              hash === 'buildSpec' ? 'bg-gray-900' : ''
+            }`}
+            onClick={() =>
+              NavigationService.scrollTo(
+                '/buildSpec',
+                rawSpec,
+                'buildSpec',
+                language,
+              )
+            }
+          >
+            Build Spec
+          </div>
+        </li>
         {spec.hasServers() && (
           <li className="mb-4">
             <ServersNavigation
