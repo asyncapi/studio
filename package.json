@@ -20,7 +20,7 @@
   "dependencies": {
     "@asyncapi/generator": "^1.8.14",
     "@asyncapi/html-template": "^0.23.11",
-    "@asyncapi/markdown-template": "^0.17.0",
+    "@asyncapi/markdown-template": "^0.18.0",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapistudio/plugin-sentry": "^0.2.1",
     "@asyncapistudio/plugin-waiting-list": "^0.1.1",
