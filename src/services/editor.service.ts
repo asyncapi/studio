@@ -143,7 +143,7 @@ export class EditorService {
     }
   }
 
-  static applyErrorMarkers(errors: any[] = []) { // eslint-disable-line sonarjs/cognitive-complexity
+  static applyErrorMarkers(errors: any[] = []) {
     const editor = this.getInstance();
     const Monaco = window.Monaco;
 
@@ -163,12 +163,17 @@ export class EditorService {
       return;
     }
 
+    const { markers, decorations } = this.createErrorMarkers(errors, model, Monaco);
+    Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
+    editor.deltaDecorations(oldDecorations, decorations);
+  }
+
+  static createErrorMarkers(errors: any[] = [], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
     errors.forEach(err => {
       const { title, detail } = err;
       let location = err.location;
-      console.log(location);
 
       if (!location || location.jsonPointer === '/') {
         const fullRange = model.getFullModelRange();
@@ -180,27 +185,29 @@ export class EditorService {
       }
       const { startLine, startColumn, endLine, endColumn } = location;
   
+      const detailContent = detail ? `\n\n${detail}` : '';
       newMarkers.push({
         startLineNumber: startLine,
         startColumn,
         endLineNumber: typeof endLine === 'number' ? endLine : startLine,
         endColumn: typeof endColumn === 'number' ? endColumn : startColumn,
         severity: monacoAPI.MarkerSeverity.Error,
-        message: `${title}${detail ? `\n${detail}` : ''}`, // eslint-disable-line sonarjs/no-nested-template-literals
+        message: `${title}${detailContent}`,
       });
-  
-      if (typeof endLine === 'number' && typeof endColumn === 'number') {
-        newDecorations.push({
-          id: 'asyncapi',
-          ownerId: 0,
-          range: new Monaco.Range(startLine, startColumn, endLine, endColumn),
-          options: { inlineClassName: 'bg-red-500-20' },
-        });
-      }
+      newDecorations.push({
+        id: 'asyncapi',
+        ownerId: 0,
+        range: new Monaco.Range(
+          startLine, 
+          startColumn, 
+          typeof endLine === 'number' ? endLine : startLine, 
+          typeof endColumn === 'number' ? endColumn : startColumn
+        ),
+        options: { inlineClassName: 'bg-red-500-20' },
+      });
     });
-  
-    Monaco.editor.setModelMarkers(model, 'asyncapi', newMarkers);
-    editor.deltaDecorations(oldDecorations, newDecorations);
+
+    return { decorations: newDecorations, markers: newMarkers };
   }
 
   private static fileName = 'asyncapi';

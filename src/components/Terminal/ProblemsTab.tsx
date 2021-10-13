@@ -35,21 +35,27 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
               </tr>
             </thead>
             <tbody>
-              {errors.map((err: any, id) => (
-                <tr key={err.title || id} className="border-t border-gray-700">
-                  <td
-                    className="p-2 cursor-pointer text-center"
-                    onClick={() =>
-                      NavigationService.scrollToEditorLine(
-                        err.location?.startLine || 0,
-                      )
-                    }
-                  >
-                    {err.location?.startLine || '-'}
-                  </td>
-                  <td className="p-2 text-left">{err.title}</td>
-                </tr>
-              ))}
+              {errors.map((err: any, id) => {
+                const { title, detail, location } = err;
+                let renderedLine = err.location?.startLine;
+                renderedLine = renderedLine && err.location?.startColumn ? `${renderedLine}:${err.location?.startColumn}` : renderedLine;
+                return (
+                  <tr key={title || id} className="border-t border-gray-700">
+                    <td
+                      className="p-2 cursor-pointer text-center"
+                      onClick={() =>
+                        NavigationService.scrollToEditorLine(
+                          location?.startLine || 0,
+                          location?.startColumn,
+                        )
+                      }
+                    >
+                      {renderedLine || '-'}
+                    </td>
+                    <td className="p-2 text-left">{title}{detail ? ` - ${detail}` : ''}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

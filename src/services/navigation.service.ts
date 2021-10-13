@@ -57,11 +57,11 @@ export class NavigationService {
     }
   }
 
-  static scrollToEditorLine(startLine: number) {
+  static scrollToEditorLine(startLine: number, columnLine = 1) {
     try {
       const editor = window.Editor;
       editor && editor.revealLineInCenter(startLine);
-      editor && editor.setPosition({ column: 1, lineNumber: startLine });
+      editor && editor.setPosition({ lineNumber: startLine, column: columnLine });
     } catch (err) {
       console.error(err);
     }
