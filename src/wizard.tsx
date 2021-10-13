@@ -31,7 +31,7 @@ const AsyncAPIWizard = () => {
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
               A message is the mechanism by which information is exchanged via a channel between servers and
-              applications
+              applications. Let us define the name of the message and its JSON structure
             </Typography>
           </Grid>
           <Grid item xs={4}>
