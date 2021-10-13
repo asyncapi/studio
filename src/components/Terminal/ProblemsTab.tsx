@@ -30,8 +30,9 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
           <table className="border-collapse w-full">
             <thead>
               <tr>
-                <th className="w-8">Line</th>
-                <th className="p-2 text-left">Description</th>
+                <th className="p-2 w-8">Line</th>
+                <th className="p-2 text-left">Title</th>
+                <th className="p-2 text-left">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -42,7 +43,7 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
                 return (
                   <tr key={title || id} className="border-t border-gray-700">
                     <td
-                      className="p-2 cursor-pointer text-center"
+                      className="p-2 cursor-pointer"
                       onClick={() =>
                         NavigationService.scrollToEditorLine(
                           location?.startLine || 0,
@@ -52,7 +53,8 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
                     >
                       {renderedLine || '-'}
                     </td>
-                    <td className="p-2 text-left">{title}{detail ? ` - ${detail}` : ''}</td>
+                    <td className="p-2 text-left">{title}</td>
+                    <td className="p-2 text-left">{detail || '-'}</td>
                   </tr>
                 );
               })}
