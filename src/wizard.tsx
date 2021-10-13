@@ -1,30 +1,71 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-import './style.css';
+import { TextField, Grid, Typography } from '@material-ui/core';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
 type Inputs = {
-  example: string,
-  exampleRequired: string,
-  message: string,
-  messageName: string,
+  example: string;
+  exampleRequired: string;
+  message: string;
+  messageName: string;
 };
 
 const AsyncAPIWizard = () => {
-  const { register, handleSubmit } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = data => console.log(data);
+  const initialValues = {
+    messageName: '',
+    example: '',
+    exampleRequired: '',
+    message: '',
+  };
 
-  // console.log(watch('example')); // watch input value by passing the name of it
+  const { control, handleSubmit } = useForm<Inputs>({
+    defaultValues: initialValues,
+  });
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
   return (
     <div>
-      Wizard
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>So you want to define an AsyncAPI spec.
-               Tell us about the event you want to publish or subscribe to
-        </label>
-        <input defaultValue='Message Name' {...register('messageName')} />
-        <textarea defaultValue='JSON Message / JSON Schema' {...register('message')} />
-
-        <input type='submit' />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography gutterBottom variant="h4">
+              Message
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              A message is the mechanism by which information is exchanged via a channel between servers and
+              applications
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="messageName"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState,
+              }) => <TextField label="Message Name" placeholder="messageName" variant="outlined" fullWidth />}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name="message"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState,
+              }) => (
+                <TextField
+                  label="JSON Message / Schema"
+                  placeholder="JSON Message / Schema"
+                  multiline
+                  minRows={4}
+                  fullWidth
+                  variant="outlined"
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
       </form>
     </div>
   );
