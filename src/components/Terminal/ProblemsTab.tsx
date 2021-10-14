@@ -30,26 +30,34 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
           <table className="border-collapse w-full">
             <thead>
               <tr>
-                <th className="w-8">Line</th>
-                <th className="p-2 text-left">Description</th>
+                <th className="p-2 w-8">Line</th>
+                <th className="p-2 text-left">Title</th>
+                <th className="p-2 text-left">Details</th>
               </tr>
             </thead>
             <tbody>
-              {errors.map((err: any, id) => (
-                <tr key={err.title || id} className="border-t border-gray-700">
-                  <td
-                    className="p-2 cursor-pointer text-center"
-                    onClick={() =>
-                      NavigationService.scrollToEditorLine(
-                        err.location?.startLine || 0,
-                      )
-                    }
-                  >
-                    {err.location?.startLine || '-'}
-                  </td>
-                  <td className="p-2 text-left">{err.title}</td>
-                </tr>
-              ))}
+              {errors.map((err: any, id) => {
+                const { title, detail, location } = err;
+                let renderedLine = err.location?.startLine;
+                renderedLine = renderedLine && err.location?.startColumn ? `${renderedLine}:${err.location?.startColumn}` : renderedLine;
+                return (
+                  <tr key={title || id} className="border-t border-gray-700">
+                    <td
+                      className="p-2 cursor-pointer"
+                      onClick={() =>
+                        NavigationService.scrollToEditorLine(
+                          location?.startLine || 0,
+                          location?.startColumn,
+                        )
+                      }
+                    >
+                      {renderedLine || '-'}
+                    </td>
+                    <td className="p-2 text-left">{title}</td>
+                    <td className="p-2 text-left">{detail || '-'}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -267,10 +267,10 @@ export const Navigation: React.FunctionComponent<NavigationProps> = () => {
   const spec = parserState.parsedSpec.get();
 
   useEffect(() => {
-    // remove `#` char
     const fn = () => {
       // remove `#` char
-      setHash(window.location.hash.substring(1));
+      const h = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+      setHash(h);
     };
     fn();
     window.addEventListener('hashchange', fn);
