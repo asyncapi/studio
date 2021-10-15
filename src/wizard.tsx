@@ -1,12 +1,7 @@
 import { TextField, Grid, Typography, Container } from '@material-ui/core';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import SplitPane from 'react-split-pane';
 import React from 'react';
-
-type Inputs = {
-  message: string;
-  messageName: string;
-};
 
 interface WizardProps {
   message?: string;
@@ -23,17 +18,8 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
   messageName = 'lightMeasured',
   message = JSON.stringify(sampleMessage, null, 2),
 }) => {
-  const initialValues = {
-    messageName: 'lightMeasured',
-    example: '',
-    exampleRequired: '',
-    message: '',
-  };
-
-  const { control, handleSubmit } = useForm<Inputs>({
-    defaultValues: initialValues,
-  });
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const { control, handleSubmit } = useForm();
+  const onSubmit = (data: any) => console.log(data);
 
   return (
     <div className="flex flex-col h-full w-full h-screen">
@@ -54,23 +40,26 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                 <Controller
                   control={control}
                   name="messageName"
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                    formState,
-                  }) => <TextField label="Message Name" defaultValue={messageName} variant="outlined" fullWidth />}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      onChange={onChange}
+                      value={value}
+                      label="Message Name"
+                      defaultValue={messageName}
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12}>
                 <Controller
                   control={control}
                   name="message"
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                    formState,
-                  }) => (
+                  render={({ field: { onChange, value } }) => (
                     <TextField
+                      onChange={onChange}
+                      value={value}
                       label="JSON Message / Schema"
                       defaultValue={message}
                       multiline
@@ -80,6 +69,9 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                     />
                   )}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <input type="submit" />
               </Grid>
             </form>
           </Grid>
