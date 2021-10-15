@@ -1,4 +1,4 @@
-import { TextField, Grid, Typography, Container } from '@material-ui/core';
+import { TextField, Grid, Typography, Container, Button } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
 import SplitPane from 'react-split-pane';
 import React from 'react';
@@ -69,9 +69,20 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                 />
               </Grid>
               <Grid item xs={12}>
-                <input type="submit" />
+                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
+                  Submit
+                </Button>
               </Grid>
             </form>
+          </Grid>
+        </Container>
+        <Container>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Typography gutterBottom variant="h4">
+                Spec Output
+              </Typography>
+            </Grid>
           </Grid>
         </Container>
       </SplitPane>
