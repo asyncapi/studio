@@ -1,11 +1,12 @@
-import { TextField, Grid, Typography, Container, Button } from '@material-ui/core';
+import { TextField, Grid, Typography, Container, Button, Paper } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
 import SplitPane from 'react-split-pane';
-import React from 'react';
+import React, { useState } from 'react';
+import { createSchema } from 'genson-js';
 
 interface WizardProps {
-  message?: string;
-  messageName?: string;
+  message: string;
+  messageName: string;
 }
 
 const sampleMessage = {
@@ -19,7 +20,14 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
   message = JSON.stringify(sampleMessage, null, 2),
 }) => {
   const { control, handleSubmit } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  const [specData, setsSpecData] = useState<WizardProps>({ message: '', messageName: '' });
+
+  const onSubmit = (data: WizardProps) => {
+    console.log(data);
+    const schema = createSchema(JSON.parse(data.message!));
+    console.log(JSON.stringify(schema));
+    setsSpecData(data);
+  };
 
   return (
     <div className="flex flex-col h-full w-full h-screen">
@@ -82,6 +90,12 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
               <Typography gutterBottom variant="h4">
                 Spec Output
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper variant="outlined" square>
+                {specData.message}
+                {specData.messageName}
+              </Paper>
             </Grid>
           </Grid>
         </Container>

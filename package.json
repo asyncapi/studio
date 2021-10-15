@@ -11,6 +11,7 @@
     "@hookstate/core": "^3.0.12",
     "@material-ui/core": "^4.12.3",
     "@monaco-editor/react": "^4.2.2",
+    "genson-js": "0.0.6",
     "js-base64": "^3.7.2",
     "js-file-download": "^0.4.12",
     "js-yaml": "^4.1.0",
