@@ -43,9 +43,8 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                   render={({ field: { onChange, value } }) => (
                     <TextField
                       onChange={onChange}
-                      value={value}
+                      value={value || ''}
                       label="Message Name"
-                      defaultValue={messageName}
                       variant="outlined"
                       fullWidth
                     />
@@ -59,9 +58,8 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                   render={({ field: { onChange, value } }) => (
                     <TextField
                       onChange={onChange}
-                      value={value}
+                      value={value || ''}
                       label="JSON Message / Schema"
-                      defaultValue={message}
                       multiline
                       minRows={4}
                       fullWidth
