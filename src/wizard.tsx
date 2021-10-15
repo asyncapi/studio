@@ -19,16 +19,19 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
   messageName = 'lightMeasured',
   message = JSON.stringify(sampleMessage, null, 2),
 }) => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm();
   const [specData, setsSpecData] = useState<WizardProps>({ message: '', messageName: '' });
-
   const onSubmit = (data: WizardProps) => {
-    console.log(data);
     const schema = createSchema(JSON.parse(data.message!));
     console.log(JSON.stringify(schema));
     setsSpecData(data);
   };
-
+  console.log(errors);
   return (
     <div className="flex flex-col h-full w-full h-screen">
       <SplitPane minSize={700} maxSize={900}>
@@ -48,32 +51,53 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                 <Controller
                   control={control}
                   name="messageName"
-                  render={({ field: { onChange, value } }) => (
-                    <TextField
-                      onChange={onChange}
-                      value={value || ''}
-                      label="Message Name"
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
+                  rules={{ required: true, validate: () => getValues('messageName').length <= 20 }}
+                  render={({ field: { onChange, value } }) => {
+                    const error = Boolean(errors && errors.messageName);
+                    return (
+                      <TextField
+                        error={error}
+                        onChange={onChange}
+                        value={value || ''}
+                        label="Message Name"
+                        variant="outlined"
+                        fullWidth
+                        helperText={error && 'Message name must be less than 20 characters'}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
                 <Controller
                   control={control}
                   name="message"
-                  render={({ field: { onChange, value } }) => (
-                    <TextField
-                      onChange={onChange}
-                      value={value || ''}
-                      label="JSON Message / Schema"
-                      multiline
-                      minRows={4}
-                      fullWidth
-                      variant="outlined"
-                    />
-                  )}
+                  rules={{
+                    validate: () => {
+                      try {
+                        JSON.parse(getValues('message'));
+                        return true;
+                      } catch {
+                        return false;
+                      }
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => {
+                    const error = Boolean(errors && errors.message);
+                    return (
+                      <TextField
+                        onChange={onChange}
+                        value={value || ''}
+                        label="JSON Message / Schema"
+                        multiline
+                        minRows={4}
+                        fullWidth
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error && 'Please enter a valid JSON'}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
