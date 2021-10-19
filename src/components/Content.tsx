@@ -10,7 +10,7 @@ import state from '../state';
 
 interface ContentProps {}
 
-export const Content: React.FunctionComponent<ContentProps> = () => {
+export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
   const sidebarState = state.useSidebarState();
 
   const navigationEnabled = sidebarState.panels.navigation.get();
