@@ -17,11 +17,11 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   const editorEnabled = sidebarState.panels.editor.get();
   const templateEnabled = sidebarState.panels.template.get();
 
-  const splitPaneLeft = 'splitPane:left';
-  const splitPaneRight = 'splitPane:right';
+  const splitPosLeft = 'splitPos:left';
+  const splitPosRight = 'splitPos:right';
 
-  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPaneLeft) || '0', 10) || 220;
-  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPaneRight) || '0', 10) || '55%';
+  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPosLeft) || '0', 10) || 220;
+  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPosRight) || '0', 10) || '55%';
 
   const secondPaneSize = navigationEnabled && !editorEnabled ? localStorageLeftPaneSize : localStorageRightPaneSize;
   const secondPaneMaxSize = navigationEnabled && !editorEnabled ? 360 : '100%';
@@ -35,7 +35,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
       primary={editorEnabled ? 'first' : 'second'}
       defaultSize={localStorageLeftPaneSize}
       onChange={debounce((size: string) => {
-        localStorage.setItem(splitPaneLeft, String(size));
+        localStorage.setItem(splitPosLeft, String(size));
       }, 100)}
     >
       <Navigation />
@@ -59,7 +59,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
           primary={templateEnabled ? 'first' : 'second'}
           defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
-            localStorage.setItem(splitPaneRight, String(size));
+            localStorage.setItem(splitPosRight, String(size));
           }, 100)}
         >
           {navigationAndEditor}
