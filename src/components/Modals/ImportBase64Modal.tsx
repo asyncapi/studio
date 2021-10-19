@@ -53,7 +53,7 @@ export const ImportBase64Modal: React.FunctionComponent = () => {
         <textarea
           name="base64-source"
           placeholder="Paste Base64 content here"
-          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md"
+          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
           onChange={e => setBase64(e.target.value)}
           rows={10}
         />

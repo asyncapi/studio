@@ -62,7 +62,7 @@ export const ConvertModal: React.FunctionComponent = () => {
             </label>
             <select
               name="asyncapi-version"
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink-500 focus:border-pink-500 rounded-md"
+              className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
               onChange={e => setVersion(e.target.value)}
               value={version}
             >

@@ -17,6 +17,15 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
   const editorEnabled = sidebarState.panels.editor.get();
   const templateEnabled = sidebarState.panels.template.get();
 
+  const splitPaneLeft = 'splitPane:left';
+  const splitPaneRight = 'splitPane:right';
+
+  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPaneLeft) || '0', 10) || 220;
+  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPaneRight) || '0', 10) || '55%';
+
+  const secondPaneSize = navigationEnabled && !editorEnabled ? localStorageLeftPaneSize : localStorageRightPaneSize;
+  const secondPaneMaxSize = navigationEnabled && !editorEnabled ? 360 : '100%';
+
   const navigationAndEditor = (
     <SplitPane
       minSize={220}
@@ -24,11 +33,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
       pane1Style={navigationEnabled ? { overflow: 'auto' } : { width: '0px' }}
       pane2Style={editorEnabled ? undefined : { width: '0px' }}
       primary={editorEnabled ? 'first' : 'second'}
-      defaultSize={
-        parseInt(localStorage.getItem('splitPos:left') || '0', 10) || 220
-      }
+      defaultSize={localStorageLeftPaneSize}
       onChange={debounce((size: string) => {
-        localStorage.setItem('splitPos:left', String(size));
+        localStorage.setItem(splitPaneLeft, String(size));
       }, 100)}
     >
       <Navigation />
@@ -40,7 +47,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
         <SplitPane
+          size={templateEnabled ? secondPaneSize : 0}
           minSize={0}
+          maxSize={secondPaneMaxSize}
           pane1Style={
             navigationEnabled || editorEnabled ? undefined : { width: '0px' }
           }
@@ -48,12 +57,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
             templateEnabled ? { overflow: 'auto' } : { width: '0px' }
           }
           primary={templateEnabled ? 'first' : 'second'}
-          defaultSize={
-            parseInt(localStorage.getItem('splitPos:center') || '0', 10) ||
-            '55%'
-          }
+          defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
-            localStorage.setItem('splitPos:center', String(size));
+            localStorage.setItem(splitPaneRight, String(size));
           }, 100)}
         >
           {navigationAndEditor}

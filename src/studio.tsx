@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { Content, Sidebar, Template, Toolbar } from './components';
+import { Content, Navigation, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
 import { NavigationService } from './services';
 
@@ -15,6 +15,7 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
   if (NavigationService.isReadOnly(true)) {
     return (
       <div className="flex flex-row flex-1 overflow-hidden h-full w-full h-screen">
+        <Navigation className='w-72' />
         <Template />
       </div>
     );
