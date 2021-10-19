@@ -17,7 +17,7 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
     documentFromText = 'From Base64';
   } else {
     const splittedText = documentFrom.split(' ');
-    documentFromText = `From URL ${splittedText[1]}`;
+    documentFromText = `From ${splittedText[1]}`;
   }
 
   return (
