@@ -4,6 +4,7 @@ import SplitPane from 'react-split-pane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
+import { Visualiser } from './Visualiser';
 
 import { debounce } from '../helpers';
 import state from '../state';
@@ -16,6 +17,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();
   const templateEnabled = sidebarState.panels.template.get();
+  const visualiserEnabled = sidebarState.panels.visualiser.get();
 
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
@@ -54,16 +56,19 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
             navigationEnabled || editorEnabled ? undefined : { width: '0px' }
           }
           pane2Style={
-            templateEnabled ? { overflow: 'auto' } : { width: '0px' }
+            templateEnabled || visualiserEnabled ? { overflow: 'auto' } : { width: '0px' }
           }
-          primary={templateEnabled ? 'first' : 'second'}
+          primary={templateEnabled || visualiserEnabled ? 'first' : 'second'}
           defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
             localStorage.setItem(splitPosRight, String(size));
           }, 100)}
         >
           {navigationAndEditor}
-          <Template />
+
+          {visualiserEnabled && <Visualiser />}
+          {!visualiserEnabled && <Template />}
+
         </SplitPane>
       </div>
     </div>

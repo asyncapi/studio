@@ -6,6 +6,7 @@ export interface SidebarState {
     navigation: boolean;
     editor: boolean;
     template: boolean;
+    visualiser: boolean;
   };
 }
 
@@ -15,6 +16,7 @@ export const sidebarState = createState<SidebarState>({
     navigation: true,
     editor: true,
     template: true,
+    visualiser: true
   },
 });
 

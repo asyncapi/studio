@@ -1,6 +1,6 @@
 import React from 'react';
 import { StateMethods } from '@hookstate/core';
-import { VscListSelection, VscCode, VscOpenPreview } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph } from 'react-icons/vsc';
 
 import state from '../state';
 
@@ -65,6 +65,12 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       name: 'template',
       state: sidebarState.panels.template,
       icon: <VscOpenPreview className="w-5 h-5" />,
+    },
+    // visuliser
+    {
+      name: 'visualiser',
+      state: sidebarState.panels.visualiser,
+      icon: <VscGraph className="w-5 h-5" />,
     },
   ];
 
