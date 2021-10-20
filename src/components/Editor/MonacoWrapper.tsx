@@ -34,6 +34,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
       () => {
         const editorValue = EditorService.getValue();
         localStorage.setItem('document', editorValue);
+        state.editor.documentFrom.set('localStorage');
         toast.success(
           <div>
             <span className="block text-bold">

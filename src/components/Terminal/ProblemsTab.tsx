@@ -9,10 +9,12 @@ export const ProblemsTab: React.FunctionComponent<ProblemsTabProps> = () => {
   const parserState = state.useParserState();
   const errors = parserState.errors.get();
 
+  const errorClassName = errors.length ? 'bg-red-500' : 'bg-gray-400';
+
   return (
     <div>
       <span className="text-xs">Problems</span>
-      <span className="inline-block rounded-full bg-gray-400 px-1.5 py-0.5 ml-1.5 -mt-2 text-xs">
+      <span className={`inline-block rounded-full px-1.5 py-0.5 ml-1.5 -mt-2 text-xs ${errorClassName}`}>
         {errors.length || 0}
       </span>
     </div>

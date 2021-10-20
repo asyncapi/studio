@@ -78,6 +78,8 @@ components:
             - 7
 `;
 
+export type EditorStateDocumentFrom = 'localStorage' | `URL: ${string}` | 'Base64';
+
 export interface EditorState {
   height: string;
   fileName: string;
@@ -85,6 +87,7 @@ export interface EditorState {
   editorValue: string;
   monacoLoaded: boolean;
   editorLoaded: boolean;
+  documentFrom: EditorStateDocumentFrom;
   decorations: Array<any>;
 }
 
@@ -95,6 +98,7 @@ export const editorState = createState<EditorState>({
   editorValue: schema,
   monacoLoaded: false,
   editorLoaded: false,
+  documentFrom: 'localStorage',
   decorations: [],
 });
 

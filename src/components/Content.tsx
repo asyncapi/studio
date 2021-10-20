@@ -10,12 +10,21 @@ import state from '../state';
 
 interface ContentProps {}
 
-export const Content: React.FunctionComponent<ContentProps> = () => {
+export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
   const sidebarState = state.useSidebarState();
 
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();
   const templateEnabled = sidebarState.panels.template.get();
+
+  const splitPosLeft = 'splitPos:left';
+  const splitPosRight = 'splitPos:right';
+
+  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPosLeft) || '0', 10) || 220;
+  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPosRight) || '0', 10) || '55%';
+
+  const secondPaneSize = navigationEnabled && !editorEnabled ? localStorageLeftPaneSize : localStorageRightPaneSize;
+  const secondPaneMaxSize = navigationEnabled && !editorEnabled ? 360 : '100%';
 
   const navigationAndEditor = (
     <SplitPane
@@ -24,11 +33,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
       pane1Style={navigationEnabled ? { overflow: 'auto' } : { width: '0px' }}
       pane2Style={editorEnabled ? undefined : { width: '0px' }}
       primary={editorEnabled ? 'first' : 'second'}
-      defaultSize={
-        parseInt(localStorage.getItem('splitPos:left') || '0', 10) || 220
-      }
+      defaultSize={localStorageLeftPaneSize}
       onChange={debounce((size: string) => {
-        localStorage.setItem('splitPos:left', String(size));
+        localStorage.setItem(splitPosLeft, String(size));
       }, 100)}
     >
       <Navigation />
@@ -40,7 +47,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
         <SplitPane
+          size={templateEnabled ? secondPaneSize : 0}
           minSize={0}
+          maxSize={secondPaneMaxSize}
           pane1Style={
             navigationEnabled || editorEnabled ? undefined : { width: '0px' }
           }
@@ -48,12 +57,9 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
             templateEnabled ? { overflow: 'auto' } : { width: '0px' }
           }
           primary={templateEnabled ? 'first' : 'second'}
-          defaultSize={
-            parseInt(localStorage.getItem('splitPos:center') || '0', 10) ||
-            '55%'
-          }
+          defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
-            localStorage.setItem('splitPos:center', String(size));
+            localStorage.setItem(splitPosRight, String(size));
           }, 100)}
         >
           {navigationAndEditor}

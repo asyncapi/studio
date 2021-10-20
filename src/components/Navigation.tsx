@@ -7,7 +7,9 @@ import { AsyncAPIDocument } from '@asyncapi/parser';
 import { NavigationService } from '../services';
 import state from '../state';
 
-interface NavigationProps {}
+interface NavigationProps {
+  className?: string;
+}
 
 interface NavigationSectionProps {
   spec: AsyncAPIDocument;
@@ -256,7 +258,9 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   );
 };
 
-export const Navigation: React.FunctionComponent<NavigationProps> = () => {
+export const Navigation: React.FunctionComponent<NavigationProps> = ({
+  className = '',
+}) => {
   const [hash, setHash] = useState(window.location.hash);
 
   const editorState = state.useEditorState();
@@ -296,7 +300,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = () => {
   }
 
   return (
-    <div className="flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full">
+    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
       <ul>
         <li className="mb-4">
           <div

@@ -66,6 +66,7 @@ export class EditorService {
       return fetch(url)
         .then(res => res.text())
         .then(text => {
+          state.editor.documentFrom.set(`URL: ${url}` as `URL: ${string}`);
           this.updateState(text, true);
         })
         .catch(err => {
@@ -96,6 +97,7 @@ export class EditorService {
   static async importBase64(content: string) {
     try {
       const decoded = FormatService.decodeBase64(content);
+      state.editor.documentFrom.set('Base64');
       this.updateState(decoded, true);
     } catch (err) {
       console.error(err);

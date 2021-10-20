@@ -4,6 +4,34 @@ import { VscListSelection, VscCode, VscOpenPreview } from 'react-icons/vsc';
 
 import state from '../state';
 
+type NavItemType = 'navigation' | 'editor' | 'template';
+
+function setActiveNav(navItem: NavItemType) {
+  const panels = state.sidebar.panels;
+  const panelsState = panels.get();
+
+  const newState = {
+    ...panelsState,
+    [String(navItem)]: !panelsState[String(navItem) as NavItemType],
+  };
+
+  if (newState.navigation && !newState.editor && !newState.template) {
+    panels.set({
+      ...newState,
+      template: true,
+    });
+    return;
+  }
+  if (!Object.values(newState).some(itemNav => itemNav === true)) {
+    panels.set({
+      ...newState,
+      template: true,
+    });
+    return;
+  }
+  panels.set(newState);
+}
+
 interface NavItem {
   name: string;
   state: StateMethods<boolean>;
@@ -46,7 +74,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
         {navigation.map(item => (
           <button
             key={item.name}
-            onClick={() => item.state.set(v => !v)}
+            onClick={() => setActiveNav(item.name as NavItemType)}
             className={`flex text-sm border-l-2  ${
               item.state.get()
                 ? 'text-white hover:text-gray-500 border-white'
