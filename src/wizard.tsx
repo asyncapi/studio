@@ -3,10 +3,15 @@ import { useForm, Controller } from 'react-hook-form';
 import SplitPane from 'react-split-pane';
 import React, { useState } from 'react';
 import { createSchema } from 'genson-js';
+import YAML from 'js-yaml';
 
 interface WizardProps {
   message: string;
   messageName: string;
+}
+
+interface YamlSpec {
+  spec: string;
 }
 
 const sampleMessage = {
@@ -25,13 +30,22 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
     getValues,
     formState: { errors },
   } = useForm();
-  const [specData, setsSpecData] = useState<WizardProps>({ message: '', messageName: '' });
+
+  const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
   const onSubmit = (data: WizardProps) => {
-    const schema = createSchema(JSON.parse(data.message!));
-    console.log(JSON.stringify(schema));
-    setsSpecData(data);
+    const schema: any = createSchema(JSON.parse(data.message!));
+    const schemaWithName: any = {};
+    schemaWithName[data.messageName] = schema;
+    const components: any = {
+      components: {
+        messages: schemaWithName,
+      },
+    };
+
+    const spec: string = YAML.dump(components);
+    setsSpecData({ spec });
   };
-  console.log(errors);
+  // console.log(errors);
   return (
     <div className="flex flex-col h-full w-full h-screen">
       <SplitPane minSize={700} maxSize={900}>
@@ -117,8 +131,7 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
             </Grid>
             <Grid item xs={12}>
               <Paper variant="outlined" square>
-                {specData.message}
-                {specData.messageName}
+                <pre>{specData.spec}</pre>
               </Paper>
             </Grid>
           </Grid>
