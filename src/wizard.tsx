@@ -45,6 +45,18 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
     const spec: string = YAML.dump(components);
     setsSpecData({ spec });
   };
+
+  const renderNextButton = (specData: YamlSpec) => {
+    if (specData.spec !== '') {
+      return (
+        <Grid item xs={12}>
+          <Button variant="contained" color="primary">
+            Next
+          </Button>
+        </Grid>
+      );
+    }
+  };
   // console.log(errors);
   return (
     <div className="flex flex-col h-full w-full h-screen">
@@ -134,6 +146,7 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
                 <pre>{specData.spec}</pre>
               </Paper>
             </Grid>
+            {renderNextButton(specData)}
           </Grid>
         </Container>
       </SplitPane>
