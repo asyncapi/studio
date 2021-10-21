@@ -1,5 +1,6 @@
-import { TextField, Grid, Typography, Container, Button, Paper } from '@material-ui/core';
+import { TextField, Grid, Typography, Container, Button, Paper, Link } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
+import { Link as RouterLink } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import React, { useState } from 'react';
 import { createSchema } from 'genson-js';
@@ -20,7 +21,7 @@ const sampleMessage = {
   sentAt: '2021-10-14',
 };
 
-const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
+const AsyncAPIMessageWizard: React.FunctionComponent<WizardProps> = ({
   messageName = 'lightMeasured',
   message = JSON.stringify(sampleMessage, null, 2),
 }) => {
@@ -53,6 +54,9 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
           <Button variant="contained" color="primary">
             Next
           </Button>
+          <Link component={RouterLink} to="/channelwiz">
+            Next
+          </Link>
         </Grid>
       );
     }
@@ -154,4 +158,4 @@ const AsyncAPIWizard: React.FunctionComponent<WizardProps> = ({
   );
 };
 
-export default AsyncAPIWizard;
+export default AsyncAPIMessageWizard;
