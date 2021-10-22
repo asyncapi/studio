@@ -1,8 +1,5 @@
-// @ts-nocheck
-/* eslint-disable */
-
 import React, { useState, useEffect } from 'react';
-import ReactFlow, { Controls as FlowControls, useStoreActions, useStoreState, Background, useZoomPanHelper, Node, BackgroundVariant } from 'react-flow-renderer';
+import ReactFlow, { Controls as FlowControls, useStoreActions, useStoreState, Background, useZoomPanHelper, BackgroundVariant } from 'react-flow-renderer';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
 import { Controls } from './Controls';
@@ -18,8 +15,6 @@ interface AutoLayoutProps {
 }
 
 const AutoLayout: React.FunctionComponent<AutoLayoutProps> = ({ elementsToRender }) => {
-
-  // // react-flow data
   const nodeStates = useStoreState((store) => store.nodes);
   const nodeEdges = useStoreState((store) => store.edges);
   const setElements = useStoreActions((actions) => actions.setElements);
@@ -30,19 +25,19 @@ const AutoLayout: React.FunctionComponent<AutoLayoutProps> = ({ elementsToRender
     const calculatedNodes = calculateNodesForDynamicLayout(nodeStates);
     setElements([...calculatedNodes, ...nodeEdges]);
     fitView();
-  }
+  };
 
   useEffect(() => {
-    if(elementsToRender.length === nodesAndEdges.length){
+    if (elementsToRender.length === nodesAndEdges.length) {
       // stop overlap no nodes when re-render, recalculate where they should go
       const nodesWithOrginalPosition = nodeStates.filter(node => node.__rf.position.x === 0 && node.__rf.position.y === 0);
-      if(nodesWithOrginalPosition.length > 1){
+      if (nodesWithOrginalPosition.length > 1) {
         setTimeout(() => {
           rerender();
         }, 1);
       }
     }
-  }, [nodeStates])
+  }, [nodeStates]);
 
   return null;
 };
@@ -53,10 +48,10 @@ export const FlowDiagram: React.FunctionComponent<FlowDiagramProps> = ({ parsedS
 
   const elements = getElementsFromAsyncAPISpec(parsedSpec);
 
-  const handleLoaded = (reactFlowInstance) => {
+  const handleLoaded = (reactFlowInstance: any) => {
     setLoaded(true);
     reactFlowInstance.fitView();
-  }
+  };
 
   return (
     <div className="h-screen bg-gray-800">
