@@ -16,8 +16,8 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
 
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();
-  const templateEnabled = sidebarState.panels.template.get();
-  const visualiserEnabled = sidebarState.panels.visualiser.get();
+  const viewEnabled = sidebarState.panels.view.get();
+  const viewType = sidebarState.panels.viewType.get();
 
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
@@ -49,26 +49,24 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
         <SplitPane
-          size={templateEnabled ? secondPaneSize : 0}
+          size={viewEnabled ? secondPaneSize : 0}
           minSize={0}
           maxSize={secondPaneMaxSize}
           pane1Style={
             navigationEnabled || editorEnabled ? undefined : { width: '0px' }
           }
           pane2Style={
-            templateEnabled || visualiserEnabled ? { overflow: 'auto' } : { width: '0px' }
+            viewEnabled ? { overflow: 'auto' } : { width: '0px' }
           }
-          primary={templateEnabled || visualiserEnabled ? 'first' : 'second'}
+          primary={viewEnabled ? 'first' : 'second'}
           defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
             localStorage.setItem(splitPosRight, String(size));
           }, 100)}
         >
           {navigationAndEditor}
-
-          {visualiserEnabled && <Visualiser />}
-          {!visualiserEnabled && <Template />}
-
+          {viewType === 'template' && <Template />}
+          {viewType === 'visualiser' && <Visualiser />}
         </SplitPane>
       </div>
     </div>

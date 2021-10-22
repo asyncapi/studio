@@ -1,10 +1,9 @@
 import React from 'react';
-import { StateMethods } from '@hookstate/core';
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph } from 'react-icons/vsc';
 
 import state from '../state';
 
-type NavItemType = 'navigation' | 'editor' | 'template';
+type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
 
 function setActiveNav(navItem: NavItemType) {
   const panels = state.sidebar.panels;
@@ -12,20 +11,33 @@ function setActiveNav(navItem: NavItemType) {
 
   const newState = {
     ...panelsState,
-    [String(navItem)]: !panelsState[String(navItem) as NavItemType],
   };
 
-  if (newState.navigation && !newState.editor && !newState.template) {
+  if (navItem === 'template' || navItem === 'visualiser') {
+    // on current type
+    if (newState.viewType === navItem) {
+      newState.view = !newState.view;
+    } else {
+      newState.viewType = navItem;
+      if (newState.view === false) {
+        newState.view = true;
+      }
+    }
+  } else {
+    (newState as any)[String(navItem)] = !(newState as any)[String(navItem)];
+  }
+
+  if (newState.navigation && !newState.editor && !newState.view) {
     panels.set({
       ...newState,
-      template: true,
+      view: true,
     });
     return;
   }
   if (!Object.values(newState).some(itemNav => itemNav === true)) {
     panels.set({
       ...newState,
-      template: true,
+      view: true,
     });
     return;
   }
@@ -34,7 +46,7 @@ function setActiveNav(navItem: NavItemType) {
 
 interface NavItem {
   name: string;
-  state: StateMethods<boolean>;
+  state: () => boolean;
   icon: React.ReactNode;
 }
 
@@ -51,25 +63,25 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     // navigation
     {
       name: 'navigation',
-      state: sidebarState.panels.navigation,
+      state: () => sidebarState.panels.navigation.get(),
       icon: <VscListSelection className="w-5 h-5" />,
     },
     // editor
     {
       name: 'editor',
-      state: sidebarState.panels.editor,
+      state: () => sidebarState.panels.editor.get(),
       icon: <VscCode className="w-5 h-5" />,
     },
     // template
     {
       name: 'template',
-      state: sidebarState.panels.template,
+      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
       icon: <VscOpenPreview className="w-5 h-5" />,
     },
     // visuliser
     {
       name: 'visualiser',
-      state: sidebarState.panels.visualiser,
+      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
     },
   ];
@@ -82,7 +94,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
             key={item.name}
             onClick={() => setActiveNav(item.name as NavItemType)}
             className={`flex text-sm border-l-2  ${
-              item.state.get()
+              item.state()
                 ? 'text-white hover:text-gray-500 border-white'
                 : 'text-gray-500 hover:text-white border-gray-800'
             } focus:outline-none border-box p-4`}
