@@ -13,6 +13,7 @@ export interface MessageProps {
 export interface ChannelProps {
   channelName: string;
   operationType: string;
+  protocolType: string;
   channelBindings: any;
 }
 

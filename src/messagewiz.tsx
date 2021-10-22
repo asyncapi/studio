@@ -69,15 +69,6 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
           <Button variant="contained" color="primary" onClick={() => history.push('/channelwiz')}>
             Next
           </Button>
-          {/* <Link
-            component={RouterLink}
-            to={{
-              pathname: '/channelwiz',
-              state: { spec: 'somedata' },
-            }}
-          >
-            Next
-          </Link> */}
         </Grid>
       );
     }
