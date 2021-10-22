@@ -11,10 +11,7 @@ export const Controls: React.FunctionComponent<ControlsProps> = () => {
 
   const nodeStates = useStoreState((store) => store.nodes);
   const nodeEdges = useStoreState((store) => store.edges);
-
   const setElements = useStoreActions((actions) => actions.setElements);
-
-  // // react-flow data
   const { fitView } = useZoomPanHelper();
 
   useEffect(() => {

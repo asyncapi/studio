@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import { AsyncAPIDocument } from '@asyncapi/parser';

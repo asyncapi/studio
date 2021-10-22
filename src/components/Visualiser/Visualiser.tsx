@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import state from '../../state';
