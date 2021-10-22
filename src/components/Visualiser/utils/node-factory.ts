@@ -31,8 +31,6 @@ const buildFlowElementsForOperation = ({ operation, spec, applicationLinkType, d
   return filteredChannels.reduce((nodes: any, channel) => {
     const { channelModel, operationModel, messagesModel } = channel;
 
-    console.log('messagesModel', messagesModel);
-
     const node = {
       id: `${operation}-${channel.channel}`,
       type: `${operation}Node`,
@@ -58,7 +56,7 @@ const buildFlowElementsForOperation = ({ operation, spec, applicationLinkType, d
 
     const connectorNode = {
       id: `${operation}-${channel.channel}-to-application`,
-      type: 'smoothstep',
+      // type: 'smoothstep',
       // animated: true,
       // label: messagesModel.map(message => message.uid()).join(','),
       style: { stroke: applicationLinkType === 'target' ? '#7ee3be' : 'orange', strokeWidth: 4 },

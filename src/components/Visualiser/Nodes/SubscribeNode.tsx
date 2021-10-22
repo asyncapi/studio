@@ -19,7 +19,6 @@ export const SubscribeNode: React.FunctionComponent<PublishNodeProps> = ({ data:
         type="target"
         position={Position.Left}
         style={{ background: 'green' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
       ></Handle>
       <div className="px-4 py-5 sm:px-6 space-y-4">
         <div className="flex justify-between">

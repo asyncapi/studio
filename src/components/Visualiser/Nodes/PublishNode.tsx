@@ -61,7 +61,6 @@ export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
           type="source"
           position={Position.Right}
           style={{ background: 'green' }}
-          onConnect={(params) => console.log('handle onConnect', params)}
         ></Handle>
       </div>
     </div>

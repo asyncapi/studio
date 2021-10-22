@@ -50,7 +50,6 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
         type="target"
         position={Position.Left}
         style={{ background: 'gray' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
       ></Handle>
       <div className="flex justify-center items-center border-r border-gray-200">
         <span className="block transform -rotate-90 uppercase text-green-500 w-full font-bold tracking-widest px-2 ">

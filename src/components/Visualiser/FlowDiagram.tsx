@@ -1,5 +1,8 @@
+// @ts-nocheck
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
-import ReactFlow,  { Controls as FlowControls, useStoreActions, useStoreState, Background, useZoomPanHelper, Node, BackgroundVariant } from 'react-flow-renderer';
+import ReactFlow, { Controls as FlowControls, useStoreActions, useStoreState, Background, useZoomPanHelper, Node, BackgroundVariant } from 'react-flow-renderer';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
 import { Controls } from './Controls';
@@ -11,54 +14,58 @@ interface FlowDiagramProps {
   parsedSpec: AsyncAPIDocument;
 }
 interface AutoLayoutProps {
-  parsedSpec: AsyncAPIDocument;
+  elementsToRender: any;
 }
 
-const AutoLayout: React.FunctionComponent<AutoLayoutProps> = () => {
-  const [loaded, setLoaded] = useState(false);
-
-  const nodeHasWidth = (node: Node) => {
-    return node.__rf && !!node.__rf.width;
-  };
+const AutoLayout: React.FunctionComponent<AutoLayoutProps> = ({ elementsToRender }) => {
 
   // // react-flow data
   const nodeStates = useStoreState((store) => store.nodes);
   const nodeEdges = useStoreState((store) => store.edges);
   const setElements = useStoreActions((actions) => actions.setElements);
   const { fitView } = useZoomPanHelper();
+  const nodesAndEdges = [...nodeStates, ...nodeEdges];
 
-  // We can only calculate real node positions once they are rendered to the dom at least once
+  const rerender = () => {
+    const calculatedNodes = calculateNodesForDynamicLayout(nodeStates);
+    setElements([...calculatedNodes, ...nodeEdges]);
+    fitView();
+  }
+
   useEffect(() => {
-    if (!loaded && nodeStates.length > 0 && nodeHasWidth(nodeStates[0])) {
-      const calculatedNodes = calculateNodesForDynamicLayout(nodeStates);
-      setElements([...calculatedNodes, ...nodeEdges]);
-      fitView();
-      setLoaded(true);
+    if(elementsToRender.length === nodesAndEdges.length){
+      // stop overlap no nodes when re-render, recalculate where they should go
+      const nodesWithOrginalPosition = nodeStates.filter(node => node.__rf.position.x === 0 && node.__rf.position.y === 0);
+      if(nodesWithOrginalPosition.length > 1){
+        setTimeout(() => {
+          rerender();
+        }, 1);
+      }
     }
-  }, [nodeStates, loaded]);
-
-  // useEffect(() => {
-  //   const calculatedNodes = calculateNodesForDynamicLayout(nodeStates);
-  //   setElements([...calculatedNodes, ...nodeEdges]);
-  //   fitView();
-  // }, [parsedSpec]);
+  }, [nodeStates])
 
   return null;
 };
 
 export const FlowDiagram: React.FunctionComponent<FlowDiagramProps> = ({ parsedSpec }) => {
+  const [loaded, setLoaded] = useState(false);
   const title = parsedSpec.info().title();
 
   const elements = getElementsFromAsyncAPISpec(parsedSpec);
 
+  const handleLoaded = (reactFlowInstance) => {
+    setLoaded(true);
+    reactFlowInstance.fitView();
+  }
+
   return (
     <div className="h-screen bg-gray-800">
-      <ReactFlow nodeTypes={nodeTypes} elements={elements} minZoom={0.1}>
+      <ReactFlow nodeTypes={nodeTypes} elements={elements} minZoom={0.1} onLoad={handleLoaded}>
         <Background color="#d1d1d3" variant={BackgroundVariant.Dots} gap={20} size={1} className="bg-gray-200" />
-        <AutoLayout parsedSpec={parsedSpec} />
+        {loaded && <AutoLayout elementsToRender={elements} />}
         <Controls />
         <div className="-mt-20">
-          <FlowControls style={{ bottom: '80px'}} />
+          <FlowControls style={{ bottom: '80px' }} />
         </div>
       </ReactFlow>
       <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">
