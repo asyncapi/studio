@@ -2,14 +2,10 @@ import SplitPane from 'react-split-pane';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Grid, Typography, Container, Button } from '@material-ui/core';
 import React from 'react';
-
-interface ChannelProps {
-  channelName: string;
-  operationType: string;
-  channelBindings: any;
-}
+import { useSpec, ChannelProps } from './specContext';
 
 const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
+  const { spec } = useSpec();
   const {
     control,
     handleSubmit,
@@ -30,6 +26,9 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
               <Grid item xs={12}>
                 <Typography gutterBottom variant="h4">
                   Channel
+                </Typography>
+                <Typography gutterBottom variant="h4">
+                  {spec.messageSpec.messageName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                   A channel is an addressable component, made available by the server, for the organization of messages.

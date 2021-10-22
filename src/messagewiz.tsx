@@ -1,30 +1,29 @@
-import { TextField, Grid, Typography, Container, Button, Paper, Link } from '@material-ui/core';
+import { TextField, Grid, Typography, Container, Button, Paper } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
-import { Link as RouterLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import React, { useState } from 'react';
 import { createSchema } from 'genson-js';
 import YAML from 'js-yaml';
+import { useSpec, MessageProps, SpecBuilder, ChannelProps } from './specContext';
+// import { parse } from '@asyncapi/parser';
 
-interface WizardProps {
-  message: string;
-  messageName: string;
-}
+// interface WizardProps {
+//   message: string;
+//   messageName: string;
+// }
 
 interface YamlSpec {
   spec: string;
 }
 
-const sampleMessage = {
-  id: 1,
-  lumens: 2,
-  sentAt: '2021-10-14',
-};
+// const sampleMessage = {
+//   id: 1,
+//   lumens: 2,
+//   sentAt: '2021-10-14',
+// };
 
-const AsyncAPIMessageWizard: React.FunctionComponent<WizardProps> = ({
-  messageName = 'lightMeasured',
-  message = JSON.stringify(sampleMessage, null, 2),
-}) => {
+const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
   const {
     control,
     handleSubmit,
@@ -33,30 +32,52 @@ const AsyncAPIMessageWizard: React.FunctionComponent<WizardProps> = ({
   } = useForm();
 
   const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
-  const onSubmit = (data: WizardProps) => {
+  const history = useHistory();
+  const { addSpec } = useSpec();
+  const onSubmit = async (data: MessageProps) => {
     const schema: any = createSchema(JSON.parse(data.message!));
     const schemaWithName: any = {};
     schemaWithName[data.messageName] = schema;
-    const components: any = {
+
+    const specObj: any = {
+      asyncapi: '2.2.0',
       components: {
         messages: schemaWithName,
       },
     };
 
-    const spec: string = YAML.dump(components);
+    const spec: string = YAML.dump(specObj);
+    const specBuilder: SpecBuilder = {
+      messageSpec: {
+        messageName: data.messageName,
+        message: data.message,
+      },
+      aggregatedSpec: specObj,
+      channelSpec: {} as ChannelProps,
+    };
+    addSpec(specBuilder);
     setsSpecData({ spec });
+
+    // const doc = await parse(spec);
+    // console.log(doc);
   };
 
   const renderNextButton = (specData: YamlSpec) => {
     if (specData.spec !== '') {
       return (
         <Grid item xs={12}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={() => history.push('/channelwiz')}>
             Next
           </Button>
-          <Link component={RouterLink} to="/channelwiz">
+          {/* <Link
+            component={RouterLink}
+            to={{
+              pathname: '/channelwiz',
+              state: { spec: 'somedata' },
+            }}
+          >
             Next
-          </Link>
+          </Link> */}
         </Grid>
       );
     }
