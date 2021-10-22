@@ -1,8 +1,6 @@
-// @ts-nocheck
-/* eslint-disable */
 
+import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
-// import { CogIcon, LinkIcon } from '@heroicons/react/outline'
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
 interface IData {
@@ -16,12 +14,12 @@ interface ApplicationNodeProps {
 const buildNodeData = (spec: AsyncAPIDocument) => {
   const servers = spec.servers();
 
-  const mappedServers = Object.keys(servers).reduce((mappedServers, serverKey) => {
+  const mappedServers = Object.keys(servers).reduce((mappedServers: any[], serverKey) => {
     mappedServers.push({
       name: serverKey,
-      url: servers[serverKey].url(),
-      description: servers[serverKey].description(),
-      protocol: servers[serverKey].protocol(),
+      url: servers[String(serverKey)].url(),
+      description: servers[String(serverKey)].description(),
+      protocol: servers[String(serverKey)].protocol(),
     });
     return mappedServers;
   }, []);
@@ -35,6 +33,7 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
       name: spec.info().license() && spec.info().license().name(),
       url: spec.info().license() && spec.info().license().url(),
     },
+    // @ts-ignore
     externalDocs: spec.externalDocs() && spec.externalDocs().url(),
     servers: mappedServers,
   };
@@ -43,8 +42,7 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
 export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
   data: { spec } = {},
 }) => {
-  const { description, title, version, license, externalDocs, servers, defaultContentType } =
-    buildNodeData(spec);
+  const { description, title, version, license, externalDocs, servers, defaultContentType } = buildNodeData(spec as AsyncAPIDocument);
 
   return (
     <div className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex">

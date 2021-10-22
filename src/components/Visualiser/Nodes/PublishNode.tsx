@@ -1,16 +1,21 @@
-import { Handle } from 'react-flow-renderer';
 
-const getBackgroundColor = (stringInput) => {
-  const stringUniqueHash = [...stringInput].reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc);
-  }, 0);
-  return `hsla(${stringUniqueHash % 360}, 95%, 35%, 0.5)`;
-};
+import React from 'react';
+import { Handle, Position } from 'react-flow-renderer';
+import getBackgroundColor from '../utils/random-background-color';
 
-export default function PublishNode({
-  // eslint-disable-next-line react/prop-types
-  data: { title, messages = [], channel, description, schema, example, model },
-}) {
+interface IData {
+  messages: any []
+  channel: string
+  description: string
+}
+
+interface PublishNodeProps {
+  data: IData
+}
+
+export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
+  data: { messages = [], channel, description },
+}) => {
   return (
     <div className="bg-white shadow sm:rounded-lg border-2 border-green-400">
       <div className="px-4 py-5 sm:px-6 space-y-4">
@@ -23,7 +28,6 @@ export default function PublishNode({
         <div>
           <span className="font-semibold block">
             Messages
-            {/* <MailIcon className="text-gray-500 w-4 inline-block ml-1 -mt-1" /> */}
           </span>
           <span className="text-xs block mb-3 italic mt-1 text-gray-500">
             Payloads you can publish using this channel
@@ -37,7 +41,7 @@ export default function PublishNode({
                   key={message.title}
                   className=" p-2 border-gray-200 border border-l-8 rounded-lg space-x-2 flex justify-between"
                   style={{
-                    'border-color': theme,
+                    borderColor: theme,
                   }}
                 >
                   <div className="flex space-x-2">
@@ -48,24 +52,20 @@ export default function PublishNode({
                       {message.title}
                     </div>
                   </div>
-                  {/* <DotsVerticalIcon
-                    className="text-gray-500 w-4"
-                    style={{ color: theme }}
-                  /> */}
-                  {/* <span className="mt-1 block text-xs w-40">{message.description}</span> */}
                 </div>
               );
             })}
           </div>
         </div>
-
         <Handle
           type="source"
-          position="right"
+          position={Position.Right}
           style={{ background: 'green' }}
           onConnect={(params) => console.log('handle onConnect', params)}
         ></Handle>
       </div>
     </div>
   );
-}
+};
+
+export default PublishNode;
