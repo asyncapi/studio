@@ -32,7 +32,7 @@ export const Controls: React.FunctionComponent<ControlsProps> = () => {
         {animateNodes && <VscDebugPause className="w-4 h-4" />}
         {!animateNodes && <VscDebugStart className="w-4 h-4" />}
       </button>
-      <button type="button" className="text-xs" onClick={() => reloadInterface()}>
+      <button type="button" className="text-xs" onClick={reloadInterface}>
         <VscRefresh className="w-4 h-4" />
       </button>
     </div>
