@@ -5,17 +5,13 @@ import SplitPane from 'react-split-pane';
 import React, { useState } from 'react';
 import { createSchema } from 'genson-js';
 import YAML from 'js-yaml';
-import { useSpec, MessageProps, SpecBuilder, ChannelProps } from './specContext';
+import { useSpec, MessageProps, SpecBuilder, ChannelProps, YamlSpec } from './specContext';
 // import { parse } from '@asyncapi/parser';
 
 // interface WizardProps {
 //   message: string;
 //   messageName: string;
 // }
-
-interface YamlSpec {
-  spec: string;
-}
 
 // const sampleMessage = {
 //   id: 1,
@@ -40,13 +36,12 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
     schemaWithName[data.messageName] = schema;
 
     const specObj: any = {
-      asyncapi: '2.2.0',
       components: {
         messages: schemaWithName,
       },
     };
 
-    const spec: string = YAML.dump(specObj);
+    const spec: string = YAML.dump({ asyncapi: '2.2.0', ...specObj });
     const specBuilder: SpecBuilder = {
       messageSpec: {
         messageName: data.messageName,

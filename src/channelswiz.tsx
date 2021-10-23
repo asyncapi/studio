@@ -14,13 +14,16 @@ import {
   Radio,
   FormControlLabel,
   FormLabel,
+  Paper,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { useSpec, ChannelProps } from './specContext';
+import React, { useEffect, useState } from 'react';
+import { useSpec, ChannelProps, YamlSpec } from './specContext';
+import YAML from 'js-yaml';
 
 const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
-  const { spec } = useSpec();
-  console.log(spec);
+  const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
+  const { spec, addSpec } = useSpec();
+
   const {
     control,
     handleSubmit,
@@ -42,24 +45,29 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
   });
 
   const onSubmit = (data: any) => {
-    const channels = [];
-    const channelObj = {} as any;
-    channelObj.name = data.channelName;
-    channelObj[data.operationType] = {
-      operationId: data.operationId,
-      message: {
-        $ref: '#/components/messages/turnOnOff',
+    const channelObj: any = {
+      [data.channelName]: {
+        [data.operationType]: {
+          operationId: data.operationId,
+          message: {
+            $ref: '#/components/messages/turnOnOff',
+          },
+        },
+        bindings: {},
       },
     };
-    channelObj.bindings = {};
+
     if (data.protocolType === 'amqp') {
-      channelObj.bindings[data.protocolType] = {
+      channelObj[data.channelName].bindings[data.protocolType] = {
         is: data.bindingType,
         vhost: data.vhost,
       };
     }
-    channels.push(channelObj);
-    console.log(channels);
+
+    const newSpec = { aggregatedSpec: { asyncapi: '2.2.0', channels: channelObj, ...spec.aggregatedSpec } };
+    addSpec(newSpec);
+    const specString: string = YAML.dump({ ...newSpec.aggregatedSpec });
+    setsSpecData({ spec: specString });
   };
 
   const { protocolType } = watch();
@@ -69,7 +77,6 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
   }, [protocolType]);
 
   const renderChannelBindings = () => {
-    console.log('inside renderChannelBindings');
     if (getValues().protocolType === 'amqp') {
       return (
         <Grid container spacing={1}>
@@ -140,7 +147,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
 
   return (
     <div className="flex flex-col h-full w-full h-screen">
-      <SplitPane minSize={700} maxSize={900}>
+      <SplitPane minSize={700} maxSize={900} style={{ overflow: 'visible' }}>
         <Container>
           <Grid container spacing={1}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -193,14 +200,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     rules={{ required: true }}
                     render={({ field: { onChange, value } }) => {
                       return (
-                        <Select
-                          onChange={(e) => {
-                            console.log('called', e);
-                            onChange(e);
-                          }}
-                          value={value || ''}
-                          variant="outlined"
-                        >
+                        <Select onChange={onChange} value={value || ''} variant="outlined">
                           <MenuItem value={'publish'}>Publish</MenuItem>
                           <MenuItem value={'subscribe'}>Subscribe</MenuItem>
                         </Select>
@@ -248,15 +248,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     render={({ field }) => {
                       const { onChange, value } = field;
                       return (
-                        <Select
-                          name="protocolType"
-                          onChange={(e) => {
-                            console.log('called', e);
-                            onChange(e);
-                          }}
-                          value={value || ''}
-                          variant="outlined"
-                        >
+                        <Select name="protocolType" onChange={onChange} value={value || ''} variant="outlined">
                           <MenuItem value={'amqp'}>amqp</MenuItem>
                         </Select>
                       );
@@ -280,6 +272,11 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
               <Typography gutterBottom variant="h4">
                 Spec Output
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper variant="outlined" square>
+                <pre>{specData.spec}</pre>
+              </Paper>
             </Grid>
           </Grid>
         </Container>

@@ -17,10 +17,14 @@ export interface ChannelProps {
   channelBindings: any;
 }
 
+export interface YamlSpec {
+  spec: string;
+}
+
 export interface SpecBuilder {
-  messageSpec: MessageProps;
-  channelSpec: ChannelProps;
-  aggregatedSpec: any;
+  messageSpec?: MessageProps;
+  channelSpec?: ChannelProps;
+  aggregatedSpec?: any;
 }
 
 interface specValue {
@@ -34,8 +38,8 @@ const SpecProvider = (props: Props<specValue>) => {
   const [spec, setSpec] = useState({} as SpecBuilder);
 
   const addSpec = useCallback(
-    (newSpec) => {
-      setSpec(newSpec);
+    (newSpec: SpecBuilder) => {
+      setSpec({ ...spec, ...newSpec });
     },
     [spec, setSpec]
   );
