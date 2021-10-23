@@ -10,29 +10,131 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  FormLabel,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSpec, ChannelProps } from './specContext';
 
 const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
   const { spec } = useSpec();
   console.log(spec);
-  let selectedProtocol = '';
   const {
     control,
     handleSubmit,
     getValues,
+    watch,
+    trigger,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      channelName: '',
+      operationType: '',
+      operationId: '',
+      protocolType: '',
+      channelBindings: {},
+      bindingName: '',
+      bindingType: '',
+      vhost: '',
+    },
+  });
 
-  const onSubmit = (data: ChannelProps) => {
-    console.log(data);
+  const onSubmit = (data: any) => {
+    const channels = [];
+    const channelObj = {} as any;
+    channelObj.name = data.channelName;
+    channelObj[data.operationType] = {
+      operationId: data.operationId,
+      message: {
+        $ref: '#/components/messages/turnOnOff',
+      },
+    };
+    channelObj.bindings = {};
+    if (data.protocolType === 'amqp') {
+      channelObj.bindings[data.protocolType] = {
+        is: data.bindingType,
+        vhost: data.vhost,
+      };
+    }
+    channels.push(channelObj);
+    console.log(channels);
   };
 
-  const renderChannelBindings = (protocol: string) => {
-    console.log(protocol);
-    if (selectedProtocol === 'amqp') {
-      return <Grid item xs={12}></Grid>;
+  const { protocolType } = watch();
+
+  useEffect(() => {
+    trigger('protocolType');
+  }, [protocolType]);
+
+  const renderChannelBindings = () => {
+    console.log('inside renderChannelBindings');
+    if (getValues().protocolType === 'amqp') {
+      return (
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="bindingType"
+              rules={{ required: true, validate: () => getValues('bindingType').length <= 20 }}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Binding Type</FormLabel>
+                    <RadioGroup onChange={onChange} value={value || ''}>
+                      <FormControlLabel value="queue" control={<Radio />} label="Queue" />
+                      <FormControlLabel value="exchange" control={<Radio />} label="Exchange" />
+                    </RadioGroup>
+                  </FormControl>
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="bindingName"
+              rules={{ required: true, validate: () => getValues('bindingName').length <= 20 }}
+              render={({ field: { onChange, value } }) => {
+                const error = Boolean(errors && errors.channelName);
+                return (
+                  <TextField
+                    error={error}
+                    onChange={onChange}
+                    value={value || ''}
+                    label="Queue / Exchange Name"
+                    variant="outlined"
+                    fullWidth
+                    helperText={error && 'Queue / Exchange name must be less than 20 characters'}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="vhost"
+              rules={{ required: true, validate: () => getValues('vhost').length <= 20 }}
+              render={({ field: { onChange, value } }) => {
+                const error = Boolean(errors && errors.channelName);
+                return (
+                  <TextField
+                    error={error}
+                    onChange={onChange}
+                    value={value || ''}
+                    label="VHost"
+                    variant="outlined"
+                    fullWidth
+                    helperText={error && 'VHost name must be less than 20 characters'}
+                  />
+                );
+              }}
+            />
+          </Grid>
+        </Grid>
+      );
     }
   };
 
@@ -46,9 +148,6 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                 <Typography gutterBottom variant="h4">
                   Channel
                 </Typography>
-                {/* <Typography gutterBottom variant="h4">
-                  {spec.messageSpec.messageName}
-                </Typography> */}
                 <Typography variant="subtitle1" gutterBottom>
                   A channel is an addressable component, made available by the server, for the organization of messages.
                   Producer applications send messages to channels and consumer applications consume messages from
@@ -77,6 +176,15 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <Typography gutterBottom variant="h4">
+                  Operation
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  Describes a publish or a subscribe operation. This provides a place to document how and why messages
+                  are sent and received.
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Operation Type</InputLabel>
                   <Controller
@@ -84,9 +192,15 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     name="operationType"
                     rules={{ required: true }}
                     render={({ field: { onChange, value } }) => {
-                      // const error = Boolean(errors && errors.channelName);
                       return (
-                        <Select onChange={onChange} value={value || ''} variant="outlined">
+                        <Select
+                          onChange={(e) => {
+                            console.log('called', e);
+                            onChange(e);
+                          }}
+                          value={value || ''}
+                          variant="outlined"
+                        >
                           <MenuItem value={'publish'}>Publish</MenuItem>
                           <MenuItem value={'subscribe'}>Subscribe</MenuItem>
                         </Select>
@@ -96,6 +210,35 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
+                <Controller
+                  control={control}
+                  name="operationId"
+                  rules={{ required: true, validate: () => getValues('operationId').length <= 20 }}
+                  render={({ field: { onChange, value } }) => {
+                    const error = Boolean(errors && errors.operationId);
+                    return (
+                      <TextField
+                        error={error}
+                        onChange={onChange}
+                        value={value || ''}
+                        label="Operation Id"
+                        variant="outlined"
+                        fullWidth
+                        helperText={error && 'Message name must be less than 20 characters'}
+                      />
+                    );
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography gutterBottom variant="h4">
+                  Channel Bindings
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  Map describing protocol-specific definitions for a channel.
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Protocol Type</InputLabel>
                   <Controller
@@ -103,13 +246,13 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     name="protocolType"
                     rules={{ required: true }}
                     render={({ field }) => {
-                      // const error = Boolean(errors && errors.channelName);
                       const { onChange, value } = field;
                       return (
                         <Select
+                          name="protocolType"
                           onChange={(e) => {
+                            console.log('called', e);
                             onChange(e);
-                            selectedProtocol = e.target.value as string;
                           }}
                           value={value || ''}
                           variant="outlined"
@@ -121,7 +264,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                   />
                 </FormControl>
               </Grid>
-              {renderChannelBindings(selectedProtocol)}
+              {renderChannelBindings()}
               <Grid item xs={12}>
                 <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
                   Submit
