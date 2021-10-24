@@ -50,7 +50,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
         [data.operationType]: {
           operationId: data.operationId,
           message: {
-            $ref: '#/components/messages/turnOnOff',
+            $ref: `#/components/messages/${spec.messageSpec?.messageName}`,
           },
         },
         bindings: {},

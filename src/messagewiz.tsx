@@ -6,18 +6,6 @@ import React, { useState } from 'react';
 import { createSchema } from 'genson-js';
 import YAML from 'js-yaml';
 import { useSpec, MessageProps, SpecBuilder, ChannelProps, YamlSpec } from './specContext';
-// import { parse } from '@asyncapi/parser';
-
-// interface WizardProps {
-//   message: string;
-//   messageName: string;
-// }
-
-// const sampleMessage = {
-//   id: 1,
-//   lumens: 2,
-//   sentAt: '2021-10-14',
-// };
 
 const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
   const {
@@ -32,22 +20,23 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
   const { addSpec } = useSpec();
   const onSubmit = async (data: MessageProps) => {
     const schema: any = createSchema(JSON.parse(data.message!));
-    const schemaWithName: any = {};
-    schemaWithName[data.messageName] = schema;
-
-    const specObj: any = {
+    const messageSpecObj: any = {
       components: {
-        messages: schemaWithName,
+        messages: {
+          [data.messageName]: {
+            payload: schema,
+          },
+        },
       },
     };
 
-    const spec: string = YAML.dump({ asyncapi: '2.2.0', ...specObj });
+    const spec: string = YAML.dump({ asyncapi: '2.2.0', ...messageSpecObj });
     const specBuilder: SpecBuilder = {
       messageSpec: {
         messageName: data.messageName,
         message: data.message,
       },
-      aggregatedSpec: specObj,
+      aggregatedSpec: messageSpecObj,
       channelSpec: {} as ChannelProps,
     };
     addSpec(specBuilder);
@@ -62,7 +51,7 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
       return (
         <Grid item xs={12}>
           <Button variant="contained" color="primary" onClick={() => history.push('/channelwiz')}>
-            Next
+            Next Define A Channel
           </Button>
         </Grid>
       );
