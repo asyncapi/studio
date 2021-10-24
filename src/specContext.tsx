@@ -29,6 +29,7 @@ export interface YamlSpec {
 export interface SpecBuilder {
   messageSpec?: MessageProps;
   channelSpec?: ChannelProps;
+  infoSpec?: InfoProps;
   aggregatedSpec?: any;
 }
 

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import React, { useState } from 'react';
 import YAML from 'js-yaml';
-import { InfoProps, YamlSpec } from './specContext';
+import { useSpec, InfoProps, MessageProps, YamlSpec, SpecBuilder, ChannelProps } from './specContext';
 
 const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
   const {
@@ -16,6 +16,7 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
 
   const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
   const history = useHistory();
+  const { addSpec } = useSpec();
   const onSubmit = (data: InfoProps) => {
     console.log(data);
     const infoSpecObj: any = {
@@ -26,6 +27,16 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
     };
     const spec: string = YAML.dump({ asyncapi: '2.2.0', ...infoSpecObj });
     setsSpecData({ spec });
+    const specBuilder: SpecBuilder = {
+      messageSpec: {} as MessageProps,
+      aggregatedSpec: infoSpecObj,
+      channelSpec: {} as ChannelProps,
+      infoSpec: {
+        title: data.title,
+        version: data.version,
+      },
+    };
+    addSpec(specBuilder);
   };
 
   const renderNextButton = (specData: YamlSpec) => {
@@ -51,7 +62,8 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
                   Info
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                  The object provides metadata about the API. The metadata can be used by the clients if needed.
+                  Let us start by giving the API a title and a version. The object provides metadata about the API. The
+                  metadata can be used by the clients if needed.
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -60,7 +72,7 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
                   name="title"
                   rules={{ required: true, validate: () => getValues('title').length <= 20 }}
                   render={({ field: { onChange, value } }) => {
-                    const error = Boolean(errors && errors.messageName);
+                    const error = Boolean(errors && errors.title);
                     return (
                       <TextField
                         error={error}
@@ -81,7 +93,7 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
                   name="version"
                   rules={{ required: true, validate: () => getValues('version').length <= 20 }}
                   render={({ field: { onChange, value } }) => {
-                    const error = Boolean(errors && errors.messageName);
+                    const error = Boolean(errors && errors.version);
                     return (
                       <TextField
                         error={error}

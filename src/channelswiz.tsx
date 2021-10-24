@@ -64,7 +64,14 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       };
     }
 
-    const newSpec = { aggregatedSpec: { asyncapi: '2.2.0', channels: channelObj, ...spec.aggregatedSpec } };
+    const newSpec = {
+      aggregatedSpec: {
+        asyncapi: '2.2.0',
+        info: spec.aggregatedSpec.info,
+        channels: channelObj,
+        components: spec.aggregatedSpec.components,
+      },
+    };
     addSpec(newSpec);
     const specString: string = YAML.dump({ ...newSpec.aggregatedSpec });
     setsSpecData({ spec: specString });

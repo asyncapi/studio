@@ -17,7 +17,7 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
 
   const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
   const history = useHistory();
-  const { addSpec } = useSpec();
+  const { spec, addSpec } = useSpec();
   const onSubmit = async (data: MessageProps) => {
     const schema: any = createSchema(JSON.parse(data.message!));
     const messageSpecObj: any = {
@@ -30,17 +30,17 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
       },
     };
 
-    const spec: string = YAML.dump({ asyncapi: '2.2.0', ...messageSpecObj });
+    const specString: string = YAML.dump({ asyncapi: '2.2.0', components: messageSpecObj.components });
     const specBuilder: SpecBuilder = {
       messageSpec: {
         messageName: data.messageName,
         message: data.message,
       },
-      aggregatedSpec: messageSpecObj,
+      aggregatedSpec: { ...spec.aggregatedSpec, components: messageSpecObj.components },
       channelSpec: {} as ChannelProps,
     };
     addSpec(specBuilder);
-    setsSpecData({ spec });
+    setsSpecData({ spec: specString });
 
     // const doc = await parse(spec);
     // console.log(doc);
