@@ -41,6 +41,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       bindingName: '',
       bindingType: '',
       vhost: '',
+      qos: '',
     },
   });
 
@@ -61,6 +62,10 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       channelObj[data.channelName].bindings[data.protocolType] = {
         is: data.bindingType,
         vhost: data.vhost,
+      };
+    } else if (data.protocolType === 'mqtt') {
+      channelObj[data.channelName].bindings[data.protocolType] = {
+        qos: +data.qos,
       };
     }
 
@@ -84,7 +89,8 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
   }, [protocolType]);
 
   const renderChannelBindings = () => {
-    if (getValues().protocolType === 'amqp') {
+    const protocolType = getValues().protocolType;
+    if (protocolType === 'amqp') {
       return (
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -142,6 +148,54 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     variant="outlined"
                     fullWidth
                     helperText={error && 'VHost name must be less than 20 characters'}
+                  />
+                );
+              }}
+            />
+          </Grid>
+        </Grid>
+      );
+    } else if (protocolType === 'mqtt') {
+      return (
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="bindingName"
+              rules={{ required: true, validate: () => getValues('bindingName').length <= 20 }}
+              render={({ field: { onChange, value } }) => {
+                const error = Boolean(errors && errors.bindingName);
+                return (
+                  <TextField
+                    error={error}
+                    onChange={onChange}
+                    value={value || ''}
+                    label="Binding Name"
+                    variant="outlined"
+                    fullWidth
+                    helperText={error && 'Binding name must be less than 20 characters'}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              control={control}
+              name="qos"
+              rules={{ required: true, validate: () => getValues('qos').length <= 20 }}
+              render={({ field: { onChange, value } }) => {
+                const error = Boolean(errors && errors.qos);
+                return (
+                  <TextField
+                    error={error}
+                    onChange={onChange}
+                    value={value || ''}
+                    label="QOS"
+                    variant="outlined"
+                    fullWidth
+                    type="number"
+                    helperText={error && 'QOS name must be less than 20 characters'}
                   />
                 );
               }}
@@ -257,6 +311,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                       return (
                         <Select name="protocolType" onChange={onChange} value={value || ''} variant="outlined">
                           <MenuItem value={'amqp'}>amqp</MenuItem>
+                          <MenuItem value={'mqtt'}>mqtt</MenuItem>
                         </Select>
                       );
                     }}
