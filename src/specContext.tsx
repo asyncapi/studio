@@ -10,6 +10,11 @@ export interface MessageProps {
   messageName: string;
 }
 
+export interface InfoProps {
+  title: string;
+  version: string;
+}
+
 export interface ChannelProps {
   channelName: string;
   operationType: string;
