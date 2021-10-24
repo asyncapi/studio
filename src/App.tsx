@@ -11,12 +11,12 @@ const App: React.FunctionComponent = () => {
   return (
     <Router>
       <Switch>
+        <Route exact path="/" component={AsyncAPIStudio} />
         <SpecProvider>
-          <Route path="/infowiz" component={AsyncAPIInfoWizard} />
-          <Route path="/messagewiz" component={AsyncAPIMessageWizard} />
-          <Route path="/channelwiz" component={AsyncAPIChannelWizard} />
+          <Route exact path="/infowiz" component={AsyncAPIInfoWizard} />
+          <Route exact path="/messagewiz" component={AsyncAPIMessageWizard} />
+          <Route exact path="/channelwiz" component={AsyncAPIChannelWizard} />
         </SpecProvider>
-        <Route path="/" component={AsyncAPIStudio} />
       </Switch>
     </Router>
   );
