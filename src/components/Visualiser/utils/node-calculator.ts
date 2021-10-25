@@ -15,7 +15,7 @@ const groupNodesByColumn = (elements: Node[]) => {
 export const calculateNodesForDynamicLayout = (elements: Node[]) => {
   const elementsGroupedByColumn = groupNodesByColumn(elements);
 
-  const newElements: { nodes: Node[], currentXPosition: string } = Object.keys(elementsGroupedByColumn).reduce(
+  const newElements: { nodes: Node[], currentXPosition: number } = Object.keys(elementsGroupedByColumn).reduce(
     (data: any, group: string) => {
       const groupNodes = elementsGroupedByColumn[String(group)];
 

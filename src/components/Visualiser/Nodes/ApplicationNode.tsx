@@ -14,23 +14,28 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
   const servers = spec.servers();
 
   const mappedServers = Object.keys(servers).reduce((mappedServers: any[], serverKey) => {
+    const server = servers[String(serverKey)];
+
     mappedServers.push({
       name: serverKey,
-      url: servers[String(serverKey)].url(),
-      description: servers[String(serverKey)].description(),
-      protocol: servers[String(serverKey)].protocol(),
+      url: server.url(),
+      description: server.description(),
+      protocol: server.protocol(),
+      protocolVersion: server.protocolVersion(),
     });
     return mappedServers;
   }, []);
 
+  const specInfo = spec.info();
+
   return {
     defaultContentType: spec.defaultContentType(),
-    description: spec.info().description(),
-    title: spec.info().title(),
-    version: spec.info().version(),
+    description: specInfo.description(),
+    title: specInfo.title(),
+    version: specInfo.version(),
     license: {
-      name: spec.info().license() && spec.info().license().name(),
-      url: spec.info().license() && spec.info().license().url(),
+      name: specInfo.license() && specInfo.license().name(),
+      url: specInfo.license() && specInfo.license().url(),
     },
     // @ts-ignore
     externalDocs: spec.externalDocs() && spec.externalDocs().url(),
@@ -90,7 +95,9 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
                     <dt className="text-sm text-gray-500 font-bold flex">
                       {server.name}
                       <span className="block ml-4 leading-6 px-1.5  rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {server.protocol}
+                        {server.protocolVersion
+                          ? `${server.protocol} ${server.protocolVersion}`
+                          : server.protocol}
                       </span>
                     </dt>
                     <dd className="mt-1 text-xs text-gray-900">{server.description}</dd>
