@@ -13,17 +13,17 @@ interface ApplicationNodeProps {
 const buildNodeData = (spec: AsyncAPIDocument) => {
   const servers = spec.servers();
 
-  const mappedServers = Object.keys(servers).reduce((mappedServers: any[], serverKey) => {
+  const mappedServers = Object.keys(servers).reduce((newMappedServers: any[], serverKey) => {
     const server = servers[String(serverKey)];
 
-    mappedServers.push({
+    newMappedServers.push({
       name: serverKey,
       url: server.url(),
       description: server.description(),
       protocol: server.protocol(),
       protocolVersion: server.protocolVersion(),
     });
-    return mappedServers;
+    return newMappedServers;
   }, []);
 
   const specInfo = spec.info();

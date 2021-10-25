@@ -43,7 +43,6 @@ const buildFlowElementsForOperation = ({ operation, spec, applicationLinkType, d
           description: message.description(),
         })),
 
-        // TODO: Decouple the nodes and this
         spec,
         description: channelModel.description(),
         operationId: operationModel.id(),
