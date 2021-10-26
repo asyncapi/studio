@@ -1,7 +1,25 @@
 {
   "name": "@asyncapi/studio",
   "version": "0.1.0",
-  "private": true,
+  "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/asyncapi/studio",
+  "bugs": {
+    "url": "https://github.com/asyncapi/studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asyncapi/studio.git"
+  },
+  "keywords": [
+    "asyncapi",
+    "documentation",
+    "studio",
+    "playground"
+  ],
+  "author": {
+    "name": "The AsyncAPI maintainers"
+  },
   "files": [
     "/build",
     "./README.md",
