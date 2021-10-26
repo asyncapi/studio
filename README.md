@@ -20,11 +20,27 @@ This project is still under development and has not reached version 1.0.0 yet. T
 
 <!-- toc -->
 
+- [Requirements](#requirements)
+- [Using it locally](#using-it-locally)
+- [Development](#development)
+- [Contribution](#contribution)
+
 <!-- tocstop -->
 
 ## Requirements
 
 - [NodeJS](https://nodejs.org/en/) >= 14
+
+## Using it locally
+
+Run:
+
+```bash
+npm install
+npm start
+```
+
+and then go to [http://localhost:3000]().
 
 ## Development
 
