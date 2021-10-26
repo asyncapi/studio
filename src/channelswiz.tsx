@@ -16,9 +16,11 @@ import {
   FormControlLabel,
   FormLabel,
   Paper,
+  Link,
   styled,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { Toolbar } from './components';
 import { useSpec, ChannelProps, YamlSpec } from './specContext';
 import YAML from 'js-yaml';
 
@@ -121,7 +123,16 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
     const protocolType = getValues().protocolType;
     if (protocolType === 'amqp') {
       return (
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography gutterBottom variant="h5">
+              AMQP Bindings
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              To read more about the amqp bindings object refer to the{' '}
+              <Link href="https://github.com/asyncapi/bindings/blob/master/amqp/README.md#channel">documentation</Link>
+            </Typography>
+          </Grid>
           <Grid item xs={12}>
             <Controller
               control={control}
@@ -188,6 +199,15 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       return (
         <Grid container spacing={2}>
           <Grid item xs={12}>
+            <Typography gutterBottom variant="h5">
+              MQTT Bindings
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              To read more about the mqtt bindings object refer to the{' '}
+              <Link href="https://github.com/asyncapi/bindings/blob/master/mqtt/README.md#channel">documentation</Link>
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <Controller
               control={control}
               name="bindingName"
@@ -237,144 +257,155 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
 
   return (
     <div className="flex flex-col h-full w-full h-screen">
-      <SplitPane minSize={700} maxSize={900} style={{ overflow: 'visible', margin: '20px 20px 10px 10px' }}>
-        <Container>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography gutterBottom variant="h5">
-                  Channel
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  A channel is an addressable component, made available by the server, for the organization of messages.
-                  Producer applications send messages to channels and consumer applications consume messages from
-                  channels.
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  control={control}
-                  name="channelName"
-                  rules={{ required: true, validate: () => getValues('channelName').length <= 20 }}
-                  render={({ field: { onChange, value } }) => {
-                    const error = Boolean(errors && errors.channelName);
-                    return (
-                      <TextField
-                        error={error}
-                        onChange={onChange}
-                        value={value || ''}
-                        label="Channel Name"
-                        variant="outlined"
-                        fullWidth
-                        helperText={error && 'Message name must be less than 20 characters'}
-                      />
-                    );
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography gutterBottom variant="h5">
-                  Operation
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  Describes a publish or a subscribe operation. This provides a place to document how and why messages
-                  are sent and received.
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <StyledInputLabel>Operation Type</StyledInputLabel>
+      <Toolbar />
+      <div className="flex flex-row flex-1">
+        <SplitPane minSize={700} maxSize={900} style={{ overflow: 'visible', margin: '20px 20px 10px 10px' }}>
+          <Container>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography gutterBottom variant="h5">
+                    Channel
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    A channel is an addressable component, made available by the server, for the organization of
+                    messages. Producer applications send messages to channels and consumer applications consume messages
+                    from channels. To read more about the channel object refer to the{' '}
+                    <Link href="https://www.asyncapi.com/docs/specifications/v2.2.0#channelsObject">documentation</Link>
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
                   <Controller
                     control={control}
-                    name="operationType"
-                    rules={{ required: true }}
+                    name="channelName"
+                    rules={{ required: true, validate: () => getValues('channelName').length <= 20 }}
                     render={({ field: { onChange, value } }) => {
+                      const error = Boolean(errors && errors.channelName);
                       return (
-                        <Select onChange={onChange} value={value || ''} variant="outlined">
-                          <MenuItem value={'publish'}>Publish</MenuItem>
-                          <MenuItem value={'subscribe'}>Subscribe</MenuItem>
-                        </Select>
+                        <TextField
+                          error={error}
+                          onChange={onChange}
+                          value={value || ''}
+                          label="Channel Name"
+                          variant="outlined"
+                          fullWidth
+                          helperText={error && 'Message name must be less than 20 characters'}
+                        />
                       );
                     }}
                   />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  control={control}
-                  name="operationId"
-                  rules={{ required: true, validate: () => getValues('operationId').length <= 20 }}
-                  render={({ field: { onChange, value } }) => {
-                    const error = Boolean(errors && errors.operationId);
-                    return (
-                      <TextField
-                        error={error}
-                        onChange={onChange}
-                        value={value || ''}
-                        label="Operation Id"
-                        variant="outlined"
-                        fullWidth
-                        helperText={error && 'Message name must be less than 20 characters'}
-                      />
-                    );
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography gutterBottom variant="h5">
-                  Channel Bindings
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  Map describing protocol-specific definitions for a channel.
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <StyledInputLabel>Protocol Type</StyledInputLabel>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography gutterBottom variant="h5">
+                    Operation
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Describes a publish or a subscribe operation. This provides a place to document how and why messages
+                    are sent and received. To read more about the operations object refer to the{' '}
+                    <Link href="https://www.asyncapi.com/docs/specifications/v2.2.0#operationObject">
+                      documentation
+                    </Link>
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <StyledInputLabel>Operation Type</StyledInputLabel>
+                    <Controller
+                      control={control}
+                      name="operationType"
+                      rules={{ required: true }}
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <Select onChange={onChange} value={value || ''} variant="outlined">
+                            <MenuItem value={'publish'}>Publish</MenuItem>
+                            <MenuItem value={'subscribe'}>Subscribe</MenuItem>
+                          </Select>
+                        );
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
                   <Controller
                     control={control}
-                    name="protocolType"
-                    rules={{ required: true }}
-                    render={({ field }) => {
-                      const { onChange, value } = field;
+                    name="operationId"
+                    rules={{ required: true, validate: () => getValues('operationId').length <= 20 }}
+                    render={({ field: { onChange, value } }) => {
+                      const error = Boolean(errors && errors.operationId);
                       return (
-                        <Select name="protocolType" onChange={onChange} value={value || ''} variant="outlined">
-                          <MenuItem value={'amqp'}>amqp</MenuItem>
-                          <MenuItem value={'mqtt'}>mqtt</MenuItem>
-                        </Select>
+                        <TextField
+                          error={error}
+                          onChange={onChange}
+                          value={value || ''}
+                          label="Operation Id"
+                          variant="outlined"
+                          fullWidth
+                          helperText={error && 'Message name must be less than 20 characters'}
+                        />
                       );
                     }}
                   />
-                </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography gutterBottom variant="h5">
+                    Channel Bindings
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Map describing protocol-specific definitions for a channel. To read more about the channel bindings
+                    object refer to the{' '}
+                    <Link href="https://www.asyncapi.com/docs/specifications/v2.2.0#channelBindingsObject">
+                      documentation
+                    </Link>
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <StyledInputLabel>Protocol Type</StyledInputLabel>
+                    <Controller
+                      control={control}
+                      name="protocolType"
+                      rules={{ required: true }}
+                      render={({ field }) => {
+                        const { onChange, value } = field;
+                        return (
+                          <Select name="protocolType" onChange={onChange} value={value || ''} variant="outlined">
+                            <MenuItem value={'amqp'}>amqp</MenuItem>
+                            <MenuItem value={'mqtt'}>mqtt</MenuItem>
+                          </Select>
+                        );
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                {renderChannelBindings()}
+                <Grid item xs={12}>
+                  <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
+                    Submit
+                  </Button>
+                </Grid>
               </Grid>
-              {renderChannelBindings()}
-              <Grid item xs={12}>
-                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
-                  Submit
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        </Container>
+            </form>
+          </Container>
 
-        <Container>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography gutterBottom variant="h5">
-                Spec Output
-              </Typography>
-            </Grid>
-            {specData.spec && (
+          <Container>
+            <Grid container spacing={1}>
               <Grid item xs={12}>
-                <StyledPaper variant="outlined" square>
-                  <pre>{specData.spec}</pre>
-                </StyledPaper>
+                <Typography gutterBottom variant="h5">
+                  Spec Output
+                </Typography>
               </Grid>
-            )}
-            {renderNextButton(specData)}
-          </Grid>
-        </Container>
-      </SplitPane>
+              {specData.spec && (
+                <Grid item xs={12}>
+                  <StyledPaper variant="outlined" square>
+                    <pre>{specData.spec}</pre>
+                  </StyledPaper>
+                </Grid>
+              )}
+              {renderNextButton(specData)}
+            </Grid>
+          </Container>
+        </SplitPane>
+      </div>
     </div>
   );
 };
