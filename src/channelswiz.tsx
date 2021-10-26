@@ -1,5 +1,6 @@
 import SplitPane from 'react-split-pane';
 import { useForm, Controller } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import {
   TextField,
   Grid,
@@ -15,10 +16,19 @@ import {
   FormControlLabel,
   FormLabel,
   Paper,
+  styled,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSpec, ChannelProps, YamlSpec } from './specContext';
 import YAML from 'js-yaml';
+
+const StyledInputLabel = styled(InputLabel)({
+  padding: '0 15px',
+});
+
+const StyledPaper = styled(Paper)({
+  padding: '10px',
+});
 
 const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
   const [specData, setsSpecData] = useState<YamlSpec>({ spec: '' });
@@ -80,6 +90,25 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
     addSpec(newSpec);
     const specString: string = YAML.dump({ ...newSpec.aggregatedSpec });
     setsSpecData({ spec: specString });
+  };
+  const history = useHistory();
+  const renderNextButton = (specData: YamlSpec) => {
+    if (specData.spec !== '') {
+      return (
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              localStorage.setItem('document', specData.spec);
+              history.push('/');
+            }}
+          >
+            View In Studio
+          </Button>
+        </Grid>
+      );
+    }
   };
 
   const { protocolType } = watch();
@@ -157,7 +186,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       );
     } else if (protocolType === 'mqtt') {
       return (
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Controller
               control={control}
@@ -208,12 +237,12 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
 
   return (
     <div className="flex flex-col h-full w-full h-screen">
-      <SplitPane minSize={700} maxSize={900} style={{ overflow: 'visible' }}>
+      <SplitPane minSize={700} maxSize={900} style={{ overflow: 'visible', margin: '20px 20px 10px 10px' }}>
         <Container>
-          <Grid container spacing={1}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography gutterBottom variant="h4">
+                <Typography gutterBottom variant="h5">
                   Channel
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
@@ -244,7 +273,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography gutterBottom variant="h4">
+                <Typography gutterBottom variant="h5">
                   Operation
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
@@ -254,7 +283,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Operation Type</InputLabel>
+                  <StyledInputLabel>Operation Type</StyledInputLabel>
                   <Controller
                     control={control}
                     name="operationType"
@@ -292,7 +321,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography gutterBottom variant="h4">
+                <Typography gutterBottom variant="h5">
                   Channel Bindings
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
@@ -301,7 +330,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Protocol Type</InputLabel>
+                  <StyledInputLabel>Protocol Type</StyledInputLabel>
                   <Controller
                     control={control}
                     name="protocolType"
@@ -324,22 +353,25 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                   Submit
                 </Button>
               </Grid>
-            </form>
-          </Grid>
+            </Grid>
+          </form>
         </Container>
 
         <Container>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Typography gutterBottom variant="h4">
+              <Typography gutterBottom variant="h5">
                 Spec Output
               </Typography>
             </Grid>
-            <Grid item xs={12}>
-              <Paper variant="outlined" square>
-                <pre>{specData.spec}</pre>
-              </Paper>
-            </Grid>
+            {specData.spec && (
+              <Grid item xs={12}>
+                <StyledPaper variant="outlined" square>
+                  <pre>{specData.spec}</pre>
+                </StyledPaper>
+              </Grid>
+            )}
+            {renderNextButton(specData)}
           </Grid>
         </Container>
       </SplitPane>
