@@ -1,8 +1,2 @@
-node_modules
-.next
-cache/*
-!cache/.gitkeep
-.env
-src/pages/_plugins/*
-!src/pages/_plugins/[...].js
-config/ui.json
+/node_modules
+.vscode/
