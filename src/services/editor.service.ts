@@ -170,7 +170,8 @@ export class EditorService {
     editor.deltaDecorations(oldDecorations, decorations);
   }
 
-  static createErrorMarkers(errors: any[] = [], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
+  static createErrorMarkers(errors: any[], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
+    errors = errors || [];
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
     errors.forEach(err => {

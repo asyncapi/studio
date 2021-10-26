@@ -20,7 +20,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
   const latestVersion = SpecificationService.getLastVersion();
   const allowedVersions = Object.keys(SpecificationService.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
-  const reservedAllowedVersions = allowedVersions.reverse();
+  const reservedAllowedVersions = [...allowedVersions].reverse();
 
   useEffect(() => {
     shouldOpenConvertModal && setShow(true);
@@ -87,15 +87,15 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
           {content}
         </p>
         <ul className="mt-4">
-          {reservedAllowedVersions.map(version => version !== '2.0.0' && (
-            <li key={version}>
+          {reservedAllowedVersions.map(v => v !== '2.0.0' && (
+            <li key={v}>
               <a
                 className="underline"
-                href={`https://www.asyncapi.com/blog/release-notes-${version}`}
+                href={`https://www.asyncapi.com/blog/release-notes-${v}`}
                 target="_blank"
                 rel="nofollow noopener noreferrer"
               >
-                See the release notes for {version}
+                See the release notes for {v}
               </a>
             </li>
           ))}

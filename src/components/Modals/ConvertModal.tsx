@@ -13,7 +13,7 @@ export const ConvertModal: React.FunctionComponent = () => {
   const latestVersion = SpecificationService.getLastVersion();
   const allowedVersions = Object.keys(SpecificationService.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
-  const reservedAllowedVersions = allowedVersions.reverse();
+  const reservedAllowedVersions = [...allowedVersions].reverse();
 
   const onSubmit = () => {
     toast.promise(EditorService.convertSpec(version), {

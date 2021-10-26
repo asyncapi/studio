@@ -22,7 +22,9 @@ export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
   opener,
   show = false,
   onSubmit,
-  onCancel = () => {},
+  onCancel = () => {
+    // This is intentional
+  },
   children,
 }) => {
   const [showModal, setShowModal] = useState(show);
