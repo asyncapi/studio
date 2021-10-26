@@ -54,6 +54,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
       bindingType: '',
       vhost: '',
       qos: '',
+      client: '',
     },
   });
 
@@ -137,7 +138,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
             <Controller
               control={control}
               name="bindingType"
-              rules={{ required: true, validate: () => getValues('bindingType').length <= 20 }}
+              rules={{ required: true, validate: () => getValues('bindingType').length <= 50 }}
               render={({ field: { onChange, value } }) => {
                 return (
                   <FormControl component="fieldset">
@@ -155,7 +156,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
             <Controller
               control={control}
               name="bindingName"
-              rules={{ required: true, validate: () => getValues('bindingName').length <= 20 }}
+              rules={{ required: true, validate: () => getValues('bindingName').length <= 50 }}
               render={({ field: { onChange, value } }) => {
                 const error = Boolean(errors && errors.channelName);
                 return (
@@ -166,7 +167,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     label="Queue / Exchange Name"
                     variant="outlined"
                     fullWidth
-                    helperText={error && 'Queue / Exchange name must be less than 20 characters'}
+                    helperText={error && 'Queue / Exchange name must be less than 50 characters'}
                   />
                 );
               }}
@@ -176,7 +177,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
             <Controller
               control={control}
               name="vhost"
-              rules={{ required: true, validate: () => getValues('vhost').length <= 20 }}
+              rules={{ required: true, validate: () => getValues('vhost').length <= 50 }}
               render={({ field: { onChange, value } }) => {
                 const error = Boolean(errors && errors.channelName);
                 return (
@@ -187,7 +188,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     label="VHost"
                     variant="outlined"
                     fullWidth
-                    helperText={error && 'VHost name must be less than 20 characters'}
+                    helperText={error && 'VHost name must be less than 50 characters'}
                   />
                 );
               }}
@@ -210,29 +211,8 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
           <Grid item xs={12}>
             <Controller
               control={control}
-              name="bindingName"
-              rules={{ required: true, validate: () => getValues('bindingName').length <= 20 }}
-              render={({ field: { onChange, value } }) => {
-                const error = Boolean(errors && errors.bindingName);
-                return (
-                  <TextField
-                    error={error}
-                    onChange={onChange}
-                    value={value || ''}
-                    label="Binding Name"
-                    variant="outlined"
-                    fullWidth
-                    helperText={error && 'Binding name must be less than 20 characters'}
-                  />
-                );
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Controller
-              control={control}
               name="qos"
-              rules={{ required: true, validate: () => getValues('qos').length <= 20 }}
+              rules={{ required: true, validate: () => getValues('qos').length <= 50 }}
               render={({ field: { onChange, value } }) => {
                 const error = Boolean(errors && errors.qos);
                 return (
@@ -244,7 +224,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                     variant="outlined"
                     fullWidth
                     type="number"
-                    helperText={error && 'QOS name must be less than 20 characters'}
+                    helperText={error && 'QOS name must be less than 50 characters'}
                   />
                 );
               }}
@@ -278,7 +258,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                   <Controller
                     control={control}
                     name="channelName"
-                    rules={{ required: true, validate: () => getValues('channelName').length <= 20 }}
+                    rules={{ required: true, validate: () => getValues('channelName').length <= 50 }}
                     render={({ field: { onChange, value } }) => {
                       const error = Boolean(errors && errors.channelName);
                       return (
@@ -289,7 +269,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                           label="Channel Name"
                           variant="outlined"
                           fullWidth
-                          helperText={error && 'Message name must be less than 20 characters'}
+                          helperText={error && 'Message name must be less than 50 characters'}
                         />
                       );
                     }}
@@ -317,8 +297,8 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                       render={({ field: { onChange, value } }) => {
                         return (
                           <Select onChange={onChange} value={value || ''} variant="outlined">
-                            <MenuItem value={'publish'}>Publish</MenuItem>
-                            <MenuItem value={'subscribe'}>Subscribe</MenuItem>
+                            <MenuItem value={'publish'}>publish</MenuItem>
+                            <MenuItem value={'subscribe'}>subscribe</MenuItem>
                           </Select>
                         );
                       }}
@@ -329,7 +309,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                   <Controller
                     control={control}
                     name="operationId"
-                    rules={{ required: true, validate: () => getValues('operationId').length <= 20 }}
+                    rules={{ required: true, validate: () => getValues('operationId').length <= 50 }}
                     render={({ field: { onChange, value } }) => {
                       const error = Boolean(errors && errors.operationId);
                       return (
@@ -340,7 +320,7 @@ const AsyncAPIChannelWizard: React.FunctionComponent<ChannelProps> = () => {
                           label="Operation Id"
                           variant="outlined"
                           fullWidth
-                          helperText={error && 'Message name must be less than 20 characters'}
+                          helperText={error && 'Message name must be less than 50 characters'}
                         />
                       );
                     }}

@@ -76,7 +76,7 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
                   <Controller
                     control={control}
                     name="title"
-                    rules={{ required: true, validate: () => getValues('title').length <= 20 }}
+                    rules={{ required: true, validate: () => getValues('title').length <= 50 }}
                     render={({ field: { onChange, value } }) => {
                       const error = Boolean(errors && errors.title);
                       return (

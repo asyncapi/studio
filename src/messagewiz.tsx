@@ -86,7 +86,7 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
                     <Controller
                       control={control}
                       name="messageName"
-                      rules={{ required: true, validate: () => getValues('messageName').length <= 20 }}
+                      rules={{ required: true, validate: () => getValues('messageName').length <= 50 }}
                       render={({ field: { onChange, value } }) => {
                         const error = Boolean(errors && errors.messageName);
                         return (
@@ -123,7 +123,7 @@ const AsyncAPIMessageWizard: React.FunctionComponent<MessageProps> = () => {
                           <TextField
                             onChange={onChange}
                             value={value || ''}
-                            label="JSON Message / Schema"
+                            label="JSON Message"
                             multiline
                             minRows={4}
                             fullWidth
