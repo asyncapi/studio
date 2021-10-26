@@ -77,7 +77,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 }) => {
   const operations = Object.entries(spec.channels() || {}).map(
     ([channelName, channel]) => {
-      const channels: React.ReactNodeArray = [];
+      const channels: React.ReactNode[] = [];
 
       if (channel.hasPublish()) {
         channels.push(
