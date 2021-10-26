@@ -1,4 +1,4 @@
-import { TextField, Grid, Typography, Container, Button, Paper, styled } from '@material-ui/core';
+import { TextField, Grid, Typography, Container, Button, Paper, Link, styled } from '@material-ui/core';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
@@ -67,8 +67,9 @@ const AsyncAPIInfoWizard: React.FunctionComponent<InfoProps> = () => {
                     Info
                   </Typography>
                   <Typography variant="subtitle1" gutterBottom>
-                    Let us start by giving the API a title and a version. The object provides metadata about the API.
-                    The metadata can be used by the clients if needed.
+                    Let us start by giving the API a title and a version. The info object provides metadata about the
+                    API. The metadata can be used by the clients if needed. To read more about the info object refer to
+                    the <Link href="https://www.asyncapi.com/docs/specifications/v2.2.0#infoObject">documentation</Link>
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
