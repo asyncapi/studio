@@ -18,6 +18,9 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               <span className="inline-block text-xl text-pink-500 font-normal italic tracking-wide -ml-1 transform translate-y-0.5">
                 studio
               </span>
+              <span className="inline-block text-xs text-teal-500 font-normal tracking-wide ml-0.5 transform translate-y-0.5">
+                beta
+              </span>
             </div>
           </div>
           <ul className="flex items-center text-pink-500">
