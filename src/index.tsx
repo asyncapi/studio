@@ -1,10 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { start as startLiveServer } from './helpers/live-server';
 
 import '@asyncapi/react-component/styles/default.min.css';
 import 'tailwindcss/dist/tailwind.min.css';
 import './main.css';
+
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+if (typeof Number(params.liveServer) === 'number') {
+  startLiveServer(params.liveServer);
+}
 
 window.MonacoEnvironment = window.MonacoEnvironment || {
   getWorkerUrl(_: string, label: string) {
