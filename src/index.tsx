@@ -9,8 +9,8 @@ import './main.css';
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
-if (typeof Number(params.liveServer) === 'number') {
-  startLiveServer(params.liveServer);
+if (params.liveServer && typeof Number(params.liveServer) === 'number') {
+  startLiveServer(params.liveServer, window.location.hostname);
 }
 
 window.MonacoEnvironment = window.MonacoEnvironment || {
