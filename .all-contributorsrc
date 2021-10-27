@@ -1,0 +1,91 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "magicmatatjahu",
+      "name": "Maciej Urbańczyk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20404945?v=4",
+      "profile": "https://github.com/magicmatatjahu",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "ideas",
+        "maintenance",
+        "question",
+        "test",
+        "review"
+      ]
+    },
+    {
+      "login": "jonaslagoni",
+      "name": "Jonas Lagoni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13396189?v=4",
+      "profile": "https://github.com/jonaslagoni",
+      "contributions": [
+        "ideas",
+        "question",
+        "review"
+      ]
+    },
+    {
+      "login": "fmvilas",
+      "name": "Fran Méndez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/242119?v=4",
+      "profile": "https://github.com/fmvilas",
+      "contributions": [
+        "code",
+        "ideas",
+        "maintenance",
+        "question",
+        "test",
+        "review"
+      ]
+    },
+    {
+      "login": "boyney123",
+      "name": "David Boyne",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3268013?v=4",
+      "profile": "https://github.com/boyney123",
+      "contributions": [
+        "code",
+        "ideas",
+        "maintenance",
+        "question",
+        "test",
+        "review"
+      ]
+    },
+    {
+      "login": "smoya",
+      "name": "Sergio Moya",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1083296?v=4",
+      "profile": "https://github.com/smoya",
+      "contributions": [
+        "ideas",
+        "question"
+      ]
+    },
+    {
+      "login": "BOLT04",
+      "name": "David",
+      "https://avatars.githubusercontent.com/u/18630253?v=4",
+      "profile": "https://github.com/BOLT04",
+      "contributions": [
+        "ideas",
+        "question"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "studio",
+  "projectOwner": "asyncapi",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true,
+  "commitConvention": "none"
+}
