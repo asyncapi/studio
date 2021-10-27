@@ -1,7 +1,30 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.1",
+  "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/asyncapi/studio",
+  "bugs": {
+    "url": "https://github.com/asyncapi/studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asyncapi/studio.git"
+  },
+  "keywords": [
+    "asyncapi",
+    "documentation",
+    "studio",
+    "playground"
+  ],
+  "author": {
+    "name": "The AsyncAPI maintainers"
+  },
+  "files": [
+    "/build",
+    "./README.md",
+    "./LICENSE"
+  ],
   "dependencies": {
     "@asyncapi/converter": "^0.6.0",
     "@asyncapi/parser": "^1.10.0",
@@ -32,13 +55,11 @@
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
-    "generate:assets": "npm run build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "generate:readme:toc": "markdown-toc -i README.md",
+    "generate:assets": "npm run build && npm run generate:readme:toc",
+    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
+    "release": "semantic-release",
+    "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
     "production": [
@@ -53,6 +74,10 @@
     ]
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^9.0.1",
+    "@semantic-release/github": "^8.0.1",
+    "@semantic-release/npm": "^8.0.0",
+    "@semantic-release/release-notes-generator": "^10.0.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -61,16 +86,43 @@
     "@types/node": "^12.20.26",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
+    "conventional-changelog-conventionalcommits": "^4.6.1",
     "eslint": "^7.32.0",
     "eslint-plugin-react": "7.26.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
     "react-scripts": "4.0.3",
+    "markdown-toc": "^1.2.0",
+    "semantic-release": "^18.0.0",
     "typescript": "^4.4.3"
   },
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(monaco-editor)/)"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
     ]
   }
 }
