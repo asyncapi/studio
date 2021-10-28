@@ -5,7 +5,6 @@ import { EditorService } from './editor.service';
 import { SpecificationService } from './specification.service';
 import state from '../state';
 import { SocketClient } from './socket-client.service';
-import { stat } from 'fs';
 
 interface LocationOf {
   jsonPointer: string;
@@ -93,12 +92,10 @@ export class NavigationService {
     if (liveServerPort && typeof Number(liveServerPort) === 'number') {
       liveServer = true;
       SocketClient.connect(window.location.hostname, liveServerPort);
-    } else {
-      if (documentUrl) {
-        await EditorService.importFromURL(documentUrl);
-      } else if (base64Document) {
-        await EditorService.importBase64(base64Document);
-      }
+    } else if (documentUrl) {
+      await EditorService.importFromURL(documentUrl);
+    } else if (base64Document) {
+      await EditorService.importBase64(base64Document);
     }
 
     if (this.isReadOnly(true)) {
@@ -113,7 +110,7 @@ export class NavigationService {
     state.app.set({
       initialized: true,
       liveServer,
-    })
+    });
   }
 
   private static emitHashChangeEvent(hash: string) {

@@ -21,20 +21,20 @@ export class SocketClient {
     const json: IncomingMessage = JSON.parse(event.data);
 
     switch (json.type) {
-      case 'file:loaded':
-      case 'file:changed':
-        EditorService.updateState({ 
-          content: json.code, 
-          updateModel: true, 
-          sendToServer: false,
-        });
-        break;
-      case 'file:deleted':
-        console.warn('Live Server: The file has been deleted on the file system.');
-        break;
-      default:
-        console.warn('Live Server: An unknown even has been received. See details:');
-        console.log(json);
+    case 'file:loaded':
+    case 'file:changed':
+      EditorService.updateState({ 
+        content: json.code, 
+        updateModel: true, 
+        sendToServer: false,
+      });
+      break;
+    case 'file:deleted':
+      console.warn('Live Server: The file has been deleted on the file system.');
+      break;
+    default:
+      console.warn('Live Server: An unknown even has been received. See details:');
+      console.log(json);
     }
   }
 }
