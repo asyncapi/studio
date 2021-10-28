@@ -316,7 +316,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
               )
             }
           >
-            Introduction
+            Information
           </div>
         </li>
         {spec.hasServers() && (
