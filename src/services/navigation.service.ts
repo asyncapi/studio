@@ -2,9 +2,9 @@
 import { getLocationOf } from '@asyncapi/parser/lib/utils';
 
 import { EditorService } from './editor.service';
+import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
 import state from '../state';
-import { SocketClient } from './socket-client.service';
 
 interface LocationOf {
   jsonPointer: string;
@@ -81,8 +81,6 @@ export class NavigationService {
   }
 
   static async onInitApp() {
-    let liveServer = false;
-
     const urlParams = new URLSearchParams(window.location.search);
 
     const documentUrl = urlParams.get('url') || urlParams.get('load');
@@ -90,7 +88,6 @@ export class NavigationService {
     const liveServerPort = urlParams.get('liveServer');
 
     if (liveServerPort && typeof Number(liveServerPort) === 'number') {
-      liveServer = true;
       SocketClient.connect(window.location.hostname, liveServerPort);
     } else if (documentUrl) {
       await EditorService.importFromURL(documentUrl);
@@ -107,10 +104,7 @@ export class NavigationService {
         editorLoaded: true,
       });
     }
-    state.app.set({
-      initialized: true,
-      liveServer,
-    });
+    state.app.initialized.set(true);
   }
 
   private static emitHashChangeEvent(hash: string) {

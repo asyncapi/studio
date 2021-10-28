@@ -1,4 +1,5 @@
 import React from 'react';
+import { VscRadioTower } from "react-icons/vsc"; 
 
 import { SpecificationService } from '../../services';
 import state from '../../state';
@@ -6,9 +7,11 @@ import state from '../../state';
 interface TerminalInfoProps {}
 
 export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
+  const appState = state.useAppState();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
 
+  const liveServer = appState.liveServer.get();
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
   const latestVersion = SpecificationService.getLastVersion();
   const documentValid = parserState.valid.get();
@@ -25,8 +28,16 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
 
   return (
     <div className="flex flex-row px-2">
+      {liveServer && (
+        <div className="flex flex-row content-center ml-3">
+          <span className="inline-block mr-2">
+            <VscRadioTower className="w-4 h-4 text-yellow-500" />
+          </span>
+          <span>Live server</span>
+        </div>
+      )}
       {errors.length ? (
-        <div>
+        <div className="ml-3">
           <span className="text-red-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +55,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Invalid</span>
         </div>
       ) : (
-        <div>
+        <div className="ml-3">
           <span className="text-green-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
