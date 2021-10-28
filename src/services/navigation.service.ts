@@ -2,6 +2,7 @@
 import { getLocationOf } from '@asyncapi/parser/lib/utils';
 
 import { EditorService } from './editor.service';
+import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
@@ -84,19 +85,17 @@ export class NavigationService {
 
     const documentUrl = urlParams.get('url') || urlParams.get('load');
     const base64Document = urlParams.get('base64');
+    const liveServerPort = urlParams.get('liveServer');
 
-    if (!documentUrl && !base64Document) {
-      state.app.initialized.set(true);
-      return;
-    }
-
-    if (documentUrl) {
+    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
+      SocketClient.connect(window.location.hostname, liveServerPort);
+    } else if (documentUrl) {
       await EditorService.importFromURL(documentUrl);
     } else if (base64Document) {
       await EditorService.importBase64(base64Document);
     }
 
-    if (this.isReadOnly()) {
+    if (this.isReadOnly(true)) {
       await SpecificationService.parseSpec(state.editor.editorValue.get());
       state.sidebar.show.set(false);
       state.editor.set({
