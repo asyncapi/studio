@@ -1,5 +1,5 @@
 import React from 'react';
-import { VscRadioTower } from "react-icons/vsc"; 
+import { VscRadioTower } from 'react-icons/vsc'; 
 
 import { SpecificationService } from '../../services';
 import state from '../../state';

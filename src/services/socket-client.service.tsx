@@ -19,9 +19,9 @@ export class SocketClient {
       ws.onopen = this.onOpen;
       ws.onmessage = this.onMessage;
       ws.onerror = this.onError;
-    } catch(e) {
+    } catch (e) {
       console.error(e);
-      this.onError(e);
+      this.onError();
     }
   }
 
@@ -50,7 +50,7 @@ export class SocketClient {
     }
   }
 
-  private static onOpen(_: any) {
+  private static onOpen() {
     toast.success(
       <div>
         <span className="block text-bold">
@@ -61,7 +61,7 @@ export class SocketClient {
     state.app.liveServer.set(true);
   }
 
-  private static onError(_: any) {
+  private static onError() {
     toast.error(
       <div>
         <span className="block text-bold">
