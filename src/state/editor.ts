@@ -2,27 +2,27 @@ import { createState, useState } from '@hookstate/core';
 
 const schema =
   localStorage.getItem('document') ||
-  `asyncapi: '2.0.0'
+  `asyncapi: 2.2.0
 id: 'urn:rpc:example:client'
 defaultContentType: application/json
 
 info:
   title: RPC Client Example
   description: This example demonstrates how to define an RPC client.
-  version: '1.0.0'
+  version: 1.0.0
 
 servers:
   production:
     url: rabbitmq.example.org
     protocol: amqp
-
+    
 channels:
   '{queue}':
     parameters:
       queue:
         schema:
           type: string
-          pattern: '^amq\\.gen\\-.+$'
+          pattern: ^amq\\.gen\\-.+$
     bindings:
       amqp:
         is: queue
@@ -65,8 +65,9 @@ channels:
               items:
                 type: number
               examples:
-                - [4,3]
-  
+                - - 4
+                  - 3
+                  
 components:
   schemas:
     test:
