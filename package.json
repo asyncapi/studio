@@ -47,10 +47,10 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "npm run test:unit",
-    "test:unit": "DISABLE_ESLINT_PLUGIN=true react-scripts test --detectOpenHandles",
+    "test:unit": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
@@ -86,12 +86,13 @@
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "conventional-changelog-conventionalcommits": "^4.6.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-plugin-react": "7.26.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
-    "react-scripts": "4.0.3",
     "markdown-toc": "^1.2.0",
+    "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
     "typescript": "^4.4.3"
   },
