@@ -5,8 +5,16 @@ import { FormatService } from './format.service';
 import { SpecificationService } from './specification.service';
 
 import state from '../state';
+import { SocketClient } from './socket-client.service';
 
 export type AllowedLanguages = 'json' | 'yaml' | 'yml';
+
+export interface UpdateState {
+  content: string,
+  updateModel?: boolean,
+  sendToServer?: boolean,
+  language?: AllowedLanguages,
+} 
 
 export class EditorService {
   static getInstance(): monacoAPI.editor.IStandaloneCodeEditor {
@@ -18,12 +26,17 @@ export class EditorService {
       .getModel()?.getValue() as string;
   }
 
-  static updateState(
-    content: string,
+  static updateState({
+    content,
     updateModel = false,
-    language?: AllowedLanguages,
-  ) {
-    if (!content) {
+    sendToServer = true,
+    language,
+  }: UpdateState) {
+    if (state.editor.editorValue.get() === content) {
+      return;
+    }
+
+    if (!content && typeof content !== 'string') {
       return;
     }
 
@@ -44,6 +57,10 @@ export class EditorService {
     }
     state.editor.editorValue.set(content);
 
+    if (sendToServer === true) {
+      SocketClient.send(content);
+    }
+
     if (updateModel) {
       const instance = this.getInstance();
       if (instance) {
@@ -58,7 +75,7 @@ export class EditorService {
       this.getValue(),
       version || SpecificationService.getLastVersion(),
     );
-    this.updateState(converted, true);
+    this.updateState({ content: converted, updateModel: true });
   }
 
   static async importFromURL(url: string): Promise<void> {
@@ -67,7 +84,7 @@ export class EditorService {
         .then(res => res.text())
         .then(text => {
           state.editor.documentFrom.set(`URL: ${url}` as `URL: ${string}`);
-          this.updateState(text, true);
+          this.updateState({ content: text, updateModel: true });
         })
         .catch(err => {
           console.error(err);
@@ -89,7 +106,7 @@ export class EditorService {
     fileReader.onload = fileLoadedEvent => {
       const content = fileLoadedEvent.target?.result;
       console.log(content);
-      this.updateState(String(content), true);
+      this.updateState({ content: String(content), updateModel: true });
     };
     fileReader.readAsText(file, 'UTF-8');
   }
@@ -98,7 +115,7 @@ export class EditorService {
     try {
       const decoded = FormatService.decodeBase64(content);
       state.editor.documentFrom.set('Base64');
-      this.updateState(decoded, true);
+      this.updateState({ content: String(decoded), updateModel: true });
     } catch (err) {
       console.error(err);
       throw err;
@@ -108,7 +125,7 @@ export class EditorService {
   static async convertToYaml() {
     try {
       const yamlContent = FormatService.convertToYaml(this.getValue());
-      yamlContent && this.updateState(yamlContent, true, 'yaml');
+      yamlContent && this.updateState({ content: yamlContent, updateModel: true, language: 'yaml' });
     } catch (err) {
       console.error(err);
       throw err;
@@ -118,7 +135,7 @@ export class EditorService {
   static async convertToJSON() {
     try {
       const jsonContent = FormatService.convertToJSON(this.getValue());
-      jsonContent && this.updateState(jsonContent, true, 'json');
+      jsonContent && this.updateState({ content: jsonContent, updateModel: true, language: 'json' });
     } catch (err) {
       console.error(err);
       throw err;
@@ -214,7 +231,6 @@ export class EditorService {
   }
 
   private static fileName = 'asyncapi';
-
   private static downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
   }

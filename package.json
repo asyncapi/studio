@@ -47,10 +47,10 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "npm run test:unit",
-    "test:unit": "react-scripts test --detectOpenHandles",
+    "test:unit": "DISABLE_ESLINT_PLUGIN=true react-scripts test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",

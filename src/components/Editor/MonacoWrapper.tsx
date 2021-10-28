@@ -50,7 +50,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   }
 
   const onChange = debounce((v: string) => {
-    EditorService.updateState(v);
+    EditorService.updateState({ content: v });
     SpecificationService.parseSpec(v);
   }, 250);
 

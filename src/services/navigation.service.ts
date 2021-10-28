@@ -4,6 +4,8 @@ import { getLocationOf } from '@asyncapi/parser/lib/utils';
 import { EditorService } from './editor.service';
 import { SpecificationService } from './specification.service';
 import state from '../state';
+import { SocketClient } from './socket-client.service';
+import { stat } from 'fs';
 
 interface LocationOf {
   jsonPointer: string;
@@ -80,23 +82,26 @@ export class NavigationService {
   }
 
   static async onInitApp() {
+    let liveServer = false;
+
     const urlParams = new URLSearchParams(window.location.search);
 
     const documentUrl = urlParams.get('url') || urlParams.get('load');
     const base64Document = urlParams.get('base64');
+    const liveServerPort = urlParams.get('liveServer');
 
-    if (!documentUrl && !base64Document) {
-      state.app.initialized.set(true);
-      return;
+    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
+      liveServer = true;
+      SocketClient.connect(window.location.hostname, liveServerPort);
+    } else {
+      if (documentUrl) {
+        await EditorService.importFromURL(documentUrl);
+      } else if (base64Document) {
+        await EditorService.importBase64(base64Document);
+      }
     }
 
-    if (documentUrl) {
-      await EditorService.importFromURL(documentUrl);
-    } else if (base64Document) {
-      await EditorService.importBase64(base64Document);
-    }
-
-    if (this.isReadOnly()) {
+    if (this.isReadOnly(true)) {
       await SpecificationService.parseSpec(state.editor.editorValue.get());
       state.sidebar.show.set(false);
       state.editor.set({
@@ -105,7 +110,10 @@ export class NavigationService {
         editorLoaded: true,
       });
     }
-    state.app.initialized.set(true);
+    state.app.set({
+      initialized: true,
+      liveServer,
+    })
   }
 
   private static emitHashChangeEvent(hash: string) {
