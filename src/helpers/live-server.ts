@@ -1,7 +1,6 @@
 import { EditorService } from '../services';
 
 export function start(port:string, hostname = 'localhost') {
-  console.log(`ws://${hostname}:${port}/live-server`);
   const ws = new WebSocket(`ws://${hostname}:${port}/live-server`);
   
   ws.onmessage = function (event) {
