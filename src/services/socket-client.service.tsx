@@ -6,7 +6,7 @@ import state from '../state';
 
 interface IncomingMessage {
   type: 'file:loaded' | 'file:changed' | 'file:deleted';
-  code: string;
+  code?: string;
 }
 
 export class SocketClient {
@@ -25,28 +25,32 @@ export class SocketClient {
     }
   }
 
-  static send(content: string) {
-    this.ws && this.ws.send(content);
+  static send(eventName:string, content: object) {
+    this.ws && this.ws.send(JSON.stringify({ type: eventName, ...content }));
   }
 
   private static onMessage(event: MessageEvent<any>) {
-    const json: IncomingMessage = JSON.parse(event.data);
-
-    switch (json.type) {
-    case 'file:loaded':
-    case 'file:changed':
-      EditorService.updateState({ 
-        content: json.code, 
-        updateModel: true, 
-        sendToServer: false,
-      });
-      break;
-    case 'file:deleted':
-      console.warn('Live Server: The file has been deleted on the file system.');
-      break;
-    default:
-      console.warn('Live Server: An unknown even has been received. See details:');
-      console.log(json);
+    try {
+      const json: IncomingMessage = JSON.parse(event.data);
+  
+      switch (json.type) {
+      case 'file:loaded':
+      case 'file:changed':
+        EditorService.updateState({ 
+          content: json.code as string, 
+          updateModel: true, 
+          sendToServer: false,
+        });
+        break;
+      case 'file:deleted':
+        console.warn('Live Server: The file has been deleted on the file system.');
+        break;
+      default:
+        console.warn('Live Server: An unknown even has been received. See details:');
+        console.log(json);
+      }
+    } catch (e) {
+      console.error(`Live Server: An invalid event has been received. See details:\n${event.data}`);
     }
   }
 

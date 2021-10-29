@@ -58,7 +58,7 @@ export class EditorService {
     state.editor.editorValue.set(content);
 
     if (sendToServer === true) {
-      SocketClient.send(content);
+      SocketClient.send('file:update', { code: content });
     }
 
     if (updateModel) {
