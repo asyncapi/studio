@@ -25,7 +25,7 @@ export class SocketClient {
     }
   }
 
-  static send(eventName:string, content: object) {
+  static send(eventName: string, content: Record<string, unknown>) {
     this.ws && this.ws.send(JSON.stringify({ type: eventName, ...content }));
   }
 
