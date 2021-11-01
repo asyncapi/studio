@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -28,7 +28,7 @@
     "@asyncapi/converter": "^0.6.0",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapi/react-component": "^1.0.0-next.19",
-    "@asyncapi/specs": "^2.9.0",
+    "@asyncapi/specs": "^2.10.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.2.2",
