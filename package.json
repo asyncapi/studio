@@ -28,7 +28,7 @@
     "@asyncapi/converter": "^0.6.0",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapi/react-component": "^1.0.0-next.19",
-    "@asyncapi/specs": "^2.10.0",
+    "@asyncapi/specs": "^2.10.1",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.2.2",
