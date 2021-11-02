@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -28,7 +28,7 @@
     "@asyncapi/converter": "^0.6.0",
     "@asyncapi/parser": "^1.10.0",
     "@asyncapi/react-component": "^1.0.0-next.19",
-    "@asyncapi/specs": "^2.9.0",
+    "@asyncapi/specs": "^2.10.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.2.2",
@@ -49,10 +49,10 @@
     "yaml-loader": "^0.6.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "npm run test:unit",
-    "test:unit": "react-app-rewired test --detectOpenHandles",
+    "test:unit": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
@@ -88,13 +88,12 @@
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "conventional-changelog-conventionalcommits": "^4.6.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-plugin-react": "7.26.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
     "markdown-toc": "^1.2.0",
-    "raw-loader": "^4.0.2",
-    "react-app-rewired": "^2.1.8",
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
     "typescript": "^4.4.3"
