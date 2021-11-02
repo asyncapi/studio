@@ -7,7 +7,6 @@ import { Toaster } from 'react-hot-toast';
 import { Content, Navigation, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
 import { NavigationService } from './services';
-import TemplateSelector from './components/Modals/TemplateSelector';
 import Welcome from './components/Welcome';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
