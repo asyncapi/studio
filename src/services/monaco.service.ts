@@ -7,7 +7,7 @@ import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
-import jsonSchemaDraft07 from "./json-schema.draft-07";
+import jsonSchemaDraft07 from './json-schema.draft-07';
 
 export class MonacoService {
   private static actualVersion = 'X.X.X';
