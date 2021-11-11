@@ -24,7 +24,7 @@ const NewFile = () => {
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
-    <div className="bg-gray-800 w-full">
+    <div className="bg-gray-800 w-full  overflow-auto">
       <div className="max-w-5xl mx-auto py-10">
         <div className="flex">
           <div className="w-1/4 pr-10 space-y-4">

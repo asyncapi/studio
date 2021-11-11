@@ -12,7 +12,7 @@ export interface SidebarState {
 export const sidebarState = createState<SidebarState>({
   show: true,
   panels: {
-    newFile: true,
+    newFile: false,
     navigation: true,
     editor: true,
     view: true,
