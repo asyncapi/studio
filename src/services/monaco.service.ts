@@ -7,6 +7,8 @@ import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
+import jsonSchemaDraft07 from './json-schema.draft-07';
+
 export class MonacoService {
   private static actualVersion = 'X.X.X';
   private static Monaco: any = null;
@@ -45,10 +47,15 @@ export class MonacoService {
       completion: true,
       schemas: [
         {
-          uri: 'https://www.asyncapi.com/', // id of the schema
+          uri: 'https://www.asyncapi.com/', // id of the AsyncAPI spec schema
           fileMatch: ['*'], // associate with all models
           schema: specs[String(asyncAPIVersion)],
         },
+        {
+          uri: jsonSchemaDraft07.$id, // id of the draft-07 schema
+          fileMatch: ['*'], // associate with all models
+          schema: jsonSchemaDraft07,
+        }
       ],
     } as any;
   }

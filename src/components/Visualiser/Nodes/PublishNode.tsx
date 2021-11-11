@@ -3,6 +3,9 @@ import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import getBackgroundColor from '../utils/random-background-color';
 
+// @ts-ignore
+import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
+
 interface IData {
   messages: any []
   channel: string
@@ -22,7 +25,13 @@ export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
         <span className="block leading-6  text-gray-900 text-xs font-light uppercase">You can publish</span>
         <div>
           <h3 className="text-lg leading-6 font-medium text-gray-900">{channel}</h3>
-          {description && <p className="mt-1 max-w-2xl text-sm text-gray-500">{description}</p>}
+          {description && (
+            <div className="mt-1 max-w-2xl text-sm text-gray-500">
+              <Markdown>
+                {description}
+              </Markdown>
+            </div>
+          )}
         </div>
         <hr />
         <div>
@@ -61,7 +70,7 @@ export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
           type="source"
           position={Position.Right}
           style={{ background: 'green' }}
-        ></Handle>
+        />
       </div>
     </div>
   );

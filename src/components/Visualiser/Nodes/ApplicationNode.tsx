@@ -2,6 +2,9 @@ import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
+// @ts-ignore
+import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
+
 interface IData {
   spec: AsyncAPIDocument
 }
@@ -54,7 +57,7 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
         type="target"
         position={Position.Left}
         style={{ background: 'gray' }}
-      ></Handle>
+      />
       <div className="flex justify-center items-center border-r border-gray-200">
         <span className="block transform -rotate-90 uppercase text-green-500 w-full font-bold tracking-widest px-2 ">
           In
@@ -74,7 +77,13 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
               v{version}
             </span>
           </div>
-          {description && <p className="mt-2 text-sm text-gray-500 max-w-xl">{description}</p>}
+          {description && (
+            <div className="mt-2 text-sm text-gray-500 max-w-xl">
+              <Markdown>
+                {description}
+              </Markdown>
+            </div>
+          )}
           {defaultContentType && (
             <p className="mt-5 text-xs text-gray-500 ">
               Default ContentType:{' '}
@@ -100,7 +109,11 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
                           : server.protocol}
                       </span>
                     </dt>
-                    <dd className="mt-1 text-xs text-gray-900">{server.description}</dd>
+                    <dd className="mt-1 text-xs text-gray-900">
+                      <Markdown>
+                        {server.description}
+                      </Markdown>
+                    </dd>
                     <dd className="mt-1 text-xs text-gray-900">url: {server.url}</dd>
                   </div>
                 );
