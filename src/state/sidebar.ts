@@ -2,6 +2,7 @@ import { createState, useState } from '@hookstate/core';
 export interface SidebarState {
   show: boolean;
   panels: {
+    newFile: boolean;
     navigation: boolean;
     editor: boolean;
     view: boolean;
@@ -11,6 +12,7 @@ export interface SidebarState {
 export const sidebarState = createState<SidebarState>({
   show: true,
   panels: {
+    newFile: true,
     navigation: true,
     editor: true,
     view: true,

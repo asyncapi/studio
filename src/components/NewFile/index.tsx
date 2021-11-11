@@ -1,16 +1,30 @@
 import examples from '../../examples';
+import state from '../../state';
 
-const Welcome = () => {
+import {
+  EditorService,
+  SpecificationService
+} from '../../services';
+
+const NewFile = () => {
   const handleTemplateClick = (template: string) => {
-    localStorage.setItem('document', template);
-    window.location.href = '/';
+    const panels = state.sidebar.panels;
+    EditorService.updateState({ content: template });
+    SpecificationService.parseSpec(template);
+    panels.set({
+      editor: true,
+      navigation: true,
+      newFile: false,
+      view: true,
+      viewType: 'template'
+    });
   };
 
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
-    <div className="bg-gray-800 h-screen">
+    <div className="bg-gray-800 w-full">
       <div className="max-w-5xl mx-auto py-10">
         <div className="flex">
           <div className="w-1/4 pr-10 space-y-4">
@@ -70,4 +84,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default NewFile;

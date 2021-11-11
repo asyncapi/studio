@@ -7,9 +7,6 @@ import { Toaster } from 'react-hot-toast';
 import { Content, Navigation, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
 import { NavigationService } from './services';
-import Welcome from './components/Welcome';
-
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 export interface AsyncAPIStudioProps {}
 
@@ -30,23 +27,12 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
   return (
     <div className="flex flex-col h-full w-full h-screen">
       <Toolbar />
-      <Router>
-        <Switch>
-          <Route path="/new">
-            <Welcome />
-          </Route>
-          <Route path="/">
-            <>
-              <div className="flex flex-row flex-1 overflow-hidden">
-                <Sidebar />
-                <Content />
-              </div>
-              <Toaster position="bottom-center" reverseOrder={false} />
-              <ConvertToLatestModal />{' '}
-            </>
-          </Route>
-        </Switch>
-      </Router>
+      <div className="flex flex-row flex-1 overflow-hidden">
+        <Sidebar />
+        <Content />
+      </div>
+      <Toaster position="bottom-center" reverseOrder={false} />
+      <ConvertToLatestModal />
     </div>
   );
 };

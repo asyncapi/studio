@@ -1,5 +1,5 @@
 import React from 'react';
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
 
 import state from '../state';
 
@@ -41,6 +41,7 @@ function setActiveNav(navItem: NavItemType) {
     });
     return;
   }
+
   panels.set(newState);
 }
 
@@ -61,6 +62,11 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
 
   const navigation: NavItem[] = [
     // navigation
+    {
+      name: 'newFile',
+      state: () => sidebarState.panels.newFile.get(),
+      icon: <VscNewFile className="w-5 h-5" />,
+    },
     {
       name: 'navigation',
       state: () => sidebarState.panels.navigation.get(),
