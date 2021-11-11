@@ -53,6 +53,11 @@ and then go to [http://localhost:3000]().
 2. Write code and tests.
 3. Make sure all tests pass `npm test`
 
+### Spin up Gitpod 
+In order to prepare and spin up a Gitpod dev environment for our project, we configured our workspace through a [.gitpod.yml](/.gitpod.yml) file.
+
+To spin up a Gitpod, go to http://gitpod.io/#https://github.com/asyncapi/studio.
+
 ## Contribution
 
 Read [CONTRIBUTING](https://github.com/asyncapi/.github/blob/master/CONTRIBUTING.md) guide.
