@@ -1,6 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
-
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
