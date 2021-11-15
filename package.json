@@ -26,7 +26,7 @@
   ],
   "dependencies": {
     "@asyncapi/converter": "^0.6.0",
-    "@asyncapi/parser": "^1.10.1",
+    "@asyncapi/parser": "^1.11.0",
     "@asyncapi/react-component": "^1.0.0-next.19",
     "@asyncapi/specs": "^2.12.0",
     "@headlessui/react": "1.4.1",
