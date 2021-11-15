@@ -28,26 +28,22 @@ const NewFile = () => {
       <div className="max-w-5xl mx-auto py-10">
         <div className="flex">
           <div className="w-1/4 pr-10 space-y-4">
-            <span className="uppercase text-white text-md font-bold">Welcome</span>
-            <span className="block text-gray-300 text-xs leading-5">AsyncAPI specification is the industry standard for defining asynchronous APIs.</span>
-            <span className="block text-gray-300 text-xs leading-5">
-              At the heart of AsyncAPI is your specification file. AsyncAPI is protocol-agnostic and works over any protocol (e.g., AMQP, MQTT, WebSockets, Kafka, STOMP, HTTP, etc).
-            </span>
+            <span className="uppercase text-white text-md font-bold">Quick Start</span>
             <span className="block text-gray-300 text-xs leading-5">To get started please select a template.</span>
           </div>
-          <div className="px-4 w-3/4  overflow-scroll space-y-8 ">
+          <div className="px-4 w-full  overflow-scroll space-y-8 ">
             <div>
-              <span className="uppercase text-gray-100 text-xs font-bold">Templates</span>
-              <div className="grid grid-cols-2 gap-4 py-4">
+              <span className="uppercase text-gray-100 text-sm font-bold">Templates</span>
+              <div className="grid grid-cols-3 gap-4 py-4">
                 {templates.map(({ title, description: Description, template }) => {
                   return (
                     <button
                       onClick={() => handleTemplateClick(template)}
                       key={title}
-                      className="pt-0 text-left  h-32 cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
+                      className="pt-0 h-48 text-left cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                     >
                       <span className="block text-md text-gray-800 font-bold">{title}</span>
-                      <span className="block text-xs text-gray-500 font-light mt-1">
+                      <span className="block text-sm text-gray-500 font-light mt-1">
                         <Description />
                       </span>
                     </button>
@@ -56,17 +52,17 @@ const NewFile = () => {
               </div>
             </div>
             <div>
-              <span className="uppercase text-gray-100 text-xs font-bold">Real world Examples</span>
-              <div className="grid grid-cols-2 gap-4 py-4">
+              <span className="uppercase text-gray-100 text-sm font-bold">Real world Examples</span>
+              <div className="grid grid-cols-3 gap-4 py-4">
                 {realLifeExamples.map(({ title, description: Description, template }) => {
                   return (
                     <button
                       onClick={() => handleTemplateClick(template)}
                       key={title}
-                      className="pt-0 text-left  h-32 cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
+                      className="pt-0 text-left  h-48 cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                     >
                       <span className="block text-md text-gray-800  font-bold">{title}</span>
-                      <span className="block text-xs text-gray-500 font-light mt-1">
+                      <span className="block text-sm text-gray-500 font-light mt-1">
                         <Description />
                       </span>
                     </button>
@@ -75,7 +71,7 @@ const NewFile = () => {
               </div>
             </div>
             <span className=" text-xs block text-white ">
-              Don&apos;t see what you&apos;re looking for? <span className="underline text-pink-500">Request a template or add one to the list &rarr;</span>
+              Don&apos;t see what you&apos;re looking for? <a target="_blank" href="https://github.com/asyncapi/studio/issues/new?assignees=&labels=enhancement&template=enhancement.md&title=Template%20Request:%20{%20template%20name%20and%20type%20}" className="underline text-pink-500" rel="noreferrer">Request a template or add one to the list &rarr;</a>
             </span>
           </div>
         </div>

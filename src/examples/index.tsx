@@ -29,7 +29,7 @@ export default [
     type: templateTypes.protocol
   },
   {
-    title: 'Apache Kakfa',
+    title: 'Apache Kafka',
     description: () => <> A framework implementation of a software bus using stream-processing. Open Source developed by the Apache Software Foundation.</>,
     template: kafka,
     type: templateTypes.protocol
