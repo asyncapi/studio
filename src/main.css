@@ -1,3 +1,42 @@
+/** Preloader */
+.preloader {
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 10000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+  background: #1f2937;
+  color: #ffffff;
+	transition: .3s all ease;
+}
+
+[data-x-mode='true'] .preloader, .preloader.loaded {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.preloader-speeding-wheel {
+	width: 32px;
+	height: 32px;
+	margin: 0 auto;
+	border: 3px solid #ec4899;
+	border-radius: 50%;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+	animation: preloader-spin .88s infinite linear;
+}
+
+@keyframes preloader-spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 /** Resizer */
 .Resizer {
   background: #374251;

@@ -287,10 +287,10 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
     return (
       <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
         <div>
-          <div className="cssload-container">
-            <div className="cssload-speeding-wheel"></div>
+          <div className="w-full text-center h-8">
+            <div className="preloader-speeding-wheel"></div>
           </div>
-          <p className="mt-1">
+          <p className="mt-1 text-sm">
             Loading...
           </p>
         </div>

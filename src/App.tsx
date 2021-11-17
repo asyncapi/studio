@@ -10,7 +10,7 @@ const App: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (editorLoaded === true) {
-      const preloader = document.getElementsByClassName('preloader').item(0);
+      const preloader = document.getElementById('preloader');
       if (preloader) {
         preloader.classList.add('loaded');
       }
