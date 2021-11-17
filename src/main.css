@@ -1,5 +1,5 @@
 /** Preloader */
-.preloader {
+#preloader {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -15,12 +15,12 @@
 	transition: .3s all ease;
 }
 
-[data-x-mode='true'] .preloader, .preloader.loaded {
+#preloader.loaded {
 	opacity: 0;
 	visibility: hidden;
 }
 
-.preloader-speeding-wheel {
+.rotating-wheel {
 	width: 32px;
 	height: 32px;
 	margin: 0 auto;
@@ -28,10 +28,10 @@
 	border-radius: 50%;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
-	animation: preloader-spin .88s infinite linear;
+	animation: rotating-spin .88s infinite linear;
 }
 
-@keyframes preloader-spin {
+@keyframes rotating-spin {
 	100% {
 		transform: rotate(360deg);
 	}

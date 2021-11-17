@@ -22,7 +22,7 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
       <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
         <div>
           <div className="w-full text-center h-8">
-            <div className="preloader-speeding-wheel"></div>
+            <div className="rotating-wheel"></div>
           </div>
           <p className="mt-1 text-sm">
             Loading...

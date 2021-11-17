@@ -288,7 +288,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
       <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
         <div>
           <div className="w-full text-center h-8">
-            <div className="preloader-speeding-wheel"></div>
+            <div className="rotating-wheel"></div>
           </div>
           <p className="mt-1 text-sm">
             Loading...
