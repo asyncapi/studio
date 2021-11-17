@@ -29,7 +29,14 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   if (editorLoaded === false) {
     return (
       <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
-        Loading...
+        <div>
+          <div className="cssload-container">
+            <div className="cssload-speeding-wheel"></div>
+          </div>
+          <p className="mt-1">
+            Loading...
+          </p>
+        </div>
       </div>
     );
   }

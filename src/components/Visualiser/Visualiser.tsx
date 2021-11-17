@@ -18,7 +18,18 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
   parsedSpec = parsedSpec ? new (AsyncAPIDocument as any)(parsedSpec.json()) : null;
 
   if (editorLoaded === false) {
-    return <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">Loading...</div>;
+    return (
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
+        <div>
+          <div className="cssload-container">
+            <div className="cssload-speeding-wheel"></div>
+          </div>
+          <p className="mt-1">
+            Loading...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   if (!documentValid) {
