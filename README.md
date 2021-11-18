@@ -27,6 +27,7 @@ This project is still under development and has not reached version 1.0.0 yet. T
 - [Requirements](#requirements)
 - [Using it locally](#using-it-locally)
 - [Development](#development)
+  * [Spin up Gitpod](#spin-up-gitpod)
 - [Contribution](#contribution)
 - [Contributors ✨](#contributors-%E2%9C%A8)
 
