@@ -286,7 +286,14 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   if (editorState.editorLoaded.get() === false) {
     return (
       <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        Loading...
+        <div>
+          <div className="w-full text-center h-8">
+            <div className="rotating-wheel"></div>
+          </div>
+          <p className="mt-1 text-sm">
+            Loading...
+          </p>
+        </div>
       </div>
     );
   }
@@ -305,13 +312,13 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
         <li className="mb-4">
           <div
             className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-              hash === 'information' ? 'bg-gray-900' : ''
+              hash === 'introduction' ? 'bg-gray-900' : ''
             }`}
             onClick={() =>
               NavigationService.scrollTo(
                 '/info',
                 rawSpec,
-                'information',
+                'introduction',
                 language,
               )
             }

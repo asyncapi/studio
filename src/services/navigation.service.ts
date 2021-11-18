@@ -17,7 +17,7 @@ interface LocationOf {
 }
 
 export class NavigationService {
-  static scrollTo(
+  static async scrollTo(
     jsonPointer: any,
     spec: any,
     hash: string,
@@ -37,7 +37,7 @@ export class NavigationService {
     }
   }
 
-  static scrollToHash(hash?: string) {
+  static async scrollToHash(hash?: string) {
     hash = hash || window.location.hash.substring(1);
     try {
       const escapedHash = CSS.escape(hash);
@@ -51,14 +51,14 @@ export class NavigationService {
       if (items.length) {
         const element = items[0];
         typeof element.scrollIntoView === 'function' &&
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView();
       }
     } catch (err) {
       console.error(err);
     }
   }
 
-  static scrollToEditorLine(startLine: number, columnLine = 1) {
+  static async scrollToEditorLine(startLine: number, columnLine = 1) {
     try {
       const editor = window.Editor;
       editor && editor.revealLineInCenter(startLine);
