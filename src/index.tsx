@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import '@asyncapi/react-component/styles/default.min.css';
-import 'tailwindcss/dist/tailwind.min.css';
+import './tailwind.css';
 import './main.css';
 
 window.MonacoEnvironment = window.MonacoEnvironment || {

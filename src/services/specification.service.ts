@@ -17,7 +17,6 @@ export class SpecificationService {
       .then(asyncApiDoc => {
         parserState.set({
           parsedSpec: asyncApiDoc,
-          lastParsedSpec: asyncApiDoc,
           valid: true,
           errors: [],
         });
@@ -39,7 +38,6 @@ export class SpecificationService {
 
         parserState.set({
           parsedSpec: null,
-          lastParsedSpec: parserState.parsedSpec.get() || parserState.lastParsedSpec.get(),
           valid: false,
           errors,
         });

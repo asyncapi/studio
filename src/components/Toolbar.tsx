@@ -13,7 +13,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               <img
                 className="inline-block h-20"
                 src="/img/logo-horizontal-white.svg"
-                alt=""
+                alt="AsyncAPI Logo"
               />
               <span className="inline-block text-xl text-pink-500 font-normal italic tracking-wide -ml-1 transform translate-y-0.5">
                 studio

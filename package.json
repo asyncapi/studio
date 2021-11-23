@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.2.8",
+  "version": "0.3.1",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -26,7 +26,7 @@
   ],
   "dependencies": {
     "@asyncapi/converter": "^0.6.0",
-    "@asyncapi/parser": "^1.11.0",
+    "@asyncapi/parser": "^1.11.1",
     "@asyncapi/react-component": "^1.0.0-next.19",
     "@asyncapi/specs": "^2.12.0",
     "@headlessui/react": "1.4.1",
@@ -44,14 +44,13 @@
     "react-hot-toast": "2.1.1",
     "react-icons": "^4.2.0",
     "react-split-pane": "^0.1.92",
-    "tailwindcss": "^2.2.16",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
-    "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true craco start",
+    "build": "cross-env DISABLE_ESLINT_PLUGIN=true craco build",
     "test": "npm run test:unit",
-    "test:unit": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts test --detectOpenHandles",
+    "test:unit": "cross-env DISABLE_ESLINT_PLUGIN=true craco test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
@@ -74,6 +73,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^6.4.0",
     "@semantic-release/commit-analyzer": "^9.0.1",
     "@semantic-release/github": "^8.0.1",
     "@semantic-release/npm": "^8.0.0",
@@ -86,6 +86,7 @@
     "@types/node": "^12.20.26",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
+    "autoprefixer": "^9.8.8",
     "conventional-changelog-conventionalcommits": "^4.6.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
@@ -93,8 +94,10 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
     "markdown-toc": "^1.2.0",
+    "postcss": "^7.0.39",
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "typescript": "^4.4.3"
   },
   "jest": {
