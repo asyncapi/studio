@@ -29,20 +29,20 @@ const NewFile = () => {
         <div className="flex">
           <div className="w-1/4 pr-10 space-y-4">
             <span className="uppercase text-white text-md font-bold">Quick Start</span>
-            <span className="block text-gray-300 text-xs leading-5">To get started please select a template.</span>
+            <span className="block text-gray-300 text-md leading-5">To get started please select a template.</span>
           </div>
-          <div className="px-4 w-full  overflow-scroll space-y-8 ">
+          <div className="px-4 w-full  overflow-auto space-y-8 ">
             <div>
-              <span className="uppercase text-gray-100 text-sm font-bold">Templates</span>
+              <span className="uppercase text-gray-100 text-md font-bold">Templates</span>
               <div className="grid grid-cols-3 gap-4 py-4">
                 {templates.map(({ title, description: Description, template }) => {
                   return (
                     <button
                       onClick={() => handleTemplateClick(template)}
                       key={title}
-                      className="pt-0 h-48 text-left cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
+                      className="text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                     >
-                      <span className="block text-md text-gray-800 font-bold">{title}</span>
+                      <span className="block text-md text-gray-800 font-bold leading-0 ">{title}</span>
                       <span className="block text-sm text-gray-500 font-light mt-1">
                         <Description />
                       </span>
@@ -52,14 +52,14 @@ const NewFile = () => {
               </div>
             </div>
             <div>
-              <span className="uppercase text-gray-100 text-sm font-bold">Real world Examples</span>
+              <span className="uppercase text-gray-100 text-md font-bold">Real world Examples</span>
               <div className="grid grid-cols-3 gap-4 py-4">
                 {realLifeExamples.map(({ title, description: Description, template }) => {
                   return (
                     <button
                       onClick={() => handleTemplateClick(template)}
                       key={title}
-                      className="pt-0 text-left  h-48 cursor-pointer rounded-lg p-4 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
+                      className="text-left  flex flex-col cursor-pointer rounded-lg p-4 pb-6 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                     >
                       <span className="block text-md text-gray-800  font-bold">{title}</span>
                       <span className="block text-sm text-gray-500 font-light mt-1">
