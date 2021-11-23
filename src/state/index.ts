@@ -3,6 +3,7 @@ import { editorState, useEditorState } from './editor';
 import { parserState, useParserState } from './parser';
 import { sidebarState, useSidebarState } from './sidebar';
 import { specState, useSpecState } from './spec';
+import { templateState, useTemplateState } from './template';
 
 const state = {
   // app
@@ -21,9 +22,13 @@ const state = {
   sidebar: sidebarState,
   useSidebarState,
 
-  // sidebar
+  // template
   spec: specState,
   useSpecState,
+
+  // template
+  template: templateState,
+  useTemplateState,
 };
 
 export default state;

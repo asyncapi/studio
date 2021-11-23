@@ -1,4 +1,5 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
 import { FormatService } from './format.service';
@@ -23,7 +24,7 @@ export class EditorService {
 
   static getValue() {
     return this.getInstance()
-      .getModel()?.getValue() as string;
+      ?.getModel()?.getValue() as string;
   }
 
   static updateState({
@@ -45,17 +46,17 @@ export class EditorService {
       return;
     }
 
+    let languageToSave = language;
     switch (language) {
     case 'yaml':
     case 'yml': {
-      state.editor.language.set('yaml');
+      languageToSave = 'yaml';
       break;
     }
     default: {
-      state.editor.language.set('json');
+      languageToSave = 'json';
     }
     }
-    state.editor.editorValue.set(content);
 
     if (sendToServer) {
       SocketClient.send('file:update', { code: content });
@@ -68,6 +69,12 @@ export class EditorService {
         model && model.setValue(content);
       }
     }
+
+    state.editor.merge({
+      language: languageToSave,
+      editorValue: content,
+      modified: this.getFromLocalStorage() !== content,
+    });
   }
 
   static async convertSpec(version?: string) {
@@ -160,6 +167,26 @@ export class EditorService {
       console.error(err);
       throw err;
     }
+  }
+
+  static saveToLocalStorage(editorValue?: string) {
+    editorValue = editorValue || EditorService.getValue();
+    localStorage.setItem('document', editorValue);
+    state.editor.merge({
+      documentFrom: 'localStorage',
+      modified: false,
+    });
+    toast.success(
+      <div>
+        <span className="block text-bold">
+          Document succesfully saved to the local storage!
+        </span>
+      </div>,
+    );
+  }
+
+  static getFromLocalStorage() {
+    return localStorage.getItem('document');
   }
 
   static applyErrorMarkers(errors: any[] = []) {

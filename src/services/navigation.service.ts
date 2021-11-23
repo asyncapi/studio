@@ -98,8 +98,7 @@ export class NavigationService {
     if (this.isReadOnly(true)) {
       await SpecificationService.parseSpec(state.editor.editorValue.get());
       state.sidebar.show.set(false);
-      state.editor.set({
-        ...state.editor.get(),
+      state.editor.merge({
         monacoLoaded: true,
         editorLoaded: true,
       });
