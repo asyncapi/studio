@@ -192,7 +192,7 @@ export const editorState = createState<EditorState>({
   documentFrom: 'localStorage',
   decorations: [],
   autoSaving: JSON.parse(localStorage.getItem('editor-auto-saving') || true as any),
-  savingDelay: JSON.parse(localStorage.getItem('editor-saving-delay') || 0 as any) || 625,
+  savingDelay: JSON.parse(localStorage.getItem('editor-saving-delay') || 625 as any),
   modified: false,
 });
 

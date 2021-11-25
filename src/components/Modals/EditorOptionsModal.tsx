@@ -7,8 +7,7 @@ import { Switch } from "../common";
 import state from '../../state';
 
 function saveOptions(autoSaving: boolean = true, savingDelay: number = 650) {
-  state.editor.set({
-    ...state.editor.get(),
+  state.editor.merge({
     autoSaving,
     savingDelay,
   });

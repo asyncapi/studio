@@ -1,30 +1,41 @@
-import React, { useEffect } from 'react';
-import { AsyncAPIDocument } from '@asyncapi/parser';
+import React, { useState, useEffect } from 'react';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { NavigationService } from '../../services';
 import state from '../../state';
+import { AsyncAPIDocument } from '@asyncapi/parser';
 
 interface HTMLWrapperProps {}
 
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
+  const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
+
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
+  const templateState = state.useTemplateState();
 
   const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
-
-  // using "json()" for removing proxy from value
-  let parsedSpec = parserState.parsedSpec.value;
-  parsedSpec = parsedSpec
-    ? new (AsyncAPIDocument as any)(parsedSpec.json())
-    : null;
+  const autoRendering = templateState.autoRendering.get();
 
   useEffect(() => {
     if (editorLoaded === true) {
       setTimeout(NavigationService.scrollToHash, 0);
     }
   }, [editorLoaded]); // eslint-disable-line
+
+  useEffect(() => {
+    if (autoRendering || parsedSpec === null) {
+      setParsedSpec(window.ParsedSpec || null);
+    }
+  }, [parserState.parsedSpec.get()]); // eslint-disable-line
+
+  useEffect(() => {
+    if (templateState.rerender.get()) {
+      setParsedSpec(window.ParsedSpec || null);
+      templateState.rerender.set(false);
+    }
+  }, [templateState.rerender.get()]); // eslint-disable-line
 
   if (editorLoaded === false) {
     return (

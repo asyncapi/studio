@@ -15,6 +15,7 @@ export class SpecificationService {
     const parserState = state.parser;
     return parse(rawSpec)
       .then(asyncApiDoc => {
+        window.ParsedSpec = asyncApiDoc;
         parserState.set({
           parsedSpec: asyncApiDoc,
           valid: true,

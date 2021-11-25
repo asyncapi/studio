@@ -6,23 +6,19 @@ import { Switch } from "../common";
 
 import state from '../../state';
 
-function saveOptions(autoRendering: boolean = true, renderingDelay: number = 650) {
-  state.template.set({
-    ...state.template.get(),
+function saveOptions(autoRendering: boolean = true) {
+  state.template.merge({
     autoRendering,
-    renderingDelay,
   });
   localStorage.setItem('template-auto-rendering', JSON.stringify(autoRendering));
-  localStorage.setItem('template-rendering-delay', JSON.stringify(renderingDelay));
 }
 
 export const TemplateOptionsModal: React.FunctionComponent = () => {
   const templateState = state.useTemplateState();
   const [autoRendering, setAutoRendering] = useState(templateState.autoRendering.get());
-  const [renderingDelay, setRenderingDelay] = useState(templateState.renderingDelay.get());
 
   const onSubmit = () => {
-    saveOptions(autoRendering, renderingDelay);
+    saveOptions(autoRendering);
     toast.success(
       <div>
         <span className="block text-bold">
@@ -61,29 +57,6 @@ export const TemplateOptionsModal: React.FunctionComponent = () => {
             callback={(v) => setAutoRendering(v)}
           />
         </div>
-        {autoRendering && (
-          <div className="flex content-center justify-center mt-4">
-            <label
-              htmlFor="template-delay"
-              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-            >
-              Delay (in miliseconds):
-            </label>
-            <select
-              name="asyncapi-version"
-              className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-              onChange={e => setRenderingDelay(JSON.parse(e.target.value))}
-              value={renderingDelay}
-            >
-              <option value="">Please Select</option>
-              {[250, 500, 625, 750, 875, 1000].map(v => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
       </div>
     </ConfirmModal>
   );

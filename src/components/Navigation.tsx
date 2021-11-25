@@ -28,7 +28,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-          hash === 'servers' ? 'bg-gray-900' : ''
+          hash === 'servers' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo('/servers', rawSpec, 'servers', language)
@@ -41,7 +41,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={serverName}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `server-${serverName}` ? 'bg-gray-900' : ''
+              hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               NavigationService.scrollTo(
@@ -84,7 +84,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={`${channelName}-publish`}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `operation-publish-${channelName}` ? 'bg-gray-900' : ''
+              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               NavigationService.scrollTo(
@@ -111,7 +111,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={`${channelName}-subscribe`}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `operation-subscribe-${channelName}` ? 'bg-gray-900' : ''
+              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               NavigationService.scrollTo(
@@ -142,7 +142,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-          hash === 'operations' ? 'bg-gray-900' : ''
+          hash === 'operations' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo(
@@ -171,7 +171,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       <li
         key={messageName}
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
-          hash === `message-${messageName}` ? 'bg-gray-900' : ''
+          hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo(
@@ -191,7 +191,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-          hash === 'messages' ? 'bg-gray-900' : ''
+          hash === 'messages' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo(
@@ -220,7 +220,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       <li
         key={schemaName}
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
-          hash === `schema-${schemaName}` ? 'bg-gray-900' : ''
+          hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo(
@@ -240,7 +240,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-          hash === 'schemas' ? 'bg-gray-900' : ''
+          hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           NavigationService.scrollTo(
@@ -312,7 +312,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
         <li className="mb-4">
           <div
             className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
-              hash === 'introduction' ? 'bg-gray-900' : ''
+              hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               NavigationService.scrollTo(

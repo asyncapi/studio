@@ -19,6 +19,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
 }) => {
   const editorState = state.useEditorState();
   const autoSaving = editorState.autoSaving.get();
+  const savingDelay = editorState.savingDelay.get();
 
   async function handleEditorDidMount(
     editor: monacoAPI.editor.IStandaloneCodeEditor,
@@ -40,9 +41,9 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
 
   const onChange = debounce((v: string) => {
     EditorService.updateState({ content: v });
-    autoSaving && EditorService.saveToLocalStorage(v);
+    autoSaving && EditorService.saveToLocalStorage(v, false);
     SpecificationService.parseSpec(v);
-  }, 625);
+  }, savingDelay);
 
   useEffect(() => {
     MonacoService.loadMonaco();
