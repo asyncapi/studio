@@ -1,7 +1,7 @@
 import React from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
 
-import { EditorService, SpecificationService } from '../../services';
+import { SpecificationService } from '../../services';
 import state from '../../state';
 
 interface TerminalInfoProps {}

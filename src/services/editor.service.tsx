@@ -169,7 +169,7 @@ export class EditorService {
     }
   }
 
-  static saveToLocalStorage(editorValue?: string, notify: boolean = true) {
+  static saveToLocalStorage(editorValue?: string, notify = true) {
     editorValue = editorValue || EditorService.getValue();
     localStorage.setItem('document', editorValue);
     state.editor.merge({

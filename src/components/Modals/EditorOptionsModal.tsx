@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from './index';
 
-import { Switch } from "../common";
+import { Switch } from '../common';
 
 import state from '../../state';
 
-function saveOptions(autoSaving: boolean = true, savingDelay: number = 650) {
+function saveOptions(autoSaving = true, savingDelay = 650) {
   state.editor.merge({
     autoSaving,
     savingDelay,
@@ -33,7 +33,7 @@ export const EditorOptionsModal: React.FunctionComponent = () => {
 
   return (
     <ConfirmModal
-      title={`Change editor's options`}
+      title={'Change editor\'s options'}
       confirmText="Save"
       confirmDisabled={false}
       opener={

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from './index';
 
-import { Switch } from "../common";
+import { Switch } from '../common';
 
 import state from '../../state';
 
-function saveOptions(autoRendering: boolean = true) {
+function saveOptions(autoRendering = true) {
   state.template.merge({
     autoRendering,
   });
@@ -30,7 +30,7 @@ export const TemplateOptionsModal: React.FunctionComponent = () => {
 
   return (
     <ConfirmModal
-      title={`Change renderer's options`}
+      title={'Change renderer\'s options'}
       confirmText="Save"
       confirmDisabled={false}
       opener={

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 interface SwitchProps {
   toggle?: boolean;
@@ -10,7 +10,7 @@ export const Switch: React.FunctionComponent<SwitchProps> = ({
   callback,
 }) => {
   const [toggle, setToggle] = useState(initToggle);
-  const toggleClass = " transform translate-x-5 bg-pink-500";
+  const toggleClass = ' transform translate-x-5 bg-pink-500';
 
   useEffect(() => {
     callback(toggle);
@@ -34,4 +34,4 @@ export const Switch: React.FunctionComponent<SwitchProps> = ({
       </label>
     </div>
   );
-}
+};

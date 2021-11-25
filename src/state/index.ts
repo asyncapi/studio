@@ -22,7 +22,7 @@ const state = {
   sidebar: sidebarState,
   useSidebarState,
 
-  // template
+  // spec
   spec: specState,
   useSpecState,
 
