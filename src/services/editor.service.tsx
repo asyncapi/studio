@@ -46,7 +46,7 @@ export class EditorService {
       return;
     }
 
-    let languageToSave = language;
+    let languageToSave: string;
     switch (language) {
     case 'yaml':
     case 'yml': {
@@ -90,7 +90,7 @@ export class EditorService {
       return fetch(url)
         .then(res => res.text())
         .then(text => {
-          state.editor.documentFrom.set(`URL: ${url}` as `URL: ${string}`);
+          state.editor.documentFrom.set(`URL: ${url}` as any);
           this.updateState({ content: text, updateModel: true });
         })
         .catch(err => {
