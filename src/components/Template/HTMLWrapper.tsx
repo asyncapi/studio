@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { AsyncAPIDocument } from '@asyncapi/parser';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { NavigationService } from '../../services';
 import state from '../../state';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 
 interface HTMLWrapperProps {}
 
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
 
+  const appState = state.useAppState();
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
   const templateState = state.useTemplateState();
@@ -69,6 +70,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
             config={{ 
               show: { 
                 errors: false,
+                sidebar: appState.readOnly.get(),
               },
             }}
           />

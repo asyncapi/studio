@@ -95,7 +95,8 @@ export class NavigationService {
       await EditorService.importBase64(base64Document);
     }
 
-    if (this.isReadOnly(true)) {
+    const isReadonly = this.isReadOnly(true);
+    if (isReadonly) {
       await SpecificationService.parseSpec(state.editor.editorValue.get());
       state.sidebar.show.set(false);
       state.editor.merge({
@@ -103,7 +104,11 @@ export class NavigationService {
         editorLoaded: true,
       });
     }
-    state.app.initialized.set(true);
+
+    state.app.merge({
+      readOnly: isReadonly,
+      initialized: true,
+    });
   }
 
   private static emitHashChangeEvent(hash: string) {
