@@ -63,11 +63,6 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
   const navigation: NavItem[] = [
     // navigation
     {
-      name: 'newFile',
-      state: () => sidebarState.panels.newFile.get(),
-      icon: <VscNewFile className="w-5 h-5" />,
-    },
-    {
       name: 'navigation',
       state: () => sidebarState.panels.navigation.get(),
       icon: <VscListSelection className="w-5 h-5" />,
@@ -89,6 +84,11 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       name: 'visualiser',
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
+    },
+    {
+      name: 'newFile',
+      state: () => sidebarState.panels.newFile.get(),
+      icon: <VscNewFile className="w-5 h-5" />,
     },
   ];
 
