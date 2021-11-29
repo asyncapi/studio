@@ -1,0 +1,4 @@
+# Redirect editor.asyncapi.org to Studio
+
+http://editor.asyncapi.org/* https://studio.asyncapi.com 301!
+https://editor.asyncapi.org/* https://studio.asyncapi.com 301!
