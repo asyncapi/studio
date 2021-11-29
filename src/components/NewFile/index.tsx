@@ -1,22 +1,16 @@
+import React from 'react';
 import examples from '../../examples';
-import state from '../../state';
 
-import {
-  EditorService,
-  SpecificationService
-} from '../../services';
+import { EditorService } from '../../services';
+import state from '../../state';
 
 const NewFile = () => {
   const handleTemplateClick = (template: string) => {
+    EditorService.updateState({ content: template, updateModel: true });
+
     const panels = state.sidebar.panels;
-    EditorService.updateState({ content: template });
-    SpecificationService.parseSpec(template);
-    panels.set({
-      editor: true,
-      navigation: true,
+    panels.merge({
       newFile: false,
-      view: true,
-      viewType: 'template'
     });
   };
 
@@ -61,7 +55,7 @@ const NewFile = () => {
                       key={title}
                       className="text-left  flex flex-col cursor-pointer rounded-lg p-4 pb-6 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                     >
-                      <span className="block text-md text-gray-800  font-bold">{title}</span>
+                      <span className="block text-md text-gray-800 font-bold">{title}</span>
                       <span className="block text-sm text-gray-500 font-light mt-1">
                         <Description />
                       </span>

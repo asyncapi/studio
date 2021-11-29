@@ -18,19 +18,19 @@ const templateTypes = {
 export default [
   {
     title: 'Simple Example',
-    description: () => <> A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
+    description: () => <>A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
     template: simple,
     type: templateTypes.protocol
   },
   {
     title: 'Simple Hello World',
-    description: () => <> A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
+    description: () => <>A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
     template: simple,
     type: templateTypes.protocol
   },
   {
     title: 'Apache Kafka',
-    description: () => <> A framework implementation of a software bus using stream-processing. Open Source developed by the Apache Software Foundation.</>,
+    description: () => <>A framework implementation of a software bus using stream-processing. Open Source developed by the Apache Software Foundation.</>,
     template: kafka,
     type: templateTypes.protocol
   },
