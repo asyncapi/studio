@@ -15,7 +15,7 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
   if (NavigationService.isReadOnly(true)) {
     return (
       <div className="flex flex-row flex-1 overflow-hidden h-full w-full h-screen">
-        <Navigation className='w-72' />
+        <Navigation className="w-72" />
         <Template />
       </div>
     );
