@@ -4,7 +4,6 @@ import { FaEllipsisH } from 'react-icons/fa';
 
 import {
   ConvertModal,
-  EditorOptionsModal,
   ImportBase64Modal,
   ImportURLModal,
 } from '../Modals';
@@ -186,17 +185,12 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
             {convertLangAndSaveButton}
           </li>
         </div>
-        <div className="border-b border-gray-700">
+        <div>
           <li className="hover:bg-gray-900">
             {convertLangButton}
           </li>
           <li className="hover:bg-gray-900">
             <ConvertModal />
-          </li>
-        </div>
-        <div>
-          <li className="hover:bg-gray-900">
-            <EditorOptionsModal />
           </li>
         </div>
       </ul>

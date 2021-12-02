@@ -12,10 +12,11 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
   const templateState = state.useTemplateState();
+  const settingsState = state.useSettingsState();
 
   const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
-  const autoRendering = templateState.autoRendering.get();
+  const autoRendering = settingsState.templates.autoRendering.get();
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {

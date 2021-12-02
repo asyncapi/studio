@@ -7,4 +7,13 @@ module.exports = {
       ],
     },
   },
+  webpack: {
+    configure: (webpackConfig) => { 
+      webpackConfig.module.rules.push({
+        test: /\.yml$/i,
+        loader: 'raw-loader',
+      });
+      return webpackConfig;
+    }
+  }
 };

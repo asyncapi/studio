@@ -177,8 +177,6 @@ export interface EditorState {
   editorLoaded: boolean;
   documentFrom: EditorStateDocumentFrom;
   decorations: Array<any>;
-  autoSaving: boolean;
-  savingDelay: number;
   modified: boolean,
 }
 
@@ -191,8 +189,6 @@ export const editorState = createState<EditorState>({
   editorLoaded: false,
   documentFrom: 'localStorage',
   decorations: [],
-  autoSaving: JSON.parse(localStorage.getItem('editor-auto-saving') || true as any),
-  savingDelay: JSON.parse(localStorage.getItem('editor-saving-delay') || 625 as any),
   modified: false,
 });
 

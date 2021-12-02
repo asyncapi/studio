@@ -10,13 +10,14 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
   const appState = state.useAppState();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
+  const settingsState = state.useSettingsState();
 
   const liveServer = appState.liveServer.get();
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
   const latestVersion = SpecificationService.getLastVersion();
   const documentValid = parserState.valid.get();
   const errors = parserState.errors.get();
-  const autoSaving = editorState.autoSaving.get();
+  const autoSaving = settingsState.editor.autoSaving.get();
   const modified = editorState.modified.get();
 
   function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {

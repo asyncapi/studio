@@ -18,8 +18,9 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   ...props
 }) => {
   const editorState = state.useEditorState();
-  const autoSaving = editorState.autoSaving.get();
-  const savingDelay = editorState.savingDelay.get();
+  const settingsState = state.useSettingsState();
+  const autoSaving = settingsState.editor.autoSaving.get();
+  const savingDelay = settingsState.editor.savingDelay.get();
 
   async function handleEditorDidMount(
     editor: monacoAPI.editor.IStandaloneCodeEditor,

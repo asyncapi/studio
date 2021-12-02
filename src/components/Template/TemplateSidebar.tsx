@@ -1,7 +1,5 @@
 import React from 'react';
-import { VscRefresh  } from 'react-icons/vsc';
-
-import { TemplateDropdown } from './TemplateDropdown';
+import { VscRefresh } from 'react-icons/vsc';
 
 import state from '../../state';
 
@@ -9,7 +7,8 @@ interface TemplateSidebarProps {}
 
 export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = () => {
   const templateState = state.useTemplateState();
-  const autoRendering = templateState.autoRendering.get();
+  const settingsState = state.useSettingsState();
+  const autoRendering = settingsState.templates.autoRendering.get();
 
   return (
     <div
@@ -30,18 +29,6 @@ export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = ()
           </span>
         </div>
       )}
-      <div
-        className="flex flex-row items-center"
-        style={{ height: '30px', lineHeight: '30px' }}
-      >
-        <div>
-          <ul className="flex">
-            <li>
-              <TemplateDropdown />
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
   );
 };
