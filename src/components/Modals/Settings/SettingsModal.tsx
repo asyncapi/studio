@@ -47,6 +47,7 @@ export const SettingsModal: React.FunctionComponent = () => {
         autoRendering,
       }
     });
+    setConfirmDisabled(true);
     toast.success(
       <div>
         <span className="block text-bold">
@@ -62,7 +63,7 @@ export const SettingsModal: React.FunctionComponent = () => {
       tab: <span>Editor</span>,
       content: (
         <div>
-          <div className="flex content-center justify-between mt-4">
+          <div className="flex content-center justify-between mt-4 text-sm">
             <label
               htmlFor="asyncapi-version"
               className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
@@ -75,7 +76,7 @@ export const SettingsModal: React.FunctionComponent = () => {
             />
           </div>
           {autoSaving && (
-            <div className="flex content-center justify-center mt-4">
+            <div className="flex content-center justify-center mt-4 text-sm">
               <label
                 htmlFor="template-delay"
                 className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
@@ -105,7 +106,7 @@ export const SettingsModal: React.FunctionComponent = () => {
       tab: <span>Templates</span>,
       content: (
         <div>
-          <div className="flex content-center justify-between mt-4">
+          <div className="flex content-center justify-between mt-4 text-sm">
             <label
               htmlFor="asyncapi-version"
               className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
@@ -129,10 +130,10 @@ export const SettingsModal: React.FunctionComponent = () => {
       confirmDisabled={confirmDisabled}
       opener={
         <button
-          className={'flex text-xl border-l-2 text-gray-500 hover:text-white border-gray-800 focus:outline-none border-box p-4'}
+          className={'flex border-l-2 text-gray-500 hover:text-white border-gray-800 focus:outline-none border-box p-4'}
           type="button"
         >
-          <VscSettingsGear />
+          <VscSettingsGear className="w-5 h-5" />
         </button>
       }
       onSubmit={onSubmit}
