@@ -176,13 +176,26 @@ export class EditorService {
       documentFrom: 'localStorage',
       modified: false,
     });
-    notify && toast.success(
-      <div>
-        <span className="block text-bold">
-          Document succesfully saved to the local storage!
-        </span>
-      </div>,
-    );
+
+    if (notify) {
+      if (state.settings.editor.autoSaving.get()) {
+        toast.success(
+          <div>
+            <span className="block text-bold">
+              Studio is currently saving your work automatically 💪
+            </span>
+          </div>,
+        );
+      } else {
+        toast.success(
+          <div>
+            <span className="block text-bold">
+              Document succesfully saved to the local storage!
+            </span>
+          </div>,
+        );
+      }
+    }
   }
 
   static getFromLocalStorage() {
