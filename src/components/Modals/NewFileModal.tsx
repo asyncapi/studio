@@ -25,7 +25,7 @@ export const NewFileModal: React.FunctionComponent = () => {
     toast.success(
       <div>
         <span className="block text-bold">
-          Succesfully created new file from {`"${selectedTemplate.title}"`} template.
+          Succesfully reused the {`"${selectedTemplate.title}"`} template.
         </span>
       </div>
     );
