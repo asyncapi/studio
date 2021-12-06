@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { Content, Navigation, Sidebar, Template, Toolbar } from './components';
+import { Navigation, Sidebar, Template, Toolbar } from './components';
+import { Content } from './components/ContentNew';
 import { ConvertToLatestModal } from './components/Modals';
 import { NavigationService } from './services';
 

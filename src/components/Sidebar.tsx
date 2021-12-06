@@ -99,7 +99,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
           <button
             key={item.name}
             onClick={() => setActiveNav(item.name as NavItemType)}
-            className={`flex text-sm border-l-2  ${
+            className={`flex text-sm border-l-2 ${
               item.state()
                 ? 'text-white hover:text-gray-500 border-white'
                 : 'text-gray-500 hover:text-white border-gray-800'

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import '@asyncapi/react-component/styles/default.min.css';
+import "allotment/dist/style.css";
 import './tailwind.css';
 import './main.css';
 
