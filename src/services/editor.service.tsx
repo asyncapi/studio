@@ -169,14 +169,14 @@ export class EditorService {
     }
   }
 
-  static saveToLocalStorage(editorValue?: string, notify = true) {
+  static saveToLocalStorage(editorValue?: string) {
     editorValue = editorValue || EditorService.getValue();
     localStorage.setItem('document', editorValue);
     state.editor.merge({
       documentFrom: 'localStorage',
       modified: false,
     });
-    notify && toast.success(
+    toast.success(
       <div>
         <span className="block text-bold">
           Document succesfully saved to the local storage!
