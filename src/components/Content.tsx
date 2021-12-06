@@ -5,7 +5,7 @@ import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
 import { Visualiser } from './Visualiser';
-import NewFile from './NewFile';
+import { NewFileModal } from './Modals/NewFileModal';
 
 import { debounce } from '../helpers';
 import state from '../state';
@@ -50,31 +50,23 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   return (
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
-
-        {newFileEnabled && <NewFile />}
-
-        {!newFileEnabled && 
-          <SplitPane
-            size={viewEnabled ? secondPaneSize : 0}
-            minSize={0}
-            maxSize={secondPaneMaxSize}
-            pane1Style={
-              navigationEnabled || editorEnabled ? undefined : { width: '0px' }
-            }
-            pane2Style={
-              viewEnabled ? { overflow: 'auto' } : { width: '0px' }
-            }
-            primary={viewEnabled ? 'first' : 'second'}
-            defaultSize={localStorageRightPaneSize}
-            onChange={debounce((size: string) => {
-              localStorage.setItem(splitPosRight, String(size));
-            }, 100)}
-          >
-            {navigationAndEditor}
-            {viewType === 'template' && <Template />}
-            {viewType === 'visualiser' && <Visualiser />}
-          </SplitPane> 
-        }
+        {newFileEnabled && <NewFileModal />}
+        <SplitPane
+          size={viewEnabled ? secondPaneSize : 0}
+          minSize={0}
+          maxSize={secondPaneMaxSize}
+          pane1Style={navigationEnabled || editorEnabled ? undefined : { width: '0px' }}
+          pane2Style={viewEnabled ? { overflow: 'auto' } : { width: '0px' }}
+          primary={viewEnabled ? 'first' : 'second'}
+          defaultSize={localStorageRightPaneSize}
+          onChange={debounce((size: string) => {
+            localStorage.setItem(splitPosRight, String(size));
+          }, 100)}
+        >
+          {navigationAndEditor}
+          {viewType === 'template' && <Template />}
+          {viewType === 'visualiser' && <Visualiser />}
+        </SplitPane>
       </div>
     </div>
   );
