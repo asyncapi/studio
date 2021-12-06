@@ -50,7 +50,7 @@ function setActiveNav(navItem: NavItemType) {
 interface NavItem {
   name: string;
   state: () => boolean;
-  component: React.ReactNode;
+  icon: React.ReactNode;
 }
 
 interface SidebarProps {}
@@ -67,30 +67,31 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'navigation',
       state: () => sidebarState.panels.navigation.get(),
-      component: <VscListSelection className="w-5 h-5" />,
+      icon: <VscListSelection className="w-5 h-5" />,
     },
     // editor
     {
       name: 'editor',
       state: () => sidebarState.panels.editor.get(),
-      component: <VscCode className="w-5 h-5" />,
+      icon: <VscCode className="w-5 h-5" />,
     },
     // template
     {
       name: 'template',
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
-      component: <VscOpenPreview className="w-5 h-5" />,
+      icon: <VscOpenPreview className="w-5 h-5" />,
     },
     // visuliser
     {
       name: 'visualiser',
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
-      component: <VscGraph className="w-5 h-5" />,
+      icon: <VscGraph className="w-5 h-5" />,
     },
+    // newFile
     {
       name: 'newFile',
       state: () => sidebarState.panels.newFile.get(),
-      component: <VscNewFile className="w-5 h-5" />,
+      icon: <VscNewFile className="w-5 h-5" />,
     },
   ];
 
@@ -108,7 +109,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
             } focus:outline-none border-box p-4`}
             type="button"
           >
-            {item.component}
+            {item.icon}
           </button>
         ))}
       </div>

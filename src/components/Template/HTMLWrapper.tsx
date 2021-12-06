@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
-import { NavigationService } from '../../services';
+import { NavigationService, SpecificationService } from '../../services';
 import state from '../../state';
 
 interface HTMLWrapperProps {}
@@ -28,13 +28,13 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
-      setParsedSpec(window.ParsedSpec || null);
+      setParsedSpec(SpecificationService.getParsedSpec());
     }
   }, [parserState.parsedSpec.get()]); // eslint-disable-line
 
   useEffect(() => {
     if (templateState.rerender.get()) {
-      setParsedSpec(window.ParsedSpec || null);
+      setParsedSpec(SpecificationService.getParsedSpec());
       templateState.rerender.set(false);
     }
   }, [templateState.rerender.get()]); // eslint-disable-line

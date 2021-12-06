@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import state from '../../state';
 
 import { FlowDiagram } from './FlowDiagram';
+
+import { SpecificationService } from '../../services';
+import state from '../../state';
 
 interface VisualiserProps {}
 
@@ -20,13 +22,13 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
-      setParsedSpec(window.ParsedSpec || null);
+      setParsedSpec(SpecificationService.getParsedSpec());
     }
   }, [parserState.parsedSpec]); // eslint-disable-line
 
   useEffect(() => {
     if (templateState.rerender.get()) {
-      setParsedSpec(window.ParsedSpec || null);
+      setParsedSpec(SpecificationService.getParsedSpec());
       templateState.rerender.set(false);
     }
   }, [templateState.rerender.get()]); // eslint-disable-line
