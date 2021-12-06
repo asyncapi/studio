@@ -35,7 +35,7 @@ export const NewFileModal: React.FunctionComponent = () => {
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
-    <ConfirmModal containerClassName="sm:max-w-6xl" onCancel={() => sidebarState.panels.newFile.set(false)} title="AsyncAPI Templates - Start with our template examples" confirmText="Create" confirmDisabled={false} show={true} onSubmit={handleSubmit}>
+    <ConfirmModal containerClassName="sm:max-w-6xl" onCancel={() => sidebarState.panels.newFile.set(false)} title="AsyncAPI Templates - Start with our template examples" confirmText="Use Template" confirmDisabled={false} show={true} onSubmit={handleSubmit}>
       <div className="flex content-center justify-center">
         <div className="w-full  overflow-auto space-y-8 ">
           <div>
