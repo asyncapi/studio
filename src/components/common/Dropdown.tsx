@@ -12,7 +12,7 @@ export const Dropdown: React.FunctionComponent<DropdownProps> = ({
   opener,
   button,
   className = 'relative',
-  buttonHoverClassName,
+  // buttonHoverClassName,
   align = 'right',
   children,
 }) => {
@@ -34,7 +34,7 @@ export const Dropdown: React.FunctionComponent<DropdownProps> = ({
     }
   }, [open, registerClickAway]);
 
-  buttonHoverClassName = buttonHoverClassName || 'hover:text-white';
+  // buttonHoverClassName = buttonHoverClassName || 'hover:text-white';
 
   return (
     <div className={className}>

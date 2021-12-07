@@ -1,7 +1,7 @@
 import React from 'react';
-import { Allotment } from "allotment";
+import { Allotment } from 'allotment';
 
-import { Panel } from "./Panel";
+import { Panel } from './Panel';
 
 import state from '../../state';
 
@@ -30,13 +30,7 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
   if (Array.isArray(currentPanel.panels)) {
     return (
       <Allotment vertical={currentPanel.direction === 'vertical'}>
-        {currentPanel.panels.map((panel, idx) => {
-          // const foundedPanel = panels.find(p => p.id === panel);
-          // // console.log(foundedPanel);
-          // if (!foundedPanel) {
-          //   console.log(foundedPanel);
-          //   return null;
-          // }
+        {currentPanel.panels.map(panel => {
           return (
             <Allotment.Pane key={panel} minSize={260} snap>
               <Panels id={panel} />

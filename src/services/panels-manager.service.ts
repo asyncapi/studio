@@ -1,5 +1,5 @@
-import { PanelItem } from "../components/Panels/Panels";
-import { generateUniqueID } from "../helpers";
+import { PanelItem } from '../components/Panels/Panels';
+import { generateUniqueID } from '../helpers';
 
 import state from '../state';
 
@@ -63,18 +63,17 @@ export class PanelsManager {
 
   static removePanel(panelID: string) {
     state.panels.panels.set(oldPanels => {
-      const newPanels = oldPanels
-        .filter(panel => !panel.id!.startsWith(panelID))
+      return oldPanels
+        .filter(panel => panel.id && !panel.id.startsWith(panelID))
         .map(panel => {
           if (panel.panels) {
             return {
               ...panel,
               panels: panel.panels.filter(p => !p.startsWith(panelID)),
-            }
+            };
           }
-          return { ...panel }
+          return { ...panel };
         });
-      return newPanels;
     });
     // console.log(state.panels.panels.get())
   }

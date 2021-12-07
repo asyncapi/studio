@@ -9,5 +9,5 @@ interface TabContextProps {
 
 export const TabContext = React.createContext<TabContextProps>({
   currentTab: '',
-  changeTab: () => void 0,
+  changeTab: () => undefined,
 });

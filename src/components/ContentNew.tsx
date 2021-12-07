@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { Allotment,  } from "allotment";
+import React from 'react';
+import { Allotment,  } from 'allotment';
 
-import { Navigation } from "./Navigation";
+import { Navigation } from './Navigation';
 import { Panels } from './Panels/Panels';
 
 import state from '../state';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
+// import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
+import { VscListSelection } from 'react-icons/vsc';
 
 import state from '../state';
 

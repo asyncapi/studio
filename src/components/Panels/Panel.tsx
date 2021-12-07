@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import { VscCode } from 'react-icons/vsc';
 
 import { PanelTab, PanelTabs } from './PanelsTabs';

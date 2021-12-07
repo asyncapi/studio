@@ -47,7 +47,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
 
   function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabName: string) {
     event.stopPropagation();
-    let newTabID: string = '';
+    let newTabID = '';
 
     const newTabs = tabs.filter(oldTab => oldTab.name !== tabName);
     if (newTabs.length === 0) {
@@ -65,7 +65,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     if (activeTab === tabName) {
       const currentTabIndex = tabs.findIndex(oldTab => oldTab.name === activeTab);
       const newActiveIndex = currentTabIndex - 1 < 0 ? 0 : currentTabIndex - 1;
-      const currentTab = newTabs[newActiveIndex];
+      const currentTab = newTabs[Number(newActiveIndex)];
       if (currentTab) {
         setActiveTab(currentTab.name);
       } else {
