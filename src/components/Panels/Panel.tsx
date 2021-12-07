@@ -18,6 +18,7 @@ const startTabs: Array<PanelTab> = [
     content: (
       <NewTab />
     ),
+    isNewTab: true,
   },
   // {
   //   name: 'editor',

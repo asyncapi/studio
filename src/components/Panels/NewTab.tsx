@@ -57,6 +57,7 @@ export const NewTab: React.FunctionComponent = () => {
         name: generateUniqueID(),
         tab: tool.tab(),
         content: tool.content(),
+        isNewTab: false,
       });
     }
   };

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { VscClose, VscAdd, VscSplitHorizontal, VscSplitVertical, VscEllipsis } from 'react-icons/vsc';
+import { VscClose, VscAdd, VscSplitHorizontal, VscSplitVertical, VscEllipsis, VscCircleLargeFilled, VscCircleLargeOutline } from 'react-icons/vsc';
 import { generateUniqueID } from '../../helpers';
 import { PanelsManager } from '../../services';
 import { Dropdown } from '../common';
@@ -8,10 +8,13 @@ import { NewTab } from './NewTab';
 import { PanelContext } from './PanelContext';
 import { TabContext } from './TabContext';
 
+import state from '../../state';
+
 export interface PanelTab {
   name: string;
   tab: React.ReactNode;
   content: React.ReactNode;
+  isNewTab: boolean;
 }
 
 interface PanelTabsProps {
@@ -24,69 +27,51 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   active,
 }) => {
   const { currentPanel } = useContext(PanelContext);
+  const panelsState = state.usePanelsState();
 
   const [tabs, setTabs] = useState(propTabs);
   const [activeTab, setActiveTab] = useState(active || propTabs[0].name);
+  const activePanel = panelsState.activePanel.get();
+
+  useEffect(() => {
+    PanelsManager.setTabs(
+      currentPanel,
+      tabs,
+      setActiveTab,
+      setTabs,
+    );
+
+    return () => {
+      PanelsManager.unsetTabs(currentPanel);
+    };
+  }, []);
 
   function addTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event.stopPropagation();
-
-    const newTabs = [...tabs];
-    const newTabID = generateUniqueID();
-    newTabs.push({
-      name: newTabID,
+    setActivePanel();
+    PanelsManager.addTab(currentPanel, {
+      name: generateUniqueID(),
       tab: <span>New</span>,
       content: (
         <NewTab />
       ),
+      isNewTab: true,
     });
-
-    setActiveTab(newTabID);
-    setTabs(newTabs);
   }
 
-  function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabName: string) {
+  function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabID: string) {
     event.stopPropagation();
-    let newTabID = '';
-
-    const newTabs = tabs.filter(oldTab => oldTab.name !== tabName);
-    // if (newTabs.length === 0) {
-    //   newTabID = generateUniqueID();
-    //   newTabs.push({
-    //     name: newTabID,
-    //     tab: <span>New</span>,
-    //     content: (
-    //       <NewTab />
-    //     ),
-    //   });
-    // }
-    setTabs(newTabs);
-
-    if (activeTab === tabName) {
-      const currentTabIndex = tabs.findIndex(oldTab => oldTab.name === activeTab);
-      const newActiveIndex = currentTabIndex - 1 < 0 ? 0 : currentTabIndex - 1;
-      const currentTab = newTabs[Number(newActiveIndex)];
-      if (currentTab) {
-        setActiveTab(currentTab.name);
-      } else {
-        newTabID && setActiveTab(newTabID);
-      }
-    }
-
-    if (newTabs.length === 0) {
-      PanelsManager.removePanel(currentPanel);
-    }
+    setActivePanel();
+    PanelsManager.removeTab(currentPanel, tabID);
   }
 
   function changeTab(tabName: string, newTab: PanelTab) {
-    const newTabs = tabs.map(oldTab => {
-      if (oldTab.name === tabName) {
-        return newTab;
-      }
-      return oldTab;
-    });
-    setTabs(newTabs);
-    setActiveTab(newTab.name);
+    setActivePanel();
+    PanelsManager.changeTab(currentPanel, tabName, newTab);
+  }
+
+  function setActivePanel() {
+    currentPanel !== panelsState.activePanel.get() && panelsState.activePanel.set(currentPanel);
   }
 
   const splitHorizontal = (
@@ -94,6 +79,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
       button={(setOpen) => (
         <button 
           onClick={() => setOpen(open => !open)}
+          className="ml-2"
         >
           <VscSplitHorizontal className="inline-block" />
         </button>
@@ -194,7 +180,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full min-h-full">
+    <div 
+      className="flex flex-col h-full min-h-full"
+      onClick={setActivePanel}
+    >
       <div
         className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
       >
@@ -210,7 +199,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
                     ? 'text-white border-pink-500'
                     : 'text-gray-500 border-gray-800'
                 } focus:outline-none border-box`}
-                onClick={() => setActiveTab(tab.name)}
+                onClick={() => PanelsManager.setActiveTab(currentPanel, tab.name)}
               >
                 <div
                   className='border-box border-b-2 border-gray-800'
@@ -241,6 +230,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         </button>
         <div className="flex flex-1 flex-row justify-end h-full leading-8">
           <div className="border-l border-gray-700 px-2">
+            {currentPanel === activePanel ? <VscCircleLargeFilled className="inline-block text-pink-500" /> : <VscCircleLargeOutline className="inline-block" />}
             {splitHorizontal}
             {splitVertical}
             {options}
@@ -265,52 +255,4 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="flex flex-col">
-  //     <div
-  //       className="flex flex-row justify-between items-center text-white font-bold text-xs cursor-pointer"
-  //     >
-  //       <ul className="flex flex-row">
-  //         {tabs.map(tab => (
-  //           <li 
-  //             key={tab.name}
-  //             className='border-r border-gray-700'
-  //           >
-  //             <div
-  //               className={`leading-7 pl-3 pr-6 cursor-pointer border-t-2 ${
-  //                 activeTab === tab.name
-  //                   ? 'text-white border-pink-500'
-  //                   : 'text-gray-500 border-gray-800'
-  //               } focus:outline-none border-box`}
-  //               onClick={() => setActiveTab(tab.name)}
-  //             >
-  //               <div
-  //                 className='border-box border-b-2 border-gray-800'
-  //               >
-  //                 <span>{tab.tab}</span>
-  //                 <span></span>
-  //               </div>
-  //             </div>
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     </div>
-  //     <div
-  //       className="overflow-auto h-auto bottom-0 right-0 left-0"
-  //       // style={{ top: '30px' }}
-  //     >
-  //       <ul>
-  //         {tabs.map(tab => (
-  //           <li
-  //             key={tab.name}
-  //             className={`${activeTab === tab.name ? 'block' : 'hidden'}`}
-  //           >
-  //             {tab.content}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     </div>
-  //   </div>
-  // );
 };

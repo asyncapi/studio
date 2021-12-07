@@ -3,6 +3,7 @@ import { PanelItem } from '../components/Panels/Panels';
 
 export interface PanelsState {
   panels: PanelItem[];
+  activePanel: string;
 }
 
 export const panelsState = createState<PanelsState>({
@@ -50,6 +51,7 @@ export const panelsState = createState<PanelsState>({
       parent: 'panel-2',
     },
   ],
+  activePanel: 'panel-1',
 });
 
 export function usePanelsState() {

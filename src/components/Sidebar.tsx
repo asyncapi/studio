@@ -1,8 +1,9 @@
 import React from 'react';
-// import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
-import { VscListSelection } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd } from 'react-icons/vsc';
+import { PanelsManager } from '../services';
 
 import state from '../state';
+import { usePanelsState } from '../state/panels';
 
 type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
 
@@ -44,6 +45,38 @@ function setActiveNav(navItem: NavItemType) {
   }
 
   panels.set(newState);
+}
+
+interface SidebarItemProps {
+  name: string;
+  icon: React.ReactNode;
+}
+
+const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
+  name,
+  icon,
+}) => {
+  const panelsState = usePanelsState();
+  const activePanel = panelsState.activePanel.get();
+
+  return (
+    <button
+      onClick={() => PanelsManager.addNewTool(activePanel, name)}
+      className='flex text-sm text-gray-500 hover:text-white focus:outline-none border-box p-4'
+      type="button"
+    >
+      <div className="relative">
+        <div>
+          {icon}
+        </div>
+        <div className="absolute -bottom-2 -left-2 w-3.5 h-3.5 bg-pink-500 rounded-full text-white">
+          <div className="flex h-full w-full justify-center items-center">
+            <VscAdd className="w-2.5 h-2.5" />
+          </div>
+        </div>
+      </div>
+    </button>
+  );
 }
 
 interface NavItem {
@@ -93,9 +126,24 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     // },
   ];
 
+  const tools: SidebarItemProps[] = [
+    {
+      name: 'editor',
+      icon: <VscCode className="w-5 h-5" />,
+    },
+    {
+      name: 'html',
+      icon: <VscOpenPreview className="w-5 h-5" />,
+    },
+    {
+      name: 'visualiser',
+      icon: <VscGraph className="w-5 h-5" />,
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-none bg-gray-800 shadow-lg border-r border-gray-700 justify-between">
-      <div className="flex flex-col">
+    <div className="flex flex-col flex-none bg-gray-800 shadow-lg border-r border-gray-700">
+      <div className="flex flex-col border-b border-gray-700">
         {navigation.map(item => (
           <button
             key={item.name}
@@ -109,6 +157,11 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
           >
             {item.icon}
           </button>
+        ))}
+      </div>
+      <div className="flex flex-col">
+        {tools.map(item => (
+          <SidebarItem {...item} key={item.name} />
         ))}
       </div>
     </div>
