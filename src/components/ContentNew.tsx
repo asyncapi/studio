@@ -1,5 +1,6 @@
 import React from 'react';
-import { Allotment,  } from 'allotment';
+// import { Allotment,  } from 'allotment';
+import { Split } from './Split';
 
 import { Navigation } from './Navigation';
 import { Panels } from './Panels/Panels';
@@ -14,16 +15,21 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
 
   return (
     <div className="flex flex-1 flex-row relative">
-      <Allotment>
-        {navigationEnabled && (
-          <Allotment.Pane key='navigation' minSize={240} maxSize={360} snap>
-            <Navigation />
-          </Allotment.Pane>
-        )}
-        <Allotment.Pane key='content'>
+      <Split onChange={(e) => {
+        if (e[0] === 0 && sidebarState.panels.navigation.get() === true) {
+          sidebarState.panels.navigation.set(false);
+        } else if (e[0] > 0 && sidebarState.panels.navigation.get() === false) {
+          sidebarState.panels.navigation.set(true);
+        }
+      }}>
+        {/* Improve show prop */}
+        <Split.Pane key='navigation' minSize={240} maxSize={360} snap show={navigationEnabled}>
+          <Navigation />
+        </Split.Pane>
+        <Split.Pane key='content'>
           <Panels id='root-vertical' />
-        </Allotment.Pane>
-      </Allotment>
+        </Split.Pane>
+      </Split>
     </div>
   );
 };

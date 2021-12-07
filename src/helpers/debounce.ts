@@ -1,7 +1,12 @@
-export function debounce(func: (...args: any[]) => any, wait: number, immediate?: boolean) {
+export interface DebounceFn {
+  (...args: any[]): any,
+  cancel(): void;
+}
+
+export function debounce(func: (...args: any[]) => any, wait: number, immediate?: boolean): DebounceFn {
   let timeout: number | null;
 
-  return function executedFunction(...args: any[]) {
+  const fn = function executedFunction(...args: any[]) {
     // @ts-ignore
     const context = this;
 
@@ -21,4 +26,9 @@ export function debounce(func: (...args: any[]) => any, wait: number, immediate?
       func.apply(context, args);
     }
   };
+  (fn as unknown as DebounceFn).cancel = function() {
+    timeout && clearTimeout(timeout);
+  }
+
+  return fn as unknown as DebounceFn;
 }

@@ -50,16 +50,16 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     let newTabID = '';
 
     const newTabs = tabs.filter(oldTab => oldTab.name !== tabName);
-    if (newTabs.length === 0) {
-      newTabID = generateUniqueID();
-      newTabs.push({
-        name: newTabID,
-        tab: <span>New</span>,
-        content: (
-          <NewTab />
-        ),
-      });
-    }
+    // if (newTabs.length === 0) {
+    //   newTabID = generateUniqueID();
+    //   newTabs.push({
+    //     name: newTabID,
+    //     tab: <span>New</span>,
+    //     content: (
+    //       <NewTab />
+    //     ),
+    //   });
+    // }
     setTabs(newTabs);
 
     if (activeTab === tabName) {
@@ -71,6 +71,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
       } else {
         newTabID && setActiveTab(newTabID);
       }
+    }
+
+    if (newTabs.length === 0) {
+      PanelsManager.removePanel(currentPanel);
     }
   }
 

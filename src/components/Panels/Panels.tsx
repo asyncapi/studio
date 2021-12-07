@@ -1,5 +1,6 @@
 import React from 'react';
-import { Allotment } from 'allotment';
+// import { Allotment } from 'allotment';
+import { Split } from "../Split"
 
 import { Panel } from './Panel';
 
@@ -29,15 +30,15 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
 
   if (Array.isArray(currentPanel.panels)) {
     return (
-      <Allotment vertical={currentPanel.direction === 'vertical'}>
+      <Split vertical={currentPanel.direction === 'vertical'}>
         {currentPanel.panels.map(panel => {
           return (
-            <Allotment.Pane key={panel} minSize={260} snap>
+            <Split.Pane key={panel} minSize={260} snap>
               <Panels id={panel} />
-            </Allotment.Pane>
+            </Split.Pane>
           );
         })}
-      </Allotment>
+      </Split>
     );
   }
 

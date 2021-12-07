@@ -63,7 +63,7 @@ export class PanelsManager {
 
   static removePanel(panelID: string) {
     state.panels.panels.set(oldPanels => {
-      return oldPanels
+      const newPanels = oldPanels
         .filter(panel => panel.id && !panel.id.startsWith(panelID))
         .map(panel => {
           if (panel.panels) {
@@ -74,8 +74,33 @@ export class PanelsManager {
           }
           return { ...panel };
         });
+
+      if (newPanels.length === 2) {
+        newPanels[0].panels = ['root-horizontal'],
+        newPanels[1].panels = ['panel-1-vertical'],
+        newPanels.push(
+          {
+            id: 'panel-1-vertical',
+            direction: 'vertical',
+            panels: ['panel-1-horizontal'],
+            parent: 'root',
+          },
+          {
+            id: 'panel-1-horizontal',
+            direction: 'horizontal',
+            panels: ['panel-1'],
+            parent: 'root',
+          },
+          {
+            id: 'panel-1',
+            parent: 'panel-1',
+          },
+        );
+      }
+
+      return newPanels;
     });
-    // console.log(state.panels.panels.get())
+    console.log(state.panels.panels.get())
   }
 
   static findParent(panelID: string, direction: PanelItem['direction']) {
