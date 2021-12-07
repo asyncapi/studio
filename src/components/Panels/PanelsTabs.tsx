@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react';
 
 import { VscClose, VscAdd, VscSplitHorizontal, VscSplitVertical, VscEllipsis } from 'react-icons/vsc';
+import { generateUniqueID } from '../../helpers';
 import { PanelsManager } from '../../services';
-import { Visualiser } from '../Visualiser';
+import { Dropdown } from '../common';
+import { NewTab } from './NewTab';
 import { PanelContext } from './PanelContext';
+import { TabContext } from './TabContext';
 
 export interface PanelTab {
   name: string;
@@ -29,33 +32,162 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     event.stopPropagation();
 
     const newTabs = [...tabs];
+    const newTabID = generateUniqueID();
     newTabs.push({
-      name: 'visualiser',
-      tab: <span>Visualiser</span>,
+      name: newTabID,
+      tab: <span>New</span>,
       content: (
-        <Visualiser />
+        <NewTab />
       ),
     });
 
-    setActiveTab(newTabs[newTabs.length - 1].name);
+    setActiveTab(newTabID);
     setTabs(newTabs);
   }
 
   function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabName: string) {
     event.stopPropagation();
+    let newTabID: string = '';
 
     const newTabs = tabs.filter(oldTab => oldTab.name !== tabName);
-    const currentTabIndex = tabs.findIndex(oldTab => oldTab.name === activeTab);
-    const newActiveIndex = currentTabIndex - 1 < 0 ? 0 : currentTabIndex - 1;
-
-    const currentTab = newTabs[newActiveIndex];
-    if (currentTab) {
-      setActiveTab(currentTab.name);
-    } else {
-      setActiveTab('');
+    if (newTabs.length === 0) {
+      newTabID = generateUniqueID();
+      newTabs.push({
+        name: newTabID,
+        tab: <span>New</span>,
+        content: (
+          <NewTab />
+        ),
+      });
     }
     setTabs(newTabs);
+
+    if (activeTab === tabName) {
+      const currentTabIndex = tabs.findIndex(oldTab => oldTab.name === activeTab);
+      const newActiveIndex = currentTabIndex - 1 < 0 ? 0 : currentTabIndex - 1;
+      const currentTab = newTabs[newActiveIndex];
+      if (currentTab) {
+        setActiveTab(currentTab.name);
+      } else {
+        newTabID && setActiveTab(newTabID);
+      }
+    }
   }
+
+  function changeTab(tabName: string, newTab: PanelTab) {
+    const newTabs = tabs.map(oldTab => {
+      if (oldTab.name === tabName) {
+        return newTab;
+      }
+      return oldTab;
+    });
+    setTabs(newTabs);
+    setActiveTab(newTab.name);
+  }
+
+  const splitHorizontal = (
+    <Dropdown
+      button={(setOpen) => (
+        <button 
+          onClick={() => setOpen(open => !open)}
+        >
+          <VscSplitHorizontal className="inline-block" />
+        </button>
+      )}
+      opener={<VscSplitHorizontal className="inline-block" />}
+      buttonHoverClassName="text-white"
+      className="relative inline-block"
+    >
+      <ul className="bg-gray-800 text-md text-white">
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Nearest scope"
+            onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal', 'nearest')}
+          >
+            Nearest scope
+          </button>
+        </li>
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Upper scope"
+            onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal', 'upper')}
+          >
+            Upper scope
+          </button>
+        </li>
+      </ul>
+    </Dropdown>
+  );
+
+  const splitVertical = (
+    <Dropdown
+      button={(setOpen) => (
+        <button 
+          onClick={() => setOpen(open => !open)}
+          className="ml-2"
+        >
+          <VscSplitVertical className="inline-block" />
+        </button>
+      )}
+      buttonHoverClassName="text-white"
+      className="relative inline-block"
+    >
+      <ul className="bg-gray-800 text-md text-white">
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Nearest scope"
+            onClick={() => PanelsManager.addPanel(currentPanel, 'vertical', 'nearest')}
+          >
+            Nearest scope
+          </button>
+        </li>
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Upper scope"
+            onClick={() => PanelsManager.addPanel(currentPanel, 'vertical', 'upper')}
+          >
+            Upper scope
+          </button>
+        </li>
+      </ul>
+    </Dropdown>
+  );
+
+  const options = (
+    <Dropdown
+      button={(setOpen) => (
+        <button 
+          onClick={() => setOpen(open => !open)}
+          className="ml-2"
+        >
+          <VscEllipsis className="inline-block" />
+        </button>
+      )}
+      buttonHoverClassName="text-white"
+      className="relative inline-block"
+    >
+      <ul className="bg-gray-800 text-md text-white">
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Delete panel"
+            onClick={() => PanelsManager.removePanel(currentPanel)}
+          >
+            Delete panel
+          </button>
+        </li>
+      </ul>
+    </Dropdown>
+  );
 
   return (
     <div className="flex flex-col h-full min-h-full">
@@ -104,11 +236,14 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
           <VscAdd className="inline-block" />
         </button>
         <div className="flex flex-1 flex-row justify-end h-full leading-8">
-          <div className="border-r border-gray-700 px-2">
+          {/* <div className="border-r border-gray-700 px-2">
             options
-          </div>
-          <div className="px-2">
-            <button 
+          </div> */}
+          <div className="border-l border-gray-700 px-2">
+            {splitHorizontal}
+            {splitVertical}
+            {options}
+            {/* <button 
               onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal')}
             >
               <VscSplitHorizontal className="inline-block" />
@@ -118,13 +253,13 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
               onClick={() => PanelsManager.addPanel(currentPanel, 'vertical')}
             >
               <VscSplitVertical className="inline-block" />
-            </button>
-            <button 
+            </button> */}
+            {/* <button 
               className="ml-2"
               onClick={(e) => addTab(e)}
             >
               <VscEllipsis className="inline-block" />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -136,7 +271,9 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
               className={`${activeTab === tab.name ? 'block' : 'hidden'}`}
             >
               <div className="absolute overflow-auto h-auto top-0 bottom-0 right-0 left-0">
-                {tab.content}
+                <TabContext.Provider value={{ changeTab, currentTab: tab.name }}>
+                  {tab.content}
+                </TabContext.Provider>
               </div>
             </li>
           ))}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 interface DropdownProps {
-  opener: React.ReactNode;
+  opener?: React.ReactNode;
+  button?: (setOpen: React.Dispatch<React.SetStateAction<boolean>>) => React.ReactNode;
   className?: string;
   buttonHoverClassName?: string;
   align?: string;
@@ -9,6 +10,7 @@ interface DropdownProps {
 
 export const Dropdown: React.FunctionComponent<DropdownProps> = ({
   opener,
+  button,
   className = 'relative',
   buttonHoverClassName,
   align = 'right',
@@ -36,13 +38,20 @@ export const Dropdown: React.FunctionComponent<DropdownProps> = ({
 
   return (
     <div className={className}>
-      <button
+      {button ? button(setOpen) : (
+        <button 
+          onClick={() => setOpen(!open)}
+        >
+          {opener}
+        </button>
+      )}
+      {/* <button
         onClick={() => setOpen(!open)}
         type="button"
         className={`flex p-2 text-sm rounded-md ${buttonHoverClassName} focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150`}
       >
         {opener}
-      </button>
+      </button> */}
       <div
         className={`${
           open ? 'visible' : 'invisible'

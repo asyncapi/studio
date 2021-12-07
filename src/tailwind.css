@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --focus-border: #ec4899;
+  --sash-size: 4px;
+  --sash-hover-size: 2px;
+  --separator-border: #374151;
+}

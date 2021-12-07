@@ -4,7 +4,6 @@ import { Allotment } from "allotment";
 import { Panel } from "./Panel";
 
 import state from '../../state';
-import { PanelContext } from './PanelContext';
 
 export interface PanelItem {
   id?: string;
@@ -24,53 +23,63 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
   const panels = panelsState.panels.get();
   const currentPanel = panels.find(p => p.id === id) as PanelItem;
 
+  if (!currentPanel) {
+    return null;
+  }
+
   if (Array.isArray(currentPanel.panels)) {
     return (
       <Allotment vertical={currentPanel.direction === 'vertical'}>
-        {currentPanel.panels.map(panel => (
-          <Allotment.Pane key={panel}>
-            <Panels id={panel} />
-          </Allotment.Pane>
-        ))}
+        {currentPanel.panels.map((panel, idx) => {
+          // const foundedPanel = panels.find(p => p.id === panel);
+          // // console.log(foundedPanel);
+          // if (!foundedPanel) {
+          //   console.log(foundedPanel);
+          //   return null;
+          // }
+          return (
+            <Allotment.Pane key={panel} minSize={260} snap>
+              <Panels id={panel} />
+            </Allotment.Pane>
+          );
+        })}
       </Allotment>
     );
   }
 
   return (
-    <PanelContext.Provider value={{ currentPanel: id }}>
-      <Panel key={id} />
-    </PanelContext.Provider>
+    <Panel key={id} panelID={id} />
   );
 
-  return (
-    <div className="flex flex-1 flex-row relative">
-      <Allotment>
-        {/* <Allotment.Pane minSize={240} snap>
-          <Navigation />
-        </Allotment.Pane> */}
-        <Allotment.Pane>
-          <Allotment>
-            <Allotment.Pane minSize={240} snap>
-              <Panel />
-            </Allotment.Pane>
-            <Allotment.Pane>
-              <Panel />
-            </Allotment.Pane>
-          </Allotment>
-        </Allotment.Pane>
-        {/* <Allotment.Pane>
-          <Allotment vertical>
-            <Allotment.Pane>
-              <Panel />
-            </Allotment.Pane>
-            <Allotment.Pane>
-              <Panel />
-            </Allotment.Pane>
-          </Allotment>
-        </Allotment.Pane> */}
-      </Allotment>
-    </div>
-  );
+  // return (
+  //   <div className="flex flex-1 flex-row relative">
+  //     <Allotment>
+  //       {/* <Allotment.Pane minSize={240} snap>
+  //         <Navigation />
+  //       </Allotment.Pane> */}
+  //       <Allotment.Pane>
+  //         <Allotment>
+  //           <Allotment.Pane minSize={240} snap>
+  //             <Panel />
+  //           </Allotment.Pane>
+  //           <Allotment.Pane>
+  //             <Panel />
+  //           </Allotment.Pane>
+  //         </Allotment>
+  //       </Allotment.Pane>
+  //       {/* <Allotment.Pane>
+  //         <Allotment vertical>
+  //           <Allotment.Pane>
+  //             <Panel />
+  //           </Allotment.Pane>
+  //           <Allotment.Pane>
+  //             <Panel />
+  //           </Allotment.Pane>
+  //         </Allotment>
+  //       </Allotment.Pane> */}
+  //     </Allotment>
+  //   </div>
+  // );
 
   // return (
   //   <div className="flex flex-1 flex-row relative">

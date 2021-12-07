@@ -4,18 +4,11 @@ import { generateUniqueID } from "../helpers";
 import state from '../state';
 
 export class PanelsManager {
-  static addPanel(panelID: string, direction: PanelItem['direction']): void {
-    const currentParent = this.findParent(panelID, direction);
-    if (!currentParent) {
+  static addPanel(panelID: string, direction: PanelItem['direction'], scope: 'nearest' | 'upper'): void {
+    const nearestParent = this.findParent(panelID, direction);
+    if (!nearestParent) {
       return;
     }
-
-    const upperParent = this.findParent(currentParent.id.get() as string, direction);
-    if (!upperParent) {
-      return;
-    }
-    console.log(upperParent.id.get())
-    console.log(currentParent.parent.get())
     
     const newPanel = generateUniqueID();
     state.panels.panels.merge([
@@ -23,21 +16,30 @@ export class PanelsManager {
         id: `${newPanel}-vertical`,
         direction: 'vertical',
         panels: [`${newPanel}-horizontal`],
-        parent: currentParent.parent.get(),
+        parent: nearestParent.parent.get(),
       },
       {
         id: `${newPanel}-horizontal`,
         direction: 'horizontal',
         panels: [newPanel],
-        parent: currentParent.parent.get(),
+        parent: nearestParent.parent.get(),
       },
       {
         id: newPanel,
         parent: newPanel,
       },
     ]);
-    upperParent.panels.merge([newPanel]);
-    // // parentPanel?.panels.merge([newPanel]);
+
+    if (scope === 'nearest') {
+      nearestParent.panels.merge([newPanel]);
+    } else {
+      const upperParent = this.findParent(nearestParent.id.get() as string, direction);
+      if (!upperParent) {
+        return;
+      }
+      upperParent.panels.merge([newPanel]);
+    }
+    // parentPanel?.panels.merge([newPanel]);
 
     // // state.panels.panels.merge()
 
@@ -60,7 +62,21 @@ export class PanelsManager {
   }
 
   static removePanel(panelID: string) {
-
+    state.panels.panels.set(oldPanels => {
+      const newPanels = oldPanels
+        .filter(panel => !panel.id!.startsWith(panelID))
+        .map(panel => {
+          if (panel.panels) {
+            return {
+              ...panel,
+              panels: panel.panels.filter(p => !p.startsWith(panelID)),
+            }
+          }
+          return { ...panel }
+        });
+      return newPanels;
+    });
+    // console.log(state.panels.panels.get())
   }
 
   static findParent(panelID: string, direction: PanelItem['direction']) {
