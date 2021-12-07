@@ -236,30 +236,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
           <VscAdd className="inline-block" />
         </button>
         <div className="flex flex-1 flex-row justify-end h-full leading-8">
-          {/* <div className="border-r border-gray-700 px-2">
-            options
-          </div> */}
           <div className="border-l border-gray-700 px-2">
             {splitHorizontal}
             {splitVertical}
             {options}
-            {/* <button 
-              onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal')}
-            >
-              <VscSplitHorizontal className="inline-block" />
-            </button>
-            <button 
-              className="ml-2"
-              onClick={() => PanelsManager.addPanel(currentPanel, 'vertical')}
-            >
-              <VscSplitVertical className="inline-block" />
-            </button> */}
-            {/* <button 
-              className="ml-2"
-              onClick={(e) => addTab(e)}
-            >
-              <VscEllipsis className="inline-block" />
-            </button> */}
           </div>
         </div>
       </div>

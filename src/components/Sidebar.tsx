@@ -67,29 +67,29 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       state: () => sidebarState.panels.navigation.get(),
       icon: <VscListSelection className="w-5 h-5" />,
     },
-    // editor
-    {
-      name: 'editor',
-      state: () => sidebarState.panels.editor.get(),
-      icon: <VscCode className="w-5 h-5" />,
-    },
-    // template
-    {
-      name: 'template',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
-      icon: <VscOpenPreview className="w-5 h-5" />,
-    },
-    // visuliser
-    {
-      name: 'visualiser',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
-      icon: <VscGraph className="w-5 h-5" />,
-    },
-    {
-      name: 'newFile',
-      state: () => sidebarState.panels.newFile.get(),
-      icon: <VscNewFile className="w-5 h-5" />,
-    },
+    // // editor
+    // {
+    //   name: 'editor',
+    //   state: () => sidebarState.panels.editor.get(),
+    //   icon: <VscCode className="w-5 h-5" />,
+    // },
+    // // template
+    // {
+    //   name: 'template',
+    //   state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
+    //   icon: <VscOpenPreview className="w-5 h-5" />,
+    // },
+    // // visuliser
+    // {
+    //   name: 'visualiser',
+    //   state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
+    //   icon: <VscGraph className="w-5 h-5" />,
+    // },
+    // {
+    //   name: 'newFile',
+    //   state: () => sidebarState.panels.newFile.get(),
+    //   icon: <VscNewFile className="w-5 h-5" />,
+    // },
   ];
 
   return (
