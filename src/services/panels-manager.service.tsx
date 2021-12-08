@@ -97,10 +97,11 @@ export class PanelsManager {
         });
 
       if (newPanels.length === 2) {
-        newPanels[1].panels = ['panel-1'];
+        const newID = generateUniqueID();
+        newPanels[1].panels = [newID];
         newPanels.push(
           {
-            id: 'panel-1',
+            id: newID,
           },
         );
       }
