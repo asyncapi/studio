@@ -216,7 +216,6 @@ export class PanelsManager {
       const currentTabIndex = panelTabs.tabs.findIndex(oldTab => oldTab.name === tabID);
       const newActiveIndex = currentTabIndex - 1 < 0 ? 0 : currentTabIndex - 1;
       const currentTab = newTabs[Number(newActiveIndex)];
-      console.log(currentTab)
       if (currentTab) {
         panelTabs.activeTab = currentTab.name;
         panelTabs.setActiveTab(currentTab.name);
@@ -278,44 +277,68 @@ export class PanelsManager {
     this.setActivePanel(panelID);
   }
 
+  static getTab(panelID: string, tabID: string) {
+    const panelTabs = this.tabs.get(panelID);
+    if (!panelTabs) {
+      return;
+    }
+    return panelTabs.tabs.find(t => t.name === tabID);
+  }
+
   static setActivePanel(panelID: string) {
     if (panelID !== state.panels.activePanel.get()) {
       state.panels.activePanel.set(panelID);
     }
   }
 
-  static switchTabs(panelID: string, from: string, to: string) {
-    if (from === to) {
+  static switchTabs(fromPanel: string, toPanel: string, fromTab: string, toTab: string | 0) {
+    // different panels case
+    if (fromPanel !== toPanel) {
+      const tab = this.getTab(fromPanel, fromTab);
+      if (!tab) {
+        return;
+      }
+
+      // remove tab from panel
+      this.removeTab(fromPanel, fromTab);
+
+      // add tab to the another panel
+      const panelTabs = this.tabs.get(toPanel);
+      if (!panelTabs) {
+        return;
+      }
+
+      const newTabs = [...panelTabs.tabs];
+      if (toTab === 0) {
+        newTabs.push(tab);
+      } else {
+        const toIndex = panelTabs.tabs.findIndex(tab => tab.name === toTab);
+        newTabs.splice(toIndex, 0, tab);
+      }
+      panelTabs.tabs = newTabs;
+      panelTabs.setTabs(newTabs);
+      panelTabs.activeTab = tab.name;
+      panelTabs.setActiveTab(tab.name);
+      
       return;
     }
-    const panelTabs = this.tabs.get(panelID);
+
+    // this same tabs in this same panel case
+    if (fromTab === toTab) {
+      return;
+    }
+    const panelTabs = this.tabs.get(fromPanel);
     if (!panelTabs) {
       return;
     }
 
-    const fromIndex = panelTabs.tabs.findIndex(tab => tab.name === from);
-    const toIndex = panelTabs.tabs.find(tab => tab.name === to);
-    console.log(fromIndex, from);
-    console.log(toIndex, to);
-    if (fromIndex >= panelTabs.tabs.length) {
-      let k = fromIndex - panelTabs.tabs.length + 1;
-      while (k--) {
-        panelTabs.tabs.push(undefined as any);
-      }
-    }
+    const fromIndex = panelTabs.tabs.findIndex(tab => tab.name === fromTab);
+    const toIndex = panelTabs.tabs.findIndex(tab => tab.name === toTab);
 
-    // const toPanel = panelTabs.tabs.find(tab => tab.name === to);
-    // const newTabs = panelTabs.tabs.reduce((acc, tab) => {
-    //   if (tab.name) {
-
-    //   }
-    // }, [] as PanelTab[]);
-
-    // const newTabs = [...panelTabs.tabs];
-    // newTabs.splice(fromIndex, 0, newTabs.splice(toIndex, 1)[0]);
-    // console.log(panelTabs.tabs);
-    // console.log(newTabs);
-    // panelTabs.tabs = newTabs;
-    // panelTabs.setTabs(newTabs);
+    const newTabs = [...panelTabs.tabs];
+    // Moves the element in the array for the provided positions.
+    newTabs.splice(toIndex, 0, newTabs.splice(fromIndex, 1)[0]);
+    panelTabs.tabs = newTabs;
+    panelTabs.setTabs(newTabs);
   }
 }

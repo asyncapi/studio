@@ -31,70 +31,49 @@ const Tab: React.FunctionComponent<PanelTab & { activeTab: string }> = ({
   const ref = useRef(null);
   const { currentPanel } = useContext(PanelContext);
 
-  const [{ isDragging }, drag] = useDrag({
+  const [_, drag] = useDrag({
     type: 'tab',
-    item: { tabID: name },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    })
+    item: { tabID: name, panelID: currentPanel },
   });
-  const [{ isOver, canDrop }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'tab',
     drop: (item: any, monitor) => {
-      // console.log(item, currentPanel)
-      PanelsManager.switchTabs(currentPanel, item.tabID, name);
-      // console.log(name, item)
-      // onDrop(data, item);
-      // PanelsManager.addNewTool(currentPanel, item.toolName);
+      PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, name);
     },
-    canDrop: (item, monitor) => {
-      // const layout = data.layout;
-      // const itemPath = item.path;
-      // const splitItemPath = itemPath.split("-");
-      // const itemPathRowIndex = splitItemPath[0];
-      // const itemRowChildrenLength =
-      //   layout[itemPathRowIndex] && layout[itemPathRowIndex].children.length;
-
-      // // prevent removing a col when row has only one col
-      // if (
-      //   item.type === COLUMN &&
-      //   itemRowChildrenLength &&
-      //   itemRowChildrenLength < 2
-      // ) {
-      //   return false;
-      // }
-
+    canDrop: () => {
       return true;
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
     })
   });
 
-  drag(ref);
-  drop(ref);
+  drag(drop(ref))
 
   function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabID: string) {
     event.stopPropagation();
     PanelsManager.removeTab(currentPanel, tabID);
   }
 
+  const activeClassName = activeTab === name
+    ? 'text-white border-pink-500'
+    : 'text-gray-500 border-gray-800';
+
+  const dropIsOverClassName = isOver
+    ? 'bg-gray-500 border-gray-500'
+    : 'bg-gray-800 border-gray-800';
+
   return (
     <li 
-      className='border-r border-gray-700 cursor-pointer'
+      className={`border-r border-gray-700 cursor-pointer`}
       ref={ref}
     >
       <div
-        className={`group leading-7 px-3 cursor-pointer border-t-2 ${
-          activeTab === name
-            ? 'text-white border-pink-500'
-            : 'text-gray-500 border-gray-800'
-        } focus:outline-none border-box`}
+        className={`group leading-7 px-3 cursor-pointer border-t-2 ${isOver ? dropIsOverClassName : activeClassName} focus:outline-none border-box`}
         onClick={() => PanelsManager.setActiveTab(currentPanel, name)}
       >
         <div
-          className='border-box border-b-2 border-gray-800'
+          className={`border-box border-b-2 ${dropIsOverClassName}`}
         >
           <div className="inline-block">
             {tab}
@@ -126,35 +105,29 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [activeTab, setActiveTab] = useState(active || propTabs[0].name);
   const activePanel = panelsState.activePanel.get();
 
-  const [{ isOver, canDrop }, drop] = useDrop({
+  const [_, dropPanel] = useDrop({
     accept: 'tool',
     drop: (item: any, monitor) => {
       // console.log(item, currentPanel)
       // onDrop(data, item);
       PanelsManager.addNewTool(currentPanel, item.toolName);
     },
-    canDrop: (item, monitor) => {
-      // const layout = data.layout;
-      // const itemPath = item.path;
-      // const splitItemPath = itemPath.split("-");
-      // const itemPathRowIndex = splitItemPath[0];
-      // const itemRowChildrenLength =
-      //   layout[itemPathRowIndex] && layout[itemPathRowIndex].children.length;
-
-      // // prevent removing a col when row has only one col
-      // if (
-      //   item.type === COLUMN &&
-      //   itemRowChildrenLength &&
-      //   itemRowChildrenLength < 2
-      // ) {
-      //   return false;
-      // }
-
+    canDrop: () => {
       return true;
     },
+  });
+
+  const [{ isOverTabPane, canDropTabPane }, dropTabsPane] = useDrop({
+    accept: 'tab',
+    drop: (item: any, monitor) => {
+      PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, 0);
+    },
+    canDrop: (item) => {
+      return item.panelID !== currentPanel;
+    },
     collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
+      isOverTabPane: monitor.isOver(),
+      canDropTabPane: monitor.canDrop(),
     })
   });
 
@@ -296,12 +269,14 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     <div 
       className="flex flex-col h-full min-h-full"
       onClick={() => PanelsManager.setActivePanel(currentPanel)}
-      ref={drop}
+      ref={dropPanel}
     >
       <div
         className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
       >
-        <ul className="flex flex-none flex-row">
+        <ul
+          className="flex flex-none flex-row"
+        >
           {tabs.map(tab => (
             <Tab key={tab.name} {...tab} activeTab={activeTab} />
           ))}
@@ -312,7 +287,8 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         >
           <VscAdd className="inline-block" />
         </button>
-        <div className="flex flex-1 flex-row justify-end h-full leading-8">
+        <div className={`flex-1 w-full h-full ${isOverTabPane && canDropTabPane ? 'bg-gray-500' : 'bg-gray-800'}`} ref={dropTabsPane} />
+        <div className="flex flex-row justify-end h-full leading-8">
           <div className="border-l border-gray-700 px-2">
             {currentPanel === activePanel ? <VscCircleLargeFilled className="inline-block text-pink-500" /> : <VscCircleLargeOutline className="inline-block" />}
             {splitHorizontal}

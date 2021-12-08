@@ -10,33 +10,18 @@ import { generateUniqueID } from '../../helpers';
 
 // import state from '../../state';
 
-const newTabID = generateUniqueID();
-const startTabs: Array<PanelTab> = [
-  {
-    name: newTabID,
-    tab: <span>New</span>,
-    content: (
-      <NewTab />
-    ),
-    isNewTab: true,
-  },
-  // {
-  //   name: 'editor',
-  //   tab: (
-  //     <span>Editor</span>
-  //   ),
-  //   content: (
-  //     <MonacoWrapper />
-  //   ),
-  // },
-  // {
-  //   name: 'html',
-  //   tab: <span>HTML</span>,
-  //   content: (
-  //     <HTMLWrapper />
-  //   ),
-  // },
-];
+function createStartTabs() {
+  return [
+    {
+      name: generateUniqueID(),
+      tab: <span>New</span>,
+      content: (
+        <NewTab />
+      ),
+      isNewTab: true,
+    },
+  ];
+}
 
 interface PanelProps {
   panelID: string;
@@ -50,7 +35,7 @@ export const Panel: React.FunctionComponent<PanelProps> = ({
       currentPanel: panelID,
     }}>
       <div className="h-full min-h-full bg-gray-800">
-        <PanelTabs tabs={startTabs} />
+        <PanelTabs tabs={createStartTabs()} />
       </div>
     </PanelContext.Provider>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrag } from "react-dnd";
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd, VscTerminal } from 'react-icons/vsc';
 import { PanelsManager } from '../services';
 
 import state from '../state';
@@ -60,9 +60,6 @@ const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   const [_, drag] = useDrag({
     type: 'tool',
     item: { toolName: name },
-    // collect: monitor => ({
-    //   isDragging: monitor.isDragging()
-    // })
   });
 
   const panelsState = usePanelsState();
@@ -148,6 +145,10 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
+    },
+    {
+      name: 'terminal',
+      icon: <VscTerminal className="w-5 h-5" />,
     },
   ];
 
