@@ -10,6 +10,7 @@ import { PanelContext } from './PanelContext';
 import { TabContext } from './TabContext';
 
 import state from '../../state';
+import { connect } from 'http2';
 
 export interface PanelTab {
   name: string;
@@ -36,9 +37,13 @@ const Tab: React.FunctionComponent<PanelTab & { activeTab: string }> = ({
     item: { tabID: name, panelID: currentPanel },
   });
   const [{ isOver }, drop] = useDrop({
-    accept: 'tab',
+    accept: ['tab', 'tool'],
     drop: (item: any, monitor) => {
-      PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, name);
+      if (item.toolName) {
+        PanelsManager.addNewTool(currentPanel, item.toolName);
+      } else {
+        PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, name);
+      }
     },
     canDrop: () => {
       return true;
@@ -60,7 +65,7 @@ const Tab: React.FunctionComponent<PanelTab & { activeTab: string }> = ({
     : 'text-gray-500 border-gray-800';
 
   const dropIsOverClassName = isOver
-    ? 'bg-gray-500 border-gray-500'
+    ? 'bg-gray-700 border-gray-700'
     : 'bg-gray-800 border-gray-800';
 
   return (
@@ -105,26 +110,14 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [activeTab, setActiveTab] = useState(active || propTabs[0].name);
   const activePanel = panelsState.activePanel.get();
 
-  const [{ isOverToolPane, canDropToolPane }, dropToolPane] = useDrop({
-    accept: 'tool',
-    drop: (item: any, monitor) => {
-      // console.log(item, currentPanel)
-      // onDrop(data, item);
-      PanelsManager.addNewTool(currentPanel, item.toolName);
-    },
-    canDrop: () => {
-      return true;
-    },
-    collect: (monitor) => ({
-      isOverToolPane: monitor.isOver(),
-      canDropToolPane: monitor.canDrop(),
-    })
-  });
-
   const [{ isOverTabPane, canDropTabPane }, dropTabsPane] = useDrop({
-    accept: 'tab',
-    drop: (item: any, monitor) => {
-      PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, 0);
+    accept: ['tab', 'tool'],
+    drop: (item: any) => {
+      if (item.toolName) {
+        PanelsManager.addNewTool(currentPanel, item.toolName);
+      } else {
+        PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, 0);
+      }
     },
     canDrop: (item) => {
       return item.panelID !== currentPanel;
@@ -132,6 +125,83 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     collect: (monitor) => ({
       isOverTabPane: monitor.isOver(),
       canDropTabPane: monitor.canDrop(),
+    })
+  });
+
+  // for center space
+  const [{ isOverCenterSpace, canDropCenterSpace }, dropCenterSpace] = useDrop({
+    accept: ['tool', 'tab'],
+    drop: (item: any, monitor) => {
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: () => {
+      return true;
+    },
+    collect: (monitor) => {
+      return {
+        isOverCenterSpace: monitor.isOver(),
+        canDropCenterSpace: monitor.canDrop(),
+      }
+    }
+  });
+
+  // for top space
+  const [{ isOverTopSpace, canDropTopSpace }, dropTopSpace] = useDrop({
+    accept: ['tool', 'tab'],
+    drop: (item: any, monitor) => {
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: () => {
+      return true;
+    },
+    collect: (monitor) => ({
+      isOverTopSpace: monitor.isOver(),
+      canDropTopSpace: monitor.canDrop(),
+    })
+  });
+
+  // for left space
+  const [{ isOverLeftSpace, canDropLeftSpace }, dropLeftSpace] = useDrop({
+    accept: ['tool', 'tab'],
+    drop: (item: any, monitor) => {
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: () => {
+      return true;
+    },
+    collect: (monitor) => ({
+      isOverLeftSpace: monitor.isOver(),
+      canDropLeftSpace: monitor.canDrop(),
+    })
+  });
+
+  // for right space
+  const [{ isOverRightSpace, canDropRightSpace }, dropRightSpace] = useDrop({
+    accept: ['tool', 'tab'],
+    drop: (item: any, monitor) => {
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: () => {
+      return true;
+    },
+    collect: (monitor) => ({
+      isOverRightSpace: monitor.isOver(),
+      canDropRightSpace: monitor.canDrop(),
+    })
+  });
+
+  // for bottom space
+  const [{ isOverBottomSpace, canDropBottomSpace }, dropBottomSpace] = useDrop({
+    accept: ['tool', 'tab'],
+    drop: (item: any, monitor) => {
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: () => {
+      return true;
+    },
+    collect: (monitor) => ({
+      isOverBottomSpace: monitor.isOver(),
+      canDropBottomSpace: monitor.canDrop(),
     })
   });
 
@@ -197,15 +267,9 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
 
   return (
     <div 
-      className="flex flex-col h-full min-h-full relative"
+      className='flex flex-col h-full min-h-full relative'
       onClick={() => PanelsManager.setActivePanel(currentPanel)}
-      ref={dropToolPane}
     >
-      <div className={`absolute h-full w-full top-0 bottom-0 right-0 left-0 z-50 p-12 bg-gray-900 ${canDropToolPane ? 'visible opacity-75' : 'invisible opacity-0'}`}>
-        <div className="h-full border-dashed border-8 border-pink-500 rounded-xl">
-          lol
-        </div>
-      </div>
       <div
         className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
       >
@@ -222,7 +286,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         >
           <VscAdd className="inline-block" />
         </button>
-        <div className={`flex-1 w-full h-full ${isOverTabPane && canDropTabPane ? 'bg-gray-500' : 'bg-gray-800'}`} ref={dropTabsPane} />
+        <div className={`flex-1 w-full h-full ${isOverTabPane && canDropTabPane ? 'bg-gray-700' : 'bg-gray-800'}`} ref={dropTabsPane} />
         <div className="flex flex-row justify-end h-full leading-8">
           <div className="border-l border-gray-700 px-2">
             {currentPanel === activePanel ? <VscCircleLargeFilled className="inline-block text-pink-500" /> : <VscCircleLargeOutline className="inline-block" />}
@@ -244,7 +308,34 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-1 relative">
+      <div 
+        className="flex flex-1 relative"
+      >
+        {/* center space */}
+        <div className={`absolute w-full h-full top-0 left-0 right-0 bottom-0 p-16 z-10 bg-gray-700 ${canDropCenterSpace && isOverCenterSpace ? 'visible opacity-75' : 'invisible opacity-0'}`}>
+          <div className={`h-full w-full ${canDropCenterSpace ? 'visible' : 'invisible'}`} ref={dropCenterSpace} />
+        </div>
+      
+        {/* top space */}
+        <div className={`absolute w-full top-0 left-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ height: canDropTopSpace && isOverTopSpace ? '50%' : '0' }}>
+          <div className={`h-16 w-full ${canDropTopSpace ? 'visible' : 'invisible'}`} ref={dropTopSpace} />
+        </div>
+
+        {/* bottom space */}
+        <div className={`absolute w-full bottom-0 left-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ height: canDropBottomSpace && isOverBottomSpace ? '50%' : '0' }}>
+          <div className={`h-16 w-full absolute bottom-0 ${canDropBottomSpace ? 'visible' : 'invisible'}`} ref={dropBottomSpace} />
+        </div>
+
+        {/* left space */}
+        <div className={`absolute h-full py-16 top-0 bottom-0 left-0 z-10 bg-gray-700 opacity-75`} style={{ width: canDropLeftSpace && isOverLeftSpace ? '50%' : '0' }}>
+          <div className={`h-full w-16 ${canDropLeftSpace ? 'visible' : 'invisible'}`} ref={dropLeftSpace} />
+        </div>
+
+        {/* right space */}
+        <div className={`absolute h-full py-16 top-0 bottom-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ width: canDropRightSpace && isOverRightSpace ? '50%' : '0' }}>
+          <div className={`h-full w-16 absolute right-0 ${canDropRightSpace ? 'visible' : 'invisible'}`} ref={dropRightSpace} />
+        </div>
+
         <ul>
           {tabs.map(tab => (
             <li

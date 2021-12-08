@@ -165,7 +165,6 @@ const Split = forwardRef<SplitHandle, SplitProps>(
     useEffect(() => {
       const keys = childrenArray.map((child) => child.key as string);
 
-      // const enter = keys.filter((key) => !previousKeys.current.includes(key));
       const enter = keys.map((key, index) => {
         if (!previousKeys.current.includes(key)) {
           return { key, index };
