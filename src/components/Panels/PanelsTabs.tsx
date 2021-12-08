@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-
+import React, { useRef, useContext, useEffect, useState } from 'react';
+import { useDrag, useDrop } from "react-dnd";
 import { VscClose, VscAdd, VscSplitHorizontal, VscSplitVertical, VscEllipsis, VscCircleLargeFilled, VscCircleLargeOutline } from 'react-icons/vsc';
+
 import { generateUniqueID } from '../../helpers';
 import { PanelsManager } from '../../services';
 import { Dropdown } from '../common';
@@ -22,6 +23,98 @@ interface PanelTabsProps {
   active?: string;
 }
 
+const Tab: React.FunctionComponent<PanelTab & { activeTab: string }> = ({
+  name,
+  tab,
+  activeTab,
+}) => {
+  const ref = useRef(null);
+  const { currentPanel } = useContext(PanelContext);
+
+  const [{ isDragging }, drag] = useDrag({
+    type: 'tab',
+    item: { tabID: name },
+    collect: monitor => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+  const [{ isOver, canDrop }, drop] = useDrop({
+    accept: 'tab',
+    drop: (item: any, monitor) => {
+      // console.log(item, currentPanel)
+      PanelsManager.switchTabs(currentPanel, item.tabID, name);
+      // console.log(name, item)
+      // onDrop(data, item);
+      // PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: (item, monitor) => {
+      // const layout = data.layout;
+      // const itemPath = item.path;
+      // const splitItemPath = itemPath.split("-");
+      // const itemPathRowIndex = splitItemPath[0];
+      // const itemRowChildrenLength =
+      //   layout[itemPathRowIndex] && layout[itemPathRowIndex].children.length;
+
+      // // prevent removing a col when row has only one col
+      // if (
+      //   item.type === COLUMN &&
+      //   itemRowChildrenLength &&
+      //   itemRowChildrenLength < 2
+      // ) {
+      //   return false;
+      // }
+
+      return true;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    })
+  });
+
+  drag(ref);
+  drop(ref);
+
+  function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabID: string) {
+    event.stopPropagation();
+    PanelsManager.removeTab(currentPanel, tabID);
+  }
+
+  return (
+    <li 
+      className='border-r border-gray-700 cursor-pointer'
+      ref={ref}
+    >
+      <div
+        className={`group leading-7 px-3 cursor-pointer border-t-2 ${
+          activeTab === name
+            ? 'text-white border-pink-500'
+            : 'text-gray-500 border-gray-800'
+        } focus:outline-none border-box`}
+        onClick={() => PanelsManager.setActiveTab(currentPanel, name)}
+      >
+        <div
+          className='border-box border-b-2 border-gray-800'
+        >
+          <div className="inline-block">
+            {tab}
+          </div>
+          <button 
+            className={`inline ml-1 ${
+              activeTab === name
+                ? 'text-white'
+                : 'text-gray-800 group-hover:text-gray-500'
+            }`}
+            onClick={(e) => removeTab(e, name)}
+          >
+            <VscClose className="inline-block w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </li>
+  )
+}
+
 export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   tabs: propTabs = [],
   active,
@@ -32,6 +125,38 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [tabs, setTabs] = useState(propTabs);
   const [activeTab, setActiveTab] = useState(active || propTabs[0].name);
   const activePanel = panelsState.activePanel.get();
+
+  const [{ isOver, canDrop }, drop] = useDrop({
+    accept: 'tool',
+    drop: (item: any, monitor) => {
+      // console.log(item, currentPanel)
+      // onDrop(data, item);
+      PanelsManager.addNewTool(currentPanel, item.toolName);
+    },
+    canDrop: (item, monitor) => {
+      // const layout = data.layout;
+      // const itemPath = item.path;
+      // const splitItemPath = itemPath.split("-");
+      // const itemPathRowIndex = splitItemPath[0];
+      // const itemRowChildrenLength =
+      //   layout[itemPathRowIndex] && layout[itemPathRowIndex].children.length;
+
+      // // prevent removing a col when row has only one col
+      // if (
+      //   item.type === COLUMN &&
+      //   itemRowChildrenLength &&
+      //   itemRowChildrenLength < 2
+      // ) {
+      //   return false;
+      // }
+
+      return true;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    })
+  });
 
   useEffect(() => {
     PanelsManager.setTabs(
@@ -48,7 +173,6 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
 
   function addTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event.stopPropagation();
-    setActivePanel();
     PanelsManager.addTab(currentPanel, {
       name: generateUniqueID(),
       tab: <span>New</span>,
@@ -59,19 +183,8 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     });
   }
 
-  function removeTab(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, tabID: string) {
-    event.stopPropagation();
-    setActivePanel();
-    PanelsManager.removeTab(currentPanel, tabID);
-  }
-
   function changeTab(tabName: string, newTab: PanelTab) {
-    setActivePanel();
     PanelsManager.changeTab(currentPanel, tabName, newTab);
-  }
-
-  function setActivePanel() {
-    currentPanel !== panelsState.activePanel.get() && panelsState.activePanel.set(currentPanel);
   }
 
   const splitHorizontal = (
@@ -182,44 +295,15 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   return (
     <div 
       className="flex flex-col h-full min-h-full"
-      onClick={setActivePanel}
+      onClick={() => PanelsManager.setActivePanel(currentPanel)}
+      ref={drop}
     >
       <div
         className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
       >
         <ul className="flex flex-none flex-row">
           {tabs.map(tab => (
-            <li 
-              key={tab.name}
-              className='border-r border-gray-700 cursor-pointer'
-            >
-              <div
-                className={`group leading-7 px-3 cursor-pointer border-t-2 ${
-                  activeTab === tab.name
-                    ? 'text-white border-pink-500'
-                    : 'text-gray-500 border-gray-800'
-                } focus:outline-none border-box`}
-                onClick={() => PanelsManager.setActiveTab(currentPanel, tab.name)}
-              >
-                <div
-                  className='border-box border-b-2 border-gray-800'
-                >
-                  <div className="inline-block">
-                    {tab.tab}
-                  </div>
-                  <button 
-                    className={`inline ml-1 ${
-                      activeTab === tab.name
-                        ? 'text-white'
-                        : 'text-gray-800 group-hover:text-gray-500'
-                    }`}
-                    onClick={(e) => removeTab(e, tab.name)}
-                  >
-                    <VscClose className="inline-block w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </li>
+            <Tab key={tab.name} {...tab} activeTab={activeTab} />
           ))}
         </ul>
         <button 

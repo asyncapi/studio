@@ -172,6 +172,7 @@ export class PanelsManager {
       setActiveTab,
       setTabs,
     });
+    this.setActivePanel(panelID);
   }
 
   static unsetTabs(
@@ -188,6 +189,7 @@ export class PanelsManager {
 
     panelTabs.activeTab = tabID;
     panelTabs.setActiveTab(tabID);
+    this.setActivePanel(panelID);
   }
 
   static addTab(panelID: string, tab: PanelTab) {
@@ -223,6 +225,8 @@ export class PanelsManager {
     panelTabs.tabs = newTabs;
     panelTabs.setTabs(newTabs);
 
+    this.setActivePanel(panelID);
+
     if (newTabs.length === 0) {
       PanelsManager.removePanel(panelID);
     }
@@ -244,6 +248,8 @@ export class PanelsManager {
     panelTabs.tabs = newTabs;
     panelTabs.setActiveTab(tab.name);
     panelTabs.setTabs(newTabs);
+
+    this.setActivePanel(panelID);
   }
 
   static addNewTool(panelID: string, toolID: string) {
@@ -268,5 +274,48 @@ export class PanelsManager {
         this.addTab(panelID, newTab);
       }
     }
+
+    this.setActivePanel(panelID);
+  }
+
+  static setActivePanel(panelID: string) {
+    if (panelID !== state.panels.activePanel.get()) {
+      state.panels.activePanel.set(panelID);
+    }
+  }
+
+  static switchTabs(panelID: string, from: string, to: string) {
+    if (from === to) {
+      return;
+    }
+    const panelTabs = this.tabs.get(panelID);
+    if (!panelTabs) {
+      return;
+    }
+
+    const fromIndex = panelTabs.tabs.findIndex(tab => tab.name === from);
+    const toIndex = panelTabs.tabs.find(tab => tab.name === to);
+    console.log(fromIndex, from);
+    console.log(toIndex, to);
+    if (fromIndex >= panelTabs.tabs.length) {
+      let k = fromIndex - panelTabs.tabs.length + 1;
+      while (k--) {
+        panelTabs.tabs.push(undefined as any);
+      }
+    }
+
+    // const toPanel = panelTabs.tabs.find(tab => tab.name === to);
+    // const newTabs = panelTabs.tabs.reduce((acc, tab) => {
+    //   if (tab.name) {
+
+    //   }
+    // }, [] as PanelTab[]);
+
+    // const newTabs = [...panelTabs.tabs];
+    // newTabs.splice(fromIndex, 0, newTabs.splice(toIndex, 1)[0]);
+    // console.log(panelTabs.tabs);
+    // console.log(newTabs);
+    // panelTabs.tabs = newTabs;
+    // panelTabs.setTabs(newTabs);
   }
 }

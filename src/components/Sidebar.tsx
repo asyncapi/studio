@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDrag } from "react-dnd";
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd } from 'react-icons/vsc';
 import { PanelsManager } from '../services';
 
@@ -56,11 +57,20 @@ const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   name,
   icon,
 }) => {
+  const [_, drag] = useDrag({
+    type: 'tool',
+    item: { toolName: name },
+    // collect: monitor => ({
+    //   isDragging: monitor.isDragging()
+    // })
+  });
+
   const panelsState = usePanelsState();
   const activePanel = panelsState.activePanel.get();
 
   return (
     <button
+      ref={drag}
       onClick={() => PanelsManager.addNewTool(activePanel, name)}
       className='flex text-sm text-gray-500 hover:text-white focus:outline-none border-box p-4'
       type="button"
