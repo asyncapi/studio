@@ -27,7 +27,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
           <Navigation />
         </Split.Pane>
         <Split.Pane key='content'>
-          <Panels id='root-vertical' />
+          <Panels id='root' />
         </Split.Pane>
       </Split>
     </div>

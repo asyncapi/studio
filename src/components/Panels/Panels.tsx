@@ -10,7 +10,6 @@ export interface PanelItem {
   id?: string;
   direction?: 'horizontal' | 'vertical',
   panels?: string[],
-  parent?: string;
 }
 
 interface PanelsProps {

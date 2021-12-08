@@ -105,7 +105,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [activeTab, setActiveTab] = useState(active || propTabs[0].name);
   const activePanel = panelsState.activePanel.get();
 
-  const [_, dropPanel] = useDrop({
+  const [{ isOverToolPane, canDropToolPane }, dropToolPane] = useDrop({
     accept: 'tool',
     drop: (item: any, monitor) => {
       // console.log(item, currentPanel)
@@ -115,6 +115,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     canDrop: () => {
       return true;
     },
+    collect: (monitor) => ({
+      isOverToolPane: monitor.isOver(),
+      canDropToolPane: monitor.canDrop(),
+    })
   });
 
   const [{ isOverTabPane, canDropTabPane }, dropTabsPane] = useDrop({
@@ -160,83 +164,6 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
     PanelsManager.changeTab(currentPanel, tabName, newTab);
   }
 
-  const splitHorizontal = (
-    <Dropdown
-      button={(setOpen) => (
-        <button 
-          onClick={() => setOpen(open => !open)}
-          className="ml-2"
-        >
-          <VscSplitHorizontal className="inline-block" />
-        </button>
-      )}
-      opener={<VscSplitHorizontal className="inline-block" />}
-      buttonHoverClassName="text-white"
-      className="relative inline-block"
-    >
-      <ul className="bg-gray-800 text-md text-white">
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Nearest scope"
-            onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal', 'nearest')}
-          >
-            Nearest scope
-          </button>
-        </li>
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Upper scope"
-            onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal', 'upper')}
-          >
-            Upper scope
-          </button>
-        </li>
-      </ul>
-    </Dropdown>
-  );
-
-  const splitVertical = (
-    <Dropdown
-      button={(setOpen) => (
-        <button 
-          onClick={() => setOpen(open => !open)}
-          className="ml-2"
-        >
-          <VscSplitVertical className="inline-block" />
-        </button>
-      )}
-      buttonHoverClassName="text-white"
-      className="relative inline-block"
-    >
-      <ul className="bg-gray-800 text-md text-white">
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Nearest scope"
-            onClick={() => PanelsManager.addPanel(currentPanel, 'vertical', 'nearest')}
-          >
-            Nearest scope
-          </button>
-        </li>
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Upper scope"
-            onClick={() => PanelsManager.addPanel(currentPanel, 'vertical', 'upper')}
-          >
-            Upper scope
-          </button>
-        </li>
-      </ul>
-    </Dropdown>
-  );
-
   const options = (
     <Dropdown
       button={(setOpen) => (
@@ -258,7 +185,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
             title="Delete panel"
             onClick={() => PanelsManager.removePanel(currentPanel)}
           >
-            Delete panel
+            Close All
           </button>
         </li>
       </ul>
@@ -267,10 +194,15 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
 
   return (
     <div 
-      className="flex flex-col h-full min-h-full"
+      className="flex flex-col h-full min-h-full relative"
       onClick={() => PanelsManager.setActivePanel(currentPanel)}
-      ref={dropPanel}
+      ref={dropToolPane}
     >
+      <div className={`absolute h-full w-full top-0 bottom-0 right-0 left-0 z-50 p-12 bg-gray-900 ${canDropToolPane ? 'visible opacity-75' : 'invisible opacity-0'}`}>
+        <div className="h-full border-dashed border-8 border-pink-500 rounded-xl">
+          lol
+        </div>
+      </div>
       <div
         className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
       >
@@ -291,8 +223,20 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         <div className="flex flex-row justify-end h-full leading-8">
           <div className="border-l border-gray-700 px-2">
             {currentPanel === activePanel ? <VscCircleLargeFilled className="inline-block text-pink-500" /> : <VscCircleLargeOutline className="inline-block" />}
-            {splitHorizontal}
-            {splitVertical}
+            <button 
+              type='button'
+              className="ml-2"
+              onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal')}
+            >
+              <VscSplitHorizontal className="inline-block" />
+            </button>
+            {/* <button 
+              type='button'
+              className="ml-2"
+              onClick={() => PanelsManager.addPanel(currentPanel, 'vertical')}
+            >
+              <VscSplitVertical className="inline-block" />
+            </button> */}
             {options}
           </div>
         </div>

@@ -55,109 +55,91 @@ export class PanelsManager {
     setTabs: React.Dispatch<React.SetStateAction<PanelTab[]>>,
   }> = new Map();
 
-  static addPanel(panelID: string, direction: PanelItem['direction'], scope: 'nearest' | 'upper'): void {
-    const nearestParent = this.findParent(panelID, direction);
-    if (!nearestParent) {
+  static addPanel(panelID: string, direction: PanelItem['direction']): void {
+    const parent = state.panels.panels.find(panel => {
+      const panels = panel.panels.get();
+      if (panels?.includes(panelID)) return true;
+      return false;
+    });
+    if (!parent) {
       return;
     }
     
     const newPanel = generateUniqueID();
     state.panels.panels.merge([
       {
-        id: `${newPanel}-vertical`,
-        direction: 'vertical',
-        panels: [`${newPanel}-horizontal`],
-        parent: nearestParent.parent.get(),
-      },
-      {
-        id: `${newPanel}-horizontal`,
-        direction: 'horizontal',
-        panels: [newPanel],
-        parent: nearestParent.parent.get(),
-      },
-      {
         id: newPanel,
-        parent: newPanel,
       },
     ]);
-
-    if (scope === 'nearest') {
-      nearestParent.panels.merge([newPanel]);
-    } else {
-      const upperParent = this.findParent(nearestParent.id.get() as string, direction);
-      if (!upperParent) {
-        return;
-      }
-      upperParent.panels.merge([newPanel]);
-    }
-    // parentPanel?.panels.merge([newPanel]);
-
-    // // state.panels.panels.merge()
-
-    // {
-    //   id: 'panel-1-vertical',
-    //   direction: 'vertical',
-    //   panels: ['panel-1-horizontal'],
-    //   parent: 'root',
-    // },
-    // {
-    //   id: 'panel-1-horizontal',
-    //   direction: 'horizontal',
-    //   panels: ['panel-1'],
-    //   parent: 'root',
-    // },
-    // {
-    //   id: 'panel-1',
-    //   parent: 'panel-1',
-    // },
+    parent.set(oldParent => {
+      const panels = oldParent.panels!;
+      const newPanels = [...panels];
+      newPanels.splice(panels.findIndex(panel => panel === panelID), 0, newPanel);
+      oldParent.panels = newPanels;
+      return oldParent;
+    });
+    state.panels.activePanel.set(newPanel);
+    // panel.panels.merge([`${newPanel}-vertical`]);
+    // console.log(panel.get());
+    // console.log(state.panels.panels.get());
   }
 
   static removePanel(panelID: string) {
     state.panels.panels.set(oldPanels => {
       const newPanels = oldPanels
-        .filter(panel => panel.id && !panel.id.startsWith(panelID))
+        .filter(panel => panel.id !== panelID)
         .map(panel => {
           if (panel.panels) {
             return {
               ...panel,
-              panels: panel.panels.filter(p => !p.startsWith(panelID)),
+              panels: panel.panels.filter(p => p !== panelID),
             };
           }
           return { ...panel };
         });
-
-      if (newPanels.length === 2) {
-        newPanels[0].panels = ['root-horizontal'],
-        newPanels[1].panels = ['panel-1-vertical'],
-        newPanels.push(
-          {
-            id: 'panel-1-vertical',
-            direction: 'vertical',
-            panels: ['panel-1-horizontal'],
-            parent: 'root',
-          },
-          {
-            id: 'panel-1-horizontal',
-            direction: 'horizontal',
-            panels: ['panel-1'],
-            parent: 'root',
-          },
-          {
-            id: 'panel-1',
-            parent: 'panel-1',
-          },
-        );
-      }
-
       return newPanels;
     });
+    // state.panels.panels.set(oldPanels => {
+    //   const newPanels = oldPanels
+    //     .filter(panel => panel.id && !panel.id.startsWith(panelID))
+    //     .map(panel => {
+    //       if (panel.panels) {
+    //         return {
+    //           ...panel,
+    //           panels: panel.panels.filter(p => !p.startsWith(panelID)),
+    //         };
+    //       }
+    //       return { ...panel };
+    //     });
+
+    //   if (newPanels.length === 2) {
+    //     newPanels[0].panels = ['root-horizontal'],
+    //     newPanels[1].panels = ['panel-1-vertical'],
+    //     newPanels.push(
+    //       {
+    //         id: 'panel-1-vertical',
+    //         direction: 'vertical',
+    //         panels: ['panel-1-horizontal'],
+    //       },
+    //       {
+    //         id: 'panel-1-horizontal',
+    //         direction: 'horizontal',
+    //         panels: ['panel-1'],
+    //       },
+    //       {
+    //         id: 'panel-1',
+    //       },
+    //     );
+    //   }
+
+    //   return newPanels;
+    // });
     // console.log(state.panels.panels.get())
   }
 
   static findParent(panelID: string, direction: PanelItem['direction']) {
-    const currentPanel = state.panels.panels.find(panel => panel.id.get() === panelID);
-    const searchedID = `${currentPanel?.parent.get()}-${direction}`;
-    return state.panels.panels.find(panel => panel.id.get() === searchedID);
+    const key = `${panelID}-${direction}`;
+    return state.panels.panels.find(panel => panel.id.get() === key);
   }
 
   static setTabs(

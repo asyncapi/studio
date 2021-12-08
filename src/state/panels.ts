@@ -9,46 +9,20 @@ export interface PanelsState {
 export const panelsState = createState<PanelsState>({
   panels: [
     {
-      id: 'root-vertical',
+      id: 'root',
       direction: 'vertical',
-      panels: ['root-horizontal'],
+      panels: ['group-1'],
     },
     {
-      id: 'root-horizontal',
+      id: 'group-1',
       direction: 'horizontal',
-      panels: ['panel-1-vertical', 'panel-2-vertical'],
-    },
-    {
-      id: 'panel-1-vertical',
-      direction: 'vertical',
-      panels: ['panel-1-horizontal'],
-      parent: 'root',
-    },
-    {
-      id: 'panel-1-horizontal',
-      direction: 'horizontal',
-      panels: ['panel-1'],
-      parent: 'root',
-    },
-    {
-      id: 'panel-2-vertical',
-      direction: 'vertical',
-      panels: ['panel-2-horizontal'],
-      parent: 'root',
-    },
-    {
-      id: 'panel-2-horizontal',
-      direction: 'horizontal',
-      panels: ['panel-2'],
-      parent: 'root',
+      panels: ['panel-1', 'panel-2'],
     },
     {
       id: 'panel-1',
-      parent: 'panel-1',
     },
     {
       id: 'panel-2',
-      parent: 'panel-2',
     },
   ],
   activePanel: 'panel-1',
