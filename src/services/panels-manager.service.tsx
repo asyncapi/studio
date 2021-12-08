@@ -73,15 +73,13 @@ export class PanelsManager {
     ]);
     parent.set(oldParent => {
       const panels = oldParent.panels!;
+      const index = panels.findIndex(panel => panel === panelID);
       const newPanels = [...panels];
-      newPanels.splice(panels.findIndex(panel => panel === panelID), 0, newPanel);
+      newPanels.splice(index + 1, 0, newPanel);
       oldParent.panels = newPanels;
       return oldParent;
     });
     state.panels.activePanel.set(newPanel);
-    // panel.panels.merge([`${newPanel}-vertical`]);
-    // console.log(panel.get());
-    // console.log(state.panels.panels.get());
   }
 
   static removePanel(panelID: string) {
@@ -97,44 +95,17 @@ export class PanelsManager {
           }
           return { ...panel };
         });
+
+      if (newPanels.length === 2) {
+        newPanels[1].panels = ['panel-1'];
+        newPanels.push(
+          {
+            id: 'panel-1',
+          },
+        );
+      }
       return newPanels;
     });
-    // state.panels.panels.set(oldPanels => {
-    //   const newPanels = oldPanels
-    //     .filter(panel => panel.id && !panel.id.startsWith(panelID))
-    //     .map(panel => {
-    //       if (panel.panels) {
-    //         return {
-    //           ...panel,
-    //           panels: panel.panels.filter(p => !p.startsWith(panelID)),
-    //         };
-    //       }
-    //       return { ...panel };
-    //     });
-
-    //   if (newPanels.length === 2) {
-    //     newPanels[0].panels = ['root-horizontal'],
-    //     newPanels[1].panels = ['panel-1-vertical'],
-    //     newPanels.push(
-    //       {
-    //         id: 'panel-1-vertical',
-    //         direction: 'vertical',
-    //         panels: ['panel-1-horizontal'],
-    //       },
-    //       {
-    //         id: 'panel-1-horizontal',
-    //         direction: 'horizontal',
-    //         panels: ['panel-1'],
-    //       },
-    //       {
-    //         id: 'panel-1',
-    //       },
-    //     );
-    //   }
-
-    //   return newPanels;
-    // });
-    // console.log(state.panels.panels.get())
   }
 
   static findParent(panelID: string, direction: PanelItem['direction']) {
@@ -301,6 +272,7 @@ export class PanelsManager {
       panelTabs.setTabs(newTabs);
       panelTabs.activeTab = tab.name;
       panelTabs.setActiveTab(tab.name);
+      this.setActivePanel(toPanel);
       
       return;
     }

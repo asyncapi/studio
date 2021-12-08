@@ -329,7 +329,8 @@ export class SplitView extends EventEmitter implements Disposable {
         ? new VerticalViewItem(container, view, viewSize)
         : new HorizontalViewItem(container, view, viewSize);
 
-    this.viewItems.push(item);
+    this.viewItems.splice(index, 0, item);
+    // this.viewItems.push(item);
 
     if (this.viewItems.length > 1) {
       const sash =

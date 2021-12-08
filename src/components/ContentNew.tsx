@@ -15,7 +15,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
 
   return (
     <div className="flex flex-1 flex-row relative">
-      <Split onChange={(e) => {
+      <Split onChange={(e: any) => {
         if (e[0] === 0 && sidebarState.panels.navigation.get() === true) {
           sidebarState.panels.navigation.set(false);
         } else if (e[0] > 0 && sidebarState.panels.navigation.get() === false) {

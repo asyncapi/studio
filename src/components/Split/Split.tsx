@@ -165,7 +165,12 @@ const Split = forwardRef<SplitHandle, SplitProps>(
     useEffect(() => {
       const keys = childrenArray.map((child) => child.key as string);
 
-      const enter = keys.filter((key) => !previousKeys.current.includes(key));
+      // const enter = keys.filter((key) => !previousKeys.current.includes(key));
+      const enter = keys.map((key, index) => {
+        if (!previousKeys.current.includes(key)) {
+          return { key, index };
+        }
+      }).filter(Boolean) as { key: string, index: number }[];
       const exit = previousKeys.current.map((key) => !keys.includes(key));
 
       exit.forEach((flag, index) => {
@@ -174,11 +179,11 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         }
       });
 
-      for (const key of enter) {
-        const props = splitViewPropsRef.current.get(key);
+      for (const e of enter) {
+        const props = splitViewPropsRef.current.get(e.key);
 
         splitViewRef.current?.addView(
-          splitViewViewRef.current.get(key)!,
+          splitViewViewRef.current.get(e.key)!,
           {
             element: document.createElement("div"),
             minimumSize: props?.minSize ?? minSize,
@@ -186,7 +191,8 @@ const Split = forwardRef<SplitHandle, SplitProps>(
             snap: props?.snap ?? snap,
             layout: () => {},
           },
-          Sizing.Distribute
+          Sizing.Distribute,
+          e.index,
         );
       }
 
