@@ -183,7 +183,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
             title="Delete panel"
-            onClick={() => PanelsManager.removePanel(currentPanel)}
+            onClick={(e) => {
+              e.stopPropagation();
+              PanelsManager.removePanel(currentPanel);
+            }}
           >
             Close All
           </button>

@@ -96,8 +96,9 @@ export class PanelsManager {
           return { ...panel };
         });
 
+      let activePanel: string = newPanels[1].panels![newPanels[1].panels!.length -1 ];
       if (newPanels.length === 2) {
-        const newID = generateUniqueID();
+        const newID = activePanel = generateUniqueID();
         newPanels[1].panels = [newID];
         newPanels.push(
           {
@@ -105,6 +106,8 @@ export class PanelsManager {
           },
         );
       }
+      
+      this.setActivePanel(activePanel);
       return newPanels;
     });
   }
