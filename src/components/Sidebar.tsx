@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDrag } from "react-dnd";
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd, VscTerminal } from 'react-icons/vsc';
-import { PanelsManager } from '../services';
+
+import { PanelsManager, DRAG_DROP_TYPES } from '../services';
 
 import state from '../state';
-import { usePanelsState } from '../state/panels';
 
 type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
 
@@ -57,13 +57,13 @@ const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   name,
   icon,
 }) => {
+  const panelsState = state.usePanelsState();
+  const activePanel = panelsState.activePanel.get();
+
   const [_, drag] = useDrag({
-    type: 'tool',
+    type: DRAG_DROP_TYPES.TOOL,
     item: { toolName: name },
   });
-
-  const panelsState = usePanelsState();
-  const activePanel = panelsState.activePanel.get();
 
   return (
     <button

@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
-import { generateUniqueID } from '../../helpers';
 
-import { MonacoWrapper } from '../Editor';
-import { HTMLWrapper } from '../Template';
-import { Terminal } from '../Terminal';
-import { Visualiser } from '../Visualiser';
+import { MonacoWrapper } from '../../Editor';
+import { HTMLWrapper } from '../../Template';
+import { Terminal } from '../../Terminal';
+import { Visualiser } from '../../Visualiser';
 
+import { PanelContext } from '../PanelContext';
 import { TabContext } from './TabContext';
+
+import { PanelsManager } from '../../../services';
+import { generateUniqueID } from '../../../helpers';
 
 const tools = [
   {
@@ -48,17 +51,19 @@ const tools = [
 ];
 
 export const NewTab: React.FunctionComponent = () => {
-  const { changeTab, currentTab } = useContext(TabContext);
+  const { currentPanel } = useContext(PanelContext);
+  const { currentTab } = useContext(TabContext);
 
   const handleToolClick = (toolName: string) => {
     const tool = tools.find(t => t.tool === toolName);
     if (tool) {
-      changeTab(currentTab, {
+      const newTab = {
         name: generateUniqueID(),
         tab: tool.tab(),
         content: tool.content(),
         isNewTab: false,
-      });
+      };
+      PanelsManager.changeTab(currentPanel, currentTab, newTab);
     }
   };
 

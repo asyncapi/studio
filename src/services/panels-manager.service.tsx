@@ -2,7 +2,6 @@ import { State } from '@hookstate/core';
 import { HTMLWrapper, MonacoWrapper } from '../components';
 
 import { PanelItem } from '../components/Panels/Panels';
-import { PanelTab } from '../components/Panels/PanelsTabs';
 import { Terminal } from '../components/Terminal';
 import { Visualiser } from '../components/Visualiser';
 import { generateUniqueID } from '../helpers';
@@ -47,6 +46,21 @@ const tools = [
     content: () => <Terminal />
   },
 ];
+
+export enum DRAG_DROP_TYPES {
+  PANE = 'PANE',
+  TAB = 'TAB',
+  TOOL = 'TOOL',
+  FILE = 'FILE',
+} 
+
+export interface PanelTab {
+  // change to the id
+  name: string;
+  tab: React.ReactNode;
+  content: React.ReactNode;
+  isNewTab: boolean;
+}
 
 export class PanelsManager {
   static tabs: Map<string, {

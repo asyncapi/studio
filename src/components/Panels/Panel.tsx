@@ -1,14 +1,9 @@
 import React from 'react';
-// import { VscCode } from 'react-icons/vsc';
 
-import { PanelTab, PanelTabs } from './PanelsTabs';
-// import { MonacoWrapper } from '../Editor';
-// import { HTMLWrapper } from '../Template';
-import { NewTab } from './NewTab';
+import { PanelContent } from './PanelsContent';
+import { NewTab } from './Tabs/NewTab';
 import { PanelContext } from './PanelContext';
 import { generateUniqueID } from '../../helpers';
-
-// import state from '../../state';
 
 function createStartTabs() {
   return [
@@ -35,7 +30,7 @@ export const Panel: React.FunctionComponent<PanelProps> = ({
       currentPanel: panelID,
     }}>
       <div className="relative h-full min-h-full bg-gray-800">
-        <PanelTabs tabs={createStartTabs()} />
+        <PanelContent tabs={createStartTabs()} />
       </div>
     </PanelContext.Provider>
   );

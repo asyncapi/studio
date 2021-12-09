@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Allotment } from 'allotment';
 import { Split } from "../Split"
 
 import { Panel } from './Panel';
@@ -44,66 +43,4 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
   return (
     <Panel key={id} panelID={id} />
   );
-
-  // return (
-  //   <div className="flex flex-1 flex-row relative">
-  //     <Allotment>
-  //       {/* <Allotment.Pane minSize={240} snap>
-  //         <Navigation />
-  //       </Allotment.Pane> */}
-  //       <Allotment.Pane>
-  //         <Allotment>
-  //           <Allotment.Pane minSize={240} snap>
-  //             <Panel />
-  //           </Allotment.Pane>
-  //           <Allotment.Pane>
-  //             <Panel />
-  //           </Allotment.Pane>
-  //         </Allotment>
-  //       </Allotment.Pane>
-  //       {/* <Allotment.Pane>
-  //         <Allotment vertical>
-  //           <Allotment.Pane>
-  //             <Panel />
-  //           </Allotment.Pane>
-  //           <Allotment.Pane>
-  //             <Panel />
-  //           </Allotment.Pane>
-  //         </Allotment>
-  //       </Allotment.Pane> */}
-  //     </Allotment>
-  //   </div>
-  // );
-
-  // return (
-  //   <div className="flex flex-1 flex-row relative">
-  //     <div className="flex flex-1 flex-row relative">
-
-  //       {newFileEnabled && <NewFile />}
-
-  //       {!newFileEnabled && 
-  //         <SplitPane
-  //           size={viewEnabled ? secondPaneSize : 0}
-  //           minSize={0}
-  //           maxSize={secondPaneMaxSize}
-  //           pane1Style={
-  //             navigationEnabled || editorEnabled ? undefined : { width: '0px' }
-  //           }
-  //           pane2Style={
-  //             viewEnabled ? { overflow: 'auto' } : { width: '0px' }
-  //           }
-  //           primary={viewEnabled ? 'first' : 'second'}
-  //           defaultSize={localStorageRightPaneSize}
-  //           onChange={debounce((size: string) => {
-  //             localStorage.setItem(splitPosRight, String(size));
-  //           }, 100)}
-  //         >
-  //           {navigationAndEditor}
-  //           {viewType === 'template' && <Template />}
-  //           {viewType === 'visualiser' && <Visualiser />}
-  //         </SplitPane> 
-  //       }
-  //     </div>
-  //   </div>
-  // );
 };
