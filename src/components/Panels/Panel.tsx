@@ -34,7 +34,7 @@ export const Panel: React.FunctionComponent<PanelProps> = ({
     <PanelContext.Provider value={{
       currentPanel: panelID,
     }}>
-      <div className="h-full min-h-full bg-gray-800">
+      <div className="relative h-full min-h-full bg-gray-800">
         <PanelTabs tabs={createStartTabs()} />
       </div>
     </PanelContext.Provider>
