@@ -7,7 +7,7 @@ import { Panel } from './Panel';
 import state from '../../state';
 
 export interface PanelItem {
-  id?: string;
+  id: string;
   direction?: 'horizontal' | 'vertical',
   panels?: string[],
 }

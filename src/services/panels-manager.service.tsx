@@ -1,3 +1,4 @@
+import { State } from '@hookstate/core';
 import { HTMLWrapper, MonacoWrapper } from '../components';
 
 import { PanelItem } from '../components/Panels/Panels';
@@ -55,8 +56,9 @@ export class PanelsManager {
     setTabs: React.Dispatch<React.SetStateAction<PanelTab[]>>,
   }> = new Map();
 
-  static addPanel(panelID: string, direction: PanelItem['direction']): void {
-    const parent = state.panels.panels.find(panel => {
+  static addPanel(panelID: string, direction: 'top' | 'bottom' | 'right' | 'left' = 'left'): string | undefined {
+    let parent: State<PanelItem> | undefined;
+    parent = state.panels.panels.find(panel => {
       const panels = panel.panels.get();
       if (panels?.includes(panelID)) return true;
       return false;
@@ -66,25 +68,70 @@ export class PanelsManager {
     }
     
     const newPanel = generateUniqueID();
-    state.panels.panels.merge([
-      {
-        id: newPanel,
-      },
-    ]);
-    parent.set(oldParent => {
-      const panels = oldParent.panels!;
-      const index = panels.findIndex(panel => panel === panelID);
-      const newPanels = [...panels];
-      newPanels.splice(index + 1, 0, newPanel);
-      oldParent.panels = newPanels;
-      return oldParent;
-    });
+    if (direction === 'top' || direction === 'bottom') {
+      state.panels.panels.merge([
+        {
+          id: newPanel,
+        },
+      ]);
+      parent.set(oldParent => {
+        const panels = oldParent.panels!;
+        const index = panels.findIndex(panel => panel === panelID);
+        const newPanels = [...panels];
+        newPanels.splice(direction === 'top' ? index : index + 1, 0, newPanel);
+        oldParent.panels = newPanels;
+        return oldParent;
+      });
+    } else {
+      state.panels.panels.merge([
+        {
+          id: `${newPanel}-group`,
+          direction: 'vertical',
+          panels: [newPanel],
+        },
+        {
+          id: newPanel,
+        },
+      ]);
+      const group = state.panels.panels.find(panel => panel.id.get() === 'group-1');
+      if (!group) {
+        return;
+      }
+
+      group.set(oldGroup => {
+        const panels = oldGroup.panels!;
+        const index = panels.findIndex(panel => panel === parent!.id.get());
+        const newPanels = [...panels];
+        newPanels.splice(direction === 'left' ? index : index + 1, 0, `${newPanel}-group`);
+        oldGroup.panels = newPanels;
+        return oldGroup;
+      });
+    }
     state.panels.activePanel.set(newPanel);
+    return newPanel;
+  }
+
+  static addPanelNew(
+    panelID: string, 
+    direction: 'top' | 'bottom' | 'right' | 'left',
+    type: 'tool' | 'tab',
+    toolOrTab: any,
+  ): void {
+    const newPanel = this.addPanel(panelID, direction);
+    if (!newPanel) {
+      return;
+    }
+
+    if (type === 'tool') {
+      this.addNewTool(newPanel, toolOrTab.toolName);
+      return;
+    }
+    this.switchTabs(toolOrTab.panelID, newPanel, toolOrTab.tabID, 0);
   }
 
   static removePanel(panelID: string) {
     state.panels.panels.set(oldPanels => {
-      const newPanels = oldPanels
+      let newPanels = oldPanels
         .filter(panel => panel.id !== panelID)
         .map(panel => {
           if (panel.panels) {
@@ -95,12 +142,33 @@ export class PanelsManager {
           }
           return { ...panel };
         });
+      newPanels = newPanels
+        .filter(panel => {
+          if (panel.id === `${panelID}-group` && panel.panels?.length === 0) {
+            return false;
+          }
+          return true;
+        });
+      // group
+      newPanels[1].panels = newPanels[1].panels?.filter(panel => {
+        if (panel === `${panelID}-group`) {
+          const p = newPanels.find(e => e.id === `${panelID}-group`);
+          return p?.panels?.length;
+        }
+        return true;
+      });
 
-      let activePanel: string = newPanels[1].panels![newPanels[1].panels!.length -1 ];
+
+      let activePanel: string = newPanels[1].panels![newPanels[1].panels!.length -1];
       if (newPanels.length === 2) {
         const newID = activePanel = generateUniqueID();
-        newPanels[1].panels = [newID];
+        newPanels[1].panels = [`${newID}-group`];
         newPanels.push(
+          {
+            id: `${newID}-group`,
+            direction: 'vertical',
+            panels: [newID],
+          },
           {
             id: newID,
           },

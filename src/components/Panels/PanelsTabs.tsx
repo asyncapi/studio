@@ -132,7 +132,11 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [{ isOverCenterSpace, canDropCenterSpace }, dropCenterSpace] = useDrop({
     accept: ['tool', 'tab'],
     drop: (item: any, monitor) => {
-      PanelsManager.addNewTool(currentPanel, item.toolName);
+      if (item.toolName) {
+        PanelsManager.addNewTool(currentPanel, item.toolName);
+      } else {
+        PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, 0);
+      }
     },
     canDrop: () => {
       return true;
@@ -149,7 +153,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [{ isOverTopSpace, canDropTopSpace }, dropTopSpace] = useDrop({
     accept: ['tool', 'tab'],
     drop: (item: any, monitor) => {
-      PanelsManager.addNewTool(currentPanel, item.toolName);
+      PanelsManager.addPanelNew(currentPanel, 'top', monitor.getItemType() as any, item);
     },
     canDrop: () => {
       return true;
@@ -164,7 +168,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [{ isOverLeftSpace, canDropLeftSpace }, dropLeftSpace] = useDrop({
     accept: ['tool', 'tab'],
     drop: (item: any, monitor) => {
-      PanelsManager.addNewTool(currentPanel, item.toolName);
+      PanelsManager.addPanelNew(currentPanel, 'left', monitor.getItemType() as any, item);
     },
     canDrop: () => {
       return true;
@@ -179,7 +183,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [{ isOverRightSpace, canDropRightSpace }, dropRightSpace] = useDrop({
     accept: ['tool', 'tab'],
     drop: (item: any, monitor) => {
-      PanelsManager.addNewTool(currentPanel, item.toolName);
+      PanelsManager.addPanelNew(currentPanel, 'right', monitor.getItemType() as any, item);
     },
     canDrop: () => {
       return true;
@@ -194,7 +198,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
   const [{ isOverBottomSpace, canDropBottomSpace }, dropBottomSpace] = useDrop({
     accept: ['tool', 'tab'],
     drop: (item: any, monitor) => {
-      PanelsManager.addNewTool(currentPanel, item.toolName);
+      PanelsManager.addPanelNew(currentPanel, 'bottom', monitor.getItemType() as any, item);
     },
     canDrop: () => {
       return true;
@@ -293,7 +297,7 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
             <button 
               type='button'
               className="ml-2"
-              onClick={() => PanelsManager.addPanel(currentPanel, 'horizontal')}
+              onClick={() => PanelsManager.addPanel(currentPanel, 'right')}
             >
               <VscSplitHorizontal className="inline-block" />
             </button>
@@ -312,27 +316,27 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         className="flex flex-1 relative"
       >
         {/* center space */}
-        <div className={`absolute w-full h-full top-0 left-0 right-0 bottom-0 p-16 z-10 bg-gray-700 ${canDropCenterSpace && isOverCenterSpace ? 'visible opacity-75' : 'invisible opacity-0'}`}>
+        <div className={`absolute w-full h-full top-0 left-0 right-0 bottom-0 p-16 z-50 bg-gray-700 ${canDropCenterSpace && isOverCenterSpace ? 'visible opacity-75' : 'invisible opacity-0'}`}>
           <div className={`h-full w-full ${canDropCenterSpace ? 'visible' : 'invisible'}`} ref={dropCenterSpace} />
         </div>
       
         {/* top space */}
-        <div className={`absolute w-full top-0 left-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ height: canDropTopSpace && isOverTopSpace ? '50%' : '0' }}>
+        <div className={`absolute w-full top-0 left-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ height: canDropTopSpace && isOverTopSpace ? '50%' : '0' }}>
           <div className={`h-16 w-full ${canDropTopSpace ? 'visible' : 'invisible'}`} ref={dropTopSpace} />
         </div>
 
         {/* bottom space */}
-        <div className={`absolute w-full bottom-0 left-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ height: canDropBottomSpace && isOverBottomSpace ? '50%' : '0' }}>
+        <div className={`absolute w-full bottom-0 left-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ height: canDropBottomSpace && isOverBottomSpace ? '50%' : '0' }}>
           <div className={`h-16 w-full absolute bottom-0 ${canDropBottomSpace ? 'visible' : 'invisible'}`} ref={dropBottomSpace} />
         </div>
 
         {/* left space */}
-        <div className={`absolute h-full py-16 top-0 bottom-0 left-0 z-10 bg-gray-700 opacity-75`} style={{ width: canDropLeftSpace && isOverLeftSpace ? '50%' : '0' }}>
+        <div className={`absolute h-full py-16 top-0 bottom-0 left-0 z-50 bg-gray-700 opacity-75`} style={{ width: canDropLeftSpace && isOverLeftSpace ? '50%' : '0' }}>
           <div className={`h-full w-16 ${canDropLeftSpace ? 'visible' : 'invisible'}`} ref={dropLeftSpace} />
         </div>
 
         {/* right space */}
-        <div className={`absolute h-full py-16 top-0 bottom-0 right-0 z-10 bg-gray-700 opacity-75`} style={{ width: canDropRightSpace && isOverRightSpace ? '50%' : '0' }}>
+        <div className={`absolute h-full py-16 top-0 bottom-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ width: canDropRightSpace && isOverRightSpace ? '50%' : '0' }}>
           <div className={`h-full w-16 absolute right-0 ${canDropRightSpace ? 'visible' : 'invisible'}`} ref={dropRightSpace} />
         </div>
 

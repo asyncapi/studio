@@ -16,7 +16,17 @@ export const panelsState = createState<PanelsState>({
     {
       id: 'group-1',
       direction: 'horizontal',
-      panels: ['panel-1', 'panel-2'],
+      panels: ['panel-1-group', 'panel-2-group'],
+    },
+    {
+      id: 'panel-1-group',
+      direction: 'vertical',
+      panels: ['panel-1'],
+    },
+    {
+      id: 'panel-2-group',
+      direction: 'vertical',
+      panels: ['panel-2'],
     },
     {
       id: 'panel-1',
