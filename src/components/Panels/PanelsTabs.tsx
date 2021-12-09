@@ -275,10 +275,10 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
       onClick={() => PanelsManager.setActivePanel(currentPanel)}
     >
       <div
-        className="flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full"
+        className={`flex flex-none flex-row justify-between items-center text-white font-bold text-xs border-b border-gray-700 bg-gray-800 text-sm w-full`}
       >
         <ul
-          className="flex flex-none flex-row"
+          className={`flex flex-none flex-row ${currentPanel === activePanel ? 'opacity-1' : 'opacity-50'}`}
         >
           {tabs.map(tab => (
             <Tab key={tab.name} {...tab} activeTab={activeTab} />
@@ -293,21 +293,12 @@ export const PanelTabs: React.FunctionComponent<PanelTabsProps> = ({
         <div className={`flex-1 w-full h-full ${isOverTabPane && canDropTabPane ? 'bg-gray-700' : 'bg-gray-800'}`} ref={dropTabsPane} />
         <div className="flex flex-row justify-end h-full leading-8">
           <div className="border-l border-gray-700 px-2">
-            {currentPanel === activePanel ? <VscCircleLargeFilled className="inline-block text-pink-500" /> : <VscCircleLargeOutline className="inline-block" />}
             <button 
               type='button'
-              className="ml-2"
               onClick={() => PanelsManager.addPanel(currentPanel, 'right')}
             >
               <VscSplitHorizontal className="inline-block" />
             </button>
-            {/* <button 
-              type='button'
-              className="ml-2"
-              onClick={() => PanelsManager.addPanel(currentPanel, 'vertical')}
-            >
-              <VscSplitVertical className="inline-block" />
-            </button> */}
             {options}
           </div>
         </div>
