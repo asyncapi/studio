@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { PanelTabID } from '../../../services';
+
 interface TabContextProps {
-  currentTab: string;
+  currentTab: PanelTabID;
 }
 
 export const TabContext = React.createContext<TabContextProps>({

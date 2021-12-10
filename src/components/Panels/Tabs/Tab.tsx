@@ -11,7 +11,7 @@ interface TabProps extends PanelTab {
 }
 
 export const Tab: React.FunctionComponent<TabProps> = ({
-  name,
+  id,
   tab,
   activeTab,
 }) => {
@@ -20,7 +20,7 @@ export const Tab: React.FunctionComponent<TabProps> = ({
 
   const [_, drag] = useDrag({
     type: DRAG_DROP_TYPES.TAB,
-    item: { tabID: name, panelID: currentPanel },
+    item: { tabID: id, panelID: currentPanel },
   });
   const [{ isOver }, drop] = useDrop({
     accept: [
@@ -30,9 +30,9 @@ export const Tab: React.FunctionComponent<TabProps> = ({
     ],
     drop: (item: any) => {
       if (item.toolName) {
-        PanelsManager.addNewTool(currentPanel, item.toolName);
+        // PanelsManager.addNewTool(currentPanel, item.toolName);
       } else {
-        PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, name);
+        PanelsManager.switchTabs(item.tabID, item.panelID, id, currentPanel);
       }
     },
     canDrop: () => true,
@@ -40,9 +40,9 @@ export const Tab: React.FunctionComponent<TabProps> = ({
       isOver: monitor.isOver(),
     })
   });
-  drag(drop(ref))
+  drag(drop(ref));
 
-  const activeClassName = activeTab === name
+  const activeClassName = activeTab === id
     ? 'text-white border-pink-500'
     : 'text-gray-500 border-gray-800';
 
@@ -57,7 +57,7 @@ export const Tab: React.FunctionComponent<TabProps> = ({
     >
       <div
         className={`group leading-7 px-3 cursor-pointer border-t-2 ${isOver ? dropIsOverClassName : activeClassName} focus:outline-none border-box`}
-        onClick={() => PanelsManager.setActiveTab(currentPanel, name)}
+        onClick={() => PanelsManager.updateActiveTab(id, currentPanel)}
       >
         <div
           className={`border-box border-b-2 ${dropIsOverClassName}`}
@@ -67,13 +67,13 @@ export const Tab: React.FunctionComponent<TabProps> = ({
           </div>
           <button 
             className={`inline ml-1 ${
-              activeTab === name
+              activeTab === id
                 ? 'text-white'
                 : 'text-gray-800 group-hover:text-gray-500'
             }`}
             onClick={ev => {
               ev.stopPropagation();
-              PanelsManager.removeTab(currentPanel, name);
+              PanelsManager.removeTab(id, currentPanel);
             }}
           >
             <VscClose className="inline-block w-4 h-4" />

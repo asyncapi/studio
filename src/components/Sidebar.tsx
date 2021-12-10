@@ -2,7 +2,7 @@ import React from 'react';
 import { useDrag } from "react-dnd";
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscAdd, VscTerminal } from 'react-icons/vsc';
 
-import { PanelsManager, DRAG_DROP_TYPES } from '../services';
+import { DRAG_DROP_TYPES } from '../services';
 
 import state from '../state';
 
@@ -49,26 +49,23 @@ function setActiveNav(navItem: NavItemType) {
 }
 
 interface SidebarItemProps {
-  name: string;
+  id: string;
   icon: React.ReactNode;
 }
 
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
-  name,
+  id,
   icon,
 }) => {
-  const panelsState = state.usePanelsState();
-  const activePanel = panelsState.activePanel.get();
-
   const [_, drag] = useDrag({
     type: DRAG_DROP_TYPES.TOOL,
-    item: { toolName: name },
+    item: { toolID: id },
   });
 
   return (
     <button
       ref={drag}
-      onClick={() => PanelsManager.addNewTool(activePanel, name)}
+      // onClick={() => PanelsManager.addNewTool(activePanel, name)}
       className='flex text-sm text-gray-500 hover:text-white focus:outline-none border-box p-4'
       type="button"
     >
@@ -135,19 +132,19 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
 
   const tools: SidebarItemProps[] = [
     {
-      name: 'editor',
+      id: 'editor',
       icon: <VscCode className="w-5 h-5" />,
     },
     {
-      name: 'html',
+      id: 'html',
       icon: <VscOpenPreview className="w-5 h-5" />,
     },
     {
-      name: 'visualiser',
+      id: 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
     },
     {
-      name: 'terminal',
+      id: 'terminal',
       icon: <VscTerminal className="w-5 h-5" />,
     },
   ];
@@ -172,7 +169,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       </div>
       <div className="flex flex-col">
         {tools.map(item => (
-          <SidebarItem {...item} key={item.name} />
+          <SidebarItem {...item} key={item.id} />
         ))}
       </div>
     </div>

@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
-import { useDrop } from "react-dnd";
+import React, { useCallback, useContext } from 'react';
+import { DropTargetMonitor, useDrop } from "react-dnd";
 
 import { PanelContext } from './PanelContext';
 
-import { PanelsManager, DRAG_DROP_TYPES } from '../../services';
+import { PanelsManager, DropDirection, DRAG_DROP_TYPES } from '../../services';
 
 const DRAG_DROP_ACCEPTS = [
-  DRAG_DROP_TYPES.PANE,
+  DRAG_DROP_TYPES.PANEL,
   DRAG_DROP_TYPES.TAB,
   DRAG_DROP_TYPES.TOOL,
   DRAG_DROP_TYPES.FILE
@@ -15,15 +15,27 @@ const DRAG_DROP_ACCEPTS = [
 export const PanelDnDArea: React.FunctionComponent = () => {
   const { currentPanel } = useContext(PanelContext);
 
+  const onDrop = useCallback((item: any, monitor: DropTargetMonitor, direction: DropDirection) => {
+    const newPanel = PanelsManager.createPanel(currentPanel, direction);
+    if (!newPanel) {
+      return;
+    }
+    switch (monitor.getItemType()) {
+      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, newPanel.id);
+      case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, newPanel.id);
+      default: return;
+    }
+  }, []);
+
   // for center area
   const [{ isOverCenterSpace, canDropCenterSpace }, dropCenterSpace] = useDrop({
     accept: DRAG_DROP_ACCEPTS,
     drop: (item: any, monitor) => {
-      if (item.toolName) {
-        PanelsManager.addNewTool(currentPanel, item.toolName);
-      } else {
-        PanelsManager.switchTabs(item.panelID, currentPanel, item.tabID, 0);
-      }
+      switch (monitor.getItemType()) {
+        case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, currentPanel);
+        case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, currentPanel);
+        default: return;
+      } 
     },
     canDrop: () => true,
     collect: (monitor) => {
@@ -37,9 +49,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
   // for top area
   const [{ isOverTopSpace, canDropTopSpace }, dropTopSpace] = useDrop({
     accept: DRAG_DROP_ACCEPTS,
-    drop: (item: any, monitor) => {
-      PanelsManager.addPanelNew(currentPanel, 'top', monitor.getItemType() as any, item);
-    },
+    drop: (item: any, monitor) => onDrop(item, monitor, DropDirection.TOP),
     canDrop: () => true,
     collect: (monitor) => ({
       isOverTopSpace: monitor.isOver(),
@@ -50,9 +60,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
   // for bottom area
   const [{ isOverBottomSpace, canDropBottomSpace }, dropBottomSpace] = useDrop({
     accept: DRAG_DROP_ACCEPTS,
-    drop: (item: any, monitor) => {
-      PanelsManager.addPanelNew(currentPanel, 'bottom', monitor.getItemType() as any, item);
-    },
+    drop: (item: any, monitor) => onDrop(item, monitor, DropDirection.BOTTOM),
     canDrop: () => true,
     collect: (monitor) => ({
       isOverBottomSpace: monitor.isOver(),
@@ -63,9 +71,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
   // for left area
   const [{ isOverLeftSpace, canDropLeftSpace }, dropLeftSpace] = useDrop({
     accept: DRAG_DROP_ACCEPTS,
-    drop: (item: any, monitor) => {
-      PanelsManager.addPanelNew(currentPanel, 'left', monitor.getItemType() as any, item);
-    },
+    drop: (item: any, monitor) => onDrop(item, monitor, DropDirection.LEFT),
     canDrop: () => true,
     collect: (monitor) => ({
       isOverLeftSpace: monitor.isOver(),
@@ -76,9 +82,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
   // for right area
   const [{ isOverRightSpace, canDropRightSpace }, dropRightSpace] = useDrop({
     accept: DRAG_DROP_ACCEPTS,
-    drop: (item: any, monitor) => {
-      PanelsManager.addPanelNew(currentPanel, 'right', monitor.getItemType() as any, item);
-    },
+    drop: (item: any, monitor) => onDrop(item, monitor, DropDirection.RIGHT),
     canDrop: () => true,
     collect: (monitor) => ({
       isOverRightSpace: monitor.isOver(),

@@ -8,8 +8,7 @@ import { Visualiser } from '../../Visualiser';
 import { PanelContext } from '../PanelContext';
 import { TabContext } from './TabContext';
 
-import { PanelsManager } from '../../../services';
-import { generateUniqueID } from '../../../helpers';
+import { PanelsManager, ToolID } from '../../../services';
 
 const tools = [
   {
@@ -54,17 +53,12 @@ export const NewTab: React.FunctionComponent = () => {
   const { currentPanel } = useContext(PanelContext);
   const { currentTab } = useContext(TabContext);
 
-  const handleToolClick = (toolName: string) => {
-    const tool = tools.find(t => t.tool === toolName);
-    if (tool) {
-      const newTab = {
-        name: generateUniqueID(),
-        tab: tool.tab(),
-        content: tool.content(),
-        isNewTab: false,
-      };
-      PanelsManager.changeTab(currentPanel, currentTab, newTab);
+  const createToolTab = (toolID: ToolID) => {
+    const newTab = PanelsManager.createToolTab(toolID);
+    if (!newTab) {
+      return;
     }
+    PanelsManager.replaceTab(currentTab, newTab, currentPanel);
   };
 
   return (
@@ -77,7 +71,7 @@ export const NewTab: React.FunctionComponent = () => {
               {tools.map(({ title, description: Description, tool }) => {
                 return (
                   <button
-                    onClick={() => handleToolClick(tool)}
+                    onClick={() => createToolTab(tool)}
                     key={title}
                     className="text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 transform transition duration-200 border-2 border-gray-400 hover:scale-105 hover:border-pink-500 bg-gray-100"
                   >

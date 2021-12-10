@@ -1,8 +1,10 @@
 import { createState, useState } from '@hookstate/core';
-import { PanelItem } from '../components/Panels/Panels';
+
+import { Orientation } from '../components/Split/sash';
+import { Panel } from '../services';
 
 export interface PanelsState {
-  panels: PanelItem[];
+  panels: Panel[];
   activePanel: string;
 }
 
@@ -10,22 +12,22 @@ export const panelsState = createState<PanelsState>({
   panels: [
     {
       id: 'root',
-      direction: 'vertical',
+      direction: Orientation.Vertical,
       panels: ['group-1'],
     },
     {
       id: 'group-1',
-      direction: 'horizontal',
+      direction: Orientation.Horizontal,
       panels: ['panel-1-group', 'panel-2-group'],
     },
     {
       id: 'panel-1-group',
-      direction: 'vertical',
+      direction: Orientation.Vertical,
       panels: ['panel-1'],
     },
     {
       id: 'panel-2-group',
-      direction: 'vertical',
+      direction: Orientation.Vertical,
       panels: ['panel-2'],
     },
     {
