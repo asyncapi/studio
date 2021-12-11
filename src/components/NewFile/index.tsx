@@ -1,5 +1,5 @@
 import React from 'react';
-import examples from '../../examples';
+import { examples } from '../../examples';
 
 import { EditorService } from '../../services';
 import state from '../../state';
@@ -15,7 +15,7 @@ const NewFile = () => {
   };
 
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
-  const templates = examples.filter((template) => template.type === 'protocol-example');
+  const templates = examples.filter((template) => template.type === 'protocol');
 
   return (
     <div className="bg-gray-800 w-full  overflow-auto">
@@ -48,7 +48,7 @@ const NewFile = () => {
             <div>
               <span className="uppercase text-gray-100 text-md font-bold">Real world Examples</span>
               <div className="grid grid-cols-3 gap-4 py-4">
-                {realLifeExamples.map(({ title, description: Description, template }) => {
+                {realLifeExamples.map(({ title, description, template }) => {
                   return (
                     <button
                       onClick={() => handleTemplateClick(template)}
@@ -57,7 +57,7 @@ const NewFile = () => {
                     >
                       <span className="block text-md text-gray-800 font-bold">{title}</span>
                       <span className="block text-sm text-gray-500 font-light mt-1">
-                        <Description />
+                        {description}
                       </span>
                     </button>
                   );

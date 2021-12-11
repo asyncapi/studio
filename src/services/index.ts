@@ -5,3 +5,4 @@ export * from './navigation.service';
 export * from './panels-manager.service';
 export * from './socket-client.service';
 export * from './specification.service';
+export * from './tools-manager.service';

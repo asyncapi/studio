@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Split } from './Split';
 
-import { Navigation } from './Navigation';
 import { Panels } from './Panels/Panels';
 import { Orientation } from './Split/sash';
 
-import { PanelsManager, Panel, PanelTabType } from '../services';
+import { ContextMenu } from "./ContextMenu";
+
+import { PanelsManager, Panel } from '../services';
 
 import state from '../state';
-import { generateUniqueID } from '../helpers';
-import { NewTab } from './Panels/Tabs';
 
 const startupPanels: Panel[] = [
   {
@@ -37,30 +36,12 @@ const startupPanels: Panel[] = [
   },
   {
     id: 'panel-1',
-    tabs: [
-      {
-        id: generateUniqueID(),
-        type: PanelTabType.EMPTY,
-        tab: <span className="italic">Empty</span>,
-        content: (
-          <NewTab />
-        ),
-      }
-    ],
+    tabs: [PanelsManager.createFileTab()],
     parent: 'panel-1-group',
   },
   {
     id: 'panel-2',
-    tabs: [
-      {
-        id: generateUniqueID(),
-        type: PanelTabType.EMPTY,
-        tab: <span className="italic">Empty</span>,
-        content: (
-          <NewTab />
-        ),
-      }
-    ],
+    tabs: [PanelsManager.createToolTab('html')!],
     parent: 'panel-2-group',
   },
 ];
@@ -69,8 +50,7 @@ interface ContentProps {}
 
 export const Content: React.FunctionComponent<ContentProps> = () => {
   const sidebarState = state.useSidebarState();
-  const navigationEnabled = sidebarState.panels.navigation.get();
-
+  const activeMenu = sidebarState.activePanel.get();
   const [panels, setPanels] = useState(startupPanels)
 
   useEffect(() => {
@@ -89,15 +69,25 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
   return (
     <div className="flex flex-1 flex-row relative">
       <Split onChange={(e: number[]) => {
-        if (e[0] === 0 && sidebarState.panels.navigation.get() === true) {
-          sidebarState.panels.navigation.set(false);
-        } else if (e[0] > 0 && sidebarState.panels.navigation.get() === false) {
-          sidebarState.panels.navigation.set(true);
-        }
+        // const navigationEnabled = sidebarState.panels.navigation.get() === true;
+        // const toolsEnabled = sidebarState.panels.tools.get() === true;
+        // const templatesEnabled = sidebarState.panels.templates.get() === true;
+
+        // if (e[0] === 0 && sidebarState.panels.navigation.get() === true) {
+        //   sidebarState.panels.navigation.set(false);
+        // } else if (e[0] > 0 && sidebarState.panels.navigation.get() === false) {
+        //   sidebarState.panels.navigation.set(true);
+        // }
       }}>
         {/* Improve show prop */}
-        <Split.Pane key='navigation' minSize={240} maxSize={360} snap show={navigationEnabled}>
-          <Navigation />
+        <Split.Pane 
+          key='context-menu' 
+          minSize={280} 
+          maxSize={360} 
+          snap={true}
+          show={activeMenu !== false}
+        >
+          <ContextMenu />
         </Split.Pane>
         <Split.Pane key='content'>
           <Panels id='root' panels={panels} />
