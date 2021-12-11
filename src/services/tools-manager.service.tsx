@@ -6,10 +6,16 @@ import { Visualiser } from '../components/Visualiser';
 import { Terminal } from '../components/Terminal';
 
 export type ToolID = string;
+export enum ToolCategory {
+  DEVELOPMENT = 'DEVELOPMENT',
+  PREVIEW = 'PREVIEW',
+  OTHER = 'OTHER',
+};
 export interface Tool {
   id: ToolID,
   title: string;
   description: string;
+  category: ToolCategory;
   icon: () => React.ReactNode,
   tab: () => React.ReactNode,
   content: () => React.ReactNode,
@@ -21,6 +27,7 @@ export class ToolsManager {
       id: 'editor',
       title: 'Editor',
       description: 'Allows you to edit the AsyncAPI document. This is the same editor as in Visual Studio Code',
+      category: ToolCategory.DEVELOPMENT,
       icon: () => <VscCode className="h-7 w-7" />,
       tab: () => (
         <span>Editor</span>
@@ -31,6 +38,7 @@ export class ToolsManager {
       id: 'html',
       title: 'HTML Preview',
       description: 'Allows you to preview your AsyncAPI document in HTML',
+      category: ToolCategory.PREVIEW,
       icon: () => <VscOpenPreview className="h-7 w-7" />,
       tab: () => (
         <span>HTML</span>
@@ -41,6 +49,7 @@ export class ToolsManager {
       id: 'visualiser',
       title: 'Visualiser',
       description: 'Allows you to preview the data flow (by blocks) in your AsyncAPI document',
+      category: ToolCategory.PREVIEW,
       icon: () => <VscTypeHierarchy className="h-7 w-7" />,
       tab: () => (
         <span>Visualiser</span>
@@ -51,6 +60,7 @@ export class ToolsManager {
       id: 'terminal',
       title: 'Terminal',
       description: 'Everything you need to make your AsyncAPI document correct',
+      category: ToolCategory.DEVELOPMENT,
       icon: () => <VscTerminal className="h-7 w-7" />,
       tab: () => (
         <span>Terminal</span>

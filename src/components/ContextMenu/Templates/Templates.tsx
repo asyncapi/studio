@@ -52,7 +52,7 @@ export const TemplatesContextMenu: React.FunctionComponent<TemplatesContextMenuP
   return (
     <div className="flex flex-col">
       <h2 className="p-2 text-gray-500 text-xs uppercase">
-        Templates
+        {"Templates & Examples"}
       </h2>
       <ContextPanel title="Protocol templates" opened={true}>
         <ul className="flex flex-col pb-4">

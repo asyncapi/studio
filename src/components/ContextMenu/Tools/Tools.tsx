@@ -1,7 +1,9 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-import { PanelsManager, DRAG_DROP_TYPES, ToolsManager, Tool } from '../../../services';
+import { ContextPanel } from '../ContextPanel';
+
+import { PanelsManager, DRAG_DROP_TYPES, ToolsManager, Tool, ToolCategory } from '../../../services';
 
 import state from '../../../state';
 
@@ -44,19 +46,48 @@ interface ToolsContextMenuProps {}
 
 export const ToolsContextMenu: React.FunctionComponent<ToolsContextMenuProps> = () => {
   const tools = Object.values(ToolsManager.getTools());
+  const developmentTools = tools.filter(tool => tool.category === ToolCategory.DEVELOPMENT);
+  const previewTools = tools.filter(tool => tool.category === ToolCategory.PREVIEW);
+  const othersTools = tools.filter(tool => tool.category === ToolCategory.OTHER);
 
   return (
     <div className="flex flex-col">
       <h2 className="p-2 text-gray-500 text-xs uppercase">
-        Tools
+        {"Tools & Extensions"}
       </h2>
-      <ul className="flex flex-col pb-4">
-        {tools.map(tool => (
-          <li className="px-4 pt-4" key={tool.id}>
-            <ToolItem {...tool} />
-          </li>
-        ))}
-      </ul>
+      {developmentTools.length > 0 && (
+        <ContextPanel title="Development" opened={true}>
+          <ul className="flex flex-col pb-8">
+            {developmentTools.map(tool => (
+              <li className="px-4 pt-4" key={tool.id}>
+                <ToolItem {...tool} />
+              </li>
+            ))}
+          </ul>
+        </ContextPanel>
+      )}
+      {previewTools.length > 0 && (
+        <ContextPanel title="Preview & Visualiser" opened={true}>
+          <ul className="flex flex-col pb-8">
+            {previewTools.map(tool => (
+              <li className="px-4 pt-4" key={tool.id}>
+                <ToolItem {...tool} />
+              </li>
+            ))}
+          </ul>
+        </ContextPanel>
+      )}
+      {othersTools.length > 0 && (
+        <ContextPanel title="Other" opened={true}>
+          <ul className="flex flex-col pb-8">
+            {othersTools.map(tool => (
+              <li className="px-4 pt-4" key={tool.id}>
+                <ToolItem {...tool} />
+              </li>
+            ))}
+          </ul>
+        </ContextPanel>
+      )}
     </div>
   );
 };

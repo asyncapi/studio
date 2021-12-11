@@ -113,6 +113,7 @@ export class PanelsManager {
 
   static createPanel(panelID: PanelID, direction: DropDirection): Panel | undefined {
     const panel = this.getPanel(panelID);
+    console.log(panel, panelID);
     if (!panel) {
       return;
     }
@@ -145,7 +146,7 @@ export class PanelsManager {
       return newPanel;
     }
 
-    const groupPanel = this.getPanel('group-1');
+    const groupPanel = this.getPanel(parentPanel.parent as string);
     if (!groupPanel) {
       return;
     }
@@ -219,12 +220,14 @@ export class PanelsManager {
     const groupID = generateUniqueID();
     const panelGroupID = generateUniqueID();
     const panelID = generateUniqueID();
+    const emptyTab = this.createEmptyTab();
 
     this.panels = new Map();
     this.panels.set('root', { id: 'root', direction: Orientation.Vertical, panels: [groupID] });
     this.panels.set(groupID, { id: groupID, direction: Orientation.Horizontal, panels: [panelGroupID], parent: 'root' });
     this.panels.set(panelGroupID, { id: panelGroupID, direction: Orientation.Vertical, panels: [panelID], parent: groupID });
-    this.panels.set(panelID, { id: panelID, tabs: [this.createEmptyTab()], parent: panelGroupID });
+    this.panels.set(panelID, { id: panelID, tabs: [emptyTab], activeTab: emptyTab.id, parent: panelGroupID });
+    this.updateActivePanel(panelID);
     this.updatePanels();
   }
 
