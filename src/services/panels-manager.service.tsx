@@ -27,6 +27,7 @@ export type PanelID = string;
 export interface Panel {
   id: PanelID;
   direction?: Orientation;
+  visible?: boolean;
   panels?: string[];
   tabs?: PanelTab[];
   activeTab?: string;
@@ -48,7 +49,43 @@ export interface PanelTab<M extends Record<string, any> = Record<string, any>> {
 }
 
 export class PanelsManager {
-  static panels: Map<string, Panel> = new Map();
+  private static startupPanels: Panel[] = [
+    {
+      id: 'root',
+      direction: Orientation.Vertical,
+      panels: ['group-1'],
+    },
+    {
+      id: 'group-1',
+      direction: Orientation.Horizontal,
+      panels: ['panel-1-group', 'panel-2-group'],
+      parent: 'root',
+    },
+    {
+      id: 'panel-1-group',
+      direction: Orientation.Vertical,
+      panels: ['panel-1'],
+      parent: 'group-1',
+    },
+    {
+      id: 'panel-2-group',
+      direction: Orientation.Vertical,
+      panels: ['panel-2'],
+      parent: 'group-1',
+    },
+    {
+      id: 'panel-1',
+      tabs: [PanelsManager.createFileTab()],
+      parent: 'panel-1-group',
+    },
+    {
+      id: 'panel-2',
+      tabs: [PanelsManager.createToolTab('html')!],
+      parent: 'panel-2-group',
+    },
+  ];
+
+  static panels: Map<string, Panel> = new Map(PanelsManager.startupPanels.map(panel => [panel.id, panel]));
   private static panelsListeners: Set<(panels?: Panel[], activePanel?: string) => void> = new Set();
   private static tabsListeners: Map<string, (tabs?: PanelTab[], activeTab?: string) => void> = new Map();
 
@@ -150,8 +187,8 @@ export class PanelsManager {
     let panelsToRemove: string[] = [id];
     this.findEmptyPanels(id, panelsToRemove);
     if (panelsToRemove.includes('root')) {
-      panelsToRemove = panelsToRemove.filter(p => p !== 'root');
       this.restoreDefaultPanels();
+      return;
     }
     panelsToRemove.forEach(panelID => this.panels.delete(panelID));
     this.updatePanels();
@@ -169,15 +206,26 @@ export class PanelsManager {
     });
   }
 
-  private static restoreDefaultPanels() {
+  static updatePanelVisible(visible: boolean = true, panelID: PanelID): void {
+    const panel = this.getPanel(panelID);
+    if (!panel) {
+      return;
+    }
+    panel.visible = visible;
+    this.updatePanels();
+  }
+
+  static restoreDefaultPanels() {
     const groupID = generateUniqueID();
     const panelGroupID = generateUniqueID();
     const panelID = generateUniqueID();
 
+    this.panels = new Map();
+    this.panels.set('root', { id: 'root', direction: Orientation.Vertical, panels: [groupID] });
     this.panels.set(groupID, { id: groupID, direction: Orientation.Horizontal, panels: [panelGroupID], parent: 'root' });
     this.panels.set(panelGroupID, { id: panelGroupID, direction: Orientation.Vertical, panels: [panelID], parent: groupID });
     this.panels.set(panelID, { id: panelID, tabs: [this.createEmptyTab()], parent: panelGroupID });
-    this.panels.get('root')!.panels = [groupID];
+    this.updatePanels();
   }
 
   static createSpecificTab(type: PanelTabType, item?: any): PanelTab | undefined {
@@ -227,13 +275,17 @@ export class PanelsManager {
     }
   }
 
-  static addTab(tab: PanelTab, panelID: PanelID, position = -1) {
+  static addTab(tab: PanelTab, panelID: PanelID, position: number | PanelTabID = -1) {
     const tabs = this.getTabs(panelID);
     if (!tabs) {
       return;
     }
 
     const newTabs = [...tabs];
+    if (typeof position === 'string') {
+      position = tabs.findIndex(tab => tab.id === position);
+      position = position === undefined ? -1 : position;
+    }
     if (position === -1) {
       newTabs.push(tab);
     } else {
@@ -244,7 +296,7 @@ export class PanelsManager {
     this.updatePanelTabs(panelID, newTabs, tab.id);
   }
 
-  static addToolTab(toolID: ToolID, panelID: PanelID, position = -1) {
+  static addToolTab(toolID: ToolID, panelID: PanelID, position: number | PanelTabID = -1) {
     const toolTab = this.createToolTab(toolID);
     if (!toolTab) {
       return;
@@ -339,6 +391,7 @@ export class PanelsManager {
 
   static addPanelsListener(listener: (panels?: Panel[], activePanel?: PanelID) => void): (panels?: Panel[], activePanel?: PanelID) => void {
     this.panelsListeners.add(listener);
+    this.updatePanels();
     return listener;
   }
 
@@ -382,5 +435,6 @@ export class PanelsManager {
     if (listener) {
       listener(tabs, activeTab);
     }
+    this.updatePanels();
   }
 }

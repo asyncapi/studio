@@ -21,10 +21,11 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
 
   if (Array.isArray(currentPanel.panels)) {
     return (
-      <Split vertical={currentPanel.direction === 'VERTICAL'}>
+      <Split vertical={currentPanel.direction === 'VERTICAL'} show={currentPanel.visible !== false}>
         {currentPanel.panels.map(panel => {
+          const p = panels.find(p => p.id === panel);
           return (
-            <Split.Pane key={panel} minSize={260} snap>
+            <Split.Pane key={panel} minSize={260} snap show={p!.visible !== false}>
               <Panels id={panel} panels={panels} />
             </Split.Pane>
           );

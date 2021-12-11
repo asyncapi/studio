@@ -25,12 +25,9 @@ export const PanelContent: React.FunctionComponent<PanelContentProps> = () => {
   const activePanel = panelsState.activePanel.get();
 
   useEffect(() => {
-    // fix that
-    setTimeout(() => {
-      const tabs = PanelsManager.getTabs(currentPanel) || [];
-      setTabs(tabs);
-      setActiveTab(tabs[0]?.id || '');
-    }, 0)
+    const tabs = PanelsManager.getTabs(currentPanel) || [];
+    setTabs(tabs);
+    setActiveTab(tabs[0]?.id || '');
 
     PanelsManager.addPanelTabsListener(currentPanel, (tabs, activeTab) => {
       tabs && setTabs(tabs);

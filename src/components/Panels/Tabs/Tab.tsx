@@ -28,11 +28,11 @@ export const Tab: React.FunctionComponent<TabProps> = ({
       DRAG_DROP_TYPES.TOOL,
       DRAG_DROP_TYPES.FILE,
     ],
-    drop: (item: any) => {
-      if (item.toolName) {
-        // PanelsManager.addNewTool(currentPanel, item.toolName);
-      } else {
-        PanelsManager.switchTabs(item.tabID, item.panelID, id, currentPanel);
+    drop: (item: any, monitor) => {
+      switch (monitor.getItemType()) {
+        case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, id, currentPanel);
+        case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, currentPanel, id);
+        default: return;
       }
     },
     canDrop: () => true,
@@ -52,6 +52,10 @@ export const Tab: React.FunctionComponent<TabProps> = ({
 
   return (
     <li 
+      onClick={(e) => {
+        e.stopPropagation();
+
+      }}
       className={`border-r border-gray-700 cursor-pointer`}
       ref={ref}
     >

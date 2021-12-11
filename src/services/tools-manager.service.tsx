@@ -1,6 +1,6 @@
 import { VscCode, VscOpenPreview, VscTypeHierarchy, VscTerminal } from 'react-icons/vsc';
 
-import { MonacoWrapper } from '../components/Editor';
+import { MonacoWrapper } from '../components/Editor/MonacoWrapper';
 import { HTMLWrapper } from '../components/Template';
 import { Visualiser } from '../components/Visualiser';
 import { Terminal } from '../components/Terminal';

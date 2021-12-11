@@ -42,7 +42,7 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
 
   return (
     parsedSpec && (
-      <div className="flex flex-1 flex-col h-full overflow-hidden">
+      <div className="flex flex-1 flex-col h-full overflow-hidden relative">
         <div className="overflow-auto">
           <FlowDiagram  parsedSpec={parsedSpec} />
         </div>
