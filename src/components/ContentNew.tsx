@@ -3,7 +3,7 @@ import { Split } from './Split';
 
 import { Panels } from './Panels/Panels';
 
-import { ContextMenu } from "./ContextMenu";
+import { ContextMenu } from './ContextMenu';
 
 import { PanelsManager, Panel } from '../services';
 
@@ -21,8 +21,8 @@ export const Content: React.FunctionComponent<ContentProps> = () => {
       newPanels && setPanels(newPanels);
     });
     return () => {
-      PanelsManager.removePanelsListener(listener)
-    }
+      PanelsManager.removePanelsListener(listener);
+    };
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import classNames from 'classnames';
 import React, {
   forwardRef,
   useEffect,
@@ -6,16 +6,16 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-} from "react";
-import useResizeObserver from "use-resize-observer";
+} from 'react';
+import useResizeObserver from 'use-resize-observer';
 
-import { Orientation } from "./sash";
-import { Sizing, SplitView, SplitViewOptions } from "./split-view/split-view";
+import { Orientation } from './sash';
+import { Sizing, SplitView, SplitViewOptions } from './split-view/split-view';
 
-import styles from "./split.module.css";
+import styles from './split.module.css';
 
 function isPane(item: React.ReactNode): item is typeof Pane {
-  return (item as any).type.displayName === "Split.Pane";
+  return (item as any).type.displayName === 'Split.Pane';
 }
 
 export interface CommonProps {
@@ -43,7 +43,7 @@ export const Pane = forwardRef<HTMLDivElement, PaneProps>(
   }
 );
 
-Pane.displayName = "Split.Pane";
+Pane.displayName = 'Split.Pane';
 
 export type SplitHandle = { reset: () => void };
 
@@ -85,9 +85,9 @@ const Split = forwardRef<SplitHandle, SplitProps>(
     const splitViewRef = useRef<SplitView | null>(null);
     const splitViewViewRef = useRef(new Map<React.Key, HTMLElement>());
 
-    if (process.env.NODE_ENV !== "production" && sizes) {
+    if (process.env.NODE_ENV !== 'production' && sizes) {
       console.warn(
-        `Prop sizes is deprecated. Please use defaultSizes instead.`
+        'Prop sizes is deprecated. Please use defaultSizes instead.'
       );
     }
 
@@ -123,22 +123,22 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         orientation: vertical ? Orientation.Vertical : Orientation.Horizontal,
         ...(initializeSizes &&
           defaultSizes && {
-            descriptor: {
-              size: defaultSizes.reduce((a, b) => a + b, 0),
-              views: defaultSizes.map((size, index) => ({
-                // splitViewViewRef.current is iterator, `any` is for fixing TS error
-                container: [...(splitViewViewRef.current as any).values()][index],
-                size: size,
-                view: {
-                  element: document.createElement("div"),
-                  minimumSize: minSize,
-                  maximumSize: maxSize,
-                  snap: snap,
-                  layout: () => {},
-                },
-              })),
-            },
-          }),
+          descriptor: {
+            size: defaultSizes.reduce((a, b) => a + b, 0),
+            views: defaultSizes.map((size, index) => ({
+              // splitViewViewRef.current is iterator, `any` is for fixing TS error
+              container: [...(splitViewViewRef.current as any).values()][index],
+              size,
+              view: {
+                element: document.createElement('div'),
+                minimumSize: minSize,
+                maximumSize: maxSize,
+                snap,
+                layout: () => {},
+              },
+            })),
+          },
+        }),
       };
 
       splitViewRef.current = new SplitView(
@@ -147,7 +147,7 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         onChange
       );
 
-      splitViewRef.current.on("sashreset", (_index: number) => {
+      splitViewRef.current.on('sashreset', (_index: number) => {
         splitViewRef.current?.distributeViewSizes();
       });
 
@@ -171,6 +171,12 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         }
       }).filter(Boolean) as { key: string, index: number }[];
       const exit = previousKeys.current.map((key) => !keys.includes(key));
+      // const changed = previousKeys.current.find(key => {
+      //   const previousIndex = previousKeys.current.indexOf(key);
+      //   const newIndex = keys.indexOf(key);
+      //   if (previousIndex !== -1 && newIndex -1 && previousIndex !== newIndex) return true;
+      //   return false;
+      // });
 
       exit.forEach((flag, index) => {
         if (flag) {
@@ -184,7 +190,7 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         splitViewRef.current?.addView(
           splitViewViewRef.current.get(e.key)!,
           {
-            element: document.createElement("div"),
+            element: document.createElement('div'),
             minimumSize: props?.minSize ?? minSize,
             maximumSize: props?.maxSize ?? maxSize,
             snap: props?.snap ?? snap,
@@ -195,13 +201,20 @@ const Split = forwardRef<SplitHandle, SplitProps>(
         );
       }
 
+      // if (changed) {
+      //   const previousIndex = previousKeys.current.indexOf(changed);
+      //   const newIndex = keys.indexOf(changed);
+      //   console.log(previousIndex, newIndex)
+      //   splitViewRef.current?.swapViews(previousIndex, newIndex);
+      // }
+
       if (enter.length > 0 || exit.length > 0) {
         previousKeys.current = keys;
       }
 
       childrenArray.forEach((child, index) => {
-        splitViewRef.current?.setViewVisible(index, (child.props as CommonProps).show !== false)
-      })
+        splitViewRef.current?.setViewVisible(index, (child.props as CommonProps).show !== false);
+      });
     }, [childrenArray, maxSize, minSize, show, snap]);
 
     useResizeObserver({
@@ -236,8 +249,9 @@ const Split = forwardRef<SplitHandle, SplitProps>(
               // console.log((child.props as CommonProps).show)
 
               return React.cloneElement(child, {
-                key: key,
+                key,
                 ref: (el: HTMLElement | null) => {
+                  console.log(key, el);
                   if (el) {
                     splitViewViewRef.current.set(key, el);
                   } else {
@@ -245,22 +259,21 @@ const Split = forwardRef<SplitHandle, SplitProps>(
                   }
                 },
               });
-            } else {
-              return (
-                <Pane
-                  key={key}
-                  ref={(el: HTMLElement | null) => {
-                    if (el) {
-                      splitViewViewRef.current.set(key, el);
-                    } else {
-                      splitViewViewRef.current.delete(key);
-                    }
-                  }}
-                >
-                  {child}
-                </Pane>
-              );
-            }
+            } 
+            return (
+              <Pane
+                key={key}
+                ref={(el: HTMLElement | null) => {
+                  if (el) {
+                    splitViewViewRef.current.set(key, el);
+                  } else {
+                    splitViewViewRef.current.delete(key);
+                  }
+                }}
+              >
+                {child}
+              </Pane>
+            );
           })}
         </div>
       </div>
@@ -268,5 +281,5 @@ const Split = forwardRef<SplitHandle, SplitProps>(
   }
 );
 
-Split.displayName = "Split";
-export default Object.assign(Split, { Pane: Pane });
+Split.displayName = 'Split';
+export default Object.assign(Split, { Pane });

@@ -10,7 +10,7 @@ export enum ToolCategory {
   DEVELOPMENT = 'DEVELOPMENT',
   PREVIEW = 'PREVIEW',
   OTHER = 'OTHER',
-};
+}
 export interface Tool {
   id: ToolID,
   title: string;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VscChevronRight, VscChevronDown } from "react-icons/vsc";
+import { VscChevronRight, VscChevronDown } from 'react-icons/vsc';
 
 interface ContextPanelProps {
   title: string;

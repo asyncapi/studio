@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from 'react';
-import { useDrag, useDrop } from "react-dnd";
+import { useDrag, useDrop } from 'react-dnd';
 import { VscClose } from 'react-icons/vsc';
 
 import { PanelContext } from '../PanelContext';
@@ -30,9 +30,9 @@ export const Tab: React.FunctionComponent<TabProps> = ({
     ],
     drop: (item: any, monitor) => {
       switch (monitor.getItemType()) {
-        case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, id, currentPanel);
-        case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, currentPanel, id);
-        default: return;
+      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, id, currentPanel);
+      case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, currentPanel, id);
+      default: return;
       }
     },
     canDrop: () => true,
@@ -54,9 +54,8 @@ export const Tab: React.FunctionComponent<TabProps> = ({
     <li 
       onClick={(e) => {
         e.stopPropagation();
-
       }}
-      className={`border-r border-gray-700 cursor-pointer`}
+      className={'border-r border-gray-700 cursor-pointer'}
       ref={ref}
     >
       <div
@@ -85,5 +84,5 @@ export const Tab: React.FunctionComponent<TabProps> = ({
         </div>
       </div>
     </li>
-  )
-}
+  );
+};

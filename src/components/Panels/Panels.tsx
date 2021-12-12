@@ -1,7 +1,8 @@
 import React from 'react';
-import { Split } from "../Split"
+import { Split } from '../Split';
 
-import { Panel } from './Panel';
+import { PanelContent } from './Panel';
+import { PanelContext } from './PanelContext';
 
 import { Panel as PanelItem } from '../../services';
 
@@ -26,7 +27,9 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
           const p = panels.find(p => p.id === panel);
           return (
             <Split.Pane key={panel} minSize={260} snap show={p!.visible !== false}>
-              <Panels id={panel} panels={panels} />
+              <PanelContext.Provider value={{ currentPanel: currentPanel.id }}>
+                <Panels id={panel} panels={panels} />
+              </PanelContext.Provider>
             </Split.Pane>
           );
         })}
@@ -35,6 +38,8 @@ export const Panels: React.FunctionComponent<PanelsProps> = ({
   }
 
   return (
-    <Panel key={id} panelID={id} />
+    <PanelContext.Provider value={{ currentPanel: currentPanel.id }}>
+      <PanelContent />
+    </PanelContext.Provider>
   );
 };

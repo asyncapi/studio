@@ -30,14 +30,13 @@ const OpenedTabsTab: React.FunctionComponent<OpenenTabsTabProps> = ({
   });
   const [{ isOver }, drop] = useDrop({
     accept: [
-      DRAG_DROP_TYPES.PANEL,
       DRAG_DROP_TYPES.TAB,
       DRAG_DROP_TYPES.FILE,
     ],
     drop: (item: any, monitor) => {
       switch (monitor.getItemType()) {
-        case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, id, panelID);
-        default: return;
+      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, id, panelID);
+      default: return;
       }
     },
     canDrop: () => true,
@@ -89,15 +88,39 @@ const OpenedTabsPanel: React.FunctionComponent<OpenedTabsPanelProps> = ({
   activeTab,
   index = 0,
 }) => {
-  if (tabs.length === 0) {
-    return null;
-  }
+  const tabsPane = useRef(null);
+  const [_, dragTabsPane] = useDrag({
+    type: DRAG_DROP_TYPES.PANEL,
+    item: { panelID },
+  });
+  const [{ isOverTabPane, canDropTabPane }, dropTabsPane] = useDrop({
+    accept: [
+      DRAG_DROP_TYPES.PANEL,
+      DRAG_DROP_TYPES.TAB,
+      DRAG_DROP_TYPES.TOOL,
+      DRAG_DROP_TYPES.FILE
+    ],
+    drop: (item: any, monitor) => {
+      switch (monitor.getItemType()) {
+      case DRAG_DROP_TYPES.PANEL: return PanelsManager.mergePanels(item.panelID, panelID);
+      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, panelID);
+      default: return;
+      } 
+    },
+    canDrop: (item) => item.panelID !== panelID,
+    collect: (monitor) => ({
+      isOverTabPane: monitor.isOver(),
+      canDropTabPane: monitor.canDrop(),
+    })
+  });
+  dragTabsPane(dropTabsPane(tabsPane));
 
   return (
     <div>
       {index > 0 ? (
         <div 
-          className="px-2 group hover:bg-gray-900 text-xs text-gray-300 leading-6 uppercase font-bold cursor-pointer"
+          ref={tabsPane}
+          className={`px-2 group hover:bg-gray-900 ${isOverTabPane && canDropTabPane ? 'bg-gray-900' : 'bg-gray-800'} text-xs text-gray-300 leading-6 uppercase font-bold cursor-pointer`}
           onClick={(e) => {
             e.stopPropagation();
             PanelsManager.updateActivePanel(panelID);
@@ -119,7 +142,7 @@ const OpenedTabsPanel: React.FunctionComponent<OpenedTabsPanelProps> = ({
                 className={`inline-block -mt-0.5 ml-0.5 ${visible === false ? 'text-pink-500' : 'text-gray-800 group-hover:text-gray-300'}`}
                 onClick={ev => {
                   ev.stopPropagation();
-                  PanelsManager.updatePanelVisible(visible === false, panelID);
+                  PanelsManager.updatePanelVisibility(visible === false, panelID);
                 }}
               >
                 {visible === false ? (
@@ -139,7 +162,7 @@ const OpenedTabsPanel: React.FunctionComponent<OpenedTabsPanelProps> = ({
       </ul>
     </div>
   );
-}
+};
 
 interface OpenTabsProps {}
 
@@ -147,7 +170,7 @@ export const OpenedTabs: React.FunctionComponent<OpenTabsProps> = () => {
   const [panels, setPanels] = useState<Panel[]>([]);
 
   const panelWithTabs = useMemo(() => {
-    return panels.filter(panel => panel.tabs);
+    return panels.filter(panel => panel.tabs && panel.tabs.length);
   }, [panels]);
 
   useEffect(() => {
@@ -155,8 +178,8 @@ export const OpenedTabs: React.FunctionComponent<OpenTabsProps> = () => {
       newPanels && setPanels(newPanels);
     });
     return () => {
-      PanelsManager.removePanelsListener(listener)
-    }
+      PanelsManager.removePanelsListener(listener);
+    };
   }, []);
 
   const menu = (

@@ -1,12 +1,12 @@
 import React, { useCallback, useContext } from 'react';
-import { DropTargetMonitor, useDrop } from "react-dnd";
+import { DropTargetMonitor, useDrop } from 'react-dnd';
 
 import { PanelContext } from './PanelContext';
 
-import { PanelsManager, DropDirection, DRAG_DROP_TYPES } from '../../services';
+import { PanelsManager, DropDirection, DRAG_DROP_TYPES, Panel } from '../../services';
 
 const DRAG_DROP_ACCEPTS = [
-  DRAG_DROP_TYPES.PANEL,
+  // DRAG_DROP_TYPES.PANEL,
   DRAG_DROP_TYPES.TAB,
   DRAG_DROP_TYPES.TOOL,
   DRAG_DROP_TYPES.FILE
@@ -16,13 +16,17 @@ export const PanelDnDArea: React.FunctionComponent = () => {
   const { currentPanel } = useContext(PanelContext);
 
   const onDrop = useCallback((item: any, monitor: DropTargetMonitor, direction: DropDirection) => {
-    const newPanel = PanelsManager.createPanel(currentPanel, direction);
-    if (!newPanel) {
-      return;
+    let newPanel: Panel | undefined;
+    if (monitor.getItemType() !== DRAG_DROP_TYPES.PANEL) {
+      newPanel = PanelsManager.createPanel(currentPanel, direction);
+      if (!newPanel) {
+        return;
+      }
     }
     switch (monitor.getItemType()) {
-      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, newPanel.id);
-      case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, newPanel.id);
+      // case DRAG_DROP_TYPES.PANEL: return PanelsManager.movePanel(item.panelID, currentPanel, direction);
+      case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, newPanel!.id);
+      case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, newPanel!.id);
       default: return;
     }
   }, []);
@@ -42,9 +46,9 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       return {
         isOverCenterSpace: monitor.isOver(),
         canDropCenterSpace: monitor.canDrop(),
-      }
+      };
     }
-  });
+  }, []);
 
   // for top area
   const [{ isOverTopSpace, canDropTopSpace }, dropTopSpace] = useDrop({
@@ -66,7 +70,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       isOverBottomSpace: monitor.isOver(),
       canDropBottomSpace: monitor.canDrop(),
     })
-  });
+  }, []);
 
   // for left area
   const [{ isOverLeftSpace, canDropLeftSpace }, dropLeftSpace] = useDrop({
@@ -77,7 +81,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       isOverLeftSpace: monitor.isOver(),
       canDropLeftSpace: monitor.canDrop(),
     })
-  });
+  }, []);
 
   // for right area
   const [{ isOverRightSpace, canDropRightSpace }, dropRightSpace] = useDrop({
@@ -88,7 +92,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       isOverRightSpace: monitor.isOver(),
       canDropRightSpace: monitor.canDrop(),
     })
-  });
+  }, []);
 
   const canDrop = canDropCenterSpace || canDropTopSpace || canDropBottomSpace || canDropLeftSpace || canDropRightSpace;
   return (
@@ -99,22 +103,22 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       </div>
     
       {/* top space */}
-      <div className={`absolute w-full top-0 left-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ height: canDropTopSpace && isOverTopSpace ? '50%' : '0' }}>
+      <div className={'absolute w-full top-0 left-0 right-0 z-50 bg-gray-700 opacity-75'} style={{ height: canDropTopSpace && isOverTopSpace ? '50%' : '0' }}>
         <div className={`h-16 w-full ${canDropTopSpace ? 'visible' : 'invisible'}`} ref={dropTopSpace} />
       </div>
 
       {/* bottom space */}
-      <div className={`absolute w-full bottom-0 left-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ height: canDropBottomSpace && isOverBottomSpace ? '50%' : '0' }}>
+      <div className={'absolute w-full bottom-0 left-0 right-0 z-50 bg-gray-700 opacity-75'} style={{ height: canDropBottomSpace && isOverBottomSpace ? '50%' : '0' }}>
         <div className={`h-16 w-full absolute bottom-0 ${canDropBottomSpace ? 'visible' : 'invisible'}`} ref={dropBottomSpace} />
       </div>
 
       {/* left space */}
-      <div className={`absolute h-full py-16 top-0 bottom-0 left-0 z-50 bg-gray-700 opacity-75`} style={{ width: canDropLeftSpace && isOverLeftSpace ? '50%' : '0' }}>
+      <div className={'absolute h-full py-16 top-0 bottom-0 left-0 z-50 bg-gray-700 opacity-75'} style={{ width: canDropLeftSpace && isOverLeftSpace ? '50%' : '0' }}>
         <div className={`h-full w-16 ${canDropLeftSpace ? 'visible' : 'invisible'}`} ref={dropLeftSpace} />
       </div>
 
       {/* right space */}
-      <div className={`absolute h-full py-16 top-0 bottom-0 right-0 z-50 bg-gray-700 opacity-75`} style={{ width: canDropRightSpace && isOverRightSpace ? '50%' : '0' }}>
+      <div className={'absolute h-full py-16 top-0 bottom-0 right-0 z-50 bg-gray-700 opacity-75'} style={{ width: canDropRightSpace && isOverRightSpace ? '50%' : '0' }}>
         <div className={`h-full w-16 absolute right-0 ${canDropRightSpace ? 'visible' : 'invisible'}`} ref={dropRightSpace} />
       </div>
     </div>

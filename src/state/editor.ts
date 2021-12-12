@@ -1,7 +1,6 @@
 import { createState, useState } from '@hookstate/core';
 
-const schema =
-  localStorage.getItem('document') || `asyncapi: '2.2.0'
+export const sampleSpec = `asyncapi: '2.2.0'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'
@@ -163,8 +162,10 @@ components:
     kafka:
       bindings:
         kafka:
-          clientId: my-app-id
-`;
+          clientId: my-app-id`;
+
+const schema =
+  localStorage.getItem('document') || sampleSpec;
 
 export type EditorStateDocumentFrom = 'localStorage' | `URL: ${string}` | 'Base64';
 

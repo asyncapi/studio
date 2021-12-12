@@ -39,7 +39,7 @@ export enum PanelTabType {
   FILE = 'FILE',
   TOOL = 'TOOL',
   EMPTY = 'EMPTY',
-};
+}
 export interface PanelTab<M extends Record<string, any> = Record<string, any>> {
   id: PanelTabID;
   type: PanelTabType,
@@ -113,7 +113,6 @@ export class PanelsManager {
 
   static createPanel(panelID: PanelID, direction: DropDirection): Panel | undefined {
     const panel = this.getPanel(panelID);
-    console.log(panel, panelID);
     if (!panel) {
       return;
     }
@@ -129,7 +128,7 @@ export class PanelsManager {
         tabs: [],
         activeTab: '',
         parent: parentPanel.id,
-      }
+      };
       this.panels.set(newPanelID, newPanel);
 
       const parentPanels = parentPanel.panels;
@@ -159,13 +158,13 @@ export class PanelsManager {
       direction: Orientation.Vertical,
       panels: [newPanelID],
       parent: groupPanel.id,
-    }
+    };
     const newPanel: Panel = {
       id: newPanelID,
       tabs: [],
       activeTab: '',
       parent: newPaneGrouplID,
-    }
+    };
 
     this.panels.set(newPaneGrouplID, newPanelGroup);
     this.panels.set(newPanelID, newPanel);
@@ -185,7 +184,7 @@ export class PanelsManager {
   }
 
   static removePanel(id: PanelID): void {    
-    let panelsToRemove: string[] = [id];
+    const panelsToRemove: string[] = [id];
     this.findEmptyPanels(id, panelsToRemove);
     if (panelsToRemove.includes('root')) {
       this.restoreDefaultPanels();
@@ -207,12 +206,36 @@ export class PanelsManager {
     });
   }
 
-  static updatePanelVisible(visible: boolean = true, panelID: PanelID): void {
+  static updatePanelVisibility(visible = true, panelID: PanelID): void {
     const panel = this.getPanel(panelID);
     if (!panel) {
       return;
     }
+    const parent = this.getPanel(panel.parent as string);
+    if (!parent) {
+      return;
+    }
+
+    visible = visible !== false;
     panel.visible = visible;
+    if (visible) {
+      if (parent.visible === false) {
+        parent.visible = visible;
+      }
+    } else {
+      let hidden = 0;
+      const parentPanels = parent.panels || [];
+      for (const p of parentPanels) {
+        if (p !== panelID) {
+          const childPanel = this.getPanel(p as string);
+          hidden = childPanel && childPanel.visible === false ? hidden + 1 : hidden;
+        }
+      }
+      if (hidden === parentPanels.length - 1) {
+        parent.visible = false;
+      }
+    }
+
     this.updatePanels();
   }
 
@@ -233,10 +256,60 @@ export class PanelsManager {
 
   static createSpecificTab(type: PanelTabType, item?: any): PanelTab | undefined {
     switch (type) {
-      case PanelTabType.FILE: return this.createFileTab();
-      case PanelTabType.TOOL: return this.createToolTab(item.toolID);
-      default: return this.createEmptyTab();
+    case PanelTabType.FILE: return this.createFileTab();
+    case PanelTabType.TOOL: return this.createToolTab(item.toolID);
+    default: return this.createEmptyTab();
     }
+  }
+
+  static movePanel(from: PanelID, to: PanelID, direction: DropDirection): void {
+    if (from === to) {
+      return;
+    }
+
+    const fromPanel = this.getPanel(from);
+    if (!fromPanel || !fromPanel.parent) {
+      return;
+    }
+    const parentPanel = this.getPanel(fromPanel.parent);
+    if (!parentPanel) {
+      return;
+    }
+
+    if (direction === DropDirection.TOP || direction === DropDirection.BOTTOM) {
+      const parentPanels = parentPanel.panels;
+      if (!parentPanels) {
+        return;
+      }
+
+      const fromIndex = parentPanels.findIndex(panel => panel === from);
+      const toIndex = parentPanels.findIndex(panel => panel === to);
+      const newPanels = [...parentPanels];
+      // Moves the element in the array for the provided positions.
+      newPanels.splice(toIndex, 0, newPanels.splice(fromIndex, 1)[0]);
+      parentPanel.panels = newPanels;
+
+      this.updateActivePanel(from);
+      this.updatePanels();
+    }
+  }
+
+  static mergePanels(from: PanelID, to: PanelID): void {
+    if (from === to) {
+      return;
+    }
+
+    const fromPanel = this.getPanel(from);
+    if (!fromPanel) {
+      return;
+    }
+    const fromTabs = fromPanel.tabs;
+    if (!fromTabs) {
+      return;
+    }
+
+    fromTabs.forEach(tab => this.addTab(tab, to));
+    this.removePanel(from);
   }
 
   static createFileTab(): PanelTab {
@@ -260,7 +333,7 @@ export class PanelsManager {
       content: (
         <EmptyTab />
       ),
-    }
+    };
   }
 
   private static createTab(
@@ -275,7 +348,7 @@ export class PanelsManager {
       tab,
       content,
       metadata,
-    }
+    };
   }
 
   static addTab(tab: PanelTab, panelID: PanelID, position: number | PanelTabID = -1) {
@@ -309,7 +382,7 @@ export class PanelsManager {
 
   static removeTab(tabID: PanelTabID, panelID: PanelID) {
     const panel = this.getPanel(panelID);
-    const tabs = panel?.tabs
+    const tabs = panel?.tabs;
     if (!panel || !tabs) {
       return;
     }

@@ -40,7 +40,7 @@ const ToolItem: React.FunctionComponent<ToolItemProps> = ({
       </div>
     </button>
   );
-}
+};
 
 interface ToolsContextMenuProps {}
 
@@ -53,7 +53,7 @@ export const ToolsContextMenu: React.FunctionComponent<ToolsContextMenuProps> = 
   return (
     <div className="flex flex-col">
       <h2 className="p-2 text-gray-500 text-xs uppercase">
-        {"Tools & Extensions"}
+        {'Tools & Extensions'}
       </h2>
       {developmentTools.length > 0 && (
         <ContextPanel title="Development" opened={true}>

@@ -28,7 +28,7 @@ export function debounce(func: (...args: any[]) => any, wait: number, immediate?
   };
   (fn as unknown as DebounceFn).cancel = function() {
     timeout && clearTimeout(timeout);
-  }
+  };
 
   return fn as unknown as DebounceFn;
 }
