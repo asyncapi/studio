@@ -10,12 +10,13 @@ import { MonacoService, EditorsManager, FilesManager, SpecificationService } fro
 
 import state from '../../state';
 import { TabContext } from '../Panels/Tabs';
+import { sampleSpec } from '../../state/editor';
 
 interface EditorProps extends MonacoEditorProps {}
 
 export const Editor: React.FunctionComponent<EditorProps> = (props = {}) => {
   const { currentTab, tab } = useContext(TabContext);
-  const { file } = tab.metadata || {};
+  const { file = {} } = tab.metadata || {};
 
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
@@ -70,8 +71,8 @@ export const Editor: React.FunctionComponent<EditorProps> = (props = {}) => {
 
   return (
     <MonacoEditor
-      language={file.extension}
-      defaultValue={file.content}
+      language={file.extension || 'yaml'}
+      defaultValue={file.content || sampleSpec}
       theme="asyncapi-theme"
       onMount={handleEditorDidMount}
       onChange={onChange}
