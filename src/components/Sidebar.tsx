@@ -87,7 +87,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     },
     {
       name: 'newFile',
-      state: () => sidebarState.panels.newFile.get(),
+      state: () => false,
       icon: <VscNewFile className="w-5 h-5" />,
     },
   ];

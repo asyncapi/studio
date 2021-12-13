@@ -11,10 +11,6 @@ export const NewFileModal: React.FunctionComponent = () => {
   const sidebarState = state.useSidebarState();
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
-  const handleTemplateClick = (template: any) => {
-    setSelectedTemplate(template);
-  };
-
   const handleSubmit = () => {
     EditorService.updateState({ content: selectedTemplate.template, updateModel: true });
     const panels = state.sidebar.panels;
@@ -25,7 +21,7 @@ export const NewFileModal: React.FunctionComponent = () => {
     toast.success(
       <div>
         <span className="block text-bold">
-          Succesfully created new file from {`"${selectedTemplate.title}"`} template.
+          Succesfully reused the {`"${selectedTemplate.title}"`} template.
         </span>
       </div>
     );
@@ -35,7 +31,7 @@ export const NewFileModal: React.FunctionComponent = () => {
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
-    <ConfirmModal containerClassName="sm:max-w-6xl" onCancel={() => sidebarState.panels.newFile.set(false)} title="AsyncAPI Templates - Start with our template examples" confirmText="Create" confirmDisabled={false} show={true} onSubmit={handleSubmit}>
+    <ConfirmModal containerClassName="sm:max-w-6xl" onCancel={() => sidebarState.panels.newFile.set(false)} title="AsyncAPI Templates - Start with our template examples" confirmText="Use Template" confirmDisabled={false} show={true} onSubmit={handleSubmit}>
       <div className="flex content-center justify-center">
         <div className="w-full  overflow-auto space-y-8 ">
           <div>
@@ -43,14 +39,14 @@ export const NewFileModal: React.FunctionComponent = () => {
             <div className="grid grid-cols-3 gap-4 py-4">
               {templates.map(({ title, description: Description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
+                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200 border-dashed';
                 const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
 
                 return (
                   <button
-                    onClick={() => handleTemplateClick({ title, template })}
+                    onClick={() => setSelectedTemplate({ title, template })}
                     key={title}
-                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2  border-dashed hover:border-pink-500 ${containerStyles}`}
+                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 hover:border-pink-500 ${containerStyles}`}
                   >
                     <div className="flex justify-between w-full">
                       <span className={`block text-md  font-bold leading-0 group-hover:text-pink-600 ${textStyles} `}>{title}</span>
@@ -69,14 +65,14 @@ export const NewFileModal: React.FunctionComponent = () => {
             <div className="grid grid-cols-3 gap-4 py-4">
               {realLifeExamples.map(({ title, description: Description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
+                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200 border-dashed';
                 const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
 
                 return (
                   <button
-                    onClick={() => handleTemplateClick({ title, template })}
+                    onClick={() => setSelectedTemplate({ title, template })}
                     key={title}
-                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 border-gray-200 border-dashed hover:border-pink-500 ${containerStyles}`}
+                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 border-gray-200  hover:border-pink-500 ${containerStyles}`}
                   >
                     <div className="flex justify-between w-full">
                       <span className={`block text-md  font-bold leading-0 group-hover:text-pink-600 ${textStyles} `}>{title}</span>
