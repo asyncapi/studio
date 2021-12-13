@@ -139,7 +139,7 @@ const OpenedTabsPanel: React.FunctionComponent<OpenedTabsPanelProps> = ({
                 <VscCloseAll className="inline-block w-4 h-4" />
               </button>
               <button 
-                className={`inline-block -mt-0.5 ml-0.5 ${visible === false ? 'text-pink-500' : 'text-gray-800 group-hover:text-gray-300'}`}
+                className={`inline-block -mt-0.5 ml-1.5 ${visible === false ? 'text-pink-500' : 'text-gray-800 group-hover:text-gray-300'}`}
                 onClick={ev => {
                   ev.stopPropagation();
                   PanelsManager.updatePanelVisibility(visible === false, panelID);

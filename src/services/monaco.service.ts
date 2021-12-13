@@ -89,6 +89,10 @@ export class MonacoService {
   }
 
   static async loadMonaco() {
+    if (window.Monaco) {
+      return;
+    }
+
     const monacoInstance = await loader.init();
     window.Monaco = monacoInstance;
 

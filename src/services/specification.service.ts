@@ -4,6 +4,7 @@ import { parse, AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 
+import { EditorsManager } from './editors-manager.service';
 import { EditorService } from './editor.service';
 import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
@@ -11,6 +12,18 @@ import { MonacoService } from './monaco.service';
 import state from '../state';
 
 export class SpecificationService {
+  static async parse(rawSpec: string, editorID?: string): Promise<AsyncAPIDocument | void> {
+    try {
+      const parsedDoc = await parse(rawSpec);
+      MonacoService.updateLanguageConfig(parsedDoc);
+      editorID && EditorsManager.applyErrorMarkers([], editorID);
+      return parsedDoc;
+    } catch(err) {
+      const errors = this.filterErrors(err, rawSpec);
+      editorID && EditorsManager.applyErrorMarkers(errors, editorID);
+    }
+  }
+
   static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
     const parserState = state.parser;
     return parse(rawSpec)

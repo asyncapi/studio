@@ -1,4 +1,6 @@
+export * from './editors-manager.service';
 export * from './editor.service';
+export * from './files-manager.service';
 export * from './format.service';
 export * from './monaco.service';
 export * from './navigation.service';

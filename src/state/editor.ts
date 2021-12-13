@@ -1,5 +1,20 @@
 import { createState, useState } from '@hookstate/core';
 
+export const sampleSpec2 = `asyncapi: '2.2.0'
+info:
+  title: Streetlights Kafka API
+  version: '1.0.0'
+
+servers:
+  test:
+    url: test.mykafkacluster.org:8092
+    protocol: kafka-secure
+
+defaultContentType: application/json
+
+channels: {}
+`
+
 export const sampleSpec = `asyncapi: '2.2.0'
 info:
   title: Streetlights Kafka API

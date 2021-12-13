@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Tool, ToolID, ToolsManager } from './tools-manager.service';
+import { File, startupFiles } from './files-manager.service';
 
 import { EmptyTab } from '../components/Panels/Tabs';
 import { Orientation } from '../components/Split/sash';
@@ -75,7 +77,7 @@ export class PanelsManager {
     },
     {
       id: 'panel-1',
-      tabs: [PanelsManager.createFileTab()],
+      tabs: [PanelsManager.createFileTab(startupFiles[0])],
       parent: 'panel-1-group',
     },
     {
@@ -256,7 +258,7 @@ export class PanelsManager {
 
   static createSpecificTab(type: PanelTabType, item?: any): PanelTab | undefined {
     switch (type) {
-    case PanelTabType.FILE: return this.createFileTab();
+    case PanelTabType.FILE: return this.createFileTab(item);
     case PanelTabType.TOOL: return this.createToolTab(item.toolID);
     default: return this.createEmptyTab();
     }
@@ -312,9 +314,9 @@ export class PanelsManager {
     this.removePanel(from);
   }
 
-  static createFileTab(): PanelTab {
+  static createFileTab(file: File): PanelTab {
     const tool = ToolsManager.getTool('editor') as Tool;
-    return this.createTab(PanelTabType.FILE, tool.tab(), tool.content());
+    return this.createTab(PanelTabType.FILE, tool.tab(), tool.content(), { file });
   }
 
   static createToolTab(id: ToolID): PanelTab | undefined {
@@ -374,6 +376,14 @@ export class PanelsManager {
 
   static addToolTab(toolID: ToolID, panelID: PanelID, position: number | PanelTabID = -1) {
     const toolTab = this.createToolTab(toolID);
+    if (!toolTab) {
+      return;
+    }
+    this.addTab(toolTab, panelID, position);
+  }
+
+  static addFileTab(file: File, panelID: PanelID, position: number | PanelTabID = -1) {
+    const toolTab = this.createFileTab(file);
     if (!toolTab) {
       return;
     }

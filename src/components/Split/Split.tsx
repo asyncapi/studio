@@ -251,7 +251,6 @@ const Split = forwardRef<SplitHandle, SplitProps>(
               return React.cloneElement(child, {
                 key,
                 ref: (el: HTMLElement | null) => {
-                  console.log(key, el);
                   if (el) {
                     splitViewViewRef.current.set(key, el);
                   } else {

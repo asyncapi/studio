@@ -1,6 +1,6 @@
 import { VscCode, VscOpenPreview, VscTypeHierarchy, VscTerminal } from 'react-icons/vsc';
 
-import { MonacoWrapper } from '../components/Editor/MonacoWrapper';
+import { Editor } from '../components/NewEditor/Editor';
 import { HTMLWrapper } from '../components/Template';
 import { Visualiser } from '../components/Visualiser';
 import { Terminal } from '../components/Terminal';
@@ -32,7 +32,7 @@ export class ToolsManager {
       tab: () => (
         <span>Editor</span>
       ),
-      content: () => <MonacoWrapper />,
+      content: () => <Editor />,
     },
     html: {
       id: 'html',

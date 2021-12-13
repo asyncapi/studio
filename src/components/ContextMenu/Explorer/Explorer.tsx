@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { OpenedTabs } from './OpenedTabs';
+import { FileSystem } from './FileSystem';
 import { Navigation } from '../../Navigation';
 
 import { ContextPanel } from '../ContextPanel';
@@ -13,8 +14,9 @@ export const ExplorerContextMenu: React.FunctionComponent<ExplorerContextMenuPro
       <h2 className="p-2 text-gray-500 text-xs uppercase">
         Explorer
       </h2>
+      
       <OpenedTabs />
-      {/* <OpenTabs /> */}
+      <FileSystem />
       <ContextPanel title="Document structure" opened={true}>
         <Navigation />
       </ContextPanel>

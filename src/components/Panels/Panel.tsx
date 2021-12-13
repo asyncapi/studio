@@ -84,7 +84,20 @@ export const PanelContent: React.FunctionComponent<PanelContentProps> = () => {
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Delete panel"
+            title="Hide Panel"
+            onClick={(e) => {
+              e.stopPropagation();
+              PanelsManager.updatePanelVisibility(false, currentPanel);
+            }}
+          >
+            Hide Panel
+          </button>
+        </li>
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Close All"
             onClick={(e) => {
               e.stopPropagation();
               PanelsManager.removePanel(currentPanel);
@@ -145,7 +158,7 @@ export const PanelContent: React.FunctionComponent<PanelContentProps> = () => {
                 className={`${activeTab === tab.id ? 'block' : 'hidden'}`}
               >
                 <div className="absolute overflow-auto h-auto top-0 bottom-0 right-0 left-0">
-                  <TabContext.Provider value={{ currentTab: tab.id }}>
+                  <TabContext.Provider value={{ currentTab: tab.id, tab }}>
                     {tab.content}
                   </TabContext.Provider>
                 </div>
