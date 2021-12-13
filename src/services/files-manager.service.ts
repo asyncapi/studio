@@ -57,6 +57,11 @@ export class FilesManager {
     this.updateFiles();
   }
 
+  static createFile(content: string) {
+    const id = generateUniqueID();
+    return { id, name: `asyncapi${++fileIndex}`, content, extension: FileExtension.YAML, status: FileStatus.DEFAULT };
+  }
+
   static updateFileContent(id: FileID, content: string) {
     const file = this.getFile(id);
     if (!file) {

@@ -3,7 +3,7 @@ import { DropTargetMonitor, useDrop } from 'react-dnd';
 
 import { PanelContext } from './PanelContext';
 
-import { PanelsManager, DropDirection, DRAG_DROP_TYPES, Panel } from '../../services';
+import { PanelsManager, DropDirection, DRAG_DROP_TYPES, Panel, FilesManager } from '../../services';
 
 const DRAG_DROP_ACCEPTS = [
   // DRAG_DROP_TYPES.PANEL,
@@ -27,6 +27,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       // case DRAG_DROP_TYPES.PANEL: return PanelsManager.movePanel(item.panelID, currentPanel, direction);
       case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, newPanel!.id);
       case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, newPanel!.id);
+      case DRAG_DROP_TYPES.FILE: return PanelsManager.addFileTab(FilesManager.createFile(item.template), newPanel!.id);
       default: return;
     }
   }, []);
@@ -38,6 +39,7 @@ export const PanelDnDArea: React.FunctionComponent = () => {
       switch (monitor.getItemType()) {
         case DRAG_DROP_TYPES.TAB: return PanelsManager.switchTabs(item.tabID, item.panelID, undefined, currentPanel);
         case DRAG_DROP_TYPES.TOOL: return PanelsManager.addToolTab(item.toolID, currentPanel);
+        case DRAG_DROP_TYPES.FILE: return PanelsManager.addFileTab(FilesManager.createFile(item.template), currentPanel);
         default: return;
       } 
     },

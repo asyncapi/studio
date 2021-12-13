@@ -18,6 +18,7 @@ export const Editor: React.FunctionComponent<EditorProps> = (props = {}) => {
   const { file } = tab.metadata || {};
 
   const editorState = state.useEditorState();
+  const parserState = state.useParserState();
 
   async function handleEditorDidMount(
     editor: monacoAPI.editor.IStandaloneCodeEditor,
@@ -49,7 +50,9 @@ export const Editor: React.FunctionComponent<EditorProps> = (props = {}) => {
 
   const onChange = debounce((v: string) => {
     // EditorService.updateState({ content: v });
-    SpecificationService.parse(v, currentTab);
+    SpecificationService.parse(v, currentTab).then(parsedSpec => {
+      parsedSpec && parserState.parsedSpec.set(parsedSpec);
+    })
   }, 625);
 
   useEffect(() => {

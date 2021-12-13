@@ -3,9 +3,11 @@ import { useDrag } from 'react-dnd';
 
 import { ContextPanel } from '../ContextPanel';
 
-import { PanelsManager, DRAG_DROP_TYPES } from '../../../services';
+import { PanelsManager, DRAG_DROP_TYPES, FilesManager } from '../../../services';
 
 import { examples } from '../../../examples';
+
+import state from '../../../state';
 
 export interface Template {
   type: 'protocol' | 'real-example',
@@ -21,16 +23,22 @@ const TemplateItem: React.FunctionComponent<TemplateItemProps> = ({
   description,
   template,
 }) => {
+  const panelsState = state.usePanelsState();
+  const activePanel = panelsState.activePanel.get();
+
   const [_, drag] = useDrag({
     type: DRAG_DROP_TYPES.FILE,
-    item: {},
+    item: { template },
   });
 
   return (
     <button
       ref={drag}
       className="p-2 rounded-lg border-2 border-gray-700 text-gray-300 bg-gray-700 transform transition duration-200 hover:scale-105 hover:border-pink-500 text-left w-full"
-      // onClick={() => handleTemplateClick(template)}
+      onClick={(e) => {
+        e.stopPropagation();
+        PanelsManager.addFileTab(FilesManager.createFile(template), activePanel);
+      }}
       key={title}
     >
       <div>

@@ -17,7 +17,7 @@ export const EmptyTab: React.FunctionComponent = () => {
     PanelsManager.replaceTab(currentTab, newTab, currentPanel);
   }, []);
 
-  const tools = Object.values(ToolsManager.getTools());
+  const tools = Object.values(ToolsManager.getTools()).filter(tool => tool.id !== 'editor');
   return (
     <div className="bg-gray-800 h-full w-full flex flex-wrap justify-center content-center overflow-auto">
       <div className="max-w-5xl mx-auto">

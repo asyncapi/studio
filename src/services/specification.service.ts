@@ -13,13 +13,24 @@ import state from '../state';
 
 export class SpecificationService {
   static async parse(rawSpec: string, editorID?: string): Promise<AsyncAPIDocument | void> {
+    const parserState = state.parser;
     try {
       const parsedDoc = await parse(rawSpec);
       MonacoService.updateLanguageConfig(parsedDoc);
       editorID && EditorsManager.applyErrorMarkers([], editorID);
+      parserState.set({
+        parsedSpec: parsedDoc,
+        valid: true,
+        errors: [],
+      });
       return parsedDoc;
     } catch(err) {
       const errors = this.filterErrors(err, rawSpec);
+      parserState.set({
+        parsedSpec: null,
+        valid: false,
+        errors,
+      });
       editorID && EditorsManager.applyErrorMarkers(errors, editorID);
     }
   }
