@@ -73,7 +73,7 @@ export const SettingsModal: React.FunctionComponent = () => {
               </label>
               <Switch
                 toggle={autoSaving}
-                callback={(v) => setAutoSaving(v)}
+                onChange={(v) => setAutoSaving(v)}
               />
             </div>
             <div className='text-gray-400 text-xs'>
@@ -126,7 +126,7 @@ export const SettingsModal: React.FunctionComponent = () => {
               </label>
               <Switch
                 toggle={autoRendering}
-                callback={(v) => setAutoRendering(v)}
+                onChange={(v) => setAutoRendering(v)}
               />
             </div>
           </div>
