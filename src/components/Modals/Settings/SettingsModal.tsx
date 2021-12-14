@@ -63,39 +63,49 @@ export const SettingsModal: React.FunctionComponent = () => {
       tab: <span>Editor</span>,
       content: (
         <div>
-          <div className="flex content-center justify-between mt-4 text-sm">
-            <label
-              htmlFor="asyncapi-version"
-              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-            >
-              Auto saving:
-            </label>
-            <Switch
-              toggle={autoSaving}
-              callback={(v) => setAutoSaving(v)}
-            />
-          </div>
-          {autoSaving && (
-            <div className="flex content-center justify-center mt-4 text-sm">
+          <div className="flex flex-col mt-4 text-sm">
+            <div className="flex flex-row content-center justify-between">
               <label
-                htmlFor="template-delay"
+                htmlFor="asyncapi-version"
                 className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
               >
-                Delay (in miliseconds):
+                Auto saving:
               </label>
-              <select
-                name="asyncapi-version"
-                className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-                onChange={e => setSavingDelay(JSON.parse(e.target.value))}
-                value={savingDelay}
-              >
-                <option value="">Please Select</option>
-                {[250, 500, 625, 750, 875, 1000].map(v => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
+              <Switch
+                toggle={autoSaving}
+                callback={(v) => setAutoSaving(v)}
+              />
+            </div>
+            <div className='text-gray-400 text-xs'>
+              Save automatically after each change in the document or manually.
+            </div>
+          </div>
+          {autoSaving && (
+            <div className="flex flex-col mt-4 text-sm">
+              <div className="flex flex-row content-center justify-between">
+                <label
+                  htmlFor="template-delay"
+                  className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+                >
+                  Delay (in miliseconds):
+                </label>
+                <select
+                  name="asyncapi-version"
+                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
+                  onChange={e => setSavingDelay(JSON.parse(e.target.value))}
+                  value={savingDelay}
+                >
+                  <option value="">Please Select</option>
+                  {[250, 500, 625, 750, 875, 1000].map(v => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='text-gray-400 text-xs -mt-2'>
+                Delay in saving the modified document.
+              </div>
             </div>
           )}
         </div>
@@ -106,17 +116,22 @@ export const SettingsModal: React.FunctionComponent = () => {
       tab: <span>Templates</span>,
       content: (
         <div>
-          <div className="flex content-center justify-between mt-4 text-sm">
-            <label
-              htmlFor="asyncapi-version"
-              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-            >
-              Auto rendering:
-            </label>
-            <Switch
-              toggle={autoRendering}
-              callback={(v) => setAutoRendering(v)}
-            />
+          <div className="flex flex-col mt-4 text-sm">
+            <div className="flex flex-row content-center justify-between">
+              <label
+                htmlFor="asyncapi-version"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+              >
+                Auto rendering:
+              </label>
+              <Switch
+                toggle={autoRendering}
+                callback={(v) => setAutoRendering(v)}
+              />
+            </div>
+          </div>
+          <div className='text-gray-400 text-xs'>
+            Automatic rendering after each change in the document or manually.
           </div>
         </div>
       ),
