@@ -80,34 +80,33 @@ export const SettingsModal: React.FunctionComponent = () => {
               Save automatically after each change in the document or manually.
             </div>
           </div>
-          {autoSaving && (
-            <div className="flex flex-col mt-4 text-sm">
-              <div className="flex flex-row content-center justify-between">
-                <label
-                  htmlFor="template-delay"
-                  className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-                >
-                  Delay (in miliseconds):
-                </label>
-                <select
-                  name="asyncapi-version"
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-                  onChange={e => setSavingDelay(JSON.parse(e.target.value))}
-                  value={savingDelay}
-                >
-                  <option value="">Please Select</option>
-                  {[250, 500, 625, 750, 875, 1000].map(v => (
-                    <option key={v} value={v}>
-                      {v}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className='text-gray-400 text-xs -mt-2'>
-                Delay in saving the modified document.
-              </div>
+          <div className={`flex flex-col mt-4 text-sm pl-8 ${autoSaving ? 'opacity-1' : 'opacity-25'}`}>
+            <div className="flex flex-row content-center justify-between">
+              <label
+                htmlFor="template-delay"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+              >
+                Delay (in miliseconds):
+              </label>
+              <select
+                name="asyncapi-version"
+                className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
+                onChange={e => setSavingDelay(JSON.parse(e.target.value))}
+                value={autoSaving ? savingDelay : ""}
+                disabled={!autoSaving}
+              >
+                <option value="">Please Select</option>
+                {[250, 500, 625, 750, 875, 1000].map(v => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
+            <div className='text-gray-400 text-xs -mt-2'>
+              Delay in saving the modified document.
+            </div>
+          </div>
         </div>
       ),
     },
