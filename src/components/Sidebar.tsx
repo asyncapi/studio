@@ -1,5 +1,6 @@
 import React from 'react';
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
+import ReactTooltip from 'react-tooltip';
 
 import { SettingsModal } from './Modals/Settings/SettingsModal';
 
@@ -67,31 +68,31 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'navigation',
       state: () => sidebarState.panels.navigation.get(),
-      icon: <VscListSelection className="w-5 h-5" />,
+      icon: <VscListSelection  data-tip="Navigation" className="w-5 h-5 " />,
     },
     // editor
     {
       name: 'editor',
       state: () => sidebarState.panels.editor.get(),
-      icon: <VscCode className="w-5 h-5" />,
+      icon: <VscCode data-tip="Code Editor" className="w-5 h-5" />,
     },
     // template
     {
       name: 'template',
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
-      icon: <VscOpenPreview className="w-5 h-5" />,
+      icon: <VscOpenPreview data-tip="Documentation" className="w-5 h-5" />,
     },
     // visuliser
     {
       name: 'visualiser',
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
-      icon: <VscGraph className="w-5 h-5" />,
+      icon: <VscGraph data-tip="Visualiser" className="w-5 h-5" />,
     },
     // newFile
     {
       name: 'newFile',
       state: () => sidebarState.panels.newFile.get(),
-      icon: <VscNewFile className="w-5 h-5" />,
+      icon: <VscNewFile data-tip="Explore Templates" className="w-5 h-5" />,
     },
   ];
 
@@ -116,6 +117,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       <div className="flex flex-col">
         <SettingsModal />
       </div>
+      <ReactTooltip effect='solid' backgroundColor='#374151' arrowColor='#374151' className="text-xs"  />
     </div>
   );
 };
