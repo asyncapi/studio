@@ -4,8 +4,8 @@ import SplitPane from 'react-split-pane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
-import { Visualiser } from './Visualiser';
 import NewFile from './NewFile';
+import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
 import state from '../state';
@@ -50,7 +50,6 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   return (
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
-
         {newFileEnabled && <NewFile />}
 
         {!newFileEnabled && 
@@ -72,7 +71,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
           >
             {navigationAndEditor}
             {viewType === 'template' && <Template />}
-            {viewType === 'visualiser' && <Visualiser />}
+            {viewType === 'visualiser' && <VisualiserTemplate />}
           </SplitPane> 
         }
       </div>

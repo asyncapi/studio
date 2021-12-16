@@ -1,6 +1,8 @@
 import React from 'react';
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
 
+import { SettingsModal } from './Modals/Settings/SettingsModal';
+
 import state from '../state';
 
 type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
@@ -85,6 +87,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
       state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
     },
+    // newFile
     {
       name: 'newFile',
       state: () => sidebarState.panels.newFile.get(),
@@ -93,7 +96,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-none bg-gray-800 shadow-lg border-r border-gray-700 justify-between">
+    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between">
       <div className="flex flex-col">
         {navigation.map(item => (
           <button
@@ -109,6 +112,9 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
             {item.icon}
           </button>
         ))}
+      </div>
+      <div className="flex flex-col">
+        <SettingsModal />
       </div>
     </div>
   );

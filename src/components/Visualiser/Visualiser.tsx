@@ -1,21 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import state from '../../state';
 
 import { FlowDiagram } from './FlowDiagram';
+
+import { SpecificationService } from '../../services';
+import state from '../../state';
 
 interface VisualiserProps {}
 
 export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
+  const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
+
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
+  const templateState = state.useTemplateState();
+  const settingsState = state.useSettingsState();
 
   const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
+  const autoRendering = settingsState.templates.autoRendering.get();
 
-  // using "json()" for removing proxy from value
-  let parsedSpec = parserState.parsedSpec.value;
-  parsedSpec = parsedSpec ? new (AsyncAPIDocument as any)(parsedSpec.json()) : null;
+  useEffect(() => {
+    if (autoRendering || parsedSpec === null) {
+      setParsedSpec(SpecificationService.getParsedSpec());
+    }
+  }, [parserState.parsedSpec]); // eslint-disable-line
+
+  useEffect(() => {
+    if (templateState.rerender.get()) {
+      setParsedSpec(SpecificationService.getParsedSpec());
+      templateState.rerender.set(false);
+    }
+  }, [templateState.rerender.get()]); // eslint-disable-line
 
   if (editorLoaded === false) {
     return (

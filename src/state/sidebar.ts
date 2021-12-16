@@ -1,4 +1,5 @@
 import { createState, useState } from '@hookstate/core';
+
 export interface SidebarState {
   show: boolean;
   panels: {
@@ -9,6 +10,7 @@ export interface SidebarState {
     viewType: 'template' | 'visualiser';
   };
 }
+
 export const sidebarState = createState<SidebarState>({
   show: true,
   panels: {
@@ -19,6 +21,7 @@ export const sidebarState = createState<SidebarState>({
     viewType: 'template',
   },
 });
+
 export function useSidebarState() {
   return useState(sidebarState);
 }

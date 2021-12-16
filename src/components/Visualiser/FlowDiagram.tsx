@@ -54,13 +54,13 @@ export const FlowDiagram: React.FunctionComponent<FlowDiagramProps> = ({ parsedS
   };
 
   return (
-    <div className="h-screen bg-gray-800">
+    <div className="h-screen bg-gray-800 relative">
       <ReactFlow nodeTypes={nodeTypes} elements={elements} minZoom={0.1} onLoad={handleLoaded}>
         <Background color="#d1d1d3" variant={BackgroundVariant.Dots} gap={20} size={1} className="bg-gray-200" />
         {loaded && <AutoLayout elementsToRender={elements} />}
         <Controls />
         <div className="-mt-20">
-          <FlowControls style={{ bottom: '80px' }} />
+          <FlowControls style={{ bottom: '105px' }} />
         </div>
       </ReactFlow>
       <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">

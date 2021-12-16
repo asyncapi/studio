@@ -15,7 +15,7 @@ export const Terminal: React.FunctionComponent<TerminalProps> = () => {
   ];
 
   return (
-    <div className="bg-gray-900 border-t border-gray-700 flex-grow relative h-full overflow-hidden">
+    <div className="bg-gray-800 border-t border-gray-700 flex-grow relative h-full overflow-hidden">
       <TerminalTabs tabs={tabs} active="problems" />
     </div>
   );
