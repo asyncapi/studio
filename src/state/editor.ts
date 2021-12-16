@@ -177,6 +177,7 @@ export interface EditorState {
   editorLoaded: boolean;
   documentFrom: EditorStateDocumentFrom;
   decorations: Array<any>;
+  modified: boolean,
 }
 
 export const editorState = createState<EditorState>({
@@ -188,6 +189,7 @@ export const editorState = createState<EditorState>({
   editorLoaded: false,
   documentFrom: 'localStorage',
   decorations: [],
+  modified: false,
 });
 
 export function useEditorState() {

@@ -4,8 +4,8 @@ import SplitPane from 'react-split-pane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
-import { Visualiser } from './Visualiser';
 import { NewFileModal } from './Modals/NewFileModal';
+import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
 import state from '../state';
@@ -55,8 +55,12 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
           size={viewEnabled ? secondPaneSize : 0}
           minSize={0}
           maxSize={secondPaneMaxSize}
-          pane1Style={navigationEnabled || editorEnabled ? undefined : { width: '0px' }}
-          pane2Style={viewEnabled ? { overflow: 'auto' } : { width: '0px' }}
+          pane1Style={
+            navigationEnabled || editorEnabled ? undefined : { width: '0px' }
+          }
+          pane2Style={
+            viewEnabled ? { overflow: 'auto' } : { width: '0px' }
+          }
           primary={viewEnabled ? 'first' : 'second'}
           defaultSize={localStorageRightPaneSize}
           onChange={debounce((size: string) => {
@@ -65,8 +69,8 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
         >
           {navigationAndEditor}
           {viewType === 'template' && <Template />}
-          {viewType === 'visualiser' && <Visualiser />}
-        </SplitPane>
+          {viewType === 'visualiser' && <VisualiserTemplate />}
+        </SplitPane> 
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -37,7 +37,6 @@
     "js-yaml": "^4.1.0",
     "monaco-editor": "^0.28.1",
     "monaco-yaml": "^2.5.1",
-    "raw-loader": "^4.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-flow-renderer": "^9.6.9",
@@ -78,6 +77,7 @@
     "@semantic-release/github": "^8.0.1",
     "@semantic-release/npm": "^8.0.0",
     "@semantic-release/release-notes-generator": "^10.0.2",
+    "@tailwindcss/typography": "^0.4.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -95,6 +95,7 @@
     "eslint-plugin-sonarjs": "^0.10.0",
     "markdown-toc": "^1.2.0",
     "postcss": "^7.0.39",
+    "raw-loader": "^4.0.2",
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",

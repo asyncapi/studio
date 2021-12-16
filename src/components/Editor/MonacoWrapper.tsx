@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import toast from 'react-hot-toast';
 import MonacoEditor, {
   EditorProps as MonacoEditorProps,
 } from '@monaco-editor/react';
@@ -19,6 +18,9 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   ...props
 }) => {
   const editorState = state.useEditorState();
+  const settingsState = state.useSettingsState();
+  const autoSaving = settingsState.editor.autoSaving.get();
+  const savingDelay = settingsState.editor.savingDelay.get();
 
   async function handleEditorDidMount(
     editor: monacoAPI.editor.IStandaloneCodeEditor,
@@ -31,18 +33,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
     // apply save command
     editor.addCommand(
       monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KEY_S,
-      () => {
-        const editorValue = EditorService.getValue();
-        localStorage.setItem('document', editorValue);
-        state.editor.documentFrom.set('localStorage');
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Document succesfully saved to the local storage!
-            </span>
-          </div>,
-        );
-      },
+      () => EditorService.saveToLocalStorage(),
     );
 
     // mark editor as loaded
@@ -51,8 +42,9 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
 
   const onChange = debounce((v: string) => {
     EditorService.updateState({ content: v });
+    autoSaving && EditorService.saveToLocalStorage(v, false);
     SpecificationService.parseSpec(v);
-  }, 625);
+  }, savingDelay);
 
   useEffect(() => {
     MonacoService.loadMonaco();

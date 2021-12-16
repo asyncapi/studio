@@ -11,10 +11,15 @@ import { MonacoService } from './monaco.service';
 import state from '../state';
 
 export class SpecificationService {
+  static getParsedSpec() {
+    return window.ParsedSpec || null;
+  }
+
   static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
     const parserState = state.parser;
     return parse(rawSpec)
       .then(asyncApiDoc => {
+        window.ParsedSpec = asyncApiDoc;
         parserState.set({
           parsedSpec: asyncApiDoc,
           valid: true,
