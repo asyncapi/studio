@@ -39,7 +39,7 @@ export const NewFileModal: React.FunctionComponent = () => {
             <div className="grid grid-cols-3 gap-4 py-4">
               {templates.map(({ title, description: Description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200 border-dashed';
+                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
                 const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
 
                 return (
@@ -65,7 +65,7 @@ export const NewFileModal: React.FunctionComponent = () => {
             <div className="grid grid-cols-3 gap-4 py-4">
               {realLifeExamples.map(({ title, description: Description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200 border-dashed';
+                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
                 const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
 
                 return (
