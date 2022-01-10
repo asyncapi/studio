@@ -94,7 +94,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
     "markdown-toc": "^1.2.0",
-    "postcss": "^7.0.39",
+    "postcss": "^8.2.13",
     "raw-loader": "^4.0.2",
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
