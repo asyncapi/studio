@@ -1,12 +1,12 @@
 import fileDownload from 'js-file-download';
 
 export class ServerAPIService {
-  static serverPath = 'http://localhost:5000/v1';
+  static serverPath = 'http://localhost:80/v1';
 
   static async generate(data: {
-    asyncapi: string | object,
+    asyncapi: string | Record<string, any>,
     template: string,
-  }) {
+  }): Promise<{ ok: boolean, statusText: string }> {
     const response = await fetch(`${this.serverPath}/generate`, {
       method: 'POST',
       headers: {
@@ -14,11 +14,15 @@ export class ServerAPIService {
       },
       body: JSON.stringify({
         ...data,
-        // parameters: {},
       }),
     });
-    const zipFile = await response.blob();
-    fileDownload(zipFile, 'asyncapi.zip');
+
+    if (response.ok) {
+      const zipFile = await response.blob();
+      fileDownload(zipFile, 'asyncapi.zip');
+    }
+
+    return { ok: response.ok, statusText: response.statusText };
   }
 
   static getTemplates() {

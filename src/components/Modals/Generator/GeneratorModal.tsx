@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 
-import { ConfirmModal } from '../index';
+import { ConfirmModal, ConfirmModalHandle } from '../index';
 
 import { ServerAPIService } from '../../../services';
 
@@ -9,12 +9,25 @@ import state from '../../../state';
 
 export const GeneratorModal: React.FunctionComponent = () => {
   const [template, setTemplate] = useState('');
+  const [error, setError] = useState('');
+  const ref = useRef<ConfirmModalHandle>(null);
+
+  const generateTemplate = async () => {
+    setError('');
+    const status = await ServerAPIService.generate({
+      asyncapi: state.editor.editorValue.get(),
+      template,
+    });
+    if (status.ok) {
+      ref.current?.close();
+    } else {
+      setError(status.statusText);
+      throw new Error(status.statusText);
+    }
+  };
 
   const onSubmit = () => {
-    toast.promise(ServerAPIService.generate({
-      asyncapi: state.editor.editorValue.get(),
-      template
-    }), {
+    toast.promise(generateTemplate(), {
       loading: 'Generating...',
       success: (
         <div>
@@ -35,6 +48,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
 
   return (
     <ConfirmModal
+      ref={ref}
       title="Generate template based on AsyncAPI document"
       confirmText="Generate"
       confirmDisabled={!template}
@@ -48,6 +62,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
         </button>
       }
       onSubmit={onSubmit}
+      closeAfterSumbit={false}
     >
       <div>
         <div className="flex content-center justify-center mt-4">
@@ -72,6 +87,9 @@ export const GeneratorModal: React.FunctionComponent = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div className="flex content-center justify-center mt-4">
+          {error}
         </div>
       </div>
     </ConfirmModal>
