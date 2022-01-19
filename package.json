@@ -76,6 +76,17 @@
     ]
   },
   "devDependencies": {
+    "@asyncapi/dotnet-nats-template": "^0.3.13",
+    "@asyncapi/go-watermill-template": "^0.1.32",
+    "@asyncapi/html-template": "^0.24.5",
+    "@asyncapi/java-spring-cloud-stream-template": "^0.11.5",
+    "@asyncapi/java-spring-template": "^0.25.1",
+    "@asyncapi/java-template": "^0.1.0",
+    "@asyncapi/markdown-template": "^1.0.0",
+    "@asyncapi/nodejs-template": "^0.11.4",
+    "@asyncapi/nodejs-ws-template": "^0.9.19",
+    "@asyncapi/python-paho-template": "^0.2.12",
+    "@asyncapi/ts-nats-template": "^0.5.10",
     "@craco/craco": "^6.4.0",
     "@semantic-release/commit-analyzer": "^9.0.1",
     "@semantic-release/github": "^8.0.1",
@@ -87,6 +98,7 @@
     "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.24",
     "@types/js-yaml": "^4.0.3",
+    "@types/json-schema": "^7.0.9",
     "@types/node": "^12.20.26",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
@@ -103,6 +115,7 @@
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
+    "ts-node": "^10.4.0",
     "typescript": "^4.4.3"
   },
   "jest": {
