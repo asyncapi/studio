@@ -36,9 +36,9 @@ export const GeneratorModal: React.FunctionComponent = () => {
       setTemplate('');
       setTemplateParams({});
     } else {
-      const problem = await ServerAPIService.retrieveProblem(response);
-      setProblem(problem as ServerAPIProblem & { validationErrors: string[] });
-      throw new Error(problem?.title);
+      const responseProblem = await ServerAPIService.retrieveProblem(response);
+      setProblem(responseProblem as ServerAPIProblem & { validationErrors: string[] });
+      throw new Error(responseProblem?.title);
     }
   };
 
@@ -98,9 +98,9 @@ export const GeneratorModal: React.FunctionComponent = () => {
             value={template}
           >
             <option value="">Please Select</option>
-            {Object.keys(templates).map(template => (
-              <option key={template} value={template}>
-                {template}
+            {Object.keys(templates).map(templateItem => (
+              <option key={templateItem} value={templateItem}>
+                {templateItem}
               </option>
             ))}
           </select>
