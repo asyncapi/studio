@@ -1,8 +1,10 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
+
 import fs from 'fs';
 import path from 'path';
 import { JSONSchema7 } from 'json-schema';
 
-const DESTINATION_JSON = path.join(__dirname, `../src/components/Modals/Generator/template-parameters.json`);
+const DESTINATION_JSON = path.join(__dirname, '../src/components/Modals/Generator/template-parameters.json');
 const SUPPORTED_TEMPLATES = [
   '@asyncapi/dotnet-nats-template',
   '@asyncapi/go-watermill-template',
@@ -17,15 +19,42 @@ const SUPPORTED_TEMPLATES = [
   '@asyncapi/ts-nats-template',
 ];
 
-interface TemplateConfig {
-  parameters: Record<string, {
-    description?: string;
-    default?: any;
-    required?: boolean;
-  }>;
+interface TemplateParameter {
+  description?: string;
+  default?: any;
+  required?: boolean;
 }
 
-function serializeTemplateParameters(config: TemplateConfig): JSONSchema7 | undefined {
+interface TemplateConfig {
+  parameters: Record<string, TemplateParameter>;
+}
+
+function serializeParam(configParam: TemplateParameter): JSONSchema7 {
+  const param: JSONSchema7 = {
+    description: configParam.description,
+  };
+
+  if (typeof configParam.default === 'boolean' || configParam.default === 'true' || configParam.default === 'false') {
+    param.type = 'boolean';
+    if (typeof configParam.default === 'boolean') {
+      param.default = configParam.default;
+    } else if (configParam.default === 'true') {
+      param.default = true;
+    } else if (configParam.default === 'false') {
+      param.default = false;
+    }
+  } else if (typeof configParam.default === 'number') {
+    param.type = 'number';
+    param.default = Number(configParam.default);
+  } else {
+    param.type = 'string';
+    param.default = configParam.default;
+  }
+
+  return param;
+}
+
+function serializeTemplateParameters(templateName: string, config: TemplateConfig): JSONSchema7 | undefined {
   if (!config || !config.parameters) {
     return;
   }
@@ -35,18 +64,12 @@ function serializeTemplateParameters(config: TemplateConfig): JSONSchema7 | unde
   const required: string[] = [];
   for (const parameter in configParameters) {
     const configParam = configParameters[String(parameter)];
-    const param: JSONSchema7 = {};
 
-    if (typeof configParam.default === 'boolean') {
-      param.type = 'boolean';
-    } else if (typeof configParam.default === 'number') {
-      param.type = 'number';
-    } else {
-      param.type = 'string';
+    // temporary skip that parameter because it brokes server-api
+    if (parameter === 'singleFile' && templateName === '@asyncapi/html-template') {
+      continue;
     }
-    param.description = configParam.description;
-    param.default = configParam.default;
-
+    const param = serializeParam(configParam);
     if (configParam.required) {
       required.push(parameter);
     }
@@ -67,7 +90,7 @@ function serializeTemplateParameters(config: TemplateConfig): JSONSchema7 | unde
 async function main() {
   const schemas: Record<string, JSONSchema7> = {};
   for (let i = 0, l = SUPPORTED_TEMPLATES.length; i < l; i++) {
-    const templateName = SUPPORTED_TEMPLATES[i];
+    const templateName = SUPPORTED_TEMPLATES[Number(i)];
 
     console.info(`[INFO]: Prepare parameters for ${templateName}.`);
 
@@ -75,7 +98,7 @@ async function main() {
     const packageJSONContent = await fs.promises.readFile(pathToPackageJSON, 'utf-8');
     const packageJSON = JSON.parse(packageJSONContent);
 
-    const schema = serializeTemplateParameters(packageJSON.generator);
+    const schema = serializeTemplateParameters(templateName, packageJSON.generator);
     if (schema) {
       schemas[String(templateName)] = schema;
     }
