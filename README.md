@@ -48,6 +48,16 @@ npm start
 
 and then go to [http://localhost:3000]().
 
+## Using it via Docker
+
+Run:
+
+```bash
+docker run -it -p 8000:80 asyncapi/studio
+```
+
+and then go to [http://localhost:8000]().
+
 ## Development
 
 1. Setup project by installing dependencies `npm install`
