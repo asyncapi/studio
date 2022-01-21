@@ -37,6 +37,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
       setTemplateParams({});
     } else {
       const responseProblem = await ServerAPIService.retrieveProblem(response);
+      console.log(responseProblem);
       setProblem(responseProblem as ServerAPIProblem & { validationErrors: string[] });
       throw new Error(responseProblem?.title);
     }

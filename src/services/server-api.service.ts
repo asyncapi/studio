@@ -10,7 +10,7 @@ export interface ServerAPIProblem {
 }
 
 export class ServerAPIService {
-  static serverPath = 'http://api.asyncapi.com/v1';
+  static serverPath = 'https://api.asyncapi.com/v1';
 
   static async generate(data: {
     asyncapi: string | Record<string, any>,
