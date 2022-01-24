@@ -136,7 +136,6 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
   ];
-
   return (
     <ConfirmModal
       title={'Studio settings'}
@@ -145,7 +144,8 @@ export const SettingsModal: React.FunctionComponent = () => {
       opener={
         <button
           className={'flex border-l-2 text-gray-500 hover:text-white border-gray-800 focus:outline-none border-box p-4'}
-          type="button"
+          type="button"  
+          title="Settings"  
         >
           <VscSettingsGear className="w-5 h-5" />
         </button>
