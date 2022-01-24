@@ -59,7 +59,7 @@ export default [
     type: templateTypes.realExample
   },
   {
-    title: 'Glitter Streaming API',
+    title: 'Gitter Streaming API',
     description: () => <>Gitter Streaming API from https://stream.gitter.im. Using HTTP protocol.</>,
     template: gitterStreaming,
     type: templateTypes.realExample
