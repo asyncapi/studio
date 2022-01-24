@@ -46,7 +46,7 @@ npm install
 npm start
 ```
 
-and then go to [http://localhost:3000]().
+and then go to [http://localhost:3000](http://localhost:3000).
 
 ## Using it via Docker
 
@@ -56,7 +56,10 @@ Run:
 docker run -it -p 8000:80 asyncapi/studio
 ```
 
-and then go to [http://localhost:8000]().
+and then go to [http://localhost:8000](http://localhost:8000).
+
+The `asyncapi/studio` image is based on the official `nginx` image.
+Please refer to the [Nginx documentation](https://registry.hub.docker.com/_/nginx/) to learn how to e.g. pass a custom `nginx` configuration or plug in additional volumes.
 
 ## Development
 
