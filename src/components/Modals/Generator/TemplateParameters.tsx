@@ -86,7 +86,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 
   if (!templateName) {
     return (
-      <div className='text-sm text-gray-700'>
+      <div className='text-sm text-gray-700 mt-10'>
         Please select template
       </div>
     );
@@ -94,7 +94,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 
   if (!properties || !Object.keys(properties).length) {
     return (
-      <div className='text-sm text-gray-700'>
+      <div className='text-sm text-gray-700 mt-10'>
         {'The given template hasn\'t parameters to pass'}
       </div>
     );
@@ -103,7 +103,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   return (
     <form className='w-full'>
       {Object.entries(properties).map(([propertyName, property]) => (
-        <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-5 text-sm'}>
+        <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
           <div className="flex flex-row content-center justify-between">
             <label
               htmlFor={propertyName}
