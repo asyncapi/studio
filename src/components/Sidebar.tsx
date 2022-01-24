@@ -106,7 +106,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
             className={`flex text-sm border-l-2  ${item.state()
               ? 'text-white hover:text-gray-500 border-white'
               : 'text-gray-500 hover:text-white border-gray-800'
-              } focus:outline-none border-box p-4`}
+            } focus:outline-none border-box p-4`}
             type="button"
           >
             {item.icon}
