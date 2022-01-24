@@ -53,7 +53,7 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-interface SidebarProps { }
+interface SidebarProps {}
 
 export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
   const sidebarState = state.useSidebarState();
@@ -103,9 +103,10 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
             key={item.name}
             title={(item.name.charAt(0).toUpperCase() + item.name.slice(1))}
             onClick={() => setActiveNav(item.name as NavItemType)}
-            className={`flex text-sm border-l-2  ${item.state()
-              ? 'text-white hover:text-gray-500 border-white'
-              : 'text-gray-500 hover:text-white border-gray-800'
+            className={`flex text-sm border-l-2  ${
+              item.state()
+                ? 'text-white hover:text-gray-500 border-white'
+                : 'text-gray-500 hover:text-white border-gray-800'
             } focus:outline-none border-box p-4`}
             type="button"
           >
