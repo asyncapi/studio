@@ -7,6 +7,31 @@ import examples from '../../examples';
 import { EditorService } from '../../services';
 import state from '../../state';
 
+interface TemplateListItemProps {
+  title: string;
+  description: React.FunctionComponent;
+  isSelected: boolean;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  key: string;
+}
+
+const TemplateListItem: React.FunctionComponent<TemplateListItemProps> = ({ title, description: Description, onClick, isSelected }) => {
+  const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
+  const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
+
+  return (
+    <button onClick={onClick} key={title} className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 hover:border-pink-500 ${containerStyles}`}>
+      <div className="flex justify-between w-full">
+        <span className={`block text-md font-bold leading-0 group-hover:text-pink-600 ${textStyles}`}>{title}</span>
+        {isSelected && <BsFillCheckCircleFill className="w-5 h-5 text-pink-600" />}
+      </div>
+      <span className="block text-sm text-gray-500 font-light mt-1 group-hover:text-gray-900">
+        <Description />
+      </span>
+    </button>
+  );
+};
+
 export const NewFileModal: React.FunctionComponent = () => {
   const sidebarState = state.useSidebarState();
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
@@ -20,9 +45,7 @@ export const NewFileModal: React.FunctionComponent = () => {
 
     toast.success(
       <div>
-        <span className="block text-bold">
-          Succesfully reused the {`"${selectedTemplate.title}"`} template.
-        </span>
+        <span className="block text-bold">Succesfully reused the {`"${selectedTemplate.title}"`} template.</span>
       </div>
     );
   };
@@ -31,58 +54,32 @@ export const NewFileModal: React.FunctionComponent = () => {
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
-    <ConfirmModal containerClassName="sm:max-w-6xl" onCancel={() => sidebarState.panels.newFile.set(false)} title="AsyncAPI Templates - Start with our template examples" confirmText="Use Template" confirmDisabled={false} show={true} onSubmit={handleSubmit}>
+    <ConfirmModal
+      containerClassName="sm:max-w-6xl"
+      onCancel={() => sidebarState.panels.newFile.set(false)}
+      title="AsyncAPI Templates - Start with our template examples"
+      confirmText="Use Template"
+      confirmDisabled={false}
+      show={true}
+      onSubmit={handleSubmit}
+    >
       <div className="flex content-center justify-center">
         <div className="w-full  overflow-auto space-y-8 ">
           <div>
             <span className="uppercase text-gray-800 text-sm underline font-bold">Templates</span>
             <div className="grid grid-cols-3 gap-4 py-4">
-              {templates.map(({ title, description: Description, template }) => {
+              {templates.map(({ title, description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
-                const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
-
-                return (
-                  <button
-                    onClick={() => setSelectedTemplate({ title, template })}
-                    key={title}
-                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 hover:border-pink-500 ${containerStyles}`}
-                  >
-                    <div className="flex justify-between w-full">
-                      <span className={`block text-md  font-bold leading-0 group-hover:text-pink-600 ${textStyles} `}>{title}</span>
-                      {isSelected && <BsFillCheckCircleFill className="w-5 h-5 text-pink-600" />}
-                    </div>
-                    <span className="block text-sm text-gray-500 font-light mt-1 group-hover:text-gray-900">
-                      <Description />
-                    </span>
-                  </button>
-                );
+                return <TemplateListItem title={title} description={description} isSelected={isSelected} key={title} onClick={() => setSelectedTemplate({ title, template })} />;
               })}
             </div>
           </div>
           <div>
             <span className="uppercase text-gray-800 text-sm underline font-bold">Real world Examples</span>
             <div className="grid grid-cols-3 gap-4 py-4">
-              {realLifeExamples.map(({ title, description: Description, template }) => {
+              {realLifeExamples.map(({ title, description, template }) => {
                 const isSelected = selectedTemplate.title === title;
-                const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
-                const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
-
-                return (
-                  <button
-                    onClick={() => setSelectedTemplate({ title, template })}
-                    key={title}
-                    className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 border-gray-200  hover:border-pink-500 ${containerStyles}`}
-                  >
-                    <div className="flex justify-between w-full">
-                      <span className={`block text-md  font-bold leading-0 group-hover:text-pink-600 ${textStyles} `}>{title}</span>
-                      {isSelected && <BsFillCheckCircleFill className="w-5 h-5 text-pink-600" />}
-                    </div>
-                    <span className="block text-sm text-gray-500 font-light mt-1 group-hover:text-gray-900">
-                      <Description />
-                    </span>
-                  </button>
-                );
+                return <TemplateListItem title={title} description={description} isSelected={isSelected} key={title} onClick={() => setSelectedTemplate({ title, template })} />;
               })}
             </div>
           </div>
