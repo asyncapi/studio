@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -25,13 +25,16 @@
     "./LICENSE"
   ],
   "dependencies": {
-    "@asyncapi/converter": "^0.6.0",
+    "@asyncapi/avro-schema-parser": "^1.0.1",
+    "@asyncapi/converter": "^0.6.1",
+    "@asyncapi/openapi-schema-parser": "^2.0.1",
     "@asyncapi/parser": "^1.12.0",
-    "@asyncapi/react-component": "^1.0.0-next.25",
+    "@asyncapi/react-component": "^1.0.0-next.31",
     "@asyncapi/specs": "^2.12.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.2.2",
+    "@semantic-release-plus/docker": "^3.1.1",
     "js-base64": "^3.7.2",
     "js-file-download": "^0.4.12",
     "js-yaml": "^4.1.0",
@@ -55,8 +58,9 @@
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:assets": "npm run build && npm run generate:readme:toc",
+    "generate:docker": "docker build --tag asyncapi/studio .",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
-    "release": "semantic-release",
+    "release": "npm run generate:docker && semantic-release",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
@@ -94,7 +98,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.10.0",
     "markdown-toc": "^1.2.0",
-    "postcss": "^7.0.39",
+    "postcss": "^8.2.13",
     "raw-loader": "^4.0.2",
     "react-scripts": "4.0.3",
     "semantic-release": "^18.0.0",
@@ -127,7 +131,14 @@
         }
       ],
       "@semantic-release/npm",
-      "@semantic-release/github"
+      "@semantic-release/github",
+      [
+        "@semantic-release-plus/docker",
+        {
+          "name": "asyncapi/studio",
+          "publishChannelTag": true
+        }
+      ]
     ]
   }
 }

@@ -26,6 +26,7 @@ This project is still under development and has not reached version 1.0.0 yet. T
 
 - [Requirements](#requirements)
 - [Using it locally](#using-it-locally)
+- [Using it via Docker](#using-it-via-docker)
 - [Development](#development)
   * [Spin up Gitpod](#spin-up-gitpod)
 - [Contribution](#contribution)
@@ -46,7 +47,20 @@ npm install
 npm start
 ```
 
-and then go to [http://localhost:3000]().
+and then go to [http://localhost:3000](http://localhost:3000).
+
+## Using it via Docker
+
+Run:
+
+```bash
+docker run -it -p 8000:80 asyncapi/studio
+```
+
+and then go to [http://localhost:8000](http://localhost:8000).
+
+The `asyncapi/studio` image is based on the official `nginx` image.
+Please refer to the [Nginx documentation](https://registry.hub.docker.com/_/nginx/) to learn how to e.g. pass a custom `nginx` configuration or plug in additional volumes.
 
 ## Development
 

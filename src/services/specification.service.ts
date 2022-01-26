@@ -1,6 +1,10 @@
 // @ts-ignore
 import { convert } from '@asyncapi/converter';
-import { parse, AsyncAPIDocument } from '@asyncapi/parser';
+import { parse, registerSchemaParser, AsyncAPIDocument } from '@asyncapi/parser';
+// @ts-ignore
+import openapiSchemaParser from '@asyncapi/openapi-schema-parser';
+// @ts-ignore
+import avroSchemaParser from '@asyncapi/avro-schema-parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 
@@ -9,6 +13,9 @@ import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 
 import state from '../state';
+
+registerSchemaParser(openapiSchemaParser);
+registerSchemaParser(avroSchemaParser);
 
 export class SpecificationService {
   static getParsedSpec() {

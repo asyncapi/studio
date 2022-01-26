@@ -101,6 +101,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
         {navigation.map(item => (
           <button
             key={item.name}
+            title={(item.name.charAt(0).toUpperCase() + item.name.slice(1))}
             onClick={() => setActiveNav(item.name as NavItemType)}
             className={`flex text-sm border-l-2  ${
               item.state()
