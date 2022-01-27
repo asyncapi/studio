@@ -9,7 +9,7 @@ import state from '../../state';
 
 interface TemplateListItemProps {
   title: string;
-  description: React.FunctionComponent;
+  description: React.ComponentType;
   isSelected: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   key: string;
