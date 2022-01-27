@@ -62,6 +62,13 @@ and then go to [http://localhost:8000](http://localhost:8000).
 The `asyncapi/studio` image is based on the official `nginx` image.
 Please refer to the [Nginx documentation](https://registry.hub.docker.com/_/nginx/) to learn how to e.g. pass a custom `nginx` configuration or plug in additional volumes.
 
+In some hosting scenarios (e.g. Docker Compose, Kubernetes) the container might not be exposed at the root path of the host.
+Set the environment variable `BASE_URL` to let AsyncAPI Studio know from where to resolve static assets:
+
+```bash
+docker run -it -p 8000:80 -e BASE_URL=/a/custom/path asyncapi/studio
+```
+
 ## Development
 
 1. Setup project by installing dependencies `npm install`
