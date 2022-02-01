@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema';
+import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
@@ -68,15 +68,15 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
   const { requiredProps, optionalProps } = useMemo(() => {
-    const requiredProps: Record<string, JSONSchema7Definition> = {};
-    const optionalProps: Record<string, JSONSchema7Definition> = {};
+    const requiredProperties: Record<string, JSONSchema7> = {};
+    const optionalProperties: Record<string, JSONSchema7> = {};
 
     Object.keys(properties).forEach(propKey => {
-      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)];
-      else optionalProps[String(propKey)] = properties[String(propKey)];
+      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)] as JSONSchema7;
+      else optionalProps[String(propKey)] = properties[String(propKey)] as JSONSchema7;
     });
 
-    return { requiredProps, optionalProps };
+    return { requiredProps: requiredProperties, optionalProps: optionalProperties };
   }, [properties, required]);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     });
   }, []);
 
-  const renderFields = useCallback((propertyName: string, property: JSONSchema7Definition) => {
+  const renderFields = useCallback((propertyName: string, property: JSONSchema7) => {
     return (
       <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
         <div className="flex flex-row content-center justify-between">
@@ -114,10 +114,10 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
               </span>
             )}
           </label>
-          <ParameterItem propertyName={propertyName} property={property as JSONSchema7} setValue={setValue} />
+          <ParameterItem propertyName={propertyName} property={property} setValue={setValue} />
         </div>
         <div className='text-gray-400 text-xs mt-1'>
-          {(property as JSONSchema7).description}
+          {property.description}
         </div>
       </div>
     );
