@@ -5,19 +5,20 @@ import path from 'path';
 import { JSONSchema7 } from 'json-schema';
 
 const DESTINATION_JSON = path.join(__dirname, '../src/components/Modals/Generator/template-parameters.json');
-const SUPPORTED_TEMPLATES = [
-  '@asyncapi/dotnet-nats-template',
-  '@asyncapi/go-watermill-template',
-  '@asyncapi/html-template',
-  '@asyncapi/java-spring-cloud-stream-template',
-  '@asyncapi/java-spring-template',
-  '@asyncapi/java-template',
-  '@asyncapi/markdown-template',
-  '@asyncapi/nodejs-template',
-  '@asyncapi/nodejs-ws-template',
-  '@asyncapi/python-paho-template',
-  '@asyncapi/ts-nats-template',
-];
+const TEMPLATES: Record<string, string> = {
+  '@asyncapi/dotnet-nats-template': '.NET Nats Project',
+  '@asyncapi/go-watermill-template': 'GO Lang Watermill Project',
+  '@asyncapi/html-template': 'Generate HTML website',
+  '@asyncapi/java-spring-cloud-stream-template': 'Java Spring Cloud Stream Project',
+  '@asyncapi/java-spring-template': 'Java Spring Project',
+  '@asyncapi/java-template': 'Java Project',
+  '@asyncapi/markdown-template': 'Generate Markdown Documentation',
+  '@asyncapi/nodejs-template': 'NodeJS Project',
+  '@asyncapi/nodejs-ws-template': 'NodeJS WebSocket Project',
+  '@asyncapi/python-paho-template': 'Python Paho Project',
+  '@asyncapi/ts-nats-template': 'Typescript Nats Project',
+};
+const SUPPORTED_TEMPLATES = Object.keys(TEMPLATES);
 
 interface TemplateParameter {
   description?: string;
@@ -44,7 +45,11 @@ function serializeParam(configParam: TemplateParameter): JSONSchema7 {
       param.default = false;
     }
   } else if (typeof configParam.default === 'number') {
-    param.type = 'number';
+    if (Number.isInteger(configParam.default)) {
+      param.type = 'integer';
+    } else {
+      param.type = 'number';
+    }
     param.default = Number(configParam.default);
   } else {
     param.type = 'string';
@@ -66,9 +71,10 @@ function serializeTemplateParameters(templateName: string, config: TemplateConfi
     const configParam = configParameters[String(parameter)];
 
     // temporary skip that parameter because it brokes server-api
-    if (parameter === 'singleFile' && templateName === '@asyncapi/html-template') {
+    if (templateName === '@asyncapi/html-template' && parameter === 'singleFile') {
       continue;
     }
+    
     const param = serializeParam(configParam);
     if (configParam.required) {
       required.push(parameter);
@@ -88,7 +94,10 @@ function serializeTemplateParameters(templateName: string, config: TemplateConfi
 }
 
 async function main() {
-  const schemas: Record<string, JSONSchema7> = {};
+  const schemas: Record<string, {
+    title: string,
+    schema: JSONSchema7,
+  }> = {};
   for (let i = 0, l = SUPPORTED_TEMPLATES.length; i < l; i++) {
     const templateName = SUPPORTED_TEMPLATES[Number(i)];
 
@@ -100,7 +109,10 @@ async function main() {
 
     const schema = serializeTemplateParameters(templateName, packageJSON.generator);
     if (schema) {
-      schemas[String(templateName)] = schema;
+      schemas[String(templateName)] = {
+        title: TEMPLATES[String(templateName)],
+        schema,
+      };
     }
   }
 
