@@ -95,16 +95,16 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
   const parserState = state.useParserState();
-  const parsedSpec = parserState.parsedSpec.get()!;
+  const parsedSpec = parserState.parsedSpec.get();
 
   const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};
     const optionalProperties: Record<string, JSONSchema7> = {};
-    let hasSupportedProto: boolean = true;
+    let hasSupportedProto = true;
 
-    const servers = parsedSpec.servers();
+    const servers = parsedSpec?.servers();
     const availableServers: string[] = [];
-    Object.entries(servers).forEach(([serverName, server]) => {
+    Object.entries(servers || {}).forEach(([serverName, server]) => {
       if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
     });
 
@@ -116,15 +116,15 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
         if (propKey === 'server') {
           // @ts-ignore 
           const jsonProperty = { ...properties[String(propKey)] };
-          // @ts-ignore 
           jsonProperty.enum = availableServers;
-          // @ts-ignore
           requiredProperties[String(propKey)] = jsonProperty;
+        } else if (required.includes(propKey)) {
+          // @ts-ignore
+          requiredProperties[String(propKey)] = properties[String(propKey)];
+        } else {
+          // @ts-ignore
+          optionalProperties[String(propKey)] = properties[String(propKey)];
         }
-        // @ts-ignore
-        else if (required.includes(propKey)) requiredProperties[String(propKey)] = properties[String(propKey)];
-        // @ts-ignore
-        else optionalProperties[String(propKey)] = properties[String(propKey)];
       });
     }
 
@@ -194,7 +194,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   if (!hasSupportedProtocols) {
     return (
       <div className='text-sm text-gray-700 mt-10 text-center'>
-        AsyncAPI document doesn't have at least one server with supported protocols. For the selected generation, these are supported: {supportedProtocols.join(', ')}
+        AsyncAPI document doesn&apos;t have at least one server with supported protocols. For the selected generation, these are supported: {supportedProtocols.join(', ')}
       </div>
     );
   }
