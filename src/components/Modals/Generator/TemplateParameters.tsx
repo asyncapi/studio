@@ -3,6 +3,8 @@ import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
+import state from '../../../state';
+
 interface TemplateParameterProps {
   propertyName: string;
   property: JSONSchema7;
@@ -11,8 +13,26 @@ interface TemplateParameterProps {
 
 const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
   propertyName, 
+  property,
   setValue,
 }) => {
+  if (property.enum) {
+    return (
+      <select
+        name="template"
+        className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md py-1 text-gray-700 border-pink-300 border-2"
+        onChange={e => setValue(propertyName, e.target.value)}
+      >
+        <option value="">Please select server</option>
+        {property.enum.map(serverName => (
+          <option key={serverName as string} value={serverName as string}>
+            {serverName}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
   return (
     <input
       name={propertyName}
@@ -59,27 +79,54 @@ export interface TemplateParametersHandle {
 interface TemplateParametersProps {
   templateName: string;
   template: JSONSchema7;
+  supportedProtocols: string[];
+  setConfirmDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplateParametersHandle, React.PropsWithChildren<TemplateParametersProps>> = ({
   templateName,
   template: { properties = {}, required = [] },
+  supportedProtocols = [],
+  setConfirmDisabled,
 }, templateParamsRef) => {
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
-  const { requiredProps, optionalProps } = useMemo(() => {
+  const parserState = state.useParserState();
+  const parsedSpec = parserState.parsedSpec.get()!;
+
+  const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};
     const optionalProperties: Record<string, JSONSchema7> = {};
+    let hasSupportedProtocols: boolean = true;
 
-    Object.keys(properties).forEach(propKey => {
-      // @ts-ignore
-      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)];
-      // @ts-ignore
-      else optionalProps[String(propKey)] = properties[String(propKey)];
+    const servers = parsedSpec.servers();
+    const availableServers: string[] = [];
+    Object.entries(servers).map(([serverName, server]) => {
+      if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
     });
 
-    return { requiredProps: requiredProperties, optionalProps: optionalProperties };
-  }, [properties, required]);
+    if (supportedProtocols.length && availableServers.length === 0) {
+      hasSupportedProtocols = false;
+      setConfirmDisabled(true);
+    } else {
+      Object.keys(properties).forEach(propKey => {
+        if (propKey === 'server') {
+          // @ts-ignore 
+          const jsonProperty = { ...properties[String(propKey)] };
+          // @ts-ignore 
+          jsonProperty.enum = availableServers;
+          // @ts-ignore
+          requiredProperties[String(propKey)] = jsonProperty;
+        }
+        // @ts-ignore
+        else if (required.includes(propKey)) requiredProperties[String(propKey)] = properties[String(propKey)];
+        // @ts-ignore
+        else optionalProperties[String(propKey)] = properties[String(propKey)];
+      });
+    }
+
+    return { requiredProps: requiredProperties, optionalProps: optionalProperties, hasSupportedProtocols };
+  }, [properties, required, parsedSpec]);
 
   useEffect(() => {
     setValues({});
@@ -125,10 +172,22 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     );
   }, [templateName]);
 
+  if (parsedSpec === null) {
+    return null;
+  }
+
   if (!templateName) {
     return (
       <div className='text-sm text-gray-700 mt-10'>
-        Please select template
+        Please select type of generation
+      </div>
+    );
+  }
+
+  if (!hasSupportedProtocols) {
+    return (
+      <div className='text-sm text-gray-700 mt-10 text-center'>
+        AsyncAPI document doesn't have at least one server with supported protocols. For the selected generation, these are supported: {supportedProtocols.join(', ')}
       </div>
     );
   }
@@ -136,7 +195,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   if (!properties || !Object.keys(properties).length) {
     return (
       <div className='text-sm text-gray-700 mt-10'>
-        {'The given template hasn\'t parameters to pass'}
+        {'The given generation hasn\'t parameters to pass'}
       </div>
     );
   }

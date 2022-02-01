@@ -93,6 +93,7 @@ async function main() {
   const schemas: Record<string, {
     title: string,
     schema: JSONSchema7,
+    supportedProtocols: string[],
   }> = {};
   for (let i = 0, l = SUPPORTED_TEMPLATES.length; i < l; i++) {
     const templateName = SUPPORTED_TEMPLATES[Number(i)];
@@ -102,12 +103,14 @@ async function main() {
     const pathToPackageJSON = path.join(__dirname, `../node_modules/${templateName}/package.json`);
     const packageJSONContent = await fs.promises.readFile(pathToPackageJSON, 'utf-8');
     const packageJSON = JSON.parse(packageJSONContent);
+    const generatorConfig = packageJSON.generator;
 
-    const schema = serializeTemplateParameters(templateName, packageJSON.generator);
+    const schema = serializeTemplateParameters(templateName, generatorConfig);
     if (schema) {
       schemas[String(templateName)] = {
         title: TEMPLATES[String(templateName)],
         schema,
+        supportedProtocols: generatorConfig.supportedProtocols,
       };
     }
   }

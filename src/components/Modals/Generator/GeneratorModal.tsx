@@ -13,12 +13,14 @@ import templates from './template-parameters.json';
 export const GeneratorModal: React.FunctionComponent = () => {
   const [template, setTemplate] = useState('');
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
+  const [confirmDisabled, setConfirmDisabled] = useState(true);
 
   const modalRef = useRef<ConfirmModalHandle>(null);
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
 
   useEffect(() => {
     setProblem(null);
+    setConfirmDisabled(!template);
   }, [template, setProblem]);
 
   const generateTemplate = async () => {
@@ -59,12 +61,20 @@ export const GeneratorModal: React.FunctionComponent = () => {
     });
   };
 
+  const onCancel = () => {
+    setTimeout(() => {
+      setTemplate('');
+      setProblem(null);
+      setConfirmDisabled(true);
+    }, 200);
+  };
+
   return (
     <ConfirmModal
       ref={modalRef}
       title="Generate code/docs with a template."
       confirmText="Generate"
-      confirmDisabled={!template}
+      confirmDisabled={confirmDisabled}
       opener={
         <button
           type="button"
@@ -75,18 +85,19 @@ export const GeneratorModal: React.FunctionComponent = () => {
         </button>
       }
       onSubmit={onSubmit}
+      onCancel={onCancel}
       closeAfterSumbit={false}
     >
       <div>
         <div className="flex flex-row content-center justify-between text-sm">
           <label
-            htmlFor="template"
+            htmlFor="generate"
             className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
           >
-            Template
+            Generate
           </label>
           <select
-            name="template"
+            name="generate"
             className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md py-1 text-gray-700 border-pink-300 border-2"
             onChange={e => {
               setTemplate(e.target.value);
@@ -103,7 +114,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
         </div>
         <div className='text-gray-400 text-xs mt-2'>
           <span>
-            Your template will be based on your AsyncAPI Document.
+            Generation will be based on your AsyncAPI Document.
           </span>
           {template && (
             <span>
@@ -123,6 +134,8 @@ export const GeneratorModal: React.FunctionComponent = () => {
             ref={templateParamsRef}
             templateName={template} 
             template={template ? (templates as Record<string, any>)[String(template)]?.schema : {}} 
+            supportedProtocols={template ? (templates as Record<string, any>)[String(template)]?.supportedProtocols : []} 
+            setConfirmDisabled={setConfirmDisabled}
           />
         </div>
         {problem && (
