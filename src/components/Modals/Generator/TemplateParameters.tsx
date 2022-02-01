@@ -72,8 +72,10 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     const optionalProperties: Record<string, JSONSchema7> = {};
 
     Object.keys(properties).forEach(propKey => {
-      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)] as JSONSchema7;
-      else optionalProps[String(propKey)] = properties[String(propKey)] as JSONSchema7;
+      // @ts-ignore
+      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)];
+      // @ts-ignore
+      else optionalProps[String(propKey)] = properties[String(propKey)];
     });
 
     return { requiredProps: requiredProperties, optionalProps: optionalProperties };
