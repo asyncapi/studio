@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { JSONSchema7 } from 'json-schema';
 
 import { ConfirmModal, ConfirmModalHandle } from '../index';
 import { TemplateParameters, TemplateParametersHandle } from './TemplateParameters';
@@ -13,7 +12,6 @@ import templates from './template-parameters.json';
 
 export const GeneratorModal: React.FunctionComponent = () => {
   const [template, setTemplate] = useState('');
-  const [templateParams, setTemplateParams] = useState<JSONSchema7>({});
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
 
   const modalRef = useRef<ConfirmModalHandle>(null);
@@ -34,9 +32,8 @@ export const GeneratorModal: React.FunctionComponent = () => {
     if (response.ok) {
       modalRef.current?.close();
       setTemplate('');
-      setTemplateParams({});
     } else {
-      const responseProblem = await ServerAPIService.retrieveProblem(response);
+      const responseProblem = await ServerAPIService.retrieveProblem<{ validationErrors: string[] }>(response);
       setProblem(responseProblem as ServerAPIProblem & { validationErrors: string[] });
       throw new Error(responseProblem?.title);
     }
@@ -93,26 +90,39 @@ export const GeneratorModal: React.FunctionComponent = () => {
             className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md py-1 text-gray-700 border-pink-300 border-2"
             onChange={e => {
               setTemplate(e.target.value);
-              setTemplateParams((templates as Record<string, JSONSchema7>)[e.target.value] || {});
             }}
             value={template}
           >
             <option value="">Please Select</option>
             {Object.keys(templates).map(templateItem => (
               <option key={templateItem} value={templateItem}>
-                {templateItem}
+                {(templates as Record<string, any>)[String(templateItem)]?.title}
               </option>
             ))}
           </select>
         </div>
         <div className='text-gray-400 text-xs mt-2'>
-          Your template will be based on your AsyncAPI Document.
+          <span>
+            Your template will be based on your AsyncAPI Document.
+          </span>
+          {template && (
+            <span>
+              <a 
+                target="_blank" 
+                href={`https://github.com/asyncapi/${template.replace('@asyncapi/', '')}`}
+                className="underline text-pink-500 ml-1" 
+                rel="noreferrer"
+              >
+                Link to the Github Repository &rarr;
+              </a>
+            </span>
+          )}
         </div>
         <div className="flex content-center justify-center">
           <TemplateParameters 
             ref={templateParamsRef}
             templateName={template} 
-            template={templateParams} 
+            template={template ? (templates as Record<string, any>)[String(template)]?.schema : {}} 
           />
         </div>
         {problem && (
@@ -138,19 +148,23 @@ export const GeneratorModal: React.FunctionComponent = () => {
                 {problem.title}
               </div>
             </div>
-            {problem.validationErrors ? (
-              <ul className='text-xs mt-2 list-disc pl-7'>
-                {problem.validationErrors.map(error => (
-                  <li key={error.message}>
-                    {error.message}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className='text-xs mt-2 pl-7'>
-                {problem.detail}
-              </p>
-            )}
+            {problem.validationErrors && 
+              problem.validationErrors.length &&
+              problem.validationErrors.filter(error => error.message).length 
+              ? (
+                <ul className='text-xs mt-2 list-disc pl-7'>
+                  {problem.validationErrors.map(error => (
+                    <li key={error.message}>
+                      {error.message}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className='text-xs mt-2 pl-7'>
+                  {problem.detail}
+                </p>
+              )
+            }
           </div>
         )}
       </div>

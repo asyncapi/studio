@@ -33,9 +33,9 @@ export class ServerAPIService {
     return response;
   }
 
-  static async retrieveProblem(response: Response): Promise<ServerAPIProblem | null> {
+  static async retrieveProblem<AP extends Record<string, unknown> = Record<string, unknown>>(response: Response): Promise<ServerAPIProblem & AP | null> {
     if (response.ok || response.status < 400) return null;
     const responseBody = JSON.parse(await response.text());
-    return responseBody as ServerAPIProblem;
+    return responseBody as ServerAPIProblem & AP;
   }
 }

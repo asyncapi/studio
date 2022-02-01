@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
-import { JSONSchema7 } from 'json-schema';
+import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
+import { JSONSchema7, JSONSchema7Definition } from 'json-schema';
 
 import { Switch } from '../../common';
 
@@ -63,12 +63,25 @@ interface TemplateParametersProps {
 
 export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplateParametersHandle, React.PropsWithChildren<TemplateParametersProps>> = ({
   templateName,
-  template: { properties, required = [] },
+  template: { properties = {}, required = [] },
 }, templateParamsRef) => {
   const [values, setValues] = useState<Record<string, any>>({});
+  const [showOptionals, setShowOptionals] = useState<boolean>(false);
+  const { requiredProps, optionalProps } = useMemo(() => {
+    const requiredProps: Record<string, JSONSchema7Definition> = {};
+    const optionalProps: Record<string, JSONSchema7Definition> = {};
+
+    Object.keys(properties).forEach(propKey => {
+      if (required.includes(propKey)) requiredProps[String(propKey)] = properties[String(propKey)];
+      else optionalProps[String(propKey)] = properties[String(propKey)];
+    });
+
+    return { requiredProps, optionalProps };
+  }, [properties, required]);
 
   useEffect(() => {
     setValues({});
+    setShowOptionals(false);
   }, [templateName, setValues]);
 
   useImperativeHandle(templateParamsRef, () => ({
@@ -83,6 +96,32 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
       return oldValues;
     });
   }, []);
+
+  const renderFields = useCallback((propertyName: string, property: JSONSchema7Definition) => {
+    return (
+      <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
+        <div className="flex flex-row content-center justify-between">
+          <label
+            htmlFor={propertyName}
+            className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+          >
+            <span>
+              {propertyName}
+            </span>
+            {required.includes(propertyName) && (
+              <span className='text-red-400 ml-1'>
+                *
+              </span>
+            )}
+          </label>
+          <ParameterItem propertyName={propertyName} property={property as JSONSchema7} setValue={setValue} />
+        </div>
+        <div className='text-gray-400 text-xs mt-1'>
+          {(property as JSONSchema7).description}
+        </div>
+      </div>
+    );
+  }, [templateName]);
 
   if (!templateName) {
     return (
@@ -102,29 +141,22 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 
   return (
     <form className='w-full'>
-      {Object.entries(properties).map(([propertyName, property]) => (
-        <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
-          <div className="flex flex-row content-center justify-between">
-            <label
-              htmlFor={propertyName}
-              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-            >
-              <span>
-                {propertyName}
-              </span>
-              {required.includes(propertyName) && (
-                <span className='text-red-400 ml-1'>
-                  *
-                </span>
-              )}
-            </label>
-            <ParameterItem propertyName={propertyName} property={property as JSONSchema7} setValue={setValue} />
-          </div>
-          <div className='text-gray-400 text-xs mt-1'>
-            {(property as JSONSchema7).description}
-          </div>
-        </div>
-      ))}
+      {Object.entries(requiredProps).map(([propertyName, property]) => renderFields(propertyName, property))}
+      <div>
+        {showOptionals 
+          ? Object.entries(optionalProps).map(([propertyName, property]) => renderFields(propertyName, property))
+          : (
+            <div className='flex items-center justify-center mt-8'>
+              <button
+                type="button"
+                className='inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm'
+                onClick={() => setShowOptionals(oldValue => !oldValue)}
+              >
+                Advanced Options
+              </button>
+            </div>
+          )}
+      </div>
     </form>
   );
 };

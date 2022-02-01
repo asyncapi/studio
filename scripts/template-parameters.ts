@@ -45,11 +45,7 @@ function serializeParam(configParam: TemplateParameter): JSONSchema7 {
       param.default = false;
     }
   } else if (typeof configParam.default === 'number') {
-    if (Number.isInteger(configParam.default)) {
-      param.type = 'integer';
-    } else {
-      param.type = 'number';
-    }
+    param.type = 'number';
     param.default = Number(configParam.default);
   } else {
     param.type = 'string';
