@@ -125,7 +125,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
                 className="underline text-pink-500 ml-1" 
                 rel="noreferrer"
               >
-                Link to the Github Repository &rarr;
+                Link to the Github Repository of selected template &rarr;
               </a>
             </span>
           )}
