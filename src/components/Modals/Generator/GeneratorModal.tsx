@@ -19,8 +19,9 @@ export const GeneratorModal: React.FunctionComponent = () => {
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
 
   useEffect(() => {
+    const required = template ? (templates as Record<string, any>)[String(template)].schema.required : [];
+    setConfirmDisabled(!template || required.length !== 0);
     setProblem(null);
-    setConfirmDisabled(!template);
   }, [template, setProblem]);
 
   const generateTemplate = async () => {

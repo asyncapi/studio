@@ -8,12 +8,14 @@ import state from '../../../state';
 interface TemplateParameterProps {
   propertyName: string;
   property: JSONSchema7;
-  setValue: (propertyName: string, value: any) => void;
+  isRequired: boolean;
+  setValue: (propertyName: string, value: any, isRequired: boolean) => void;
 }
 
 const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
   propertyName, 
   property,
+  isRequired,
   setValue,
 }) => {
   if (property.enum) {
@@ -21,7 +23,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
       <select
         name="template"
         className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md py-1 text-gray-700 border-pink-300 border-2"
-        onChange={e => setValue(propertyName, e.target.value)}
+        onChange={e => setValue(propertyName, e.target.value, isRequired)}
       >
         <option value="">Please select server</option>
         {property.enum.map(serverName => (
@@ -37,7 +39,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
     <input
       name={propertyName}
       className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md p-1 text-gray-700 border-pink-300 border-2"
-      onChange={e => setValue(propertyName, e.target.value)}
+      onChange={e => setValue(propertyName, e.target.value, isRequired)}
     />
   );
 };
@@ -47,12 +49,13 @@ const NumberParameter = StringParameter;
 const BooleanParameter: React.FunctionComponent<TemplateParameterProps> = ({
   propertyName,
   property,
+  isRequired,
   setValue
 }) => {
   return (
     <Switch
       toggle={property.default as boolean}
-      onChange={(v) => setValue(propertyName, v)}
+      onChange={(v) => setValue(propertyName, v, isRequired)}
     />
   );
 };
@@ -97,16 +100,16 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};
     const optionalProperties: Record<string, JSONSchema7> = {};
-    let hasSupportedProtocols: boolean = true;
+    let hasSupportedProto: boolean = true;
 
     const servers = parsedSpec.servers();
     const availableServers: string[] = [];
-    Object.entries(servers).map(([serverName, server]) => {
+    Object.entries(servers).forEach(([serverName, server]) => {
       if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
     });
 
     if (supportedProtocols.length && availableServers.length === 0) {
-      hasSupportedProtocols = false;
+      hasSupportedProto = false;
       setConfirmDisabled(true);
     } else {
       Object.keys(properties).forEach(propKey => {
@@ -125,13 +128,13 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
       });
     }
 
-    return { requiredProps: requiredProperties, optionalProps: optionalProperties, hasSupportedProtocols };
+    return { requiredProps: requiredProperties, optionalProps: optionalProperties, hasSupportedProtocols: hasSupportedProto };
   }, [properties, required, parsedSpec]);
 
   useEffect(() => {
     setValues({});
     setShowOptionals(false);
-  }, [templateName, setValues]);
+  }, [templateName, setValues, setShowOptionals]);
 
   useImperativeHandle(templateParamsRef, () => ({
     getValues() {
@@ -139,14 +142,18 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     }
   }));
 
-  const setValue = useCallback((propertyName: string, value: any) => {
+  const setValue = useCallback((propertyName: string, value: any, isRequired: boolean) => {
     setValues(oldValues => {
       oldValues[String(propertyName)] = String(value);
+      if (isRequired) {
+        const disableConfirm = required.some(r => !oldValues[String(r)]);
+        setConfirmDisabled(disableConfirm);
+      }
       return oldValues;
     });
-  }, []);
+  }, [required]);
 
-  const renderFields = useCallback((propertyName: string, property: JSONSchema7) => {
+  const renderFields = useCallback((propertyName: string, property: JSONSchema7, isRequired: boolean) => {
     return (
       <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
         <div className="flex flex-row content-center justify-between">
@@ -163,7 +170,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
               </span>
             )}
           </label>
-          <ParameterItem propertyName={propertyName} property={property} setValue={setValue} />
+          <ParameterItem propertyName={propertyName} property={property} isRequired={isRequired} setValue={setValue} />
         </div>
         <div className='text-gray-400 text-xs mt-1'>
           {property.description}
@@ -202,10 +209,10 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 
   return (
     <form className='w-full'>
-      {Object.entries(requiredProps).map(([propertyName, property]) => renderFields(propertyName, property))}
+      {Object.entries(requiredProps).map(([propertyName, property]) => renderFields(propertyName, property, true))}
       <div>
         {showOptionals 
-          ? Object.entries(optionalProps).map(([propertyName, property]) => renderFields(propertyName, property))
+          ? Object.entries(optionalProps).map(([propertyName, property]) => renderFields(propertyName, property, false))
           : (
             <div className='flex items-center justify-center mt-8'>
               <button
