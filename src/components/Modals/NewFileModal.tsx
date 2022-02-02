@@ -37,11 +37,10 @@ export const NewFileModal: React.FunctionComponent = () => {
   const newFileEnabled = sidebarState.panels.newFile.get();
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
-  const handleSubmit = () => {
+  const onSubmit = () => {
     EditorService.updateState({ content: selectedTemplate.template, updateModel: true });
-    state.sidebar.panels.merge({
-      newFile: false,
-    });
+    sidebarState.panels.newFile.set(false);
+    setSelectedTemplate({ title: '', template: '' });
 
     toast.success(
       <div>
@@ -50,18 +49,23 @@ export const NewFileModal: React.FunctionComponent = () => {
     );
   };
 
+  const onCancel = () => {
+    sidebarState.panels.newFile.set(false);
+    setSelectedTemplate({ title: '', template: '' });
+  };
+
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
   const templates = examples.filter((template) => template.type === 'protocol-example');
 
   return (
     <ConfirmModal
       containerClassName="sm:max-w-6xl"
-      onCancel={() => sidebarState.panels.newFile.set(false)}
       title="AsyncAPI Templates - Start with our template examples"
       confirmText="Use Template"
       confirmDisabled={!selectedTemplate.template}
       show={newFileEnabled}
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
     >
       <div className="flex content-center justify-center">
         <div className="w-full  overflow-auto space-y-8 ">
