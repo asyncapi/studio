@@ -34,12 +34,12 @@ const TemplateListItem: React.FunctionComponent<TemplateListItemProps> = ({ titl
 
 export const NewFileModal: React.FunctionComponent = () => {
   const sidebarState = state.useSidebarState();
+  const newFileEnabled = sidebarState.panels.newFile.get();
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
   const handleSubmit = () => {
     EditorService.updateState({ content: selectedTemplate.template, updateModel: true });
-    const panels = state.sidebar.panels;
-    panels.merge({
+    state.sidebar.panels.merge({
       newFile: false,
     });
 
@@ -59,8 +59,8 @@ export const NewFileModal: React.FunctionComponent = () => {
       onCancel={() => sidebarState.panels.newFile.set(false)}
       title="AsyncAPI Templates - Start with our template examples"
       confirmText="Use Template"
-      confirmDisabled={false}
-      show={true}
+      confirmDisabled={!selectedTemplate.template}
+      show={newFileEnabled}
       onSubmit={handleSubmit}
     >
       <div className="flex content-center justify-center">

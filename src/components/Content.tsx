@@ -17,7 +17,6 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
 
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();
-  const newFileEnabled = sidebarState.panels.newFile.get();
   const viewEnabled = sidebarState.panels.view.get();
   const viewType = sidebarState.panels.viewType.get();
 
@@ -50,7 +49,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   return (
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
-        {newFileEnabled && <NewFileModal />}
+        <NewFileModal />
         <SplitPane
           size={viewEnabled ? secondPaneSize : 0}
           minSize={0}
