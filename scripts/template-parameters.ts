@@ -8,11 +8,11 @@ const DESTINATION_JSON = path.join(__dirname, '../src/components/Modals/Generato
 const TEMPLATES: Record<string, string> = {
   '@asyncapi/dotnet-nats-template': '.NET Nats Project',
   '@asyncapi/go-watermill-template': 'GO Lang Watermill Project',
-  '@asyncapi/html-template': 'Generate HTML website',
+  '@asyncapi/html-template': 'HTML website',
   '@asyncapi/java-spring-cloud-stream-template': 'Java Spring Cloud Stream Project',
   '@asyncapi/java-spring-template': 'Java Spring Project',
   '@asyncapi/java-template': 'Java Project',
-  '@asyncapi/markdown-template': 'Generate Markdown Documentation',
+  '@asyncapi/markdown-template': 'Markdown Documentation',
   '@asyncapi/nodejs-template': 'NodeJS Project',
   '@asyncapi/nodejs-ws-template': 'NodeJS WebSocket Project',
   '@asyncapi/python-paho-template': 'Python Paho Project',
