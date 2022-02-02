@@ -73,7 +73,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
   return (
     <ConfirmModal
       ref={modalRef}
-      title="Generate code/docs with a template."
+      title="Generate code/docs based on your AsyncAPI Document"
       confirmText="Generate"
       confirmDisabled={confirmDisabled}
       opener={
@@ -113,23 +113,20 @@ export const GeneratorModal: React.FunctionComponent = () => {
             ))}
           </select>
         </div>
-        <div className='text-gray-400 text-xs mt-2'>
-          <span>
-            Generation will be based on your AsyncAPI Document.
-          </span>
-          {template && (
-            <span>
+        {template && (
+          <div className='text-gray-400 text-xs mt-2 text-right'>
+            <p>
               <a 
                 target="_blank" 
                 href={`https://github.com/asyncapi/${template.replace('@asyncapi/', '')}`}
-                className="underline text-pink-500 ml-1" 
+                className="underline text-pink-500" 
                 rel="noreferrer"
               >
-                Link to the Github Repository of selected template &rarr;
+                Link to the Github Repository of selected generation &rarr;
               </a>
-            </span>
-          )}
-        </div>
+            </p>
+          </div>
+        )}
         <div className="flex content-center justify-center">
           <TemplateParameters 
             ref={templateParamsRef}

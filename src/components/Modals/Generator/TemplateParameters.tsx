@@ -153,9 +153,9 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     });
   }, [required]);
 
-  const renderFields = useCallback((propertyName: string, property: JSONSchema7, isRequired: boolean) => {
+  const renderFields = useCallback((propertyName: string, property: JSONSchema7, isRequired: boolean, isFirst: boolean) => {
     return (
-      <div key={`${templateName}${propertyName}`} className={'flex flex-col mt-4 text-sm'}>
+      <div key={`${templateName}${propertyName}`} className={`flex flex-col text-sm ${isFirst ? 'mt-1' : 'mt-4'}`}>
         <div className="flex flex-row content-center justify-between">
           <label
             htmlFor={propertyName}
@@ -164,11 +164,6 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
             <span>
               {propertyName}
             </span>
-            {required.includes(propertyName) && (
-              <span className='text-red-400 ml-1'>
-                *
-              </span>
-            )}
           </label>
           <ParameterItem propertyName={propertyName} property={property} isRequired={isRequired} setValue={setValue} />
         </div>
@@ -184,11 +179,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
   }
 
   if (!templateName) {
-    return (
-      <div className='text-sm text-gray-700 mt-10'>
-        Please select type of generation
-      </div>
-    );
+    return null;
   }
 
   if (!hasSupportedProtocols) {
@@ -209,22 +200,33 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 
   return (
     <form className='w-full'>
-      {Object.entries(requiredProps).map(([propertyName, property]) => renderFields(propertyName, property, true))}
-      <div>
-        {showOptionals 
-          ? Object.entries(optionalProps).map(([propertyName, property]) => renderFields(propertyName, property, false))
-          : (
-            <div className='flex items-center justify-center mt-8'>
-              <button
-                type="button"
-                className='inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm'
-                onClick={() => setShowOptionals(oldValue => !oldValue)}
-              >
-                Advanced Options
-              </button>
+      {Object.keys(requiredProps).length > 0 && (
+        <div className='mt-8'>
+          <h5 className='text-sm text-gray-400'>
+            Required options
+          </h5>
+          <div>
+            {Object.entries(requiredProps).map(([propertyName, property], idx) => renderFields(propertyName, property, true, idx === 0))}
+          </div>
+        </div>
+      )}
+      {Object.keys(optionalProps).length > 0 && (
+        <div className='mt-8'>
+          <div className='flex flex-row justify-between'>
+            <h5 className='text-sm text-gray-400'>
+              Optional options
+            </h5>
+            <button type='button' className='text-sm underline text-pink-500' onClick={() => setShowOptionals(oldValue => !oldValue)}>
+              {showOptionals ? 'Hide advanced options' : 'Show advanced options'}
+            </button>
+          </div>
+          {showOptionals && (
+            <div>
+              {Object.entries(optionalProps).map(([propertyName, property], idx) => renderFields(propertyName, property, false, idx === 0))}
             </div>
           )}
-      </div>
+        </div>
+      )}
     </form>
   );
 };
