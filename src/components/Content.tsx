@@ -4,7 +4,7 @@ import SplitPane from 'react-split-pane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
-import NewFile from './NewFile';
+import { NewFileModal } from './Modals/NewFileModal';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
@@ -17,7 +17,6 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
 
   const navigationEnabled = sidebarState.panels.navigation.get();
   const editorEnabled = sidebarState.panels.editor.get();
-  const newFileEnabled = sidebarState.panels.newFile.get();
   const viewEnabled = sidebarState.panels.view.get();
   const viewType = sidebarState.panels.viewType.get();
 
@@ -50,30 +49,27 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   return (
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
-        {newFileEnabled && <NewFile />}
-
-        {!newFileEnabled && 
-          <SplitPane
-            size={viewEnabled ? secondPaneSize : 0}
-            minSize={0}
-            maxSize={secondPaneMaxSize}
-            pane1Style={
-              navigationEnabled || editorEnabled ? undefined : { width: '0px' }
-            }
-            pane2Style={
-              viewEnabled ? { overflow: 'auto' } : { width: '0px' }
-            }
-            primary={viewEnabled ? 'first' : 'second'}
-            defaultSize={localStorageRightPaneSize}
-            onChange={debounce((size: string) => {
-              localStorage.setItem(splitPosRight, String(size));
-            }, 100)}
-          >
-            {navigationAndEditor}
-            {viewType === 'template' && <Template />}
-            {viewType === 'visualiser' && <VisualiserTemplate />}
-          </SplitPane> 
-        }
+        <NewFileModal />
+        <SplitPane
+          size={viewEnabled ? secondPaneSize : 0}
+          minSize={0}
+          maxSize={secondPaneMaxSize}
+          pane1Style={
+            navigationEnabled || editorEnabled ? undefined : { width: '0px' }
+          }
+          pane2Style={
+            viewEnabled ? { overflow: 'auto' } : { width: '0px' }
+          }
+          primary={viewEnabled ? 'first' : 'second'}
+          defaultSize={localStorageRightPaneSize}
+          onChange={debounce((size: string) => {
+            localStorage.setItem(splitPosRight, String(size));
+          }, 100)}
+        >
+          {navigationAndEditor}
+          {viewType === 'template' && <Template />}
+          {viewType === 'visualiser' && <VisualiserTemplate />}
+        </SplitPane> 
       </div>
     </div>
   );
