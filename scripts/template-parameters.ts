@@ -55,7 +55,7 @@ function serializeParam(configParam: TemplateParameter): JSONSchema7 {
   return param;
 }
 
-function serializeTemplateParameters(templateName: string, config: TemplateConfig): JSONSchema7 | undefined {
+function serializeTemplateParameters(config: TemplateConfig): JSONSchema7 | undefined {
   if (!config || !config.parameters) {
     return;
   }
@@ -65,11 +65,6 @@ function serializeTemplateParameters(templateName: string, config: TemplateConfi
   const required: string[] = [];
   for (const parameter in configParameters) {
     const configParam = configParameters[String(parameter)];
-
-    // temporary skip that parameter because it brokes server-api
-    if (templateName === '@asyncapi/html-template' && parameter === 'singleFile') {
-      continue;
-    }
     
     const param = serializeParam(configParam);
     if (configParam.required) {
@@ -105,7 +100,7 @@ async function main() {
     const packageJSON = JSON.parse(packageJSONContent);
     const generatorConfig = packageJSON.generator;
 
-    const schema = serializeTemplateParameters(templateName, generatorConfig);
+    const schema = serializeTemplateParameters(generatorConfig);
     if (schema) {
       schemas[String(templateName)] = {
         title: TEMPLATES[String(templateName)],

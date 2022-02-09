@@ -214,7 +214,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
         <div className='mt-8'>
           <div className='flex flex-row justify-between'>
             <h5 className='text-sm text-gray-400'>
-              Optional options
+              Advanced options (optional)
             </h5>
             <button type='button' className='text-sm underline text-pink-500' onClick={() => setShowOptionals(oldValue => !oldValue)}>
               {showOptionals ? 'Hide advanced options' : 'Show advanced options'}
