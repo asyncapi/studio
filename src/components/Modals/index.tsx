@@ -3,3 +3,4 @@ export * from './ConvertModal';
 export * from './ConvertToLatestModal';
 export * from './ImportBase64Modal';
 export * from './ImportURLModal';
+export * from './Generator/GeneratorModal';

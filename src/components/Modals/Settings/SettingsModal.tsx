@@ -90,7 +90,7 @@ export const SettingsModal: React.FunctionComponent = () => {
               </label>
               <select
                 name="asyncapi-version"
-                className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
+                className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
                 onChange={e => setSavingDelay(JSON.parse(e.target.value))}
                 value={autoSaving ? savingDelay : ''}
                 disabled={!autoSaving}

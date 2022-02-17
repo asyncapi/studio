@@ -1,5 +1,9 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+
+export interface ConfirmModalHandle {
+  close(): void;
+}
 
 interface ConfirmModalProps {
   title: React.ReactNode;
@@ -10,11 +14,12 @@ interface ConfirmModalProps {
   opener?: React.ReactNode;
   show?: boolean;
   containerClassName? : string;
+  closeAfterSumbit?: boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
 }
 
-export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
+const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React.PropsWithChildren<ConfirmModalProps>> = ({
   title,
   description,
   confirmText = 'Save',
@@ -22,16 +27,23 @@ export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
   cancelDisabled = false,
   opener,
   show = false,
+  closeAfterSumbit = true,
   onSubmit,
   onCancel = () => {
     // This is intentional
   },
   containerClassName,
   children,
-}) => {
+}, modalRef) => {
   const [showModal, setShowModal] = useState(show);
 
   const cancelButtonRef = useRef(null);
+
+  useImperativeHandle(modalRef, () => ({
+    close() {
+      setShowModal(false);
+    },
+  }));
 
   useEffect(() => {
     setShowModal(show);
@@ -39,7 +51,9 @@ export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
 
   const handleOnSubmit = () => {
     onSubmit && onSubmit();
-    setShowModal(false);
+    if (closeAfterSumbit) {
+      setShowModal(false);
+    }
   };
 
   const handleOnCancel = () => {
@@ -134,3 +148,6 @@ export const ConfirmModal: React.FunctionComponent<ConfirmModalProps> = ({
     </>
   );
 };
+
+const ConfirmModal = forwardRef(ConfirmModalSans);
+export { ConfirmModal };
