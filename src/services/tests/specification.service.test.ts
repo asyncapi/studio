@@ -13,15 +13,10 @@ describe('SpecificationService', () => {
     });
 
     test('should throw error if converter cannot convert spec - case with invalid version', async () => {
-      // disable console.error only for this test
-      jest.spyOn(console, 'error').mockImplementation(jest.fn());
-
       try {
         await SpecificationService.convertSpec('asyncapi: 1.3.0', '2.1.0');
-      } catch (e) {
-        expect(e).toEqual({
-          error: 'Cannot convert from 1.3.0 to 2.1.0.',
-        });
+      } catch (e: any) {
+        expect(e.message).toEqual('Cannot convert from 1.3.0 to 2.1.0.');
       }
     });
   });

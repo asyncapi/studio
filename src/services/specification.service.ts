@@ -9,7 +9,6 @@ import avroSchemaParser from '@asyncapi/avro-schema-parser';
 import specs from '@asyncapi/specs';
 
 import { EditorService } from './editor.service';
-import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 
 import state from '../state';
@@ -61,12 +60,12 @@ export class SpecificationService {
     spec: string,
     version: string = this.getLastVersion(),
   ): Promise<string> {
-    const language = FormatService.retrieveLangauge(spec);
     try {
-      const convertedSpec = convert(spec, version);
-      return language === 'json'
-        ? FormatService.convertToJSON(convertedSpec)
-        : convertedSpec;
+      const converted = convert(spec, version);
+      if (typeof converted === 'object') {
+        return JSON.stringify(converted, undefined, 2);
+      }
+      return converted;
     } catch (err) {
       console.error(err);
       throw err;
@@ -185,7 +184,7 @@ export class SpecificationService {
     );
   }
 
-  private static isNotSupportedVersion(rawSpec: string): boolean {
+  static isNotSupportedVersion(rawSpec: string): boolean {
     if (this.notSupportedVersions.test(rawSpec.trim())) {
       return true;
     }
