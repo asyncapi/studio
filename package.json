@@ -80,7 +80,7 @@
     "@asyncapi/dotnet-nats-template": "^0.4.3",
     "@asyncapi/go-watermill-template": "^0.1.36",
     "@asyncapi/html-template": "^0.24.8",
-    "@asyncapi/java-spring-cloud-stream-template": "^0.11.6",
+    "@asyncapi/java-spring-cloud-stream-template": "^0.11.7",
     "@asyncapi/java-spring-template": "^0.25.1",
     "@asyncapi/java-template": "^0.1.0",
     "@asyncapi/markdown-template": "^1.0.0",
