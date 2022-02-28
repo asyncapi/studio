@@ -8,6 +8,12 @@
   <em>One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.</em>
 </p>
 
+![Maintenance score](https://img.shields.io/npms-io/maintenance-score/@asyncapi/studio)
+[![Npm latest version](https://img.shields.io/npm/v/@asyncapi/studio)](https://www.npmjs.com/package/@asyncapi/studio)
+[![Downloads](https://img.shields.io/npm/dm/@asyncapi/studio)](https://www.npmjs.com/package/@asyncapi/studio)
+[![License](https://img.shields.io/github/license/asyncapi/studio)](https://github.com/asyncapi/studio/blob/master/LICENSE) 
+[![Last commit](https://img.shields.io/github/last-commit/asyncapi/studio)](https://github.com/asyncapi/studio/commits/master)
+[![Discussions](https://img.shields.io/github/discussions/asyncapi/studio)](https://github.com/asyncapi/studio/discussions)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
