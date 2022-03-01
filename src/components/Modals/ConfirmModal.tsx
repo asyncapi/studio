@@ -117,7 +117,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
                     <div className="my-8 space-y-4">{children}</div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                <div className={`mt-5 sm:mt-6 sm:grid sm:gap-3 sm:grid-flow-row-dense ${onSubmit ? 'sm:grid-cols-2' : ''}`}>
                   {onSubmit && (
                     <button
                       type="button"

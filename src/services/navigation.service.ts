@@ -86,6 +86,7 @@ export class NavigationService {
     const documentUrl = urlParams.get('url') || urlParams.get('load');
     const base64Document = urlParams.get('base64');
     const liveServerPort = urlParams.get('liveServer');
+    const redirectedFrom = urlParams.get('redirectedFrom');
 
     if (liveServerPort && typeof Number(liveServerPort) === 'number') {
       SocketClient.connect(window.location.hostname, liveServerPort);
@@ -108,6 +109,7 @@ export class NavigationService {
     state.app.merge({
       readOnly: isReadonly,
       initialized: true,
+      redirectedFrom: redirectedFrom || false,
     });
   }
 
