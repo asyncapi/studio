@@ -2,8 +2,7 @@ import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 
-// @ts-ignore
-import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
+import { Markdown } from '../../common';
 
 interface IData {
   spec: AsyncAPIDocument

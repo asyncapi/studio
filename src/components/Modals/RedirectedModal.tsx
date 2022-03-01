@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-// @ts-ignore
-import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
-
 import { ConfirmModal } from './ConfirmModal';
+import { Markdown } from '../common';
 
 import state from '../../state';
 
