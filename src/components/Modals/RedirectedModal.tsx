@@ -45,7 +45,7 @@ export const RedirectedModal: React.FunctionComponent = () => {
 
   return (
     <ConfirmModal
-      title='Welcome in the AsyncAPI Studio!'
+      title='Welcome to the AsyncAPI Studio!'
       show={show}
       cancelText='OK'
       onCancel={onCancel}
