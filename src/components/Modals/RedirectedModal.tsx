@@ -63,7 +63,7 @@ export const RedirectedModal: React.FunctionComponent = () => {
                   className='mx-auto rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm'
                   onClick={onShowMoreClick}
                 >
-                  Show what's changed
+                  Show what&apos;s changed
                 </button>
               </div>
             </>
