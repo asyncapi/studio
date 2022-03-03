@@ -9,6 +9,7 @@ interface ConfirmModalProps {
   title: React.ReactNode;
   description?: React.ReactNode;
   confirmText?: React.ReactNode;
+  cancelText?: React.ReactNode;
   confirmDisabled?: boolean;
   cancelDisabled?: boolean;
   opener?: React.ReactNode;
@@ -23,6 +24,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
   title,
   description,
   confirmText = 'Save',
+  cancelText = 'Cancel',
   confirmDisabled = true,
   cancelDisabled = false,
   opener,
@@ -117,7 +119,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
                     <div className="my-8 space-y-4">{children}</div>
                   </div>
                 </div>
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                <div className={`mt-5 sm:mt-6 sm:grid sm:gap-3 sm:grid-flow-row-dense ${onSubmit ? 'sm:grid-cols-2' : ''}`}>
                   {onSubmit && (
                     <button
                       type="button"
@@ -137,7 +139,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
                     disabled={cancelDisabled}
                     ref={cancelButtonRef}
                   >
-                    Cancel
+                    {cancelText}
                   </button>
                 </div>
               </div>

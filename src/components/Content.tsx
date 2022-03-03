@@ -4,7 +4,7 @@ import SplitPane from 'react-split-pane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
-import { NewFileModal } from './Modals/NewFileModal';
+import { NewFileModal, RedirectedModal } from './Modals';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
@@ -50,6 +50,7 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
         <NewFileModal />
+        <RedirectedModal />
         <SplitPane
           size={viewEnabled ? secondPaneSize : 0}
           minSize={0}
