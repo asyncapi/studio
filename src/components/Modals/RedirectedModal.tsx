@@ -36,6 +36,11 @@ export const RedirectedModal: React.FunctionComponent = () => {
   }, [show]); // eslint-disable-line
 
   function onCancel() {
+    if (typeof window.history.replaceState === 'function') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('redirectedFrom');
+      window.history.replaceState({}, window.location.href, url.toString());
+    }
     setShow(false);
   }
 
