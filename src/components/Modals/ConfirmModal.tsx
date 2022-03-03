@@ -9,6 +9,7 @@ interface ConfirmModalProps {
   title: React.ReactNode;
   description?: React.ReactNode;
   confirmText?: React.ReactNode;
+  cancelText?: React.ReactNode;
   confirmDisabled?: boolean;
   cancelDisabled?: boolean;
   opener?: React.ReactNode;
@@ -23,6 +24,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
   title,
   description,
   confirmText = 'Save',
+  cancelText = 'Cancel',
   confirmDisabled = true,
   cancelDisabled = false,
   opener,
@@ -137,7 +139,7 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
                     disabled={cancelDisabled}
                     ref={cancelButtonRef}
                   >
-                    Cancel
+                    {cancelText}
                   </button>
                 </div>
               </div>
