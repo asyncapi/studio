@@ -2,3 +2,8 @@
 
 http://editor.asyncapi.org/* https://studio.asyncapi.com 301!
 https://editor.asyncapi.org/* https://studio.asyncapi.com 301!
+
+# Redirect playground.asyncapi.io to Studio
+
+http://playground.asyncapi.io/* https://studio.asyncapi.com/?redirectedFrom=playground 301!
+https://playground.asyncapi.io/* https://studio.asyncapi.com/?redirectedFrom=playground 301!
