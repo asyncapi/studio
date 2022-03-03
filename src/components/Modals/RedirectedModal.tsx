@@ -22,6 +22,7 @@ Below are the changes compared to the old AsyncAPI Playground:
 
 export const RedirectedModal: React.FunctionComponent = () => {
   const [show, setShow] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const appState = state.useAppState();
   const isRedirected = appState.redirectedFrom.get();
@@ -38,6 +39,10 @@ export const RedirectedModal: React.FunctionComponent = () => {
     setShow(false);
   }
 
+  function onShowMoreClick() {
+    setShowMore(true);
+  }
+
   return (
     <ConfirmModal
       title='Welcome in the AsyncAPI Studio!'
@@ -45,9 +50,25 @@ export const RedirectedModal: React.FunctionComponent = () => {
       onCancel={onCancel}
     >
       <div className="flex flex-col content-center justify-center">
-        <Markdown>
-          {CHANGES}
-        </Markdown>
+        <div className={`${showMore ? '' : 'h-36'} overflow-y-hidden relative`}>
+          <Markdown>
+            {CHANGES}
+          </Markdown>
+          {!showMore && (
+            <>
+              <div className='absolute top-12 bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white' />
+              <div className='absolute bottom-0 left-0 right-0 text-center z-50'>
+                <button
+                  type="button"
+                  className='mx-auto rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm'
+                  onClick={onShowMoreClick}
+                >
+                  Show what's changed
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </ConfirmModal>
   );
