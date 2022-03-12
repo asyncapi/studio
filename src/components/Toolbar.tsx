@@ -12,12 +12,9 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
             <div className="flex-shrink-0">
               <img
                 className="inline-block h-20"
-                src={`${process.env.PUBLIC_URL}/img/logo-horizontal-white.svg`}
+                src={`${process.env.PUBLIC_URL}/img/logo-studio.svg`}
                 alt="AsyncAPI Logo"
               />
-              <span className="inline-block text-xl text-pink-500 font-normal italic tracking-wide -ml-1 transform translate-y-0.5">
-                studio
-              </span>
               <span className="inline-block text-xs text-teal-500 font-normal tracking-wide ml-0.5 transform translate-y-0.5">
                 beta
               </span>
