@@ -9,7 +9,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ---
@@ -103,6 +103,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://paulinenarvas.com/"><img src="https://avatars.githubusercontent.com/u/17087373?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pauline P. Narvas</b></sub></a><br /><a href="https://github.com/asyncapi/studio/commits?author=pawlean" title="Code">💻</a> <a href="#infra-pawlean" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/asyncapi/studio/commits?author=pawlean" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://linkedin.com/in/jonaslagoni/"><img src="https://avatars.githubusercontent.com/u/13396189?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jonas Lagoni</b></sub></a><br /><a href="#ideas-jonaslagoni" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-jonaslagoni" title="Answering Questions">💬</a> <a href="https://github.com/asyncapi/studio/pulls?q=is%3Apr+reviewed-by%3Ajonaslagoni" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/smoya"><img src="https://avatars.githubusercontent.com/u/1083296?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sergio Moya</b></sub></a><br /><a href="#ideas-smoya" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-smoya" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://bolt04.github.io/react-ultimate-resume/"><img src="https://avatars.githubusercontent.com/u/18630253?v=4?s=100" width="100px;" alt=""/><br /><sub><b>David Pereira</b></sub></a><br /><a href="#ideas-BOLT04" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-BOLT04" title="Answering Questions">💬</a></td>
   </tr>
 </table>
 

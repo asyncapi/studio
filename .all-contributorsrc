@@ -117,6 +117,37 @@
         "infra",
         "doc"
       ]
+    },
+    {
+      "login": "jonaslagoni",
+      "name": "Jonas Lagoni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13396189?v=4",
+      "profile": "https://linkedin.com/in/jonaslagoni/",
+      "contributions": [
+        "ideas",
+        "question",
+        "review"
+      ]
+    },
+    {
+      "login": "smoya",
+      "name": "Sergio Moya",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1083296?v=4",
+      "profile": "https://github.com/smoya",
+      "contributions": [
+        "ideas",
+        "question"
+      ]
+    },
+    {
+      "login": "BOLT04",
+      "name": "David Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18630253?v=4",
+      "profile": "https://bolt04.github.io/react-ultimate-resume/",
+      "contributions": [
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7
