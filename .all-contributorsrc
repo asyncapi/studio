@@ -1,9 +1,14 @@
 {
+  "projectName": "studio",
+  "projectOwner": "asyncapi",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
   "commit": false,
+  "commitConvention": "none",
   "contributors": [
     {
       "login": "magicmatatjahu",
@@ -11,52 +16,116 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/20404945?v=4",
       "profile": "https://github.com/magicmatatjahu",
       "contributions": [
-        "bug",
+        "maintenance",
         "code",
         "doc",
+        "bug",
         "ideas",
-        "maintenance",
-        "question",
+        "review",
+        "design",
         "test",
-        "review"
-      ]
-    },
-    {
-      "login": "jonaslagoni",
-      "name": "Jonas Lagoni",
-      "avatar_url": "https://avatars.githubusercontent.com/u/13396189?v=4",
-      "profile": "https://github.com/jonaslagoni",
-      "contributions": [
-        "ideas",
-        "question",
-        "review"
+        "infra",
+        "mentoring"
       ]
     },
     {
       "login": "fmvilas",
       "name": "Fran Méndez",
       "avatar_url": "https://avatars.githubusercontent.com/u/242119?v=4",
-      "profile": "https://github.com/fmvilas",
+      "profile": "http://www.fmvilas.com/",
       "contributions": [
-        "code",
-        "ideas",
         "maintenance",
-        "question",
+        "code",
+        "doc",
+        "bug",
+        "ideas",
+        "review",
+        "design",
         "test",
-        "review"
+        "infra",
+        "mentoring"
       ]
     },
     {
       "login": "boyney123",
       "name": "David Boyne",
       "avatar_url": "https://avatars.githubusercontent.com/u/3268013?v=4",
-      "profile": "https://github.com/boyney123",
+      "profile": "https://boyney.io/",
       "contributions": [
+        "maintenance",
+        "code",
+        "doc",
+        "bug",
+        "ideas",
+        "review",
+        "design",
+        "test",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "mcturco",
+      "name": "Missy Turco",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60163079?v=4",
+      "profile": "https://missyturco.com/",
+      "contributions": [
+        "maintenance",
         "code",
         "ideas",
-        "maintenance",
+        "review",
+        "design",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "fgreinacher",
+      "name": "Florian Greinacher",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1540469?v=4",
+      "profile": "https://florian.greinacher.de/",
+      "contributions": [
+        "code",
+        "infra",
+        "bug",
+        "doc"
+      ]
+    },
+    {
+      "login": "ritik307",
+      "name": "Ritik Rawal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22374829?v=4",
+      "profile": "https://ritik307.github.io/portfolio/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Samridhi-98",
+      "name": "Samriddhi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54466041?v=4",
+      "profile": "https://samridhi-98.github.io/Portfolio",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "pawlean",
+      "name": "Pauline P. Narvas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17087373?v=4",
+      "profile": "https://paulinenarvas.com/",
+      "contributions": [
+        "code",
+        "infra",
+        "doc"
+      ]
+    },
+    {
+      "login": "jonaslagoni",
+      "name": "Jonas Lagoni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13396189?v=4",
+      "profile": "https://linkedin.com/in/jonaslagoni/",
+      "contributions": [
+        "ideas",
         "question",
-        "test",
         "review"
       ]
     },
@@ -72,20 +141,14 @@
     },
     {
       "login": "BOLT04",
-      "name": "David",
-      "https://avatars.githubusercontent.com/u/18630253?v=4",
-      "profile": "https://github.com/BOLT04",
+      "name": "David Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18630253?v=4",
+      "profile": "https://bolt04.github.io/react-ultimate-resume/",
       "contributions": [
         "ideas",
         "question"
       ]
     }
   ],
-  "contributorsPerLine": 7,
-  "projectName": "studio",
-  "projectOwner": "asyncapi",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "skipCi": true,
-  "commitConvention": "none"
+  "contributorsPerLine": 7
 }
