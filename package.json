@@ -21,6 +21,7 @@
   },
   "files": [
     "/build",
+    "/assets/logo.png",
     "./README.md",
     "./LICENSE"
   ],
