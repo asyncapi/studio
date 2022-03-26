@@ -24,7 +24,7 @@ ARG BASE_URL_PLACEHOLDER
 ARG ENTRYPOINT_SCRIPT=/docker-entrypoint.d/set-public-url.sh
 
 COPY --from=build /build /usr/share/nginx/html/
-# Add an entrypoint script that replaces all occurences of the 
+# Add an entrypoint script that replaces all occurrences of the 
 # placeholder value by the configured base URL. If no base URL
 # is configured we assume the application is running at '/'.
 RUN echo "find /usr/share/nginx/html/ -type f -print0 | xargs -0 sed -i \"s|${BASE_URL_PLACEHOLDER}|\${BASE_URL}|g\"" > $ENTRYPOINT_SCRIPT && chmod +x $ENTRYPOINT_SCRIPT
