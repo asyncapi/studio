@@ -15,7 +15,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
                 src={`${process.env.PUBLIC_URL}/img/logo-studio.svg`}
                 alt="AsyncAPI Logo"
               />
-              <span className="inline-block text-xs text-teal-500 font-normal tracking-wider uppercase" style={{ transform: 'translateY(0.3125rem)' }}>
+              <span className="inline-block text-xs text-teal-500 font-normal ml-1 tracking-wider uppercase" style={{ transform: 'translateY(0.3125rem)' }}>
                 beta
               </span>
             </div>
