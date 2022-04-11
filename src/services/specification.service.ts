@@ -1,5 +1,5 @@
 // @ts-ignore
-import { convert } from '@asyncapi/converter';
+import { convert, ConvertVersion } from '@asyncapi/converter';
 import { parse, registerSchemaParser, AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import openapiSchemaParser from '@asyncapi/openapi-schema-parser';
@@ -58,7 +58,7 @@ export class SpecificationService {
 
   static async convertSpec(
     spec: string,
-    version: string = this.getLastVersion(),
+    version: ConvertVersion = this.getLastVersion() as ConvertVersion,
   ): Promise<string> {
     try {
       const converted = convert(spec, version);
