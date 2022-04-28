@@ -7,6 +7,7 @@ import { SpecificationService } from './specification.service';
 
 import state from '../state';
 import { SocketClient } from './socket-client.service';
+import { ConvertVersion } from '@asyncapi/converter';
 
 export type AllowedLanguages = 'json' | 'yaml' | 'yml';
 
@@ -80,7 +81,7 @@ export class EditorService {
   static async convertSpec(version?: string) {
     const converted = await SpecificationService.convertSpec(
       this.getValue(),
-      version || SpecificationService.getLastVersion(),
+      (version || SpecificationService.getLastVersion()) as ConvertVersion,
     );
     this.updateState({ content: converted, updateModel: true });
   }
