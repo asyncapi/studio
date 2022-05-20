@@ -5,10 +5,10 @@ import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
 import { NewFileModal, RedirectedModal } from './Modals';
-import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
 import state from '../state';
+import { VisualiserTemplate } from './Visualiser/VisualiserTemplate';
 
 interface ContentProps {}
 

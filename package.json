@@ -34,6 +34,7 @@
     "@asyncapi/specs": "^3.0.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
+    "@lagoni/edavisualiser": "^0.13.2",
     "@monaco-editor/react": "^4.2.2",
     "@semantic-release-plus/docker": "^3.1.1",
     "js-base64": "^3.7.2",
