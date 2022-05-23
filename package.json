@@ -78,7 +78,7 @@
     ]
   },
   "devDependencies": {
-    "@asyncapi/dotnet-nats-template": "^0.4.10",
+    "@asyncapi/dotnet-nats-template": "^0.4.13",
     "@asyncapi/go-watermill-template": "^0.2.4",
     "@asyncapi/html-template": "^0.24.10",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.0",
