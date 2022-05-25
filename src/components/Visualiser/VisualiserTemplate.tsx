@@ -1,4 +1,4 @@
-import { Application, ApplicationView, AsyncAPIApplication, Incoming, Outgoing } from '@lagoni/edavisualiser';
+import { ApplicationView } from '@lagoni/edavisualiser';
 import React, { useState, useEffect } from 'react';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { SpecificationService } from '../../services';
