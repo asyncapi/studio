@@ -59,42 +59,7 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
     content = (
       parsedSpec && (
         <div className="overflow-auto h-screen bg-gray-800 relative">
-          <ApplicationView>
-            <Application
-              id="string"
-              defaultContentType="string"
-              description="string"
-              title="string"
-              version="string"
-              license={{
-                name: 'string',
-                url: 'string',
-              }}
-              externalDocs="string"
-              servers={[
-                {
-                  name: 'string',
-                  url: 'string',
-                  description: 'string',
-                  protocol: 'string',
-                  protocolVersion: 'string',
-                },
-              ]}
-            >
-              <Outgoing
-                channel="Test/test/test"
-                description="Test description"
-                id="testid2"
-                messages={[{ title: 'test' }]}
-              ></Outgoing>
-              <Incoming
-                channel="Test/test/"
-                description="Test description"
-                id="testid"
-                messages={[{ title: 'test' }]}
-              ></Incoming>
-            </Application>
-          </ApplicationView>
+          <ApplicationView asyncapi={{document: parsedSpec}} />
         </div>
       )
     );
