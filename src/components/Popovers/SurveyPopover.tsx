@@ -15,7 +15,7 @@ export const SurveyPopover: React.FunctionComponent<SurveyPopoverProps> = () => 
     if (editorLoaded) {
       setTimeout(() => {
         setShow(true);
-      }, 500);
+      }, 3000);
     }
   }, [editorLoaded]);
 
