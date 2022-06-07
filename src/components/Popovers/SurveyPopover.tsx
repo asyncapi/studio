@@ -1,10 +1,24 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
+
+import state from '../../state';
 
 interface SurveyPopoverProps {}
 
 export const SurveyPopover: React.FunctionComponent<SurveyPopoverProps> = () => {
-  const [show, setShow] = useState(localStorage.getItem('show:survey') === 'false' ? false : true);
+  const editorState = state.useEditorState();
+  const editorLoaded = editorState.editorLoaded.get();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('show:survey') === 'false') return;
+    if (editorLoaded) {
+      setTimeout(() => {
+        setShow(true);
+      }, 500);
+    }
+  }, [editorLoaded]);
+
   const closePopover = () => {
     localStorage.setItem('show:survey', 'false');
     setShow(false);
@@ -37,7 +51,7 @@ export const SurveyPopover: React.FunctionComponent<SurveyPopoverProps> = () => 
                   <p className='text-base max-w-xs mb-6'>We know that the best way to improve our tools is to understand our users better. Help us define your needs by completing this short survey!</p>
                   <div className='flex flex-row flex-wrap gap-x-1'>
                     <a 
-                      className='font-medium px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-300 transition-colors'
+                      className='font-medium px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 transition-colors'
                       href='https://forms.gle/js9Bibu1hug6Yzzb7' title='EDA User Survey' target='_blank' rel="noreferrer"
                       onClick={closePopover}
                     >
