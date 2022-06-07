@@ -1,6 +1,6 @@
 import React from 'react';
-import SplitPane from 'react-split-pane';
 
+import SplitPane from '../SplitPane';
 import { EditorSidebar } from './EditorSidebar';
 import { MonacoWrapper } from './MonacoWrapper';
 import { Terminal } from '../Terminal/Terminal';

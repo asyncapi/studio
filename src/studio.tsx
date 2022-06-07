@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
+import { SurveyPopover } from './components/Popovers';
 import { NavigationService } from './services';
 
 export interface AsyncAPIStudioProps {}
@@ -29,6 +30,7 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
       <ConvertToLatestModal />
+      <SurveyPopover />
     </div>
   );
 };
