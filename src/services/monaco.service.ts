@@ -1,4 +1,3 @@
-import { AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
@@ -28,9 +27,7 @@ export class MonacoService {
     MonacoService.Editor = value;
   }
 
-  static updateLanguageConfig(document: AsyncAPIDocument) {
-    const version =
-      (document && document.version()) || SpecificationService.getLastVersion();
+  static updateLanguageConfig(version: string = SpecificationService.getLastVersion()) {
     if (version === this.actualVersion) {
       return;
     }
