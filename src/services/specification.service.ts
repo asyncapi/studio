@@ -48,8 +48,8 @@ export class SpecificationService {
       })
       .catch(err => {
         try {
-          const asyncapiSpec = YAML.load(rawSpec);
-          MonacoService.updateLanguageConfig((asyncapiSpec as { asyncapi: string }).asyncapi);
+          const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
+          MonacoService.updateLanguageConfig(asyncapiSpec.asyncapi);
         } catch (e: any) {
           // intentional
         }
