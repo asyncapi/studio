@@ -1,12 +1,11 @@
 // @ts-ignore
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { SpecificationService } from './specification.service';
 import state from '../state';
-
-import jsonSchemaDraft07 from './json-schema.draft-07';
 
 export class MonacoService {
   private static actualVersion = 'X.X.X';
@@ -38,21 +37,26 @@ export class MonacoService {
   static prepareLanguageConfig(
     asyncAPIVersion: string,
   ): monacoAPI.languages.json.DiagnosticsOptions {
+    const spec = { ...specs[String(asyncAPIVersion)] };
+    const definitions = Object.entries(spec.definitions).map(([uri, schema]) => ({
+      uri,
+      schema,
+    }));
+    delete spec.definitions;
+
     return {
-      validate: true,
       enableSchemaRequest: true,
+      hover: true,
       completion: true,
+      validate: true,
+      format: true,
       schemas: [
         {
-          uri: 'https://www.asyncapi.com/', // id of the AsyncAPI spec schema
+          uri: spec.$id, // id of the AsyncAPI spec schema
           fileMatch: ['*'], // associate with all models
-          schema: specs[String(asyncAPIVersion)],
+          schema: spec,
         },
-        {
-          uri: jsonSchemaDraft07.$id, // id of the draft-07 schema
-          fileMatch: ['*'], // associate with all models
-          schema: jsonSchemaDraft07,
-        }
+        ...definitions,
       ],
     } as any;
   }
@@ -86,8 +90,9 @@ export class MonacoService {
   }
 
   static async loadMonaco() {
-    const monacoInstance = await loader.init();
-    window.Monaco = monacoInstance;
+    loader.config({ monaco });
+    window.monaco = monaco;
+    window.Monaco = monaco;
 
     // load monaco config
     this.loadMonacoConfig();
