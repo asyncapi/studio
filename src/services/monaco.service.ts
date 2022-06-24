@@ -90,6 +90,9 @@ export class MonacoService {
 
   static async loadMonaco() {
     let monaco: typeof monacoAPI;
+
+    // JEST cannot bundle monaco-editor in test environment so we need to fetch that package from cdn
+    // in dev or production environment we will use bundled monaco-editor
     if (process.env.NODE_ENV === 'test') {
       monaco = await loader.init();
     } else {
