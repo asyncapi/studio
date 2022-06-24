@@ -1,7 +1,6 @@
 // @ts-ignore
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { SpecificationService } from './specification.service';
@@ -90,7 +89,13 @@ export class MonacoService {
   }
 
   static async loadMonaco() {
-    loader.config({ monaco });
+    let monaco: typeof monacoAPI;
+    if (process.env.NODE_ENV === 'test') {
+      monaco = await loader.init();
+    } else {
+      monaco = await import('monaco-editor');
+      loader.config({ monaco });
+    }
     window.monaco = monaco;
     window.Monaco = monaco;
 
