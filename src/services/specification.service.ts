@@ -7,6 +7,7 @@ import openapiSchemaParser from '@asyncapi/openapi-schema-parser';
 import avroSchemaParser from '@asyncapi/avro-schema-parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
+import YAML from 'js-yaml';
 
 import { EditorService } from './editor.service';
 import { MonacoService } from './monaco.service';
@@ -32,8 +33,9 @@ export class SpecificationService {
           errors: [],
         });
 
-        MonacoService.updateLanguageConfig(asyncApiDoc);
-        if (this.shouldInformAboutLatestVersion(asyncApiDoc.version())) {
+        const version = asyncApiDoc.version();
+        MonacoService.updateLanguageConfig(version);
+        if (this.shouldInformAboutLatestVersion(version)) {
           state.spec.set({
             shouldOpenConvertModal: true,
             convertOnlyToLatest: false,
@@ -45,6 +47,12 @@ export class SpecificationService {
         return asyncApiDoc;
       })
       .catch(err => {
+        try {
+          const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
+          MonacoService.updateLanguageConfig(asyncapiSpec.asyncapi);
+        } catch (e: any) {
+          // intentional
+        }
         const errors = this.filterErrors(err, rawSpec);
 
         parserState.set({
