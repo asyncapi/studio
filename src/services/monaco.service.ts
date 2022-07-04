@@ -61,7 +61,7 @@ export class MonacoService {
   }
 
   static loadLanguageConfig(asyncAPIVersion: string) {
-    const monacoInstance = window.Monaco;
+    const monacoInstance = window.monaco;
     if (!monacoInstance) return;
 
     const options = this.prepareLanguageConfig(asyncAPIVersion);
@@ -74,7 +74,7 @@ export class MonacoService {
   }
 
   static loadMonacoConfig() {
-    const monacoInstance = window.Monaco;
+    const monacoInstance = window.monaco;
     if (!monacoInstance) return;
 
     monacoInstance.editor.defineTheme('asyncapi-theme', {
@@ -100,7 +100,6 @@ export class MonacoService {
       loader.config({ monaco });
     }
     window.monaco = monaco;
-    window.Monaco = monaco;
 
     // load monaco config
     this.loadMonacoConfig();

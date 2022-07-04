@@ -205,7 +205,7 @@ export class EditorService {
 
   static applyErrorMarkers(errors: any[] = []) {
     const editor = this.getInstance();
-    const Monaco = window.Monaco;
+    const Monaco = window.monaco;
 
     if (!editor || !Monaco) {
       return;
