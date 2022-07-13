@@ -31,7 +31,7 @@
     "@asyncapi/openapi-schema-parser": "^2.0.1",
     "@asyncapi/parser": "^1.15.1",
     "@asyncapi/react-component": "^1.0.0-next.39",
-    "@asyncapi/specs": "^3.0.0",
+    "@asyncapi/specs": "^3.1.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.4.5",
