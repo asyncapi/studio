@@ -96,8 +96,10 @@ export class EditorService {
       return fetch(url)
         .then(res => res.text())
         .then(text => {
-          state.editor.documentFrom.set('URL');
-          state.editor.documentFromURL.set(url);
+          state.editor.merge({
+            documentFrom: 'URL',
+            documentFromURL: url,
+          });
           this.updateState({ content: text, updateModel: true });
         })
         .catch(err => {
