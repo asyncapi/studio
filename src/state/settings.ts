@@ -18,7 +18,20 @@ function loadSettings(): SettingsState {
   localStorage.setItem('studio-settings', JSON.stringify(settings));
   return settings;
 }
-const savedSettings = loadSettings();
+
+function createSettings(): SettingsState {
+  const savedSettings = loadSettings();
+
+  return {
+    editor: {
+      autoSaving: typeof savedSettings.editor?.autoSaving === 'boolean' ? savedSettings.editor?.autoSaving : true,
+      savingDelay: savedSettings.editor?.savingDelay || 625,
+    },
+    templates: {
+      autoRendering: typeof savedSettings.templates?.autoRendering === 'boolean' ? savedSettings.templates?.autoRendering : true,
+    },
+  }
+}
 
 export interface SettingsState {
   templates: {
@@ -30,15 +43,7 @@ export interface SettingsState {
   }
 }
 
-export const settingsState = createState<SettingsState>({
-  editor: {
-    autoSaving: savedSettings.editor?.autoSaving || true,
-    savingDelay: savedSettings.editor?.savingDelay || 625,
-  },
-  templates: {
-    autoRendering: savedSettings.templates?.autoRendering || true,
-  },
-});
+export const settingsState = createState<SettingsState>(createSettings());
 
 export function useSettingsState() {
   return useState(settingsState);

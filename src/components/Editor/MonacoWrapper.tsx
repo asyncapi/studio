@@ -43,7 +43,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   const onChange = debounce((v: string) => {
     EditorService.updateState({ content: v });
     const isDocumentFromURL = editorState.documentFrom.get() === 'URL';
-    if (autoSaving && !isDocumentFromURL) {
+    if (autoSaving === true && !isDocumentFromURL) {
       EditorService.saveToLocalStorage(v, false);
     }
     SpecificationService.parseSpec(v);

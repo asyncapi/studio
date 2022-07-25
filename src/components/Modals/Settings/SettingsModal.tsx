@@ -24,6 +24,8 @@ export const SettingsModal: React.FunctionComponent = () => {
   const [autoRendering, setAutoRendering] = useState(settingsState.templates.autoRendering.get());
   const [confirmDisabled, setConfirmDisabled] = useState(true);
 
+  console.log(autoSaving);
+
   useEffect(() => {
     const disable = JSON.stringify({
       editor: {
