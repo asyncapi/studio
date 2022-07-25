@@ -4,10 +4,12 @@ import fileDownload from 'js-file-download';
 
 import { FormatService } from './format.service';
 import { SpecificationService } from './specification.service';
+import { SocketClient } from './socket-client.service';
 
 import state from '../state';
-import { SocketClient } from './socket-client.service';
-import { ConvertVersion } from '@asyncapi/converter';
+import { exampleSpec } from '../state/editor';
+
+import type { ConvertVersion } from '@asyncapi/converter';
 
 export type AllowedLanguages = 'json' | 'yaml' | 'yml';
 
@@ -23,9 +25,12 @@ export class EditorService {
     return window.Editor;
   }
 
+  static getModel() {
+    return this.getInstance()?.getModel();
+  }
+
   static getValue() {
-    return this.getInstance()
-      ?.getModel()?.getValue() as string;
+    return this.getModel()?.getValue() as string;
   }
 
   static updateState({
@@ -91,7 +96,8 @@ export class EditorService {
       return fetch(url)
         .then(res => res.text())
         .then(text => {
-          state.editor.documentFrom.set(`URL: ${url}` as any);
+          state.editor.documentFrom.set('URL');
+          state.editor.documentFromURL.set(url);
           this.updateState({ content: text, updateModel: true });
         })
         .catch(err => {
@@ -196,6 +202,19 @@ export class EditorService {
           </div>,
         );
       }
+    }
+  }
+
+  static loadFromLocalStorage() {
+    const value = this.getFromLocalStorage();
+    state.editor.merge({
+      documentFrom: 'localStorage',
+      documentFromURL: null,
+      modified: false,
+    });
+    const model = EditorService.getModel();
+    if (model) {
+      model.setValue(value || exampleSpec);
     }
   }
 

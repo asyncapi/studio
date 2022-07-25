@@ -22,9 +22,17 @@ export class SpecificationService {
     return window.ParsedSpec || null;
   }
 
-  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
+  static async parseSpec(rawSpec?: string): Promise<AsyncAPIDocument | void> {
+    rawSpec = rawSpec || EditorService.getValue() || '';
     const parserState = state.parser;
-    return parse(rawSpec)
+    const documentFromURL = state.editor.documentFromURL.get();
+    let options: any = undefined;
+    if (documentFromURL) {
+      options = {};
+      options.path = documentFromURL;
+    }
+
+    return parse(rawSpec, options)
       .then(asyncApiDoc => {
         window.ParsedSpec = asyncApiDoc;
         parserState.set({
@@ -48,12 +56,12 @@ export class SpecificationService {
       })
       .catch(err => {
         try {
-          const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
+          const asyncapiSpec = YAML.load(rawSpec!) as { asyncapi: string };
           MonacoService.updateLanguageConfig(asyncapiSpec.asyncapi);
         } catch (e: any) {
           // intentional
         }
-        const errors = this.filterErrors(err, rawSpec);
+        const errors = this.filterErrors(err, rawSpec!);
 
         parserState.set({
           parsedSpec: null,

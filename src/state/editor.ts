@@ -1,7 +1,6 @@
 import { createState, useState } from '@hookstate/core';
 
-const schema =
-  localStorage.getItem('document') || `asyncapi: '2.4.0'
+export const exampleSpec = `asyncapi: '2.4.0'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'
@@ -166,7 +165,10 @@ components:
           clientId: my-app-id
 `;
 
-export type EditorStateDocumentFrom = 'localStorage' | `URL: ${string}` | 'Base64';
+const schema =
+  localStorage.getItem('document') || exampleSpec;
+
+export type EditorStateDocumentFrom = 'localStorage' | 'URL' | 'Base64';
 
 export interface EditorState {
   height: string;
@@ -176,6 +178,7 @@ export interface EditorState {
   monacoLoaded: boolean;
   editorLoaded: boolean;
   documentFrom: EditorStateDocumentFrom;
+  documentFromURL: string | null; 
   decorations: Array<any>;
   modified: boolean,
 }
@@ -188,6 +191,7 @@ export const editorState = createState<EditorState>({
   monacoLoaded: false,
   editorLoaded: false,
   documentFrom: 'localStorage',
+  documentFromURL: null,
   decorations: [],
   modified: false,
 });

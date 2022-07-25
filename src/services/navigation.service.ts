@@ -81,6 +81,7 @@ export class NavigationService {
   }
 
   static async onInitApp() {
+    window.addEventListener('beforeunload', e => this.beforeUnload(e))
     const urlParams = new URLSearchParams(window.location.search);
 
     const documentUrl = urlParams.get('url') || urlParams.get('load');
@@ -117,5 +118,15 @@ export class NavigationService {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
     window.history.pushState({}, '', hash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));
+  }
+
+  private static beforeUnload(e: BeforeUnloadEvent) {
+    if (!state.editor.modified.get()) {
+      return undefined;
+    }
+
+    const confirmationMessage = 'It looks like you have been editing specification. If you leave before saving, your changes will be lost.';
+    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
   }
 }

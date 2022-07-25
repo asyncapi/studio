@@ -2,6 +2,7 @@ import React from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
+import { EditorService } from '../../services';
 import state from '../../state';
 
 interface EditorSidebarProps {}
@@ -14,22 +15,48 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
   if (documentFrom === 'localStorage') {
     documentFromText = 'From localStorage';
   } else if (documentFrom === 'Base64') {
-    documentFromText = 'From Base64';
+    documentFromText = 'From Base64 query';
   } else {
-    const splittedText = documentFrom.split(' ');
-    documentFromText = `From ${splittedText[1]}`;
+    documentFromText = `From URL query`;
   }
 
   return (
     <div
-      className="flex flex-row items justify-between bg-gray-800 border-b border-gray-700 text-sm"
+      className="flex flex-row items-center justify-between bg-gray-800 border-b border-gray-700 text-sm"
       style={{ height: '30px', lineHeight: '30px' }}
     >
-      <div className="ml-2 text-gray-500 text-xs italic" style={{ height: '30px', lineHeight: '30px' }}>
-        {documentFromText}
+      <div className='flex flex-row items-center justify-between'>
+        <span className='inline-block ml-2 text-gray-500 text-xs italic'>
+          {documentFromText}
+        </span>
+
+        {documentFrom !== 'localStorage' ? (
+          <div className='ml-2 flex flex-row items-center justify-between'>
+            <button 
+              type='button' 
+              className='px-2 py-0.5 rounded text-gray-300 text-xs bg-gray-600 hover:bg-gray-700 cursor-pointer'
+              onClick={(e) => {
+                e.stopPropagation();
+                EditorService.saveToLocalStorage(undefined, false);
+              }}
+            >
+              Save in storage
+            </button>
+            <button 
+              type='button' 
+              className='ml-2 px-2 py-0.5 rounded text-gray-300 text-xs bg-gray-600 hover:bg-gray-700 cursor-pointer'
+              onClick={(e) => {
+                e.stopPropagation();
+                EditorService.loadFromLocalStorage();
+              }}
+            >
+              Load from storage
+            </button>
+          </div>
+        ) : null}
       </div>
       <div
-        className="flex flex-row items-center"
+        className="flex flex-row items-center justify-between"
         style={{ height: '30px', lineHeight: '30px' }}
       >
         <div>
