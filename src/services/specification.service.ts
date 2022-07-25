@@ -28,8 +28,9 @@ export class SpecificationService {
     const documentFromURL = state.editor.documentFromURL.get();
     let options: any = undefined;
     if (documentFromURL) {
-      options = {};
-      options.path = documentFromURL;
+      options = {
+        path: documentFromURL,
+      };
     }
 
     return parse(rawSpec, options)
