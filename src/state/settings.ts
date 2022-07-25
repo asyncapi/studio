@@ -30,7 +30,7 @@ function createSettings(): SettingsState {
     templates: {
       autoRendering: typeof savedSettings.templates?.autoRendering === 'boolean' ? savedSettings.templates?.autoRendering : true,
     },
-  }
+  };
 }
 
 export interface SettingsState {
