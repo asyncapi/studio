@@ -17,7 +17,7 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
   } else if (documentFrom === 'Base64') {
     documentFromText = 'From Base64 query';
   } else {
-    documentFromText = `From URL query`;
+    documentFromText = 'From URL query';
   }
 
   return (

@@ -55,13 +55,17 @@ export class SpecificationService {
         return asyncApiDoc;
       })
       .catch(err => {
+        if (typeof rawSpec !== 'string') {
+          return;
+        }
+
         try {
-          const asyncapiSpec = YAML.load(rawSpec!) as { asyncapi: string };
+          const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
           MonacoService.updateLanguageConfig(asyncapiSpec.asyncapi);
         } catch (e: any) {
           // intentional
         }
-        const errors = this.filterErrors(err, rawSpec!);
+        const errors = this.filterErrors(err, rawSpec);
 
         parserState.set({
           parsedSpec: null,

@@ -81,7 +81,7 @@ export class NavigationService {
   }
 
   static async onInitApp() {
-    window.addEventListener('beforeunload', e => this.beforeUnload(e))
+    window.addEventListener('beforeunload', e => this.beforeUnload(e));
     const urlParams = new URLSearchParams(window.location.search);
 
     const documentUrl = urlParams.get('url') || urlParams.get('load');
