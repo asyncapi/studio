@@ -114,7 +114,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
               onChange={e => setVersion(e.target.value)}
               value={version}
             >
-              <option value={latestVersion} key={latestVersion}>${latestVersion} (latest)</option>
+              <option value={latestVersion} key={latestVersion}>{latestVersion} (latest)</option>
               {reservedAllowedVersions.filter((v) => v !== latestVersion).map(v => (
                 <option key={v} value={v}  >
                   {v}
