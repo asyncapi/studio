@@ -4,6 +4,7 @@ import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 
 import { SettingsModal } from './Modals/Settings/SettingsModal';
 
 import state from '../state';
+import { OnboardingModal } from './Modals/Onboarding/OnboardingModal';
 
 type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
 
@@ -115,6 +116,7 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
         ))}
       </div>
       <div className="flex flex-col">
+        <OnboardingModal />
         <SettingsModal />
       </div>
     </div>
