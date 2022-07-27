@@ -18,7 +18,10 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
   const documentValid = parserState.valid.get();
   const errors = parserState.errors.get();
   const autoSaving = settingsState.editor.autoSaving.get();
+  const documentFrom = editorState.documentFrom.get();
   const modified = editorState.modified.get();
+
+  const showModified = modified && (!autoSaving || documentFrom !== 'localStorage');
 
   function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation();
@@ -76,7 +79,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {!autoSaving && modified && (
+      {showModified && (
         <div className="ml-3">
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">

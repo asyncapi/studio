@@ -2,7 +2,7 @@ import React from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
-import { EditorService, NavigationService } from '../../services';
+import { EditorService, NavigationService, SpecificationService } from '../../services';
 import state from '../../state';
 
 interface EditorSidebarProps {}
@@ -39,6 +39,7 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
                 e.stopPropagation();
                 EditorService.saveToLocalStorage(undefined, false);
                 NavigationService.removeQueryParameters(['url', 'base64']);
+                SpecificationService.parseSpec();
               }}
             >
               Save in storage
