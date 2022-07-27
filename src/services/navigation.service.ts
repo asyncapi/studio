@@ -80,6 +80,20 @@ export class NavigationService {
     return isReadonly && !!(urlParams.get('url') || urlParams.get('load') || urlParams.get('base64'));
   }
 
+  static removeQueryParameters(parameters: string[]) {
+    const urlParams = new URLSearchParams(window.location.search);
+    parameters.forEach(param => urlParams.delete(param));
+
+    let newRelativePathQuery: string;
+    if (Array.from(urlParams.keys()).length) {
+      newRelativePathQuery = `${window.location.pathname  }?${  urlParams.toString()}`;
+    } else {
+      newRelativePathQuery = window.location.pathname;
+    }
+
+    return history.pushState(null, '', newRelativePathQuery);
+  }
+
   static async onInitApp() {
     window.addEventListener('beforeunload', e => this.beforeUnload(e));
     const urlParams = new URLSearchParams(window.location.search);

@@ -178,7 +178,8 @@ export interface EditorState {
   monacoLoaded: boolean;
   editorLoaded: boolean;
   documentFrom: EditorStateDocumentFrom;
-  documentFromURL: string | null; 
+  documentSource: string | null; 
+  externalDocument: string | null; 
   decorations: Array<any>;
   modified: boolean,
 }
@@ -191,7 +192,8 @@ export const editorState = createState<EditorState>({
   monacoLoaded: false,
   editorLoaded: false,
   documentFrom: 'localStorage',
-  documentFromURL: null,
+  documentSource: null,
+  externalDocument: null,
   decorations: [],
   modified: false,
 });

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
-import { EditorService } from '../../services';
+import { EditorService, NavigationService } from '../../services';
 import state from '../../state';
 
 interface EditorSidebarProps {}
@@ -38,6 +38,7 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
               onClick={(e) => {
                 e.stopPropagation();
                 EditorService.saveToLocalStorage(undefined, false);
+                NavigationService.removeQueryParameters(['url', 'base64']);
               }}
             >
               Save in storage
@@ -48,6 +49,7 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
               onClick={(e) => {
                 e.stopPropagation();
                 EditorService.loadFromLocalStorage();
+                NavigationService.removeQueryParameters(['url', 'base64']);
               }}
             >
               Load from storage

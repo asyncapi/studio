@@ -25,11 +25,13 @@ export class SpecificationService {
   static async parseSpec(rawSpec?: string): Promise<AsyncAPIDocument | void> {
     rawSpec = rawSpec || EditorService.getValue() || '';
     const parserState = state.parser;
-    const documentFromURL = state.editor.documentFromURL.get();
+    const documentFrom = state.editor.documentFrom.get();
+    const documentSource = state.editor.documentSource.get();
+    
     let options: any = undefined;
-    if (documentFromURL) {
+    if (documentFrom === 'URL' && documentSource) {
       options = {
-        path: documentFromURL,
+        path: documentSource,
       };
     }
 

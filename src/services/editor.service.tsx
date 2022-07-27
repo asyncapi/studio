@@ -79,7 +79,7 @@ export class EditorService {
     state.editor.merge({
       language: languageToSave,
       editorValue: content,
-      modified: this.getFromLocalStorage() !== content,
+      modified: this.isModified(content),
     });
   }
 
@@ -98,7 +98,8 @@ export class EditorService {
         .then(text => {
           state.editor.merge({
             documentFrom: 'URL',
-            documentFromURL: url,
+            documentSource: url,
+            externalDocument: text,
           });
           this.updateState({ content: text, updateModel: true });
         })
@@ -129,9 +130,13 @@ export class EditorService {
 
   static async importBase64(content: string) {
     try {
-      const decoded = FormatService.decodeBase64(content);
-      state.editor.documentFrom.set('Base64');
-      this.updateState({ content: String(decoded), updateModel: true });
+      const decoded = String(FormatService.decodeBase64(content));
+      state.editor.merge({
+        documentFrom: 'Base64',
+        documentSource: content,
+        externalDocument: decoded,
+      });
+      this.updateState({ content: decoded, updateModel: true });
     } catch (err) {
       console.error(err);
       throw err;
@@ -211,7 +216,7 @@ export class EditorService {
     const value = this.getFromLocalStorage();
     state.editor.merge({
       documentFrom: 'localStorage',
-      documentFromURL: null,
+      externalDocument: null,
       modified: false,
     });
     const model = EditorService.getModel();
@@ -295,5 +300,14 @@ export class EditorService {
   private static fileName = 'asyncapi';
   private static downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
+  }
+
+  private static isModified(newContent: string) {
+    const documentFrom = state.editor.documentFrom.get();
+    if (documentFrom === 'localStorage') {
+      return this.getFromLocalStorage() !== newContent;
+    }
+    const externalDocument = state.editor.externalDocument.get();
+    return externalDocument !== newContent;
   }
 }
