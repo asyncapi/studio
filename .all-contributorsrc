@@ -148,7 +148,18 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "nawed2611",
+      "name": "Nawed Ali",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83456083?v=4",
+      "profile": "https://nawedali.tech",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
