@@ -140,7 +140,9 @@ export class NavigationService {
     }
 
     const confirmationMessage = 'It looks like you have been editing specification. If you leave before saving, your changes will be lost.';
-    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-    return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    //Gecko + IE
+    (e || window.event).returnValue = confirmationMessage; //NOSONAR
+    //Gecko + Webkit, Safari, Chrome etc.
+    return confirmationMessage;
   }
 }
