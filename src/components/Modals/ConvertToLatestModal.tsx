@@ -76,7 +76,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
     <ConfirmModal
       title={convertOnlyToLatest ? 'Convert AsyncAPI document to latest version' : 'Convert AsyncAPI document to newest version'}
       confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : 'Convert'}
-      confirmDisabled={convertOnlyToLatest ? false : !version || allowedVersions.length === 0}
+      confirmDisabled={false}
       cancelDisabled={forceConvert}
       show={show}
       onSubmit={onSubmit}
@@ -114,10 +114,10 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
               onChange={e => setVersion(e.target.value)}
               value={version}
             >
-              <option value="">Please Select</option>
-              {reservedAllowedVersions.map(v => (
+              <option value={latestVersion} key={latestVersion}>{latestVersion} (latest)</option>
+              {reservedAllowedVersions.filter((v) => v !== latestVersion).map(v => (
                 <option key={v} value={v}>
-                  {v === latestVersion ? `${v} (latest)` : v}
+                  {v}
                 </option>
               ))}
             </select>
