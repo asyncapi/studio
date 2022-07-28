@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
@@ -20,6 +20,23 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
     documentFromText = 'From URL query';
   }
 
+  const onSaveToStorage = useCallback((e: React.MouseEvent) => {
+    if (window.confirm('Do you really want to save current editor\'s specification to the localStorage? Specification stored in localStorage will be overwritten and forgotten.')) {
+      e.stopPropagation();
+      EditorService.saveToLocalStorage(undefined, false);
+      NavigationService.removeQueryParameters(['url', 'base64']);
+      SpecificationService.parseSpec();
+    }
+  }, []);
+
+  const onLoadFromStorage = useCallback((e: React.MouseEvent) => {
+    if (window.confirm('Do you really want to load specification from the localStorage? Any changes made in the editor will be forgotten.')) {
+      e.stopPropagation();
+      EditorService.loadFromLocalStorage();
+      NavigationService.removeQueryParameters(['url', 'base64']);
+    }
+  }, []);
+
   return (
     <div
       className="flex flex-row items-center justify-between bg-gray-800 border-b border-gray-700 text-sm"
@@ -35,23 +52,14 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
             <button 
               type='button' 
               className='px-2 py-0.5 rounded text-gray-300 text-xs bg-gray-600 hover:bg-gray-700 cursor-pointer'
-              onClick={(e) => {
-                e.stopPropagation();
-                EditorService.saveToLocalStorage(undefined, false);
-                NavigationService.removeQueryParameters(['url', 'base64']);
-                SpecificationService.parseSpec();
-              }}
+              onClick={onSaveToStorage}
             >
               Save in storage
             </button>
             <button 
               type='button' 
               className='ml-2 px-2 py-0.5 rounded text-gray-300 text-xs bg-gray-600 hover:bg-gray-700 cursor-pointer'
-              onClick={(e) => {
-                e.stopPropagation();
-                EditorService.loadFromLocalStorage();
-                NavigationService.removeQueryParameters(['url', 'base64']);
-              }}
+              onClick={onLoadFromStorage}
             >
               Load from storage
             </button>
