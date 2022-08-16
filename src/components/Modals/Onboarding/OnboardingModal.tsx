@@ -14,7 +14,9 @@ export const OnboardingModal: React.FunctionComponent = () => {
 
     const [nextEl, nextElRef] = useSwiperRef();
     const [prevEl, prevElRef] = useSwiperRef();
+
     const [current, setCurrent] = useState(0);
+    
     return (
         <ConfirmModal
             title={'Onboarding Docs'}
@@ -35,10 +37,9 @@ export const OnboardingModal: React.FunctionComponent = () => {
                 spaceBetween={8}
                 slidesPerView={1}
                 onSlideChange={(swiper) => setCurrent(swiper.snapIndex)}
-                // navigation={{ prevElRef, nextElRef }}        this line is not working
                 breakpoints={{
                     640: {
-                        slidesPerView: 2
+                        slidesPerView: 1
                     }
                 }}
             >
