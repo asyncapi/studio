@@ -1,0 +1,9 @@
+services:
+  async-studio:
+    build: .
+    container_name: events-api
+    restart: on-failure
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public/docs/asyncapi:/usr/share/nginx/html/docs/asyncapi

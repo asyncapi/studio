@@ -4,6 +4,7 @@ ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 FROM docker.io/library/node:16.13.2 as build
 
 ARG BASE_URL_PLACEHOLDER
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile
