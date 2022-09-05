@@ -5,6 +5,9 @@ FROM docker.io/library/node:16.13.2 as build
 
 ARG BASE_URL_PLACEHOLDER
 
+# Skip puppeteer download since chromium isn't used by the project.
+ARG PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+
 COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile
 

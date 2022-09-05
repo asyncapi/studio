@@ -59,7 +59,7 @@
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
-    "generate:docker": "docker build --tag asyncapi/studio .",
+    "generate:docker": "docker buildx build --platform linux/amd64,linux/arm64 --tag asyncapi/studio .",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
     "release": "npm run generate:docker && semantic-release",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
