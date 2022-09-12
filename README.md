@@ -63,6 +63,8 @@ Set the environment variable `BASE_URL` to let AsyncAPI Studio know from where t
 docker run -it -p 8000:80 -e BASE_URL=/a/custom/path asyncapi/studio
 ```
 
+Studio is also available as a Docker Desktop Extension. For more information, check [the related repository](https://github.com/thiyagu06/asyncapi-studio-docker-extension).
+
 ## Development
 
 1. Setup project by installing dependencies `npm install`
