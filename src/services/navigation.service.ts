@@ -83,7 +83,7 @@ export class NavigationService {
   static async onInitApp() {
     const urlParams = new URLSearchParams(window.location.search);
 
-    const documentUrl = urlParams.get("url") || urlParams.get("load") || process.env.REACT_APP_DOCUMENT_URL;
+    const documentUrl = urlParams.get('url') || urlParams.get('load') || process.env.REACT_APP_DOCUMENT_URL;
     const base64Document = urlParams.get('base64');
     const liveServerPort = urlParams.get('liveServer');
     const redirectedFrom = urlParams.get('redirectedFrom');
