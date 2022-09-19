@@ -1,6 +1,9 @@
 services:
   async-studio:
-    build: .
+    build:
+      context: .
+      args:
+        - DOCUMENT_URL=docs/asyncapi/asyncapi.yaml
     container_name: events-api
     restart: on-failure
     ports:

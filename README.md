@@ -49,12 +49,34 @@ Run:
 
 ```bash
 docker run -it -p 8000:80 asyncapi/studio
-docker run -it -p 8000:80 -v "$(pwd)/another/path/to/asyncapi:/usr/share/nginx/html/docs/asyncapi" asyncapi/studio
 ```
 
 and then go to [http://localhost:8000](http://localhost:8000).
 
-Also feel free to check out the [docker-compose.yml](./docker-compose.yml) example.
+To mount a specification, use the command:
+
+```bash
+docker run -it -p 8000:80 -v "$(pwd)/another/path/to/asyncapi:/usr/share/nginx/html/docs/asyncapi" asyncapi/studio
+```
+
+> **NOTE**: The file should be named `asyncapi.yaml` or `asyncapi.json` in the specified location.
+
+Also docker-compose can be used:
+
+```yaml
+services:
+  async-studio:
+    image: asyncapi/studio
+    build:
+      args:
+        - DOCUMENT_URL=docs/asyncapi.yaml
+    ports:
+      - "8000:80"
+    volumes:
+      - ./asyncapi.yaml:/usr/share/nginx/html/docs/asyncapi.yaml
+```
+
+**NOTE**: You need to run `docker-compose up --build` after you update DOCUMENT\_URL
 
 The `asyncapi/studio` image is based on the official `nginx` image.
 Please refer to the [Nginx documentation](https://registry.hub.docker.com/_/nginx/) to learn how to e.g. pass a custom `nginx` configuration or plug in additional volumes.

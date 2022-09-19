@@ -4,6 +4,7 @@ ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 FROM docker.io/library/node:16.13.2 as build
 
 ARG BASE_URL_PLACEHOLDER
+ARG DOCUMENT_URL
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 COPY package.json package-lock.json ./
@@ -13,7 +14,7 @@ COPY ./ ./
 # Set the React PUBLIC_URL to our placeholder value so that
 # that it can easily be replaced with the actual base URL
 # in the entrypoint script below.
-RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build
+RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} REACT_APP_DOCUMENT_URL=${DOCUMENT_URL} npm run build
 
 FROM docker.io/library/nginx:1.21.5-alpine as runtime
 
