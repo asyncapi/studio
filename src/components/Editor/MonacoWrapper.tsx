@@ -28,7 +28,6 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
     // save editor instance to the window
     window.Editor = editor;
     // parse on first run the spec
-    await EditorService.importFromURL('docs/asyncapi/asyncapi.yaml');
     SpecificationService.parseSpec(EditorService.getValue());
 
     // apply save command

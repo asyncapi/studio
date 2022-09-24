@@ -94,6 +94,8 @@ export class NavigationService {
       await EditorService.importFromURL(documentUrl);
     } else if (base64Document) {
       await EditorService.importBase64(base64Document);
+    } else {
+      await EditorService.importFromURL('/docs/asyncapi/asyncapi.yaml');
     }
 
     const isReadonly = this.isReadOnly(true);
