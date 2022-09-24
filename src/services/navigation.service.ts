@@ -95,7 +95,10 @@ export class NavigationService {
     } else if (base64Document) {
       await EditorService.importBase64(base64Document);
     } else {
-      await EditorService.importFromURL('/docs/asyncapi/asyncapi.yaml');
+      await Promise.any([
+        EditorService.importFromURL('/docs/asyncapi/asyncapi.yaml'),
+        EditorService.importFromURL('/docs/asyncapi/asyncapi.json'),
+      ]);
     }
 
     const isReadonly = this.isReadOnly(true);
