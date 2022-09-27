@@ -1,16 +1,19 @@
-import { AsyncAPIDocument } from '@asyncapi/parser';
 import { createState, useState } from '@hookstate/core';
+
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/esm';
 
 export interface ParserState {
   parsedSpec: AsyncAPIDocument | null;
   valid: boolean;
-  errors: any[];
+  diagnostics: Diagnostic[];
+  hasErrorDiagnostics: boolean;
 }
 
 export const parserState = createState<ParserState>({
   parsedSpec: null,
   valid: false,
-  errors: [],
+  diagnostics: [],
+  hasErrorDiagnostics: false,
 });
 
 export function useParserState() {

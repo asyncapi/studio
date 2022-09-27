@@ -9,6 +9,8 @@ import state from '../state';
 import { SocketClient } from './socket-client.service';
 import { ConvertVersion } from '@asyncapi/converter';
 
+import type { Diagnostic } from '@asyncapi/parser/esm';
+
 export type AllowedLanguages = 'json' | 'yaml' | 'yml';
 
 export interface UpdateState {
@@ -203,7 +205,7 @@ export class EditorService {
     return localStorage.getItem('document');
   }
 
-  static applyErrorMarkers(errors: any[] = []) {
+  static applyMarkers(errors: Diagnostic[] = []) {
     const editor = this.getInstance();
     const Monaco = window.monaco;
 
@@ -223,52 +225,66 @@ export class EditorService {
       return;
     }
 
-    const { markers, decorations } = this.createErrorMarkers(errors, model, Monaco);
+    const { markers, decorations } = this.createMarkers(errors, model, Monaco);
     Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
     editor.deltaDecorations(oldDecorations, decorations);
   }
 
-  static createErrorMarkers(errors: any[], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
-    errors = errors || [];
+  static createMarkers(diagnostics: Diagnostic[] = [], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
-    errors.forEach(err => {
-      const { title, detail } = err;
-      let location = err.location;
 
-      if (!location || location.jsonPointer === '/') {
+    diagnostics.forEach(diagnostic => {
+      const { message, path, severity } = diagnostic;
+      let { range } = diagnostic;
+
+      if (path.length === 0) {
         const fullRange = model.getFullModelRange();
-        location = {};
-        location.startLine = fullRange.startLineNumber;
-        location.startColumn = fullRange.startColumn;
-        location.endLine = fullRange.endLineNumber;
-        location.endColumn = fullRange.endColumn;
+        range = { 
+          start: {
+            line: fullRange.startLineNumber,
+            character: fullRange.startColumn
+          }, 
+          end: {
+            line: fullRange.endLineNumber,
+            character: fullRange.endColumn
+          },
+        };
       }
-      const { startLine, startColumn, endLine, endColumn } = location;
   
-      const detailContent = detail ? `\n\n${detail}` : '';
       newMarkers.push({
-        startLineNumber: startLine,
-        startColumn,
-        endLineNumber: typeof endLine === 'number' ? endLine : startLine,
-        endColumn: typeof endColumn === 'number' ? endColumn : startColumn,
-        severity: monacoAPI.MarkerSeverity.Error,
-        message: `${title}${detailContent}`,
+        startLineNumber: range.start.line + 1,
+        startColumn: range.start.character + 1,
+        endLineNumber: range.end.line + 1,
+        endColumn: range.end.character + 1,
+        severity: this.getSeverity(severity),
+        message,
       });
+
       newDecorations.push({
         id: 'asyncapi',
         ownerId: 0,
         range: new Monaco.Range(
-          startLine, 
-          startColumn, 
-          typeof endLine === 'number' ? endLine : startLine, 
-          typeof endColumn === 'number' ? endColumn : startColumn
+          range.start.line + 1, 
+          range.start.character + 1,
+          range.end.line + 1,
+          range.end.character + 1
         ),
         options: { inlineClassName: 'bg-red-500-20' },
       });
     });
 
     return { decorations: newDecorations, markers: newMarkers };
+  }
+
+  private static getSeverity(severity: Diagnostic['severity']): monacoAPI.MarkerSeverity {
+    switch (severity) {
+    case 0: return monacoAPI.MarkerSeverity.Error;
+    case 1: return monacoAPI.MarkerSeverity.Warning;
+    case 2: return monacoAPI.MarkerSeverity.Info;
+    case 3: return monacoAPI.MarkerSeverity.Hint;
+    default: return monacoAPI.MarkerSeverity.Error;
+    }
   }
 
   private static fileName = 'asyncapi';

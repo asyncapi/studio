@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { AsyncAPIDocument } from '@asyncapi/parser';
-
 import { NavigationService } from '../services';
 import state from '../state';
+
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
 
 interface NavigationProps {
   className?: string;
@@ -166,7 +166,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   language,
   hash,
 }) => {
-  const messages = Object.keys(spec.components().messages() || {}).map(
+  const messages = Object.keys(spec.components()?.messages() || {}).map(
     messageName => (
       <li
         key={messageName}
@@ -215,7 +215,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   language,
   hash,
 }) => {
-  const schemas = Object.keys(spec.components().schemas() || {}).map(
+  const schemas = Object.keys(spec.components()?.schemas() || {}).map(
     schemaName => (
       <li
         key={schemaName}
@@ -344,7 +344,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             hash={hash}
           />
         </li>
-        {spec.hasComponents() && spec.components().hasMessages() && (
+        {spec.hasComponents() && spec.components()?.hasMessages() && (
           <li className="mb-4">
             <MessagesNavigation
               spec={spec}
@@ -354,7 +354,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             />
           </li>
         )}
-        {spec.hasComponents() && spec.components().hasSchemas() && (
+        {spec.hasComponents() && spec.components()?.hasSchemas() && (
           <li className="mb-4">
             <SchemasNavigation
               spec={spec}

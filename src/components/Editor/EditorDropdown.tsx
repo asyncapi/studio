@@ -1,6 +1,7 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { FaEllipsisH } from 'react-icons/fa';
+import { hasErrorDiagnostic } from '@asyncapi/parser/esm/utils';
 
 import {
   ConvertModal,
@@ -20,7 +21,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   const parserState = state.useParserState();
 
   const language = editorState.language.get();
-  const hasParserErrors = parserState.errors.get().length > 0;
+  const hasParserErrors = hasErrorDiagnostic(parserState.diagnostics.get());
 
   const importFileButton = (
     <label

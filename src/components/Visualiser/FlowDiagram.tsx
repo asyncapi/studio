@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactFlow, { Controls as FlowControls, useStoreActions, useStoreState, Background, useZoomPanHelper, BackgroundVariant } from 'react-flow-renderer';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 
 import { Controls } from './Controls';
 import nodeTypes from './Nodes';
 import { getElementsFromAsyncAPISpec } from './utils/node-factory';
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
+
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
 
 interface FlowDiagramProps {
   parsedSpec: AsyncAPIDocument;

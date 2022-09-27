@@ -1,5 +1,9 @@
-import { Elements } from 'react-flow-renderer';
-import { AsyncAPIDocument, Operation, Channel, Message } from '@asyncapi/parser';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
+import type { Channel } from '@asyncapi/parser/esm/old-api/channel';
+import type { Operation } from '@asyncapi/parser/esm/old-api/operation';
+import type { Message } from '@asyncapi/parser/esm/old-api/message';
+import type { Elements } from 'react-flow-renderer';
+
 interface FileredChannel {
   channel: string;
   channelModel: Channel;

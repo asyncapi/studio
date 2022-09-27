@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { NavigationService, SpecificationService } from '../../services';
 import state from '../../state';
+
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
 
 interface HTMLWrapperProps {}
 

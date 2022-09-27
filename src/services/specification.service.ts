@@ -1,42 +1,58 @@
+// @ts-ignore
+import { convert, ConvertVersion } from '@asyncapi/converter';
+import { Parser, convertToOldAPI } from '@asyncapi/parser/cjs';
+import { untilde } from '@asyncapi/parser/cjs/utils';
+import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-schema-parser';
+import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
+// @ts-ignore
 import specs from '@asyncapi/specs';
-import { convert } from '@asyncapi/converter';
-import { parse, registerSchemaParser } from '@asyncapi/parser';
 import YAML from 'js-yaml';
-
-// @ts-ignore
-import openapiSchemaParser from '@asyncapi/openapi-schema-parser';
-// @ts-ignore
-import avroSchemaParser from '@asyncapi/avro-schema-parser';
 
 import { EditorService } from './editor.service';
 import { MonacoService } from './monaco.service';
 
 import state from '../state';
 
-import type { AsyncAPIDocument } from '@asyncapi/parser';
-import type { ConvertVersion } from '@asyncapi/converter';
-import type { SpecVersions } from '../types';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
 
-registerSchemaParser(openapiSchemaParser);
-registerSchemaParser(avroSchemaParser);
+const parser = new Parser({
+  __unstable: {
+    resolver: {
+      cache: false,
+    }
+  }
+});
+parser.registerSchemaParser(OpenAPISchemaParser());
+parser.registerSchemaParser(AvroSchemaParser());
 
 export class SpecificationService {
   static getParsedSpec() {
     return window.ParsedSpec || null;
   }
 
-  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
-    const parserState = state.parser;
-    return parse(rawSpec)
-      .then(asyncApiDoc => {
-        window.ParsedSpec = asyncApiDoc;
-        parserState.set({
-          parsedSpec: asyncApiDoc,
-          valid: true,
-          errors: [],
-        });
+  static getParsedExtras() {
+    return window.ParsedExtras || null;
+  }
 
-        const version = asyncApiDoc.version() as SpecVersions;
+  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
+    let diagnostics: Diagnostic[] = [];
+
+    try {
+      const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec);
+      diagnostics = validationDiagnostics;
+  
+      if (document) {
+        const oldDocument = convertToOldAPI(document);
+        window.ParsedSpec = oldDocument;
+        window.ParsedExtras = extras;
+        state.parser.set({
+          parsedSpec: oldDocument,
+          valid: true,
+          diagnostics,
+          hasErrorDiagnostics: false,
+        });
+  
+        const version = oldDocument.version();
         MonacoService.updateLanguageConfig(version);
         if (this.shouldInformAboutLatestVersion(version)) {
           state.spec.set({
@@ -45,26 +61,31 @@ export class SpecificationService {
             forceConvert: false,
           });
         }
+  
+        EditorService.applyMarkers(diagnostics);
+        return oldDocument;
+      } 
+    } catch (err: unknown) {
+      console.log(err);
+      diagnostics = [];
+    }
 
-        EditorService.applyErrorMarkers([]);
-        return asyncApiDoc;
-      })
-      .catch(err => {
-        try {
-          const version = (YAML.load(rawSpec) as { asyncapi: SpecVersions }).asyncapi;
-          MonacoService.updateLanguageConfig(version);
-        } catch (e: any) {
-          // intentional
-        }
-        const errors = this.filterErrors(err, rawSpec);
+    window.ParsedSpec = undefined;
+    window.ParsedExtras = undefined;
+    try {
+      const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
+      MonacoService.updateLanguageConfig(asyncapiSpec?.asyncapi);
+    } catch (e: any) {
+      // intentional
+    }
 
-        parserState.set({
-          parsedSpec: null,
-          valid: false,
-          errors,
-        });
-        EditorService.applyErrorMarkers(errors);
-      });
+    state.parser.set({
+      parsedSpec: null,
+      valid: false,
+      diagnostics,
+      hasErrorDiagnostics: true,
+    });
+    EditorService.applyMarkers(diagnostics);
   }
 
   static async convertSpec(
@@ -87,8 +108,8 @@ export class SpecificationService {
     return specs;
   }
 
-  static getLastVersion(): SpecVersions {
-    return Object.keys(specs).pop() as SpecVersions;
+  static getLastVersion(): string {
+    return Object.keys(specs).pop() as string;
   }
 
   static shouldInformAboutLatestVersion(
@@ -114,91 +135,16 @@ export class SpecificationService {
     return false;
   }
 
-  static errorHasLocation(err: any) {
-    return (
-      this.isValidationError(err) ||
-      this.isJsonError(err) ||
-      this.isYamlError(err) ||
-      this.isDereferenceError(err) ||
-      this.isUnsupportedVersionError(err)
-    );
-  }
-
-  private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
-
-  private static filterErrors(err: any, rawSpec: string) {
-    const errors = [];
-    if (this.isUnsupportedVersionError(err)) {
-      errors.push({
-        type: err.type,
-        title: err.message,
-        location: err.validationErrors,
-      });
-      this.isNotSupportedVersion(rawSpec) &&
-        state.spec.set({
-          shouldOpenConvertModal: true,
-          convertOnlyToLatest: false,
-          forceConvert: true,
-        });
+  static getRangeForJsonPath(jsonPath: string | Array<string | number>) {
+    try {
+      const extras = this.getParsedExtras();
+      if (extras) {
+        jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
+        if (jsonPath[0] === '') jsonPath.shift();
+        return extras.document.getRangeForJsonPath(jsonPath, true);
+      }
+    } catch (err: any) {
+      return;
     }
-    if (this.isValidationError(err)) {
-      errors.push(...err.validationErrors);
-    }
-    if (this.isYamlError(err) || this.isJsonError(err)) {
-      errors.push(err);
-    }
-    if (this.isDereferenceError(err)) {
-      errors.push(
-        ...err.refs.map((ref: any) => ({
-          type: err.type,
-          title: err.title,
-          location: { ...ref },
-        })),
-      );
-    }
-    if (errors.length === 0) {
-      errors.push(err);
-    }
-    return errors;
-  }
-
-  private static isValidationError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/validation-errors'
-    );
-  }
-
-  private static isJsonError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-json'
-    );
-  }
-
-  private static isYamlError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-yaml'
-    );
-  }
-
-  private static isUnsupportedVersionError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/unsupported-version'
-    );
-  }
-
-  private static isDereferenceError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/dereference-error'
-    );
-  }
-
-  static isNotSupportedVersion(rawSpec: string): boolean {
-    if (this.notSupportedVersions.test(rawSpec.trim())) {
-      return true;
-    }
-    return false;
   }
 }
