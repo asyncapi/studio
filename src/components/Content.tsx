@@ -1,6 +1,6 @@
 import React from 'react';
-import SplitPane from 'react-split-pane';
 
+import SplitPane from './SplitPane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';

@@ -5,7 +5,8 @@ import { AsyncAPIDocument } from '@asyncapi/parser';
 
 declare global {
   interface Window {
-    Monaco: typeof monacoAPI;
+    // needed by monaco YAML plugin and Studio
+    monaco: typeof monacoAPI;
     Editor: monacoAPI.editor.IStandaloneCodeEditor;
     MonacoEnvironment: monacoAPI.Environment | undefined;
     ParsedSpec: AsyncAPIDocument;

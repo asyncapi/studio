@@ -1,4 +1,3 @@
-import { AsyncAPIDocument } from '@asyncapi/parser';
 // @ts-ignore
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
@@ -6,8 +5,6 @@ import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { SpecificationService } from './specification.service';
 import state from '../state';
-
-import jsonSchemaDraft07 from './json-schema.draft-07';
 
 export class MonacoService {
   private static actualVersion = 'X.X.X';
@@ -28,9 +25,7 @@ export class MonacoService {
     MonacoService.Editor = value;
   }
 
-  static updateLanguageConfig(document: AsyncAPIDocument) {
-    const version =
-      (document && document.version()) || SpecificationService.getLastVersion();
+  static updateLanguageConfig(version: string = SpecificationService.getLastVersion()) {
     if (version === this.actualVersion) {
       return;
     }
@@ -41,27 +36,32 @@ export class MonacoService {
   static prepareLanguageConfig(
     asyncAPIVersion: string,
   ): monacoAPI.languages.json.DiagnosticsOptions {
+    const spec = { ...specs[String(asyncAPIVersion)] };
+    const definitions = Object.entries(spec.definitions).map(([uri, schema]) => ({
+      uri,
+      schema,
+    }));
+    delete spec.definitions;
+
     return {
-      validate: true,
       enableSchemaRequest: true,
+      hover: true,
       completion: true,
+      validate: true,
+      format: true,
       schemas: [
         {
-          uri: 'https://www.asyncapi.com/', // id of the AsyncAPI spec schema
+          uri: spec.$id, // id of the AsyncAPI spec schema
           fileMatch: ['*'], // associate with all models
-          schema: specs[String(asyncAPIVersion)],
+          schema: spec,
         },
-        {
-          uri: jsonSchemaDraft07.$id, // id of the draft-07 schema
-          fileMatch: ['*'], // associate with all models
-          schema: jsonSchemaDraft07,
-        }
+        ...definitions,
       ],
     } as any;
   }
 
   static loadLanguageConfig(asyncAPIVersion: string) {
-    const monacoInstance = window.Monaco;
+    const monacoInstance = window.monaco;
     if (!monacoInstance) return;
 
     const options = this.prepareLanguageConfig(asyncAPIVersion);
@@ -74,7 +74,7 @@ export class MonacoService {
   }
 
   static loadMonacoConfig() {
-    const monacoInstance = window.Monaco;
+    const monacoInstance = window.monaco;
     if (!monacoInstance) return;
 
     monacoInstance.editor.defineTheme('asyncapi-theme', {
@@ -89,8 +89,17 @@ export class MonacoService {
   }
 
   static async loadMonaco() {
-    const monacoInstance = await loader.init();
-    window.Monaco = monacoInstance;
+    let monaco: typeof monacoAPI;
+
+    // JEST cannot bundle monaco-editor in test environment so we need to fetch that package from cdn
+    // in dev or production environment we will use bundled monaco-editor
+    if (process.env.NODE_ENV === 'test') {
+      monaco = await loader.init();
+    } else {
+      monaco = await import('monaco-editor');
+      loader.config({ monaco });
+    }
+    window.monaco = monaco;
 
     // load monaco config
     this.loadMonacoConfig();
