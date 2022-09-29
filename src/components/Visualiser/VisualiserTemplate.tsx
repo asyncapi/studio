@@ -10,7 +10,6 @@ interface VisualiserTemplateProps {}
 export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
 
-
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
   const templateState = state.useTemplateState();
@@ -66,7 +65,8 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
           <span className="font-light capitalize">{title}</span>
         </div>
       );
-    }
+    };
+    
     content = (
       parsedSpec && (
         <div className="overflow-auto h-screen bg-gray-800 relative">
