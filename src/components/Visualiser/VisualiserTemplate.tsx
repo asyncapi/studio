@@ -4,11 +4,13 @@ import { AsyncAPIDocument } from '@asyncapi/parser';
 import { SpecificationService } from '../../services';
 import state from '../../state';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
+import { VscDebugStart, VscDebugPause, VscRefresh  } from 'react-icons/vsc';
 
 interface VisualiserTemplateProps {}
 
 export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
+  const [animateNodes, setAnimateNodes] = useState(false);
 
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
@@ -59,18 +61,25 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
     const title = parsedSpec?.info().title() || '';
     const sideMenu = () => {
       return (
-        <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">
-          <span className="font-bold">Event Visualiser</span>
-          <span className="text-gray-200">|</span>
-          <span className="font-light capitalize">{title}</span>
-        </div>
+        <>
+          <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">
+            <span className="font-bold">Event Visualiser</span>
+            <span className="text-gray-200">|</span>
+          </div>
+          <div className="absolute top-0 right-0 mr-5 mt-5 rounded-lg bg-white z-20 space-x-10 px-4 pt-1 shadow-lg">
+            <button type="button" className="text-xs" onClick={() => setAnimateNodes(!animateNodes)}>
+              {animateNodes && <VscDebugPause className="w-4 h-4" />}
+              {!animateNodes && <VscDebugStart className="w-4 h-4" />}
+            </button>
+          </div>
+        </>
       );
     };
     
     content = (
       parsedSpec && (
         <div className="overflow-auto h-screen bg-gray-200 relative">
-          <ApplicationView asyncapi={{document: parsedSpec}} sideMenu={sideMenu as any} includeControls={true} edgeType={'animated'} />
+          <ApplicationView key={`applicationView${animateNodes}`} asyncapi={{document: parsedSpec}} sideMenu={sideMenu as any} includeControls={true} edgeType={animateNodes ? 'animated' : 'smoothstep'} />
         </div>
       )
     );
