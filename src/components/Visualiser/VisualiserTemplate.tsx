@@ -5,6 +5,7 @@ import { SpecificationService } from '../../services';
 import state from '../../state';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
 import { VscDebugStart, VscDebugPause } from 'react-icons/vsc';
+import '@lagoni/edavisualiser/styles/default.css';
 
 interface VisualiserTemplateProps {}
 
