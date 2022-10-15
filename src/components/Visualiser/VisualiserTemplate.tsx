@@ -79,7 +79,7 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
     content = (
       parsedSpec && (
         <div className="overflow-auto h-screen bg-gray-200 relative">
-          <ApplicationView key={`applicationView${animateNodes}`} asyncapi={{document: parsedSpec}} sideMenu={sideMenu as any} includeControls={true} edgeType={animateNodes ? 'animated' : 'smoothstep'} />
+          <ApplicationView key={`applicationView${animateNodes}`} asyncapi={{document: parsedSpec}} sideMenu={sideMenu as any} includeControls={true} edgeType={animateNodes ? 'animated' : 'default'} />
         </div>
       )
     );
