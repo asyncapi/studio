@@ -4,7 +4,7 @@ import { AsyncAPIDocument } from '@asyncapi/parser';
 import { SpecificationService } from '../../services';
 import state from '../../state';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
-import { VscDebugStart, VscDebugPause, VscRefresh  } from 'react-icons/vsc';
+import { VscDebugStart, VscDebugPause } from 'react-icons/vsc';
 
 interface VisualiserTemplateProps {}
 
