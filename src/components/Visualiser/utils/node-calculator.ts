@@ -3,9 +3,15 @@ import { isNode, Node } from 'react-flow-renderer';
 const groupNodesByColumn = (elements: Node[]) => {
   return elements.reduce((elementsGrouped: any, element: Node) => {
     if (isNode(element) && element.__rf) {
+      if (elementsGrouped[element?.data.columnToRenderIn]) {
+        return {
+          ...elementsGrouped,
+          [element.data.columnToRenderIn]: elementsGrouped[element?.data.columnToRenderIn].concat([element])};
+      }
+      
       return {
         ...elementsGrouped,
-        [element.data.columnToRenderIn]: elementsGrouped[element?.data.columnToRenderIn] ? elementsGrouped[element?.data.columnToRenderIn].concat([element]) : (elementsGrouped[element?.data.groupId] = [element]),
+        [element.data.columnToRenderIn]: (elementsGrouped[element?.data.groupId] = [element]),
       };
     }
     return elementsGrouped;
