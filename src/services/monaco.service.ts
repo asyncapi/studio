@@ -61,7 +61,7 @@ export class MonacoService {
   }
 
   static loadLanguageConfig(asyncAPIVersion: string) {
-    const monacoInstance = window.monaco;
+    const monacoInstance = window.monaco as any;
     if (!monacoInstance) return;
 
     const options = this.prepareLanguageConfig(asyncAPIVersion);
@@ -69,7 +69,7 @@ export class MonacoService {
     const json = monacoInstance.languages.json;
     json && json.jsonDefaults && json.jsonDefaults.setDiagnosticsOptions(options);
 
-    const yaml = (monacoInstance.languages as any).yaml;
+    const yaml = monacoInstance.languages.yaml;
     yaml && yaml.yamlDefaults && yaml.yamlDefaults.setDiagnosticsOptions(options);
   }
 
