@@ -13,7 +13,7 @@ function setActiveNav(navItem: NavItemType) {
 
   const newState = {
     ...panelsState,
-  };
+  } as any;
 
   if (navItem === 'template' || navItem === 'visualiser') {
     // on current type
@@ -26,7 +26,7 @@ function setActiveNav(navItem: NavItemType) {
       }
     }
   } else {
-    (newState as any)[String(navItem)] = !(newState as any)[String(navItem)];
+    newState[String(navItem)] = !newState[String(navItem)];
   }
 
   if (newState.navigation && !newState.editor && !newState.view) {
