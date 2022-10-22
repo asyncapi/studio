@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -82,7 +82,7 @@
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.2",
     "@asyncapi/java-spring-template": "^0.28.0",
     "@asyncapi/java-template": "^0.1.1",
-    "@asyncapi/markdown-template": "^1.2.0",
+    "@asyncapi/markdown-template": "^1.2.1",
     "@asyncapi/nodejs-template": "^0.11.4",
     "@asyncapi/nodejs-ws-template": "^0.9.25",
     "@asyncapi/python-paho-template": "^0.2.13",
