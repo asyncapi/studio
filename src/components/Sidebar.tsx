@@ -26,7 +26,7 @@ function setActiveNav(navItem: NavItemType) {
       }
     }
   } else {
-    newState[navItem] = !newState[navItem];
+    newState[`${navItem}`] = !newState[`${navItem}`];
   }
 
   if (newState.navigation && !newState.editor && !newState.view) {
