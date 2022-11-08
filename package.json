@@ -86,7 +86,7 @@
     "@asyncapi/nodejs-template": "^0.12.0",
     "@asyncapi/nodejs-ws-template": "^0.9.25",
     "@asyncapi/python-paho-template": "^0.2.13",
-    "@asyncapi/ts-nats-template": "^0.5.21",
+    "@asyncapi/ts-nats-template": "^0.6.0",
     "@craco/craco": "^6.4.0",
     "@semantic-release-plus/docker": "^3.1.1",
     "@semantic-release/commit-analyzer": "^9.0.1",
