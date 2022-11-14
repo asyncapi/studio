@@ -30,7 +30,7 @@
     "@asyncapi/converter": "^1.1.0",
     "@asyncapi/openapi-schema-parser": "^2.0.1",
     "@asyncapi/parser": "^1.17.1",
-    "@asyncapi/react-component": "^1.0.0-next.43",
+    "@asyncapi/react-component": "^1.0.0-next.44",
     "@asyncapi/specs": "^4.0.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
@@ -78,7 +78,7 @@
   "devDependencies": {
     "@asyncapi/dotnet-nats-template": "^0.8.4",
     "@asyncapi/go-watermill-template": "^0.2.11",
-    "@asyncapi/html-template": "^0.28.0",
+    "@asyncapi/html-template": "^0.28.1",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^0.28.0",
     "@asyncapi/java-template": "^0.1.3",
