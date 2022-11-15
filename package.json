@@ -34,7 +34,7 @@
     "@asyncapi/specs": "^3.2.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
-    "@lagoni/edavisualiser": "^1.0.1",
+    "@asyncapi/edavisualiser": "^1.2.0",
     "@monaco-editor/react": "^4.4.5",
     "js-base64": "^3.7.2",
     "js-file-download": "^0.4.12",
