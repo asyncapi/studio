@@ -1,10 +1,11 @@
-// @ts-ignore
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { SpecificationService } from './specification.service';
 import state from '../state';
+
+import type { SpecVersions } from '../types';
 
 export class MonacoService {
   private static actualVersion = 'X.X.X';
@@ -25,7 +26,7 @@ export class MonacoService {
     MonacoService.Editor = value;
   }
 
-  static updateLanguageConfig(version: string = SpecificationService.getLastVersion()) {
+  static updateLanguageConfig(version: SpecVersions = SpecificationService.getLastVersion()) {
     if (version === this.actualVersion) {
       return;
     }
@@ -34,10 +35,10 @@ export class MonacoService {
   }
 
   static prepareLanguageConfig(
-    asyncAPIVersion: string,
+    asyncAPIVersion: SpecVersions,
   ): monacoAPI.languages.json.DiagnosticsOptions {
-    const spec = { ...specs[String(asyncAPIVersion)] };
-    const definitions = Object.entries(spec.definitions).map(([uri, schema]) => ({
+    const spec = { ...specs[String(asyncAPIVersion) as SpecVersions] };
+    const definitions = Object.entries(spec.definitions || {}).map(([uri, schema]) => ({
       uri,
       schema,
     }));
@@ -60,7 +61,7 @@ export class MonacoService {
     } as any;
   }
 
-  static loadLanguageConfig(asyncAPIVersion: string) {
+  static loadLanguageConfig(asyncAPIVersion: SpecVersions) {
     const monacoInstance = window.monaco;
     if (!monacoInstance) return;
 
