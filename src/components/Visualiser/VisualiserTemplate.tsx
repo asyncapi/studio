@@ -1,6 +1,6 @@
 import { ApplicationView } from '@asyncapi/edavisualiser';
 import React, { useState, useEffect } from 'react';
-import { AsyncAPIDocument } from '@asyncapi/parser';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 import { SpecificationService } from '../../services';
 import state from '../../state';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
@@ -80,7 +80,7 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
     content = (
       parsedSpec && (
         <div className="overflow-auto h-screen bg-gray-200 relative">
-          <ApplicationView key={`applicationView${animateNodes}`} asyncapi={{document: parsedSpec}} sideMenu={sideMenu as any} includeControls={true} edgeType={animateNodes ? 'animated' : 'default'} />
+          <ApplicationView key={`applicationView${animateNodes}`} asyncapi={{document: parsedSpec as any}} sideMenu={sideMenu as any} includeControls={true} edgeType={animateNodes ? 'animated' : 'default'} />
         </div>
       )
     );
