@@ -16,6 +16,7 @@ function configureWebpack(webpackConfig) {
     zlib: require.resolve('browserify-zlib'),
     url: require.resolve('url/'),
     util: require.resolve('util/'),
+    fs: false,
   });
   webpackConfig.resolve.fallback = fallback;
   
@@ -40,6 +41,8 @@ function configureWebpack(webpackConfig) {
 
   // ignore source-map warnings 
   webpackConfig.ignoreWarnings = [...(webpackConfig.ignoreWarnings || []), /Failed to parse source map/];
+
+  return webpackConfig;
 }
 
 // Force method use SHA-256 to address OpenSSL 3.0 deprecation of MD4 algorithm
