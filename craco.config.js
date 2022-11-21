@@ -37,6 +37,9 @@ function configureWebpack(webpackConfig) {
       Buffer: ['buffer', 'Buffer']
     })
   ]);
+
+  // ignore source-map warnings 
+  webpackConfig.ignoreWarnings = [...(webpackConfig.ignoreWarnings || []), /Failed to parse source map/];
 }
 
 // Force method use SHA-256 to address OpenSSL 3.0 deprecation of MD4 algorithm
@@ -49,21 +52,15 @@ function setEnvironments() {
   process.env.DISABLE_ESLINT_PLUGIN = true;
 }
 
-function configureWebpack() {
+function configureCraco() {
+  setEnvironments();
+  configureCrypto();
+
   return {
     webpack: {
-      configure: (webpackConfig) => { 
-        configureWebpack(webpackConfig);
-
-        // ignore source-map warnings 
-        webpackConfig.ignoreWarnings = [...(webpackConfig.ignoreWarnings || []), /Failed to parse source map/];
-
-        return webpackConfig;
-      }
-    },
+      configure: configureWebpack,
+    }
   };
 }
 
-setEnvironments();
-configureCrypto();
-module.exports = configureWebpack();
+module.exports = configureCraco();
