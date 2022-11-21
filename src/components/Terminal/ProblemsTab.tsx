@@ -100,7 +100,17 @@ function filterDiagnostics(diagnostics: Diagnostic[], severity: DiagnosticSeveri
   return diagnostics.filter(diagnostic => diagnostic.severity === severity);
 }
 
-function createProperMessage(active: DiagnosticSeverity[], severity: DiagnosticSeverity, showMessage: string, hideMessage: string, firstMessage: string) {
+function createProperMessage(
+  disabled: boolean,
+  active: DiagnosticSeverity[],
+  severity: DiagnosticSeverity,
+  showMessage: string,
+  hideMessage: string,
+  firstMessage: string,
+) {
+  if (disabled) {
+    return 'Disabled. Enable it in the settings.';
+  }
   if (active.some(s => s === severity)) {
     if (active.length === 1) {
       return 'Show all diagnostics';
@@ -120,15 +130,17 @@ interface SeverityButtonsProps {
 }
 
 const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagnostics, active, setActive }) => {
+  const governanceShowState = state.useSettingsState().governance.show.get();
+
   const errorDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Error);
   const warningDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Warning);
   const infoDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Information);
   const hintDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Hint);
 
-  const errorsTooltip = createProperMessage(active, DiagnosticSeverity.Error, 'Show errors', 'Hide errors', 'Show only errors');
-  const warningsTooltip = createProperMessage(active, DiagnosticSeverity.Warning, 'Show warnings', 'Hide warnings', 'Show only warnings');
-  const informationTooltip = createProperMessage(active, DiagnosticSeverity.Information, 'Show information messages', 'Hide information messages', 'Show only information messages');
-  const hintsTooltip = createProperMessage(active, DiagnosticSeverity.Hint, 'Show hints', 'Hide hints', 'Show only hints');
+  const errorsTooltip = createProperMessage(false, active, DiagnosticSeverity.Error, 'Show errors', 'Hide errors', 'Show only errors');
+  const warningsTooltip = createProperMessage(!governanceShowState.warnings, active, DiagnosticSeverity.Warning, 'Show warnings', 'Hide warnings', 'Show only warnings');
+  const informationTooltip = createProperMessage(!governanceShowState.informations, active, DiagnosticSeverity.Information, 'Show information messages', 'Hide information messages', 'Show only information messages');
+  const hintsTooltip = createProperMessage(!governanceShowState.hints, active, DiagnosticSeverity.Hint, 'Show hints', 'Hide hints', 'Show only hints');
 
   const activeBg = 'bg-gray-900';
   const notActiveBg = 'bg-gray-700';
@@ -153,8 +165,9 @@ const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagno
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Warning) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.warnings && active.some(s => s === DiagnosticSeverity.Warning) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Warning)}
+            disabled={!governanceShowState.warnings}
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={1} />
@@ -167,8 +180,9 @@ const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagno
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Information) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.informations && active.some(s => s === DiagnosticSeverity.Information) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Information)}
+            disabled={!governanceShowState.informations}
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={2} />
@@ -181,8 +195,9 @@ const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagno
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Hint) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.hints && active.some(s => s === DiagnosticSeverity.Hint) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Hint)}
+            disabled={!governanceShowState.hints}
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={3} />
@@ -258,19 +273,10 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
               <VscClose />
             </button>
           </div>
-          <a href='https://stoplight.io/open-source/spectral' title='Spectral website' target='_blank' rel="noreferrer" className='text-white hover:text-blue-500 mx-2'>
-            <span>
-              Powered by
-            </span>
-            {' '}
-            <strong>
-              Spectral
-            </strong>
-          </a>
           <Tooltip content="Settings" hideOnClick={true}>
             <button
               type="button"
-              className={'justify-center border border-transparent shadow-xs px-2 py-1 text-xs rounded-md font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700'}
+              className={'justify-center border border-transparent shadow-xs px-2 py-1 ml-2 text-xs rounded-md font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700'}
               onClick={() => {
                 settingsState.merge({
                   showModal: true,
