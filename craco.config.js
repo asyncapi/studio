@@ -39,12 +39,6 @@ function configureWebpack(webpackConfig) {
   webpackConfig.resolve.alias['nimma/fallbacks'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/fallbacks/index.js');
   webpackConfig.resolve.alias['nimma/legacy'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/index.js');
 
-  // loaders
-  webpackConfig.module.rules.push({
-    test: /\.yml$/i,
-    loader: 'raw-loader',
-  });
-
   // plugins
   webpackConfig.plugins = (webpackConfig.plugins || []).concat([
     new webpack.ProvidePlugin({
@@ -53,10 +47,14 @@ function configureWebpack(webpackConfig) {
     })
   ]);
 
-  // rules
+  // rules/loaders
   // workaround for https://github.com/facebook/create-react-app/issues/11889 issue
   const fileLoaderRule = getFileLoaderRule(webpackConfig.module.rules);
   fileLoaderRule.exclude.push(/\.cjs$/);
+  webpackConfig.module.rules.push({
+    test: /\.yml$/i,
+    type: 'asset/source',
+  });
 
   // ignore source-map warnings 
   webpackConfig.ignoreWarnings = [...(webpackConfig.ignoreWarnings || []), /Failed to parse source map/];
