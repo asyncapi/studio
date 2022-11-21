@@ -1,8 +1,8 @@
-import { isNode, Node } from 'react-flow-renderer';
+import { isNode, Node } from 'reactflow';
 
 const groupNodesByColumn = (elements: Node[]) => {
   return elements.reduce((elementsGrouped: any, element: Node) => {
-    if (isNode(element) && element.__rf) {
+    if (isNode(element)) {
       if (elementsGrouped[element?.data.columnToRenderIn]) {
         return {
           ...elementsGrouped,
@@ -29,7 +29,7 @@ export const calculateNodesForDynamicLayout = (elements: Node[]) => {
       const maxWidthOfColumn = Math.max.apply(
         Math,
         groupNodes.map((o: Node) => {
-          return o.__rf.width;
+          return o.width;
         })
       );
 
@@ -38,14 +38,14 @@ export const calculateNodesForDynamicLayout = (elements: Node[]) => {
         (groupedNodes: any, currentNode: Node) => {
           const verticalPadding = 40;
 
-          currentNode.__rf.position = {
+          currentNode.position = {
             x: data.currentXPosition,
             y: groupedNodes.currentYPosition,
           };
 
           return {
             positionedNodes: groupedNodes.positionedNodes.concat([currentNode]),
-            currentYPosition: groupedNodes.currentYPosition + currentNode.__rf.height + verticalPadding,
+            currentYPosition: groupedNodes.currentYPosition + currentNode.height + verticalPadding,
           };
         },
         { positionedNodes: [], currentYPosition: 0 }

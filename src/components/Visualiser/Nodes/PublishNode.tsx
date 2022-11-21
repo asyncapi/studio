@@ -1,13 +1,14 @@
 
 import React from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
+
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore
 import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
 
 interface IData {
-  messages: any []
+  messages: any[];
   channel: string
   description: string
 }

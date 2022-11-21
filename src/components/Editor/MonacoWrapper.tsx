@@ -32,7 +32,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
 
     // apply save command
     editor.addCommand(
-      monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KEY_S,
+      monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KeyS,
       () => EditorService.saveToLocalStorage(),
     );
 

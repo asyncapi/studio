@@ -28,7 +28,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
         <option value="">Please select server</option>
         {property.enum.map(serverName => (
           <option key={serverName as string} value={serverName as string}>
-            {serverName}
+            {serverName as string}
           </option>
         ))}
       </select>

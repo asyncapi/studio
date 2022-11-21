@@ -1,8 +1,9 @@
-import React from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
 import { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 import { Markdown } from '../../common';
+
+import type { FunctionComponent } from 'react';
 
 interface IData {
   spec: AsyncAPIDocument
@@ -45,7 +46,7 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
   };
 };
 
-export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
+export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
   data: { spec } = {},
 }) => {
   const { description, title, version, license, externalDocs, servers, defaultContentType } = buildNodeData(spec as AsyncAPIDocument);
