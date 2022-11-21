@@ -45,26 +45,4 @@ describe('SpecificationService', () => {
       expect(result).toEqual(true);
     });
   });
-
-  describe('.isNotSupportedVersion', () => {
-    test('should check unsupported version (yaml case)', () => {
-      const result = SpecificationService.isNotSupportedVersion('asyncapi: 1.2.0');
-      expect(result).toEqual(true);
-    });
-
-    test('should check unsupported version (json case)', () => {
-      const result = SpecificationService.isNotSupportedVersion('{"asyncapi": "1.2.0"}');
-      expect(result).toEqual(true);
-    });
-
-    test('should check supported version (yaml case)', () => {
-      const result = SpecificationService.isNotSupportedVersion('asyncapi: 2.0.0');
-      expect(result).toEqual(false);
-    });
-
-    test('should check supported version (json case)', () => {
-      const result = SpecificationService.isNotSupportedVersion('{"asyncapi": "2.0.0"}');
-      expect(result).toEqual(false);
-    });
-  });
 });

@@ -18,6 +18,11 @@ module.exports = {
         test: /\.yml$/i,
         loader: 'raw-loader',
       });
+
+      webpackConfig.resolve.alias = webpackConfig.resolve.alias || {};
+      webpackConfig.resolve.alias['nimma/fallbacks'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/fallbacks/index.js');
+      webpackConfig.resolve.alias['nimma/legacy'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/index.js');
+
       return webpackConfig;
     }
   }

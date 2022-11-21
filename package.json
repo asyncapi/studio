@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.13.4",
+  "version": "0.14.0",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -29,13 +29,14 @@
     "@asyncapi/avro-schema-parser": "^1.1.0",
     "@asyncapi/converter": "^1.1.0",
     "@asyncapi/openapi-schema-parser": "^2.0.1",
-    "@asyncapi/parser": "^1.17.1",
+    "@asyncapi/parser": "^2.0.0-next-major.10",
     "@asyncapi/react-component": "^1.0.0-next.44",
     "@asyncapi/specs": "^4.0.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@asyncapi/edavisualiser": "^1.2.0",
     "@monaco-editor/react": "^4.4.5",
+    "@tippyjs/react": "^4.2.6",
     "js-base64": "^3.7.2",
     "js-file-download": "^0.4.12",
     "js-yaml": "^4.1.0",
@@ -77,7 +78,7 @@
     ]
   },
   "devDependencies": {
-    "@asyncapi/dotnet-nats-template": "^0.9.0",
+    "@asyncapi/dotnet-nats-template": "^0.10.0",
     "@asyncapi/go-watermill-template": "^0.2.11",
     "@asyncapi/html-template": "^0.28.1",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
@@ -123,7 +124,11 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(monaco-editor)/)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^nimma/legacy$": "<rootDir>/node_modules/nimma/dist/legacy/cjs/index.js",
+      "^nimma/(.*)": "<rootDir>/node_modules/nimma/dist/cjs/$1"
+    }
   },
   "publishConfig": {
     "access": "public"

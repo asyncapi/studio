@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
 import '@asyncapi/react-component/styles/default.min.css';
 import './tailwind.css';
 import './main.css';
