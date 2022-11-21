@@ -1,6 +1,6 @@
 import specs from '@asyncapi/specs';
 import { convert } from '@asyncapi/converter';
-import { Parser, convertToOldAPI } from '@asyncapi/parser/cjs';
+import { Parser, convertToOldAPI, DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
@@ -146,5 +146,17 @@ export class SpecificationService {
     } catch (err: any) {
       return;
     }
+  }
+
+  static filterDiagnostics(diagnostics: Diagnostic[] = state.parser.diagnostics.get()) {
+    const governanceShowState = state.settings.governance.show.get();
+    return diagnostics.filter(({ severity }) => {
+      return (
+        severity === DiagnosticSeverity.Error ||
+        (severity === DiagnosticSeverity.Warning && governanceShowState.warnings) ||
+        (severity === DiagnosticSeverity.Information && governanceShowState.informations) ||
+        (severity === DiagnosticSeverity.Hint && governanceShowState.hints)
+      );
+    });
   }
 }

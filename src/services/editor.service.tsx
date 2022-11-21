@@ -217,7 +217,7 @@ export class EditorService {
       return;
     }
 
-    diagnostics = this.filterDiagnostics(diagnostics);
+    diagnostics = SpecificationService.filterDiagnostics(diagnostics);
     const { markers, decorations } = this.createMarkers(diagnostics);
     Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
     let oldDecorations = state.editor.decorations.get();
@@ -284,18 +284,6 @@ export class EditorService {
     case DiagnosticSeverity.Hint: return 'diagnostic-hint';
     default: return 'diagnostic-warning';
     }
-  }
-
-  private static filterDiagnostics(diagnostics: Diagnostic[]) {
-    const governanceShowState = state.settings.governance.show.get();
-    return diagnostics.filter(diagnostic => {
-      const { severity } = diagnostic;
-      if (severity === DiagnosticSeverity.Error) return true;
-      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
-      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
-      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
-      return true;
-    });
   }
 
   private static fileName = 'asyncapi';

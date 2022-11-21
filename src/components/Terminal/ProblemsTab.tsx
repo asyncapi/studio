@@ -3,26 +3,21 @@ import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSe
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 
 import { Tooltip } from '../common';
-import { NavigationService } from '../../services';
+import { NavigationService, SpecificationService } from '../../services';
 import { debounce } from '../../helpers';
 import state from '../../state';
 
+import type { FunctionComponent } from 'react';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 
 interface ProblemsTabProps {}
 
-export const ProblemsTab: React.FunctionComponent<ProblemsTabProps> = () => {
+export const ProblemsTab: FunctionComponent<ProblemsTabProps> = () => {
   const governanceShowState = state.useSettingsState().governance.show.get();
   const diagnostics = state.useParserState().diagnostics.get();
 
   const filteredDiagnostics = useMemo(() => {
-    return diagnostics.filter(diagnostic => {
-      const { severity } = diagnostic;
-      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
-      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
-      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
-      return true;
-    });
+    return SpecificationService.filterDiagnostics();
   }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
 
   const errorDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 0);
@@ -129,7 +124,7 @@ interface SeverityButtonsProps {
   setActive: (severity: DiagnosticSeverity) => void;
 }
 
-const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagnostics, active, setActive }) => {
+const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ diagnostics, active, setActive }) => {
   const governanceShowState = state.useSettingsState().governance.show.get();
 
   const errorDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Error);
@@ -210,7 +205,7 @@ const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagno
   );
 };
 
-export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () => {
+export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   const settingsState = state.useSettingsState();
   const governanceShowState = settingsState.governance.show.get();
   const parserState = state.useParserState();
@@ -230,14 +225,7 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
   }, [setActive]);
 
   const restrictedDiagnostics = useMemo(() => {
-    return diagnostics.filter(diagnostic => {
-      const { severity } = diagnostic;
-      if (severity === DiagnosticSeverity.Error) return true;
-      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
-      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
-      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
-      return true;
-    });
+    return SpecificationService.filterDiagnostics();
   }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
 
   const filteredDiagnostics = useMemo(() => {
@@ -249,10 +237,7 @@ export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () 
       }
 
       const lowerCasingSearch = search.toLowerCase();
-      if (lowerCasingSearch && !message.toLowerCase().includes(lowerCasingSearch)) {
-        return false;
-      }
-      return true;
+      return !(lowerCasingSearch && !message.toLowerCase().includes(lowerCasingSearch));
     });
   }, [restrictedDiagnostics, search]);
 
