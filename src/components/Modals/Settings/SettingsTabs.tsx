@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import state from '../../../state';
+
 export interface SettingTab {
   name: string;
   tab: React.ReactNode;
@@ -8,14 +10,14 @@ export interface SettingTab {
 
 interface SettingTabsProps {
   tabs: Array<SettingTab>;
-  active?: string;
 }
 
 export const SettingsTabs: React.FunctionComponent<SettingTabsProps> = ({
   tabs = [],
-  active = '',
 }) => {
-  const [activeTab, setActiveTab] = useState(active || tabs[0]?.name);
+  const settingsState = state.useSettingsState();
+  const stateActiveTab = settingsState.activeTab.get();
+  const [activeTab, setActiveTab] = useState(tabs.some(tab => tab.name === stateActiveTab) ? stateActiveTab : tabs[0]?.name);
 
   if (tabs.length === 0) {
     return null;

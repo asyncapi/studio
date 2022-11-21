@@ -1,56 +1,58 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
+
 import { EditorService } from '../editor.service';
 
-function createMonacoModelMock(): monacoAPI.editor.ITextModel {
-  return { 
-    getFullModelRange() {
-      return {
-        endColumn: 5,
-        endLineNumber: 3,
-        startColumn: 5,
-        startLineNumber: 3,
-      };
-    }
-  } as monacoAPI.editor.ITextModel;
-}
+import type { Diagnostic } from '@asyncapi/parser/cjs';
 
 describe('EditorService', () => {
-  describe('.createErrorMarkers', () => {
-    test('should create markers and decorators with errors', () => {
-      const errors: any[] = [
+  describe('.createMarkers', () => {
+    test('should create markers with errors', () => {
+      const errors: Diagnostic[] = [
         {
-          title: 'some error 1',
-          location: {
-            startLine: 3,
-            startColumn: 5,
-            endLine: 10,
-            endColumn: 15,
+          message: 'some error 1',
+          range: {
+            start: {
+              line: 2,
+              character: 4,
+            },
+            end: {
+              line: 9,
+              character: 14,
+            }
           },
-          detail: 'some details',
+          path: ['/'],
+          code: '-',
+          severity: DiagnosticSeverity.Error,
         },
         {
-          title: 'some error 2',
-          location: {
-            startLine: 1,
-            startColumn: 2,
-            endLine: 2,
-            endColumn: 3,
+          message: 'some error 2',
+          range: {
+            start: {
+              line: 0,
+              character: 1,
+            },
+            end: {
+              line: 1,
+              character: 2,
+            }
           },
-          detail: 'some details',
+          path: ['/'],
+          code: '-',
+          severity: DiagnosticSeverity.Error,
         }
       ];
 
-      const { markers, decorations } = EditorService.createErrorMarkers(errors, null as any, monacoAPI);
-      expect(markers.length).toEqual(2);
-      expect(decorations.length).toEqual(2);
+      const { markers, decorations } = EditorService.createMarkers(errors);
 
       // markers
+      expect(markers).toHaveLength(2);
       expect(markers[0]).toEqual({
         endColumn: 15,
         endLineNumber: 10,
         startColumn: 5,
         startLineNumber: 3,
-        message: 'some error 1\n\nsome details',
+        message: 'some error 1',
         severity: monacoAPI.MarkerSeverity.Error
       });
       expect(markers[1]).toEqual({
@@ -58,162 +60,85 @@ describe('EditorService', () => {
         endLineNumber: 2,
         startColumn: 2,
         startLineNumber: 1,
-        message: 'some error 2\n\nsome details',
+        message: 'some error 2',
         severity: monacoAPI.MarkerSeverity.Error
       });
       // decorations
+      expect(decorations).toHaveLength(0);
+    });
+
+    test('should create decorators with warnings', () => {
+      const errors: Diagnostic[] = [
+        {
+          message: 'some warning 1',
+          range: {
+            start: {
+              line: 2,
+              character: 4,
+            },
+            end: {
+              line: 9,
+              character: 14,
+            }
+          },
+          path: ['/'],
+          code: '-',
+          severity: DiagnosticSeverity.Warning,
+        },
+        {
+          message: 'some warning 2',
+          range: {
+            start: {
+              line: 0,
+              character: 1,
+            },
+            end: {
+              line: 1,
+              character: 2,
+            }
+          },
+          path: ['/'],
+          code: '-',
+          severity: DiagnosticSeverity.Warning,
+        }
+      ];
+
+      const { markers, decorations } = EditorService.createMarkers(errors);
+
+      // markers
+      expect(markers).toHaveLength(0);
+      // decorations
+      expect(decorations).toHaveLength(2);
       expect(decorations[0]).toEqual({
         id: 'asyncapi',
         options: {
-          inlineClassName: 'bg-red-500-20',
+          glyphMarginClassName: 'diagnostic-warning',
+          glyphMarginHoverMessage: {
+            value: 'some warning 1',
+          },
         },
         ownerId: 0,
-        range: {
-          endColumn: 15,
-          endLineNumber: 10,
-          startColumn: 5,
-          startLineNumber: 3,
-        },
+        range: new monacoAPI.Range(3, 5, 10, 15),
       });
       expect(decorations[1]).toEqual({
         id: 'asyncapi',
         options: {
-          inlineClassName: 'bg-red-500-20',
+          glyphMarginClassName: 'diagnostic-warning',
+          glyphMarginHoverMessage: {
+            value: 'some warning 2',
+          },
         },
         ownerId: 0,
-        range: {
-          endColumn: 3,
-          endLineNumber: 2,
-          startColumn: 2,
-          startLineNumber: 1,
-        },
+        range: new monacoAPI.Range(1, 2, 2, 3),
       });
     });
     
     test('should not create markers and decorators without errors', () => {
       const errors: any[] = [];
 
-      const { markers, decorations } = EditorService.createErrorMarkers(errors, null as any, monacoAPI);
+      const { markers, decorations } = EditorService.createMarkers(errors);
       expect(markers.length).toEqual(0);
       expect(decorations.length).toEqual(0);
-    });
-
-    test('should handle siturion without endLine and endColumn', () => {
-      const errors: any[] = [
-        {
-          title: 'some error 1',
-          location: {
-            startLine: 3,
-            startColumn: 5,
-          },
-          detail: 'some details',
-        },
-      ];
-
-      const { markers, decorations } = EditorService.createErrorMarkers(errors, null as any, monacoAPI);
-      expect(markers.length).toEqual(1);
-      expect(decorations.length).toEqual(1);
-
-      // markers
-      expect(markers[0]).toEqual({
-        endColumn: 5,
-        endLineNumber: 3,
-        startColumn: 5,
-        startLineNumber: 3,
-        message: 'some error 1\n\nsome details',
-        severity: monacoAPI.MarkerSeverity.Error
-      });
-      // decorators
-      expect(decorations[0]).toEqual({
-        id: 'asyncapi',
-        options: {
-          inlineClassName: 'bg-red-500-20',
-        },
-        ownerId: 0,
-        range: {
-          endColumn: 5,
-          endLineNumber: 3,
-          startColumn: 5,
-          startLineNumber: 3,
-        },
-      });
-    });
-
-    test('should handle situation with non location', () => {
-      const errors: any[] = [
-        {
-          title: 'some error 1',
-          detail: 'some details',
-        }
-      ];
-
-      const { markers, decorations } = EditorService.createErrorMarkers(errors, createMonacoModelMock(), monacoAPI);
-      expect(markers.length).toEqual(1);
-      expect(decorations.length).toEqual(1);
-
-      // markers
-      expect(markers[0]).toEqual({
-        endColumn: 5,
-        endLineNumber: 3,
-        startColumn: 5,
-        startLineNumber: 3,
-        message: 'some error 1\n\nsome details',
-        severity: monacoAPI.MarkerSeverity.Error
-      });
-      // decorators
-      expect(decorations[0]).toEqual({
-        id: 'asyncapi',
-        options: {
-          inlineClassName: 'bg-red-500-20',
-        },
-        ownerId: 0,
-        range: {
-          endColumn: 5,
-          endLineNumber: 3,
-          startColumn: 5,
-          startLineNumber: 3,
-        },
-      });
-    });
-
-    test('should handle situation with root jsonPointer in location', () => {
-      const errors: any[] = [
-        {
-          title: 'some error 1',
-          location: {
-            jsonPointer: '/'
-          },
-          detail: 'some details',
-        }
-      ];
-
-      const { markers, decorations } = EditorService.createErrorMarkers(errors, createMonacoModelMock(), monacoAPI);
-      expect(markers.length).toEqual(1);
-      expect(decorations.length).toEqual(1);
-
-      // markers
-      expect(markers[0]).toEqual({
-        endColumn: 5,
-        endLineNumber: 3,
-        startColumn: 5,
-        startLineNumber: 3,
-        message: 'some error 1\n\nsome details',
-        severity: monacoAPI.MarkerSeverity.Error
-      });
-      // decorators
-      expect(decorations[0]).toEqual({
-        id: 'asyncapi',
-        options: {
-          inlineClassName: 'bg-red-500-20',
-        },
-        ownerId: 0,
-        range: {
-          endColumn: 5,
-          endLineNumber: 3,
-          startColumn: 5,
-          startLineNumber: 3,
-        },
-      });
     });
   });
 });

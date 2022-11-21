@@ -1,22 +1,34 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose } from 'react-icons/vsc';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSettingsGear } from 'react-icons/vsc';
+import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 
+import { Tooltip } from '../common';
 import { NavigationService } from '../../services';
 import { debounce } from '../../helpers';
 import state from '../../state';
 
-import type { Diagnostic } from '@asyncapi/parser/esm';
+import type { Diagnostic } from '@asyncapi/parser/cjs';
 
 interface ProblemsTabProps {}
 
 export const ProblemsTab: React.FunctionComponent<ProblemsTabProps> = () => {
-  const parserState = state.useParserState();
-  const diagnostics = parserState.diagnostics.get();
+  const governanceShowState = state.useSettingsState().governance.show.get();
+  const diagnostics = state.useParserState().diagnostics.get();
 
-  const errorDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 0);
-  const warningDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 1);
-  const infoDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 2);
-  const hintDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 3);
+  const filteredDiagnostics = useMemo(() => {
+    return diagnostics.filter(diagnostic => {
+      const { severity } = diagnostic;
+      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
+      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
+      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
+      return true;
+    });
+  }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
+
+  const errorDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 0);
+  const warningDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 1);
+  const infoDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 2);
+  const hintDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 3);
 
   return (
     <div className='flex flex-row items-center'>
@@ -84,159 +96,236 @@ const SeverityIcon: React.FunctionComponent<SeverityIconProps> = ({ severity }) 
   }
 };
 
-type ActiveSeverity = 0 | 1 | 2 | 3 | 'all';
+function filterDiagnostics(diagnostics: Diagnostic[], severity: DiagnosticSeverity) {
+  return diagnostics.filter(diagnostic => diagnostic.severity === severity);
+}
+
+function createProperMessage(active: DiagnosticSeverity[], severity: DiagnosticSeverity, showMessage: string, hideMessage: string, firstMessage: string) {
+  if (active.some(s => s === severity)) {
+    if (active.length === 1) {
+      return 'Show all diagnostics';
+    }
+    return hideMessage;
+  }
+  if (active.length === 0) {
+    return firstMessage;
+  }
+  return showMessage;
+}
 
 interface SeverityButtonsProps {
   diagnostics: Diagnostic[];
-  active: ActiveSeverity;
-  setActive: React.Dispatch<React.SetStateAction<ActiveSeverity>>;
+  active: DiagnosticSeverity[];
+  setActive: (severity: DiagnosticSeverity) => void;
 }
 
-const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagnostics, active, setActive: defaultSetActive }) => {
-  const errorDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 0);
-  const warningDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 1);
-  const infoDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 2);
-  const hintDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === 3);
+const SeverityButtons: React.FunctionComponent<SeverityButtonsProps> = ({ diagnostics, active, setActive }) => {
+  const errorDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Error);
+  const warningDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Warning);
+  const infoDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Information);
+  const hintDiagnostics = filterDiagnostics(diagnostics, DiagnosticSeverity.Hint);
+
+  const errorsTooltip = createProperMessage(active, DiagnosticSeverity.Error, 'Show errors', 'Hide errors', 'Show only errors');
+  const warningsTooltip = createProperMessage(active, DiagnosticSeverity.Warning, 'Show warnings', 'Hide warnings', 'Show only warnings');
+  const informationTooltip = createProperMessage(active, DiagnosticSeverity.Information, 'Show information messages', 'Hide information messages', 'Show only information messages');
+  const hintsTooltip = createProperMessage(active, DiagnosticSeverity.Hint, 'Show hints', 'Hide hints', 'Show only hints');
 
   const activeBg = 'bg-gray-900';
   const notActiveBg = 'bg-gray-700';
 
-  const setActive = useCallback((type: ActiveSeverity) => {
-    defaultSetActive(type === active ? 'all' : type);
-  }, [active]);
-
   return (
     <ul className='flex flex-row items-center'>
-      <button
-        type="button"
-        className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-l-md border border-transparent shadow-xs px-2 py-1 ${active === 0 ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
-        onClick={() => setActive(0)}
-        disabled={errorDiagnostics.length === 0}
-      >
-        <div className='flex flex-row items-center justify-center'>
-          <SeverityIcon severity={0} />
-          <span className='ml-1'>{errorDiagnostics.length}</span>
-        </div>
-      </button>
-      <button
-        type="button"
-        className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active === 1 ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
-        onClick={() => setActive(1)}
-        disabled={warningDiagnostics.length === 0}
-      >
-        <div className='flex flex-row items-center justify-center'>
-          <SeverityIcon severity={1} />
-          <span className='ml-1'>{warningDiagnostics.length}</span>
-        </div>
-      </button>
-      <button
-        type="button"
-        className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active === 2 ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
-        onClick={() => setActive(2)}
-        disabled={infoDiagnostics.length === 0}
-      >
-        <div className='flex flex-row items-center justify-center'>
-          <SeverityIcon severity={2} />
-          <span className='ml-1'>{infoDiagnostics.length}</span>
-        </div>
-      </button>
-      <button
-        type="button"
-        className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${active === 3 ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
-        onClick={() => setActive(3)}
-        disabled={hintDiagnostics.length === 0}
-      >
-        <div className='flex flex-row items-center justify-center'>
-          <SeverityIcon severity={3} />
-          <span className='ml-1'>{hintDiagnostics.length}</span>
-        </div>
-      </button>
+      <Tooltip content={errorsTooltip}>
+        <li>
+          <button
+            type="button"
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-l-md border border-transparent shadow-xs px-2 py-1 ${active.some(s => s === DiagnosticSeverity.Error) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            onClick={() => setActive(DiagnosticSeverity.Error)}
+          >
+            <div className='flex flex-row items-center justify-center'>
+              <SeverityIcon severity={0} />
+              <span className='ml-1'>{errorDiagnostics.length}</span>
+            </div>
+          </button>
+        </li>
+      </Tooltip>
+      <Tooltip content={warningsTooltip}>
+        <li>
+          <button
+            type="button"
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Warning) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            onClick={() => setActive(DiagnosticSeverity.Warning)}
+          >
+            <div className='flex flex-row items-center justify-center'>
+              <SeverityIcon severity={1} />
+              <span className='ml-1'>{warningDiagnostics.length}</span>
+            </div>
+          </button>
+        </li>
+      </Tooltip>
+      <Tooltip content={informationTooltip}>
+        <li>
+          <button
+            type="button"
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Information) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            onClick={() => setActive(DiagnosticSeverity.Information)}
+          >
+            <div className='flex flex-row items-center justify-center'>
+              <SeverityIcon severity={2} />
+              <span className='ml-1'>{infoDiagnostics.length}</span>
+            </div>
+          </button>
+        </li>
+      </Tooltip>
+      <Tooltip content={hintsTooltip}>
+        <li>
+          <button
+            type="button"
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${active.some(s => s === DiagnosticSeverity.Hint) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            onClick={() => setActive(DiagnosticSeverity.Hint)}
+          >
+            <div className='flex flex-row items-center justify-center'>
+              <SeverityIcon severity={3} />
+              <span className='ml-1'>{hintDiagnostics.length}</span>
+            </div>
+          </button>
+        </li>
+      </Tooltip>
     </ul>
   );
 };
 
 export const ProblemsTabContent: React.FunctionComponent<ProblemsTabProps> = () => {
+  const settingsState = state.useSettingsState();
+  const governanceShowState = settingsState.governance.show.get();
   const parserState = state.useParserState();
   const diagnostics = parserState.diagnostics.get();
 
-  const [active, setActive] = useState<ActiveSeverity>('all');
+  const [active, setActive] = useState<Array<DiagnosticSeverity>>([]);
   const [search, setSearch] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const setActiveFn = useCallback((severity: DiagnosticSeverity) => {
+    setActive(acc => {
+      if (acc.some(s => s === severity)) {
+        return acc.filter(s => s !== severity);
+      }
+      return [...acc, severity];
+    });
+  }, [setActive]);
+
+  const restrictedDiagnostics = useMemo(() => {
+    return diagnostics.filter(diagnostic => {
+      const { severity } = diagnostic;
+      if (severity === DiagnosticSeverity.Error) return true;
+      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
+      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
+      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
+      return true;
+    });
+  }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
+
+  const filteredDiagnostics = useMemo(() => {
+    return restrictedDiagnostics.filter(diagnostic => {
+      const { severity, message } = diagnostic;
+
+      if (active.length && !active.some(s => s === severity)) {
+        return false;
+      }
+
+      const lowerCasingSearch = search.toLowerCase();
+      if (lowerCasingSearch && !message.toLowerCase().includes(lowerCasingSearch)) {
+        return false;
+      }
+      return true;
+    });
+  }, [restrictedDiagnostics, search]);
+
   return (
     <div className="flex-1 text-white text-xs h-full relative overflow-x-hidden overflow-y-auto">
-      {diagnostics.length ? (
-        <div className="px-4 pt-2">
-          <div className='pb-2 flex flex-row items-center'>
-            <SeverityButtons diagnostics={diagnostics} active={active} setActive={setActive} />
-            <div className='mx-3 flex-1 flex flex-row items-center justify-center rounded-md border border-transparent shadow-xs px-2 py-1 bg-gray-700 text-xs font-medium'>
-              <VscSearch />
-              <input ref={inputRef} className='w-full ml-2 bg-gray-700 border-transparent focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => setSearch(e.target.value), 250)} />
-              <button type='button' className={`hover:bg-gray-900 rounded-sm border border-transparent ${search ? 'opacity-100' : 'opacity-0'}`} onClick={() => {
-                if (inputRef.current) {
-                  inputRef.current.value = '';
-                }
-                setSearch('');
-              }}>
-                <VscClose />
-              </button>
-            </div>
-            <a href='https://stoplight.io/open-source/spectral' title='Spectral website' target='_blank' rel="noreferrer" className='text-white hover:text-blue-500'>
-              <span>
-                Powered by
-              </span>
-              {' '}
-              <strong>
-                Spectral
-              </strong>
-            </a>
+      <div className="px-4 pt-2">
+        <div className='pb-2 flex flex-row items-center'>
+          <SeverityButtons diagnostics={restrictedDiagnostics} active={active} setActive={setActiveFn} />
+          <div className='ml-2 flex-1 flex flex-row items-center justify-center rounded-md border border-transparent shadow-xs px-2 py-1 bg-gray-700 text-xs font-medium'>
+            <VscSearch />
+            <input ref={inputRef} placeholder='Filter diagnostics...' className='w-full bg-gray-700 border-transparent ml-2 focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => setSearch(e.target.value), 250)} />
+            <button type='button' className={`hover:bg-gray-900 rounded-sm border border-transparent ${search ? 'opacity-100' : 'opacity-0'}`} onClick={() => {
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+              setSearch('');
+            }}>
+              <VscClose />
+            </button>
           </div>
-
-          <table className="border-collapse w-full">
-            <thead>
-              <tr>
-                <th className="px-2 py-1 w-8">Type</th>
-                <th className="px-2 py-1 w-8">Line</th>
-                <th className="px-2 py-1 text-left">Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {diagnostics.map((diagnostic, id) => {
-                const { severity, message, range } = diagnostic;
-
-                if (active !== 'all' && severity !== active) {
-                  return null;
-                }
-                if (search && !message.includes(search)) {
-                  return null;
-                }
-
-                return (
-                  <tr key={id} className="border-t border-gray-700">
-                    <td className="px-2 py-1 text-right"><SeverityIcon severity={severity} /></td>
-                    <td
-                      className="px-2 py-1 cursor-pointer"
-                      onClick={() =>
-                        NavigationService.scrollToEditorLine(
-                          range.start.line + 1,
-                          range.start.character + 1,
-                        )
-                      }
-                    >
-                      {range.start.line + 1}:{range.start.character + 1}
-                    </td>
-                    <td className="px-2 py-1 text-left">{message}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <a href='https://stoplight.io/open-source/spectral' title='Spectral website' target='_blank' rel="noreferrer" className='text-white hover:text-blue-500 mx-2'>
+            <span>
+              Powered by
+            </span>
+            {' '}
+            <strong>
+              Spectral
+            </strong>
+          </a>
+          <Tooltip content="Settings" hideOnClick={true}>
+            <button
+              type="button"
+              className={'justify-center border border-transparent shadow-xs px-2 py-1 text-xs rounded-md font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700'}
+              onClick={() => {
+                settingsState.merge({
+                  showModal: true,
+                  activeTab: 'Governance',
+                });
+              }}
+            >
+              <VscSettingsGear className='w-4 h-4' />
+            </button>
+          </Tooltip>
         </div>
-      ) : (
-        <div className="py-2 px-4 w-full text-sm">
-          No problems have been detected in the AsyncAPI document so far.
-        </div>
-      )}
+
+        <table className="border-collapse w-full">
+          <thead>
+            <tr>
+              <th className="px-2 py-1 w-8">Type</th>
+              <th className="px-2 py-1 w-8">Line</th>
+              <th className="px-2 py-1 text-left">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredDiagnostics.map((diagnostic, id) => {
+              const { severity, message, range } = diagnostic;
+
+              return (
+                <tr key={id} className="border-t border-gray-700">
+                  <td className="px-2 py-1 text-right"><SeverityIcon severity={severity} /></td>
+                  <td
+                    className="px-2 py-1 cursor-pointer"
+                    onClick={() =>
+                      NavigationService.scrollToEditorLine(
+                        range.start.line + 1,
+                        range.start.character + 1,
+                      )
+                    }
+                  >
+                    {range.start.line + 1}:{range.start.character + 1}
+                  </td>
+                  <td className="px-2 py-1 text-left">{message}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {filteredDiagnostics.length === 0 && !search && (
+          <div className='flex flex-row items-center justify-center mt-4 text-lg'>
+            No issues.
+          </div>
+        )}
+        {filteredDiagnostics.length === 0 && search && (
+          <div className='flex flex-row items-center justify-center mt-4 text-lg'>
+            No results for &quot;{search}&quot;.
+          </div>
+        )}
+      </div>
     </div>
   );
 };

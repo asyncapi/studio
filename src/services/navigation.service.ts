@@ -1,6 +1,3 @@
-// @ts-ignore
-// import { getLocationOf } from '@asyncapi/parser/lib/utils';
-
 import { EditorService } from './editor.service';
 import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
@@ -9,19 +6,15 @@ import state from '../state';
 export class NavigationService {
   static async scrollTo(
     jsonPointer: any,
-    spec: any,
     hash: string,
-    language = 'yaml',
   ) {
     try {
-      // const location: LocationOf = getLocationOf(jsonPointer, spec, language);
-      // if (!location || typeof location.startLine !== 'number') {
-      //   return;
-      // }
+      const range = SpecificationService.getRangeForJsonPath(jsonPointer);
+      if (range) {
+        this.scrollToEditorLine(range.start.line + 1);
+      }
 
-      language;
       this.scrollToHash(hash);
-      // this.scrollToEditorLine(location.startLine);
       this.emitHashChangeEvent(hash);
     } catch (e) {
       console.error(e);

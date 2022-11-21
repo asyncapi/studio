@@ -5,7 +5,7 @@ import { FlowDiagram } from './FlowDiagram';
 import { SpecificationService } from '../../services';
 import state from '../../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface VisualiserProps {}
 

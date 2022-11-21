@@ -1,7 +1,7 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { FaEllipsisH } from 'react-icons/fa';
-import { hasErrorDiagnostic } from '@asyncapi/parser/esm/utils';
+import { hasErrorDiagnostic } from '@asyncapi/parser/cjs/utils';
 
 import {
   ConvertModal,

@@ -4,7 +4,7 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 import { NavigationService, SpecificationService } from '../../services';
 import state from '../../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface HTMLWrapperProps {}
 

@@ -1,15 +1,16 @@
+import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
 import { FormatService } from './format.service';
 import { SpecificationService } from './specification.service';
+import { SocketClient } from './socket-client.service';
 
 import state from '../state';
-import { SocketClient } from './socket-client.service';
-import { ConvertVersion } from '@asyncapi/converter';
 
-import type { Diagnostic } from '@asyncapi/parser/esm';
+import type { Diagnostic } from '@asyncapi/parser/cjs';
+import type { ConvertVersion } from '@asyncapi/converter';
 
 export type AllowedLanguages = 'json' | 'yaml' | 'yml';
 
@@ -115,7 +116,6 @@ export class EditorService {
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
       const content = fileLoadedEvent.target?.result;
-      console.log(content);
       this.updateState({ content: String(content), updateModel: true });
     };
     fileReader.readAsText(file, 'UTF-8');
@@ -205,10 +205,9 @@ export class EditorService {
     return localStorage.getItem('document');
   }
 
-  static applyMarkers(errors: Diagnostic[] = []) {
+  static applyMarkers(diagnostics: Diagnostic[] = []) {
     const editor = this.getInstance();
     const Monaco = window.monaco;
-
     if (!editor || !Monaco) {
       return;
     }
@@ -217,39 +216,42 @@ export class EditorService {
     if (!model) {
       return;
     }
-    
-    const oldDecorations = state.editor.decorations.get();
-    editor.deltaDecorations(oldDecorations, []);
-    Monaco.editor.setModelMarkers(model, 'asyncapi', []);
-    if (errors.length === 0) {
-      return;
-    }
 
-    const { markers, decorations } = this.createMarkers(errors, model, Monaco);
+    diagnostics = this.filterDiagnostics(diagnostics);
+    const { markers, decorations } = this.createMarkers(diagnostics);
     Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
-    editor.deltaDecorations(oldDecorations, decorations);
+    let oldDecorations = state.editor.decorations.get();
+    if (oldDecorations.length === 0) {
+      oldDecorations = [];
+    }
+    oldDecorations = editor.deltaDecorations(oldDecorations, decorations);
+    state.editor.decorations.set(oldDecorations || []);
   }
 
-  static createMarkers(diagnostics: Diagnostic[] = [], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
+  static createMarkers(diagnostics: Diagnostic[]) {
+    diagnostics = diagnostics || [];
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
 
     diagnostics.forEach(diagnostic => {
-      const { message, path, severity } = diagnostic;
-      let { range } = diagnostic;
+      const { message, range, severity } = diagnostic;
 
-      if (path.length === 0) {
-        const fullRange = model.getFullModelRange();
-        range = { 
-          start: {
-            line: fullRange.startLineNumber,
-            character: fullRange.startColumn
-          }, 
-          end: {
-            line: fullRange.endLineNumber,
-            character: fullRange.endColumn
+      if (severity !== DiagnosticSeverity.Error) {
+        newDecorations.push({
+          id: 'asyncapi',
+          ownerId: 0,
+          range: new monacoAPI.Range(
+            range.start.line + 1, 
+            range.start.character + 1,
+            range.end.line + 1,
+            range.end.character + 1
+          ),
+          options: {
+            glyphMarginClassName: this.getSeverityClassName(severity),
+            glyphMarginHoverMessage: { value: message },
           },
-        };
+        });
+        return;
       }
   
       newMarkers.push({
@@ -260,31 +262,40 @@ export class EditorService {
         severity: this.getSeverity(severity),
         message,
       });
-
-      newDecorations.push({
-        id: 'asyncapi',
-        ownerId: 0,
-        range: new Monaco.Range(
-          range.start.line + 1, 
-          range.start.character + 1,
-          range.end.line + 1,
-          range.end.character + 1
-        ),
-        options: { inlineClassName: 'bg-red-500-20' },
-      });
     });
 
     return { decorations: newDecorations, markers: newMarkers };
   }
 
-  private static getSeverity(severity: Diagnostic['severity']): monacoAPI.MarkerSeverity {
+  private static getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
-    case 0: return monacoAPI.MarkerSeverity.Error;
-    case 1: return monacoAPI.MarkerSeverity.Warning;
-    case 2: return monacoAPI.MarkerSeverity.Info;
-    case 3: return monacoAPI.MarkerSeverity.Hint;
+    case DiagnosticSeverity.Error: return monacoAPI.MarkerSeverity.Error;
+    case DiagnosticSeverity.Warning: return monacoAPI.MarkerSeverity.Warning;
+    case DiagnosticSeverity.Information: return monacoAPI.MarkerSeverity.Info;
+    case DiagnosticSeverity.Hint: return monacoAPI.MarkerSeverity.Hint;
     default: return monacoAPI.MarkerSeverity.Error;
     }
+  }
+
+  private static getSeverityClassName(severity: DiagnosticSeverity): string {
+    switch (severity) {
+    case DiagnosticSeverity.Warning: return 'diagnostic-warning';
+    case DiagnosticSeverity.Information: return 'diagnostic-information';
+    case DiagnosticSeverity.Hint: return 'diagnostic-hint';
+    default: return 'diagnostic-warning';
+    }
+  }
+
+  private static filterDiagnostics(diagnostics: Diagnostic[]) {
+    const governanceShowState = state.settings.governance.show.get();
+    return diagnostics.filter(diagnostic => {
+      const { severity } = diagnostic;
+      if (severity === DiagnosticSeverity.Error) return true;
+      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
+      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
+      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
+      return true;
+    });
   }
 
   private static fileName = 'asyncapi';

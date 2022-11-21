@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationService } from '../services';
 import state from '../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface NavigationProps {
   className?: string;
@@ -20,8 +20,6 @@ interface NavigationSectionProps {
 
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
-  rawSpec,
-  language,
   hash,
 }) => {
   return (
@@ -31,7 +29,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo('/servers', rawSpec, 'servers', language)
+          NavigationService.scrollTo('/servers', 'servers')
         }
       >
         Servers
@@ -46,9 +44,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             onClick={() =>
               NavigationService.scrollTo(
                 `/servers/${serverName.replace(/\//g, '~1')}`,
-                rawSpec,
                 `server-${serverName}`,
-                language,
               )
             }
           >
@@ -71,8 +67,6 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 
 const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
-  rawSpec,
-  language,
   hash,
 }) => {
   const operations = Object.entries(spec.channels() || {}).map(
@@ -89,9 +83,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             onClick={() =>
               NavigationService.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
-                rawSpec,
                 `operation-publish-${channelName}`,
-                language,
               )
             }
           >
@@ -116,9 +108,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             onClick={() =>
               NavigationService.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
-                rawSpec,
                 `operation-subscribe-${channelName}`,
-                language,
               )
             }
           >
@@ -147,9 +137,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         onClick={() =>
           NavigationService.scrollTo(
             '/channels',
-            rawSpec,
             'operations',
-            language,
           )
         }
       >
@@ -162,8 +150,6 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 
 const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
-  rawSpec,
-  language,
   hash,
 }) => {
   const messages = Object.keys(spec.components()?.messages() || {}).map(
@@ -176,9 +162,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         onClick={() =>
           NavigationService.scrollTo(
             `/components/messages/${messageName.replace(/\//g, '~1')}`,
-            rawSpec,
             `message-${messageName}`,
-            language,
           )
         }
       >
@@ -196,9 +180,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         onClick={() =>
           NavigationService.scrollTo(
             '/components/messages',
-            rawSpec,
             'messages',
-            language,
           )
         }
       >
@@ -211,8 +193,6 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 
 const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
-  rawSpec,
-  language,
   hash,
 }) => {
   const schemas = Object.keys(spec.components()?.schemas() || {}).map(
@@ -225,9 +205,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         onClick={() =>
           NavigationService.scrollTo(
             `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
-            rawSpec,
             `schema-${schemaName}`,
-            language,
           )
         }
       >
@@ -245,9 +223,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         onClick={() =>
           NavigationService.scrollTo(
             '/components/schemas',
-            rawSpec,
             'schemas',
-            language,
           )
         }
       >
@@ -317,9 +293,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             onClick={() =>
               NavigationService.scrollTo(
                 '/info',
-                rawSpec,
                 'introduction',
-                language,
               )
             }
           >

@@ -1,6 +1,6 @@
 import { createState, useState } from '@hookstate/core';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/esm';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
 
 export interface ParserState {
   parsedSpec: AsyncAPIDocument | null;

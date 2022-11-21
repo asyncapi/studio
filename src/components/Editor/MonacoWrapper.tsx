@@ -60,6 +60,7 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
       options={{
         wordWrap: 'on',
         smoothScrolling: true,
+        glyphMargin: true,
       }}
       {...(props || {})}
     />

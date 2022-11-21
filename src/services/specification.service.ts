@@ -1,11 +1,9 @@
-// @ts-ignore
-import { convert, ConvertVersion } from '@asyncapi/converter';
+import specs from '@asyncapi/specs';
+import { convert } from '@asyncapi/converter';
 import { Parser, convertToOldAPI } from '@asyncapi/parser/cjs';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
-// @ts-ignore
-import specs from '@asyncapi/specs';
 import YAML from 'js-yaml';
 
 import { EditorService } from './editor.service';
@@ -13,6 +11,8 @@ import { MonacoService } from './monaco.service';
 
 import state from '../state';
 
+import type { SpecVersions } from '../types';
+import type { ConvertVersion } from '@asyncapi/converter';
 import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
 
 const parser = new Parser({
@@ -52,7 +52,7 @@ export class SpecificationService {
           hasErrorDiagnostics: false,
         });
   
-        const version = oldDocument.version();
+        const version = oldDocument.version() as SpecVersions;
         MonacoService.updateLanguageConfig(version);
         if (this.shouldInformAboutLatestVersion(version)) {
           state.spec.set({
@@ -73,8 +73,8 @@ export class SpecificationService {
     window.ParsedSpec = undefined;
     window.ParsedExtras = undefined;
     try {
-      const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
-      MonacoService.updateLanguageConfig(asyncapiSpec?.asyncapi);
+      const version = (YAML.load(rawSpec) as { asyncapi: SpecVersions }).asyncapi;
+      MonacoService.updateLanguageConfig(version);
     } catch (e: any) {
       // intentional
     }
@@ -108,8 +108,8 @@ export class SpecificationService {
     return specs;
   }
 
-  static getLastVersion(): string {
-    return Object.keys(specs).pop() as string;
+  static getLastVersion(): SpecVersions {
+    return Object.keys(specs).pop() as SpecVersions;
   }
 
   static shouldInformAboutLatestVersion(

@@ -6,7 +6,7 @@ import nodeTypes from './Nodes';
 import { getElementsFromAsyncAPISpec } from './utils/node-factory';
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/esm';
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface FlowDiagramProps {
   parsedSpec: AsyncAPIDocument;
