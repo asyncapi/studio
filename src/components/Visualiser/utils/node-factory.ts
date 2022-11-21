@@ -1,10 +1,11 @@
-import { Elements } from 'react-flow-renderer';
-import { AsyncAPIDocument, Operation, Channel, Message } from '@asyncapi/parser';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, OldChannel, OldOperation, OldMessage } from '@asyncapi/parser/cjs';
+import type { Elements } from 'react-flow-renderer';
+
 interface FileredChannel {
   channel: string;
-  channelModel: Channel;
-  operationModel: Operation;
-  messagesModel: Message[];
+  channelModel: OldChannel;
+  operationModel: OldOperation;
+  messagesModel: OldMessage[];
 }
 
 const getChannelsByOperation = (operation: string, spec: AsyncAPIDocument) => {
@@ -14,7 +15,7 @@ const getChannelsByOperation = (operation: string, spec: AsyncAPIDocument) => {
     const operationFn = operation === 'publish' ? 'hasPublish' : 'hasSubscribe';
     // eslint-disable-next-line
     if (channels[String(channel)][operationFn]()) {
-      const operationModel = (channels as any)[String(channel)][String(operation)]() as Operation;
+      const operationModel = (channels as any)[String(channel)][String(operation)]() as OldOperation;
       filteredChannels.push({
         channel,
         channelModel: channels[String(channel)],

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 
 import { FlowDiagram } from './FlowDiagram';
 
 import { SpecificationService } from '../../services';
 import state from '../../state';
+
+import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface VisualiserProps {}
 
@@ -60,7 +61,7 @@ export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
     parsedSpec && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="overflow-auto">
-          <FlowDiagram  parsedSpec={parsedSpec} />
+          <FlowDiagram parsedSpec={parsedSpec} />
         </div>
       </div>
     )

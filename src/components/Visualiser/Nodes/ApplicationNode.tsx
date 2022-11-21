@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
-import { AsyncAPIDocument } from '@asyncapi/parser';
+import { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 import { Markdown } from '../../common';
 
@@ -36,8 +36,8 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
     title: specInfo.title(),
     version: specInfo.version(),
     license: {
-      name: specInfo.license() && specInfo.license().name(),
-      url: specInfo.license() && specInfo.license().url(),
+      name: specInfo.license() && specInfo.license()?.name(),
+      url: specInfo.license() && specInfo.license()?.url(),
     },
     // @ts-ignore
     externalDocs: spec.externalDocs() && spec.externalDocs().url(),
@@ -134,7 +134,7 @@ export const ApplicationNode: React.FunctionComponent<ApplicationNodeProps> = ({
           )}
           {license.name && (
             <a
-              href={license.url}
+              href={license.url as string}
               target="_blank"
               className="block text-gray-400 underline"
               rel="noreferrer"

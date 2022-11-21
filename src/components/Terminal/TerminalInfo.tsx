@@ -16,7 +16,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
   const latestVersion = SpecificationService.getLastVersion();
   const documentValid = parserState.valid.get();
-  const errors = parserState.errors.get();
+  const hasErrorDiagnostics = parserState.hasErrorDiagnostics.get();
   const autoSaving = settingsState.editor.autoSaving.get();
   const modified = editorState.modified.get();
 
@@ -39,7 +39,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Live server</span>
         </div>
       )}
-      {errors.length ? (
+      {hasErrorDiagnostics ? (
         <div className="ml-3">
           <span className="text-red-500">
             <svg

@@ -29,12 +29,13 @@
     "@asyncapi/avro-schema-parser": "^1.1.0",
     "@asyncapi/converter": "^1.1.0",
     "@asyncapi/openapi-schema-parser": "^2.0.1",
-    "@asyncapi/parser": "^1.17.1",
+    "@asyncapi/parser": "^2.0.0-next-major.10",
     "@asyncapi/react-component": "^1.0.0-next.44",
     "@asyncapi/specs": "^4.0.0",
     "@headlessui/react": "1.4.1",
     "@hookstate/core": "^3.0.12",
     "@monaco-editor/react": "^4.4.5",
+    "@tippyjs/react": "^4.2.6",
     "js-base64": "^3.7.2",
     "js-file-download": "^0.4.12",
     "js-yaml": "^4.1.0",
@@ -122,7 +123,11 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(monaco-editor)/)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^nimma/legacy$": "<rootDir>/node_modules/nimma/dist/legacy/cjs/index.js",
+      "^nimma/(.*)": "<rootDir>/node_modules/nimma/dist/cjs/$1"
+    }
   },
   "publishConfig": {
     "access": "public"
