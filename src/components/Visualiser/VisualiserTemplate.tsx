@@ -63,9 +63,9 @@ export const VisualiserTemplate: React.FunctionComponent<VisualiserTemplateProps
     const sideMenu = () => {
       return (
         <>
-          <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">
+          <div className="m-4 px-2 text-lg absolute text-gray-900 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">
             <span className="font-bold">Event Visualiser</span>
-            <span className="text-gray-200">| {title}</span>
+            <span>| {title}</span>
           </div>
           <div className="absolute top-0 right-0 mr-5 mt-5 rounded-lg bg-white z-20 space-x-10 px-4 pt-1 shadow-lg">
             <button type="button" className="text-xs" onClick={() => setAnimateNodes(!animateNodes)}>
