@@ -3,6 +3,20 @@
 const crypto = require('crypto');
 const webpack = require('webpack');
 
+function getFileLoaderRule(rules) {
+  for (const rule of rules) {
+    if ("oneOf" in rule) {
+      const found = getFileLoaderRule(rule.oneOf);
+      if (found) {
+        return found;
+      }
+    } else if (rule.test === undefined && rule.type === 'asset/resource') {
+      return rule;
+    }
+  }
+  throw new Error("File loader not found");
+}
+
 function configureWebpack(webpackConfig) {
   // fallbacks
   const fallback = webpackConfig.resolve.fallback || {};
@@ -38,6 +52,11 @@ function configureWebpack(webpackConfig) {
       Buffer: ['buffer', 'Buffer']
     })
   ]);
+
+  // rules
+  // workaround for https://github.com/facebook/create-react-app/issues/11889 issue
+  const fileLoaderRule = getFileLoaderRule(webpackConfig.module.rules);
+  fileLoaderRule.exclude.push(/\.cjs$/);
 
   // ignore source-map warnings 
   webpackConfig.ignoreWarnings = [...(webpackConfig.ignoreWarnings || []), /Failed to parse source map/];
