@@ -11,9 +11,9 @@ import { MonacoService } from './monaco.service';
 
 import state from '../state';
 
-import type { SpecVersions } from '../types';
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
+import type { SpecVersions } from '../types';
 
 const parser = new Parser({
   __unstable: {

@@ -1,11 +1,11 @@
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import { setDiagnosticsOptions } from 'monaco-yaml';
 
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
 import type { SpecVersions } from '../types';
 
