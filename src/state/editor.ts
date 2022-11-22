@@ -166,7 +166,7 @@ components:
           clientId: my-app-id
 `;
 
-export type EditorStateDocumentFrom = 'localStorage' | `url` | 'base64';
+export type EditorStateDocumentFrom = 'localStorage' | 'url' | 'base64';
 
 export interface EditorState {
   height: string;
