@@ -42,7 +42,9 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
 
   const onChange = debounce((v: string) => {
     EditorService.updateState({ content: v });
-    autoSaving && EditorService.saveToLocalStorage(v, false);
+    if (autoSaving) {
+      autoSaving && EditorService.saveToLocalStorage(v, false);
+    }
     SpecificationService.parseSpec(v);
   }, savingDelay);
 

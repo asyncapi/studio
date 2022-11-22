@@ -12,7 +12,7 @@ import { MonacoService } from './monaco.service';
 import state from '../state';
 
 import type { ConvertVersion } from '@asyncapi/converter';
-import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { SpecVersions } from '../types';
 
 const parser = new Parser({
@@ -34,11 +34,16 @@ export class SpecificationService {
     return window.ParsedExtras || null;
   }
 
-  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
+  static async parseSpec(rawSpec: string, options: ParseOptions = {}): Promise<AsyncAPIDocument | void> {
+    const source = state.editor.documentSource.get();
+    if (source) {
+      options.source = source;
+    }
+
     let diagnostics: Diagnostic[] = [];
 
     try {
-      const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec);
+      const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec, options);
       diagnostics = validationDiagnostics;
   
       if (document) {
