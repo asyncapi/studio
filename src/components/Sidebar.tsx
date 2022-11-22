@@ -50,7 +50,8 @@ function setActiveNav(navItem: NavItemType) {
 
 interface NavItem {
   name: string;
-  state: () => boolean;
+  title: string;
+  isActive: () => boolean;
   icon: React.ReactNode;
   tooltip: React.ReactNode;
 }
@@ -68,35 +69,40 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     // navigation
     {
       name: 'navigation',
-      state: () => sidebarState.panels.navigation.get(),
+      title: 'Navigation',
+      isActive: () => sidebarState.panels.navigation.get(),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
     },
     // editor
     {
       name: 'editor',
-      state: () => sidebarState.panels.editor.get(),
+      title: 'Editor',
+      isActive: () => sidebarState.panels.editor.get(),
       icon: <VscCode className="w-5 h-5" />,
       tooltip: 'Editor',
     },
     // template
     {
       name: 'template',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
+      title: 'Template',
+      isActive: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
     },
     // visuliser
     {
       name: 'visualiser',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
+      title: 'Visualiser',
+      isActive: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
     },
     // newFile
     {
       name: 'newFile',
-      state: () => false,
+      title: 'New file',
+      isActive: () => false,
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
     },
@@ -108,16 +114,14 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
             <button
-              title={(item.name.charAt(0).toUpperCase() + item.name.slice(1))}
+              title={item.title}
               onClick={() => setActiveNav(item.name as NavItemType)}
-              className={`flex text-sm border-l-2  ${
-                item.state()
-                  ? 'text-white hover:text-gray-500 border-white'
-                  : 'text-gray-500 hover:text-white border-gray-800'
-              } focus:outline-none border-box p-4`}
+              className={'flex text-sm focus:outline-none border-box p-2'}
               type="button"
             >
-              {item.icon}
+              <div className={item.isActive() ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
+                {item.icon}
+              </div>
             </button>
           </Tooltip>
         ))}
