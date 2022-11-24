@@ -1,5 +1,5 @@
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
@@ -9,6 +9,7 @@ import { SocketClient } from './socket-client.service';
 
 import state from '../state';
 
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
 
@@ -217,7 +218,7 @@ export class EditorService {
       return;
     }
 
-    diagnostics = this.filterDiagnostics(diagnostics);
+    diagnostics = SpecificationService.filterDiagnostics(diagnostics);
     const { markers, decorations } = this.createMarkers(diagnostics);
     Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
     let oldDecorations = state.editor.decorations.get();
@@ -240,7 +241,7 @@ export class EditorService {
         newDecorations.push({
           id: 'asyncapi',
           ownerId: 0,
-          range: new monacoAPI.Range(
+          range: new Range(
             range.start.line + 1, 
             range.start.character + 1,
             range.end.line + 1,
@@ -269,11 +270,11 @@ export class EditorService {
 
   private static getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
-    case DiagnosticSeverity.Error: return monacoAPI.MarkerSeverity.Error;
-    case DiagnosticSeverity.Warning: return monacoAPI.MarkerSeverity.Warning;
-    case DiagnosticSeverity.Information: return monacoAPI.MarkerSeverity.Info;
-    case DiagnosticSeverity.Hint: return monacoAPI.MarkerSeverity.Hint;
-    default: return monacoAPI.MarkerSeverity.Error;
+    case DiagnosticSeverity.Error: return MarkerSeverity.Error;
+    case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
+    case DiagnosticSeverity.Information: return MarkerSeverity.Info;
+    case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
+    default: return MarkerSeverity.Error;
     }
   }
 
@@ -284,18 +285,6 @@ export class EditorService {
     case DiagnosticSeverity.Hint: return 'diagnostic-hint';
     default: return 'diagnostic-warning';
     }
-  }
-
-  private static filterDiagnostics(diagnostics: Diagnostic[]) {
-    const governanceShowState = state.settings.governance.show.get();
-    return diagnostics.filter(diagnostic => {
-      const { severity } = diagnostic;
-      if (severity === DiagnosticSeverity.Error) return true;
-      if (severity === DiagnosticSeverity.Warning && !governanceShowState.warnings) return false;
-      if (severity === DiagnosticSeverity.Information && !governanceShowState.informations) return false;
-      if (severity === DiagnosticSeverity.Hint && !governanceShowState.hints) return false;
-      return true;
-    });
   }
 
   private static fileName = 'asyncapi';

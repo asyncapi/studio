@@ -6,6 +6,7 @@ import state from '../../state';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
 import { VscDebugStart, VscDebugPause } from 'react-icons/vsc';
 import '@asyncapi/edavisualiser/styles/default.css';
+import type { FunctionComponent } from 'react';
 
 interface VisualiserTemplateProps {}
 
