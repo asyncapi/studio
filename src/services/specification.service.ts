@@ -1,3 +1,5 @@
+import { AbstractService } from './abstract.service';
+
 import specs from '@asyncapi/specs';
 import { convert } from '@asyncapi/converter';
 import { Parser, convertToOldAPI, DiagnosticSeverity } from '@asyncapi/parser/cjs';
@@ -25,7 +27,7 @@ const parser = new Parser({
 parser.registerSchemaParser(OpenAPISchemaParser());
 parser.registerSchemaParser(AvroSchemaParser());
 
-export class SpecificationService {
+export class SpecificationService extends AbstractService {
   static getParsedSpec() {
     return window.ParsedSpec || null;
   }

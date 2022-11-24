@@ -1,3 +1,5 @@
+import { AbstractService } from './abstract.service';
+
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
@@ -22,7 +24,7 @@ export interface UpdateState {
   language?: AllowedLanguages,
 } 
 
-export class EditorService {
+export class EditorService extends AbstractService {
   static getInstance(): monacoAPI.editor.IStandaloneCodeEditor {
     return window.Editor;
   }

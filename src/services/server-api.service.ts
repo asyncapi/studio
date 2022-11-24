@@ -1,3 +1,5 @@
+import { AbstractService } from './abstract.service';
+
 import fileDownload from 'js-file-download';
 
 export interface ServerAPIProblem {
@@ -9,7 +11,7 @@ export interface ServerAPIProblem {
   [key: string]: any;
 }
 
-export class ServerAPIService {
+export class ServerAPIService extends AbstractService {
   static serverPath = 'https://api.asyncapi.com/v1';
 
   static async generate(data: {

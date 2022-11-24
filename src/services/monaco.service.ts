@@ -1,3 +1,5 @@
+import { AbstractService } from './abstract.service';
+
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
@@ -9,7 +11,7 @@ import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
 import type { SpecVersions } from '../types';
 
-export class MonacoService {
+export class MonacoService extends AbstractService {
   private static actualVersion = 'X.X.X';
   private static Monaco: any = null;
   private static Editor: any = null;

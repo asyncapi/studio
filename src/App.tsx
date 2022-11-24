@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Provider as ModalManagerProvider } from '@ebay/nice-modal-react';
 
 import AsyncAPIStudio from './studio';
 
@@ -18,7 +19,9 @@ const App: React.FunctionComponent = () => {
   }, [editorLoaded]); // eslint-disable-line
 
   return (
-    <AsyncAPIStudio />
+    <ModalManagerProvider>
+      <AsyncAPIStudio />
+    </ModalManagerProvider>
   );
 };
 

@@ -1,7 +1,9 @@
+import { AbstractService } from './abstract.service';
+
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
 
-export class FormatService {
+export class FormatService extends AbstractService {
   static convertToYaml(spec: string) {
     try {
       // Editor content -> JS object -> YAML string

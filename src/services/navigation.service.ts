@@ -1,9 +1,11 @@
+import { AbstractService } from './abstract.service';
+
 import { EditorService } from './editor.service';
 import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
-export class NavigationService {
+export class NavigationService extends AbstractService {
   static async scrollTo(
     jsonPointer: any,
     hash: string,

@@ -1,3 +1,5 @@
+import { AbstractService } from './abstract.service';
+
 import toast from 'react-hot-toast';
 
 import { EditorService } from './editor.service';
@@ -9,7 +11,7 @@ interface IncomingMessage {
   code?: string;
 }
 
-export class SocketClient {
+export class SocketClient extends AbstractService {
   private static ws: WebSocket;
 
   static connect(hostname: string, port: string | number) {
