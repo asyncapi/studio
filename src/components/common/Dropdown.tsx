@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useRef } from 'react';
+
+import { useOutsideClickCallback } from '../../helpers';
 
 import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react';
 
@@ -17,23 +19,9 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
   children,
 }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const unregisterClickAway = useCallback(() => {
-    setOpen(false);
-    document.removeEventListener('click', unregisterClickAway);
-  }, []);
-
-  const registerClickAway = useCallback(() => {
-    document.removeEventListener('click', unregisterClickAway);
-    document.addEventListener('click', unregisterClickAway);
-  }, [unregisterClickAway]);
-
-  useEffect(() => {
-    if (open) {
-      registerClickAway();
-    }
-  }, [open, registerClickAway]);
-
+  useOutsideClickCallback(dropdownRef, () => setOpen(false));
   buttonHoverClassName = buttonHoverClassName || 'hover:text-white';
 
   return (
@@ -46,6 +34,8 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
         {opener}
       </button>
       <div
+        ref={dropdownRef}
+        onClick={() => setOpen(false)}
         className={`${
           open ? 'visible' : 'invisible'
         } origin-top-right absolute ${align === 'right' &&

@@ -46,7 +46,7 @@ export const ImportURLModal: React.FunctionComponent = () => {
       <div className="flex content-center justify-center">
         <label
           htmlFor="url"
-          className="flex justify-right items-center w-1/2 content-center text-sm font-medium text-gray-700 hidden"
+          className="flex justify-right items-center content-center text-sm font-medium text-gray-700 hidden"
         >
           Document URL
         </label>
@@ -54,7 +54,7 @@ export const ImportURLModal: React.FunctionComponent = () => {
           type="url"
           name="url"
           placeholder="Paste URL here"
-          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
+          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
           onChange={e => setUrl(e.target.value)}
         />
       </div>
