@@ -48,7 +48,7 @@ export class SpecificationService {
       // map messages of invalid ref to file
       diagnostics = validationDiagnostics.map(d => {
         if (d.code === 'invalid-ref' && d.message.endsWith('readFile is not a function')) {
-          d.message = 'File references are not yet supported';
+          d.message = 'File references are not yet supported in Studio';
         }
         return d;
       });
