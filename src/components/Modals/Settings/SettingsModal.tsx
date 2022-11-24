@@ -5,7 +5,7 @@ import { VscSettingsGear } from 'react-icons/vsc';
 import { SettingsTabs, SettingTab } from './SettingsTabs';
 
 import { ConfirmModal } from '../index';
-import { Switch } from '../../common';
+import { Switch, Tooltip } from '../../common';
 
 import { isDeepEqual } from '../../../helpers';
 import { EditorService } from '../../../services';
@@ -227,13 +227,15 @@ export const SettingsModal: React.FunctionComponent = () => {
       confirmDisabled={confirmDisabled}
       show={settingsState.showModal.get()}
       opener={
-        <button
-          className={'flex border-l-2 text-gray-500 hover:text-white border-gray-800 focus:outline-none border-box p-4'}
-          type="button"  
-          title="Settings"  
-        >
-          <VscSettingsGear className="w-5 h-5" />
-        </button>
+        <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
+          <button
+            title="Studio settings"  
+            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            type="button"  
+          >
+            <VscSettingsGear className="w-5 h-5" />
+          </button>
+        </Tooltip>
       }
       onSubmit={onSubmit}
       onCancel={onCancel}
