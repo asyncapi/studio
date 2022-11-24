@@ -44,7 +44,14 @@ export class SpecificationService {
 
     try {
       const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec, options);
-      diagnostics = validationDiagnostics;
+
+      // map messages of invalid ref to file
+      diagnostics = validationDiagnostics.map(d => {
+        if (d.code === 'invalid-ref' && d.message.endsWith('readFile is not a function')) {
+          d.message = 'File references are not yet supported';
+        }
+        return d;
+      });
   
       if (document) {
         const oldDocument = convertToOldAPI(document);
