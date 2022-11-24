@@ -46,14 +46,14 @@ export const ImportBase64Modal: React.FunctionComponent = () => {
       <div className="flex content-center justify-center">
         <label
           htmlFor="base64-source"
-          className="flex justify-right items-center w-1/2 content-center  text-sm font-medium text-gray-700 hidden"
+          className="flex justify-right items-center content-center text-sm font-medium text-gray-700 hidden"
         >
           Base64 content
         </label>
         <textarea
           name="base64-source"
           placeholder="Paste Base64 content here"
-          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
+          className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
           onChange={e => setBase64(e.target.value)}
           rows={10}
         />
