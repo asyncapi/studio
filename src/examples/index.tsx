@@ -1,14 +1,14 @@
 // @ts-nocheck
 
 // protocol examples
-import kafka from '!!raw-loader!./streetlights-kafka.yml';
-import websocket from '!!raw-loader!./websocket-gemini.yml';
-import mqtt from '!!raw-loader!./streetlights-mqtt.yml';
-import simple from '!!raw-loader!./simple.yml';
+import kafka from './streetlights-kafka.yml';
+import websocket from './websocket-gemini.yml';
+import mqtt from './streetlights-mqtt.yml';
+import simple from './simple.yml';
 
 // real world examples
-import slack from '!!raw-loader!./real-world/slack-rtm.yml';
-import gitterStreaming from '!!raw-loader!./real-world/gitter-streaming.yml';
+import slack from './real-world/slack-rtm.yml';
+import gitterStreaming from './real-world/gitter-streaming.yml';
 
 const templateTypes = {
   protocol: 'protocol-example',

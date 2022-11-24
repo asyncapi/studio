@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { FlowDiagram } from './FlowDiagram';
 
@@ -6,10 +6,11 @@ import { SpecificationService } from '../../services';
 import state from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
+import type { FunctionComponent } from 'react';
 
 interface VisualiserProps {}
 
-export const Visualiser: React.FunctionComponent<VisualiserProps> = () => {
+export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
 
   const parserState = state.useParserState();

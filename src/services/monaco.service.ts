@@ -1,10 +1,12 @@
 import specs from '@asyncapi/specs';
 import { loader } from '@monaco-editor/react';
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { setDiagnosticsOptions } from 'monaco-yaml';
 
 import { SpecificationService } from './specification.service';
 import state from '../state';
 
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
 import type { SpecVersions } from '../types';
 
 export class MonacoService {
@@ -67,11 +69,14 @@ export class MonacoService {
 
     const options = this.prepareLanguageConfig(asyncAPIVersion);
 
+    // json
     const json = monacoInstance.languages.json;
     json && json.jsonDefaults && json.jsonDefaults.setDiagnosticsOptions(options);
 
-    const yaml = (monacoInstance.languages as any).yaml;
-    yaml && yaml.yamlDefaults && yaml.yamlDefaults.setDiagnosticsOptions(options);
+    // yaml
+    setDiagnosticsOptions(options as YAMLDiagnosticsOptions);
+    // const yaml = (monacoInstance.languages as any).yaml;
+    // yaml && yaml.yamlDefaults && yaml.yamlDefaults.setDiagnosticsOptions(options);
   }
 
   static loadMonacoConfig() {
@@ -104,10 +109,6 @@ export class MonacoService {
 
     // load monaco config
     this.loadMonacoConfig();
-    
-    // load yaml plugin
-    // @ts-ignore
-    await import('monaco-yaml/lib/esm/monaco.contribution');
     
     // load language config (for json and yaml)
     this.loadLanguageConfig(SpecificationService.getLastVersion());

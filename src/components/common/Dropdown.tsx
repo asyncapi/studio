@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-interface DropdownProps {
-  opener: React.ReactNode;
+import type { FunctionComponent, PropsWithChildren, ReactNode } from 'react';
+
+interface DropdownProps extends PropsWithChildren {
+  opener: ReactNode;
   className?: string;
   buttonHoverClassName?: string;
   align?: string;
 }
 
-export const Dropdown: React.FunctionComponent<DropdownProps> = ({
+export const Dropdown: FunctionComponent<DropdownProps> = ({
   opener,
   className = 'relative',
   buttonHoverClassName,

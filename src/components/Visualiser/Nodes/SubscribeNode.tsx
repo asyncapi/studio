@@ -1,9 +1,10 @@
-import React from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore
 import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
+
+import type { FunctionComponent } from 'react';
 
 interface IData {
   messages: any []
@@ -15,7 +16,7 @@ interface PublishNodeProps {
   data: IData
 }
 
-export const SubscribeNode: React.FunctionComponent<PublishNodeProps> = ({ data: { channel, description, messages } }) => {
+export const SubscribeNode: FunctionComponent<PublishNodeProps> = ({ data: { channel, description, messages } }) => {
   return (
     <div className="bg-white shadow sm:rounded-lg border-2 border-yellow-400">
       <Handle
