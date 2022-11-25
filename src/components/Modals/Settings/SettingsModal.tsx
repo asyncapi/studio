@@ -8,7 +8,7 @@ import { ConfirmModal } from '../index';
 import { Switch, Tooltip } from '../../common';
 
 import { isDeepEqual } from '../../../helpers';
-import { EditorService } from '../../../services';
+import { useServices } from '../../../services';
 
 import state from '../../../state';
 
@@ -49,6 +49,7 @@ const ShowGovernanceOption: React.FunctionComponent<ShowGovernanceOptionProps> =
 };
 
 export const SettingsModal: React.FunctionComponent = () => {
+  const { editorSvc } = useServices();
   const settingsState = state.useSettingsState();
   const [autoSaving, setAutoSaving] = useState(settingsState.editor.autoSaving.get());
   const [savingDelay, setSavingDelay] = useState(settingsState.editor.savingDelay.get());
@@ -118,7 +119,7 @@ export const SettingsModal: React.FunctionComponent = () => {
       }
     });
 
-    EditorService.applyMarkers(state.parser.diagnostics.get());
+    editorSvc.applyMarkers(state.parser.diagnostics.get());
     setConfirmDisabled(true);
     toast.success(
       <div>

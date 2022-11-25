@@ -1,11 +1,19 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 
-import { EditorService } from '../editor.service';
+import { createServices } from '../';
 
+import type { EditorService } from '../editor.service';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 
 describe('EditorService', () => {
+  let editorSvc: EditorService;
+
+  beforeAll(async () => {
+    const services = await createServices();
+    editorSvc = services.editorSvc;
+  });
+
   describe('.createMarkers', () => {
     test('should create markers with errors', () => {
       const errors: Diagnostic[] = [
@@ -43,7 +51,7 @@ describe('EditorService', () => {
         }
       ];
 
-      const { markers, decorations } = EditorService.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkers(errors);
 
       // markers
       expect(markers).toHaveLength(2);
@@ -103,7 +111,7 @@ describe('EditorService', () => {
         }
       ];
 
-      const { markers, decorations } = EditorService.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkers(errors);
 
       // markers
       expect(markers).toHaveLength(0);
@@ -136,7 +144,7 @@ describe('EditorService', () => {
     test('should not create markers and decorators without errors', () => {
       const errors: any[] = [];
 
-      const { markers, decorations } = EditorService.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkers(errors);
       expect(markers.length).toEqual(0);
       expect(decorations.length).toEqual(0);
     });

@@ -2,21 +2,22 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from './index';
 
-import { EditorService, SpecificationService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 export const ConvertModal: React.FunctionComponent = () => {
   const [version, setVersion] = useState('');
+  
+  const { editorSvc, specificationSvc } = useServices();
   const parserState = state.useParserState();
-
   const actualVersion = parserState.parsedSpec.get()?.version();
-  const latestVersion = SpecificationService.getLastVersion();
-  const allowedVersions = Object.keys(SpecificationService.getSpecs());
+  const latestVersion = specificationSvc.getLastVersion();
+  const allowedVersions = Object.keys(specificationSvc.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 
   const onSubmit = () => {
-    toast.promise(EditorService.convertSpec(version), {
+    toast.promise(editorSvc.convertSpec(version), {
       loading: 'Converting...',
       success: (
         <div>

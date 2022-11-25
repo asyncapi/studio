@@ -3,13 +3,14 @@ import toast from 'react-hot-toast';
 
 import { ConfirmModal } from './ConfirmModal';
 
-import { EditorService, SpecificationService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 export const ConvertToLatestModal: React.FunctionComponent = () => {
   const [show, setShow] = useState(false);
   const [version, setVersion] = useState('');
 
+  const { editorSvc, specificationSvc } = useServices();
   const specState = state.useSpecState();
   const parserState = state.useParserState();
   const shouldOpenConvertModal = specState.shouldOpenConvertModal.get();
@@ -17,8 +18,8 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
   const forceConvert = specState.forceConvert.get();
 
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0-rc2';
-  const latestVersion = SpecificationService.getLastVersion();
-  const allowedVersions = Object.keys(SpecificationService.getSpecs());
+  const latestVersion = specificationSvc.getLastVersion();
+  const allowedVersions = Object.keys(specificationSvc.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 
@@ -37,7 +38,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
   function onSubmit() {
     async function convert() {
       try {
-        await EditorService.convertSpec(convertOnlyToLatest ? latestVersion : version);
+        await editorSvc.convertSpec(convertOnlyToLatest ? latestVersion : version);
       } finally {
         specState.shouldOpenConvertModal.set(false);
         setShow(false);

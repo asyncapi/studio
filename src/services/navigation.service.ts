@@ -1,17 +1,48 @@
 import { AbstractService } from './abstract.service';
 
-import { EditorService } from './editor.service';
-import { SocketClient } from './socket-client.service';
-import { SpecificationService } from './specification.service';
 import state from '../state';
 
 export class NavigationService extends AbstractService {
-  static async scrollTo(
+  override async onInit() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const documentUrl = urlParams.get('url') || urlParams.get('load');
+    const base64Document = urlParams.get('base64');
+    const liveServerPort = urlParams.get('liveServer');
+    const redirectedFrom = urlParams.get('redirectedFrom');
+
+    const editorSvc = this.svcs.editorSvc;
+    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
+      this.svcs.socketClientSvc.connect(window.location.hostname, liveServerPort);
+    } else if (documentUrl) {
+      await editorSvc.importFromURL(documentUrl);
+    } else if (base64Document) {
+      await editorSvc.importBase64(base64Document);
+    }
+
+    const isReadonly = this.isReadOnly(true);
+    if (isReadonly) {
+      await this.svcs.specificationSvc.parseSpec(state.editor.editorValue.get());
+      state.sidebar.show.set(false);
+      state.editor.merge({
+        monacoLoaded: true,
+        editorLoaded: true,
+      });
+    }
+
+    state.app.merge({
+      readOnly: isReadonly,
+      initialized: true,
+      redirectedFrom: redirectedFrom || false,
+    });
+  }
+
+  async scrollTo(
     jsonPointer: any,
     hash: string,
   ) {
     try {
-      const range = SpecificationService.getRangeForJsonPath(jsonPointer);
+      const range = this.svcs.specificationSvc.getRangeForJsonPath(jsonPointer);
       if (range) {
         this.scrollToEditorLine(range.start.line + 1);
       }
@@ -23,7 +54,7 @@ export class NavigationService extends AbstractService {
     }
   }
 
-  static async scrollToHash(hash?: string) {
+  async scrollToHash(hash?: string) {
     hash = hash || window.location.hash.substring(1);
     try {
       const escapedHash = CSS.escape(hash);
@@ -44,7 +75,7 @@ export class NavigationService extends AbstractService {
     }
   }
 
-  static async scrollToEditorLine(line: number, character = 1) {
+  async scrollToEditorLine(line: number, character = 1) {
     try {
       const editor = window.Editor;
       if (editor) {
@@ -56,7 +87,7 @@ export class NavigationService extends AbstractService {
     }
   }
 
-  static isReadOnly(strict = false) {
+  isReadOnly(strict = false) {
     const urlParams = new URLSearchParams(window.location.search);
     const isReadonly = urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === ''
       ? true
@@ -68,40 +99,7 @@ export class NavigationService extends AbstractService {
     return isReadonly && !!(urlParams.get('url') || urlParams.get('load') || urlParams.get('base64'));
   }
 
-  static async onInitApp() {
-    const urlParams = new URLSearchParams(window.location.search);
-
-    const documentUrl = urlParams.get('url') || urlParams.get('load');
-    const base64Document = urlParams.get('base64');
-    const liveServerPort = urlParams.get('liveServer');
-    const redirectedFrom = urlParams.get('redirectedFrom');
-
-    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
-      SocketClient.connect(window.location.hostname, liveServerPort);
-    } else if (documentUrl) {
-      await EditorService.importFromURL(documentUrl);
-    } else if (base64Document) {
-      await EditorService.importBase64(base64Document);
-    }
-
-    const isReadonly = this.isReadOnly(true);
-    if (isReadonly) {
-      await SpecificationService.parseSpec(state.editor.editorValue.get());
-      state.sidebar.show.set(false);
-      state.editor.merge({
-        monacoLoaded: true,
-        editorLoaded: true,
-      });
-    }
-
-    state.app.merge({
-      readOnly: isReadonly,
-      initialized: true,
-      redirectedFrom: redirectedFrom || false,
-    });
-  }
-
-  private static emitHashChangeEvent(hash: string) {
+  private emitHashChangeEvent(hash: string) {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
     window.history.pushState({}, '', hash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));

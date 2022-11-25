@@ -12,9 +12,9 @@ export interface ServerAPIProblem {
 }
 
 export class ServerAPIService extends AbstractService {
-  static serverPath = 'https://api.asyncapi.com/v1';
+  private serverPath = 'https://api.asyncapi.com/v1';
 
-  static async generate(data: {
+  async generate(data: {
     asyncapi: string | Record<string, any>,
     template: string,
     parameters: Record<string, any>,
@@ -35,7 +35,7 @@ export class ServerAPIService extends AbstractService {
     return response;
   }
 
-  static async retrieveProblem<AP extends Record<string, unknown> = Record<string, unknown>>(response: Response): Promise<ServerAPIProblem & AP | null> {
+  async retrieveProblem<AP extends Record<string, unknown> = Record<string, unknown>>(response: Response): Promise<ServerAPIProblem & AP | null> {
     if (response.ok || response.status < 400) return null;
     const responseBody = JSON.parse(await response.text());
     return responseBody as ServerAPIProblem & AP;

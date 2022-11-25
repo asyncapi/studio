@@ -3,7 +3,7 @@ import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSe
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 
 import { Tooltip } from '../common';
-import { NavigationService, SpecificationService } from '../../services';
+import { useServices } from '../../services';
 import { debounce } from '../../helpers';
 import state from '../../state';
 
@@ -13,11 +13,12 @@ import type { Diagnostic } from '@asyncapi/parser/cjs';
 interface ProblemsTabProps {}
 
 export const ProblemsTab: FunctionComponent<ProblemsTabProps> = () => {
+  const { specificationSvc } = useServices();
   const governanceShowState = state.useSettingsState().governance.show.get();
   const diagnostics = state.useParserState().diagnostics.get();
 
   const filteredDiagnostics = useMemo(() => {
-    return SpecificationService.filterDiagnostics();
+    return specificationSvc.filterDiagnostics();
   }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
 
   const errorDiagnostics = filteredDiagnostics.filter(diagnostic => diagnostic.severity === 0);
@@ -206,6 +207,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ diagnostics,
 };
 
 export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
+  const { specificationSvc, navigationSvc } = useServices();
   const settingsState = state.useSettingsState();
   const governanceShowState = settingsState.governance.show.get();
   const parserState = state.useParserState();
@@ -225,7 +227,7 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   }, [setActive]);
 
   const restrictedDiagnostics = useMemo(() => {
-    return SpecificationService.filterDiagnostics();
+    return specificationSvc.filterDiagnostics();
   }, [diagnostics, governanceShowState.warnings, governanceShowState.informations, governanceShowState.hints]);
 
   const filteredDiagnostics = useMemo(() => {
@@ -292,7 +294,7 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
                   <td
                     className="px-2 py-1 cursor-pointer"
                     onClick={() =>
-                      NavigationService.scrollToEditorLine(
+                      navigationSvc.scrollToEditorLine(
                         range.start.line + 1,
                         range.start.character + 1,
                       )

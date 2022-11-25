@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from './index';
 
-import { EditorService } from '../../services';
+import { useServices } from '../../services';
 
 export const ImportBase64Modal: React.FunctionComponent = () => {
   const [base64, setBase64] = useState('');
+  const { editorSvc } = useServices();
 
   const onSubmit = () => {
-    toast.promise(EditorService.importBase64(base64), {
+    toast.promise(editorSvc.importBase64(base64), {
       loading: 'Importing...',
       success: (
         <div>

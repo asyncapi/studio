@@ -4,7 +4,8 @@ import toast from 'react-hot-toast';
 import { ConfirmModal, ConfirmModalHandle } from '../index';
 import { TemplateParameters, TemplateParametersHandle } from './TemplateParameters';
 
-import { ServerAPIProblem, ServerAPIService } from '../../../services';
+import { useServices } from '../../../services';
+import { ServerAPIProblem } from '../../../services/server-api.service';
 
 import state from '../../../state';
 
@@ -12,6 +13,7 @@ import templates from './template-parameters.json';
 
 export const GeneratorModal: React.FunctionComponent = () => {
   const [template, setTemplate] = useState('');
+  const { serverAPISvc } = useServices();
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
 
@@ -26,7 +28,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
 
   const generateTemplate = async () => {
     setProblem(null);
-    const response = await ServerAPIService.generate({
+    const response = await serverAPISvc.generate({
       asyncapi: state.editor.editorValue.get(),
       template,
       parameters: templateParamsRef.current?.getValues(),
@@ -36,7 +38,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
       modalRef.current?.close();
       setTemplate('');
     } else {
-      const responseProblem = await ServerAPIService.retrieveProblem<{ validationErrors: string[] }>(response);
+      const responseProblem = await serverAPISvc.retrieveProblem<{ validationErrors: string[] }>(response);
       setProblem(responseProblem as ServerAPIProblem & { validationErrors: string[] });
       throw new Error(responseProblem?.title);
     }

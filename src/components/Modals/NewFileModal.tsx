@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 
 import { ConfirmModal } from './index';
 import examples from '../../examples';
-import { EditorService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 interface TemplateListItemProps {
@@ -33,12 +33,13 @@ const TemplateListItem: React.FunctionComponent<TemplateListItemProps> = ({ titl
 };
 
 export const NewFileModal: React.FunctionComponent = () => {
+  const { editorSvc } = useServices();
   const sidebarState = state.useSidebarState();
   const newFileEnabled = sidebarState.panels.newFile.get();
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
   const onSubmit = () => {
-    EditorService.updateState({ content: selectedTemplate.template, updateModel: true });
+    editorSvc.updateState({ content: selectedTemplate.template, updateModel: true });
     sidebarState.panels.newFile.set(false);
     setSelectedTemplate({ title: '', template: '' });
 

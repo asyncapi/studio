@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { NavigationService } from '../services';
+import { useServices } from '../services';
 import state from '../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
@@ -22,6 +22,8 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   return (
     <>
       <div
@@ -29,7 +31,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo('/servers', 'servers')
+          navigationSvc.scrollTo('/servers', 'servers')
         }
       >
         Servers
@@ -42,7 +44,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
               hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
-              NavigationService.scrollTo(
+              navigationSvc.scrollTo(
                 `/servers/${serverName.replace(/\//g, '~1')}`,
                 `server-${serverName}`,
               )
@@ -69,6 +71,8 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   const operations = Object.entries(spec.channels() || {}).map(
     ([channelName, channel]) => {
       const channels: React.ReactNode[] = [];
@@ -81,7 +85,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
               hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
-              NavigationService.scrollTo(
+              navigationSvc.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
                 `operation-publish-${channelName}`,
               )
@@ -106,7 +110,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
               hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
-              NavigationService.scrollTo(
+              navigationSvc.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
                 `operation-subscribe-${channelName}`,
               )
@@ -135,7 +139,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === 'operations' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo(
+          navigationSvc.scrollTo(
             '/channels',
             'operations',
           )
@@ -152,6 +156,8 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   const messages = Object.keys(spec.components()?.messages() || {}).map(
     messageName => (
       <li
@@ -160,7 +166,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo(
+          navigationSvc.scrollTo(
             `/components/messages/${messageName.replace(/\//g, '~1')}`,
             `message-${messageName}`,
           )
@@ -178,7 +184,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === 'messages' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo(
+          navigationSvc.scrollTo(
             '/components/messages',
             'messages',
           )
@@ -195,6 +201,8 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   spec,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   const schemas = Object.keys(spec.components()?.schemas() || {}).map(
     schemaName => (
       <li
@@ -203,7 +211,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo(
+          navigationSvc.scrollTo(
             `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
             `schema-${schemaName}`,
           )
@@ -221,7 +229,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
-          NavigationService.scrollTo(
+          navigationSvc.scrollTo(
             '/components/schemas',
             'schemas',
           )
@@ -239,6 +247,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 }) => {
   const [hash, setHash] = useState(window.location.hash);
 
+  const { navigationSvc } = useServices();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
 
@@ -291,7 +300,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
               hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
-              NavigationService.scrollTo(
+              navigationSvc.scrollTo(
                 '/info',
                 'introduction',
               )
