@@ -63,7 +63,7 @@ export class MonacoService extends AbstractService {
     const spec = this.jsonSchemaSpecs.get(version);
 
     return {
-      enableSchemaRequest: true,
+      enableSchemaRequest: false,
       hover: true,
       completion: true,
       validate: true,
