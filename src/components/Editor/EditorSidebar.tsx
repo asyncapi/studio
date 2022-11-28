@@ -13,11 +13,11 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
   let documentFromText = '';
   if (documentFrom === 'localStorage') {
     documentFromText = 'From localStorage';
-  } else if (documentFrom === 'Base64') {
+  } else if (documentFrom === 'base64') {
     documentFromText = 'From Base64';
   } else {
-    const splittedText = documentFrom.split(' ');
-    documentFromText = `From ${splittedText[1]}`;
+    const documentSource = editorState.documentSource.get();
+    documentFromText = `From URL ${documentSource}`;
   }
 
   return (
