@@ -166,7 +166,7 @@ components:
           clientId: my-app-id
 `;
 
-export type EditorStateDocumentFrom = 'localStorage' | `URL: ${string}` | 'Base64';
+export type EditorStateDocumentFrom = 'localStorage' | 'url' | 'base64';
 
 export interface EditorState {
   height: string;
@@ -176,6 +176,7 @@ export interface EditorState {
   monacoLoaded: boolean;
   editorLoaded: boolean;
   documentFrom: EditorStateDocumentFrom;
+  documentSource?: string;
   decorations: Array<any>;
   modified: boolean,
 }

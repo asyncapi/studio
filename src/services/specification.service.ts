@@ -12,7 +12,7 @@ import { MonacoService } from './monaco.service';
 import state from '../state';
 
 import type { ConvertVersion } from '@asyncapi/converter';
-import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic } from '@asyncapi/parser/cjs';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { SpecVersions } from '../types';
 
 const parser = new Parser({
@@ -34,12 +34,24 @@ export class SpecificationService {
     return window.ParsedExtras || null;
   }
 
-  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
+  static async parseSpec(rawSpec: string, options: ParseOptions = {}): Promise<AsyncAPIDocument | void> {
+    const source = state.editor.documentSource.get();
+    if (source) {
+      options.source = source;
+    }
+
     let diagnostics: Diagnostic[] = [];
 
     try {
-      const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec);
-      diagnostics = validationDiagnostics;
+      const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec, options);
+
+      // map messages of invalid ref to file
+      diagnostics = validationDiagnostics.map(d => {
+        if (d.code === 'invalid-ref' && d.message.endsWith('readFile is not a function')) {
+          d.message = 'File references are not yet supported in Studio';
+        }
+        return d;
+      });
   
       if (document) {
         const oldDocument = convertToOldAPI(document);

@@ -94,9 +94,13 @@ export class EditorService {
     if (url) {
       return fetch(url)
         .then(res => res.text())
-        .then(text => {
-          state.editor.documentFrom.set(`URL: ${url}` as any);
+        .then(async text => {
+          state.editor.merge({
+            documentFrom: 'url',
+            documentSource: url,
+          });
           this.updateState({ content: text, updateModel: true });
+          await SpecificationService.parseSpec(text, { source: url });
         })
         .catch(err => {
           console.error(err);
@@ -125,7 +129,10 @@ export class EditorService {
   static async importBase64(content: string) {
     try {
       const decoded = FormatService.decodeBase64(content);
-      state.editor.documentFrom.set('Base64');
+      state.editor.merge({
+        documentFrom: 'base64',
+        documentSource: undefined,
+      });
       this.updateState({ content: String(decoded), updateModel: true });
     } catch (err) {
       console.error(err);
@@ -178,6 +185,7 @@ export class EditorService {
     localStorage.setItem('document', editorValue);
     state.editor.merge({
       documentFrom: 'localStorage',
+      documentSource: undefined,
       modified: false,
     });
 
