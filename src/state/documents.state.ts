@@ -18,10 +18,10 @@ export type DocumentsActions = {
   updateDocument: (uri: string, document: Partial<Document>) => void;
 }
 
-export const documentsState = create<DocumentsState & DocumentsActions>((set) => ({
+export const documentsState = create<DocumentsState & DocumentsActions>(set => ({
   documents: {},
   updateDocument(uri: string, document: Partial<Document>) {
-    set(state => ({ documents: { ...state.documents, [uri]: { ...state.documents[uri] || {}, ...document } } }));
+    set(state => ({ documents: { ...state.documents, [String(uri)]: { ...state.documents[String(uri)] || {}, ...document } } }));
   },
 }));
 

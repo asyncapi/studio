@@ -17,7 +17,7 @@ export type PanelsState = {
 }
 
 export const panelsState = create(
-  persist<PanelsState>(_ => 
+  persist<PanelsState>(() => 
     ({
       show: {
         activityBar: true,
@@ -31,10 +31,10 @@ export const panelsState = create(
       secondaryPanelType: 'template',
       newFileOpened: false,
     }), 
-    {
-      name: 'studio-panels',
-      getStorage: () => localStorage,
-    }
+  {
+    name: 'studio-panels',
+    getStorage: () => localStorage,
+  }
   ),
 );
 

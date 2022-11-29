@@ -71,7 +71,7 @@ export class ParserService extends AbstractService {
   getRangeForJsonPath(uri: string, jsonPath: string | Array<string | number>) {
     try {
       const { documents } = documentsState.getState();
-      const extras = documents[uri]?.extras;
+      const extras = documents[String(uri)]?.extras;
       if (extras) {
         jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
         if (jsonPath[0] === '') jsonPath.shift();
@@ -104,7 +104,7 @@ export class ParserService extends AbstractService {
       const oldFiles = prevState.files;
 
       Object.entries(newFiles).forEach(([uri, file]) => {
-        const oldFile = oldFiles[uri];
+        const oldFile = oldFiles[String(uri)];
         if (file === oldFile) return;
         this.parse(uri, file.content);
       });

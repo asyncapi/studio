@@ -9,21 +9,22 @@ import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';
 
 function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
-  let { show, secondaryPanelType } = panelsState.getState();
-  const newShow = { ...show };
+  const settingsState = panelsState.getState();
+  let secondaryPanelType = settingsState.secondaryPanelType;
+  const newShow = { ...settingsState.show };
 
   if (type === 'template' || type === 'visualiser') {
     // on current type
     if (secondaryPanelType === type) {
-      newShow[panelName] = !newShow[panelName];
+      newShow[`${panelName}`] = !newShow[`${panelName}`];
     } else {
       secondaryPanelType = type;
-      if (newShow[panelName] === false) {
-        newShow[panelName] = true;
+      if (newShow[`${panelName}`] === false) {
+        newShow[`${panelName}`] = true;
       }
     }
   } else {
-    newShow[panelName] = !newShow[panelName];
+    newShow[`${panelName}`] = !newShow[`${panelName}`];
   }
 
   if (!newShow.primaryPanel && !newShow.secondaryPanel) {
@@ -33,7 +34,7 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
   panelsState.setState({
     show: { ...newShow },
     secondaryPanelType,
-  })
+  });
 }
 
 interface NavItem {

@@ -178,7 +178,7 @@ export const filesState = create(
   persist<FilesState & FilesActions>(set => 
     ({
       files: {
-        'asyncapi': {
+        asyncapi: {
           uri: 'asyncapi',
           name: 'asyncapi',
           content: schema,
@@ -190,13 +190,13 @@ export const filesState = create(
         }
       },
       updateFile(uri: string, file: Partial<File>) {
-        set(state => ({ files: { ...state.files, [uri]: { ...state.files[uri] || {}, ...file } } }));
+        set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
       },
     }), 
-    {
-      name: 'studio-files',
-      getStorage: () => localStorage,
-    }
+  {
+    name: 'studio-files',
+    getStorage: () => localStorage,
+  }
   ),
 );
 

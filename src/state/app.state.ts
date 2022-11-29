@@ -1,4 +1,4 @@
-import create from 'zustand'
+import create from 'zustand';
 
 export type AppState = {
   initialized: boolean;
@@ -7,7 +7,7 @@ export type AppState = {
   redirectedFrom: string | false;
 }
 
-export const appState = create<AppState>(_ => ({
+export const appState = create<AppState>(() => ({
   initialized: false,
   readOnly: false,
   liveServer: false,
