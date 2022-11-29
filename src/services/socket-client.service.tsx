@@ -1,6 +1,6 @@
-import toast from 'react-hot-toast';
+import { AbstractService } from './abstract.service';
 
-import { EditorService } from './editor.service';
+import toast from 'react-hot-toast';
 
 import state from '../state';
 
@@ -9,10 +9,10 @@ interface IncomingMessage {
   code?: string;
 }
 
-export class SocketClient {
-  private static ws: WebSocket;
+export class SocketClient extends AbstractService {
+  private ws!: WebSocket;
 
-  static connect(hostname: string, port: string | number) {
+  connect(hostname: string, port: string | number) {
     try {
       const ws = this.ws = new WebSocket(`ws://${hostname || 'localhost'}:${port}/live-server`);
 
@@ -25,18 +25,18 @@ export class SocketClient {
     }
   }
 
-  static send(eventName: string, content: Record<string, unknown>) {
+  send(eventName: string, content: Record<string, unknown>) {
     this.ws && this.ws.send(JSON.stringify({ type: eventName, ...content }));
   }
 
-  private static onMessage(event: MessageEvent<any>) {
+  private onMessage(event: MessageEvent<any>) {
     try {
       const json: IncomingMessage = JSON.parse(event.data);
   
       switch (json.type) {
       case 'file:loaded':
       case 'file:changed':
-        EditorService.updateState({ 
+        this.svcs.editorSvc.updateState({ 
           content: json.code as string, 
           updateModel: true, 
           sendToServer: false,
@@ -54,7 +54,7 @@ export class SocketClient {
     }
   }
 
-  private static onOpen() {
+  private onOpen() {
     toast.success(
       <div>
         <span className="block text-bold">
@@ -65,7 +65,7 @@ export class SocketClient {
     state.app.liveServer.set(true);
   }
 
-  private static onError() {
+  private onError() {
     toast.error(
       <div>
         <span className="block text-bold">

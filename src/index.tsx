@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { createServices, ServicesProvider } from './services';
 import App from './App';
 
 import 'tippy.js/dist/tippy.css';
@@ -10,7 +11,7 @@ import 'reactflow/dist/style.css';
 import './tailwind.css';
 import './main.css';
 
-function configureMonaco() {
+function configureMonacEnv() {
   window.MonacoEnvironment = {
     getWorker(_, label) {
       switch (label) {
@@ -24,22 +25,25 @@ function configureMonaco() {
       case 'yml':
         return new Worker(new URL('monaco-yaml/yaml.worker', import.meta.url));
       default:
-        throw new Error(`Unknown label ${label}`);
+        throw new Error(`Unknown worker ${label}`);
       }
     },
   };
 }
 
-function bootstrap() {
-  configureMonaco();
+async function bootstrap() {
+  configureMonacEnv();
+  const services = await createServices();
 
   const root = createRoot(
-    document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement,
   );
 
   root.render(
     <StrictMode>
-      <App />
+      <ServicesProvider value={services}>
+        <App />
+      </ServicesProvider>
     </StrictMode>
   );
 }

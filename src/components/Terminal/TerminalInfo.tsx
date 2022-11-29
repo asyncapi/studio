@@ -1,12 +1,13 @@
 import React from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
 
-import { SpecificationService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 interface TerminalInfoProps {}
 
 export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
+  const { specificationSvc } = useServices();
   const appState = state.useAppState();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
@@ -14,7 +15,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
 
   const liveServer = appState.liveServer.get();
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
-  const latestVersion = SpecificationService.getLastVersion();
+  const latestVersion = specificationSvc.getLastVersion();
   const documentValid = parserState.valid.get();
   const hasErrorDiagnostics = parserState.hasErrorDiagnostics.get();
   const autoSaving = settingsState.editor.autoSaving.get();

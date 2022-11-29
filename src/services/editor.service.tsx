@@ -1,11 +1,9 @@
+import { AbstractService } from './abstract.service';
+
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
-
-import { FormatService } from './format.service';
-import { SpecificationService } from './specification.service';
-import { SocketClient } from './socket-client.service';
 
 import state from '../state';
 
@@ -22,17 +20,17 @@ export interface UpdateState {
   language?: AllowedLanguages,
 } 
 
-export class EditorService {
-  static getInstance(): monacoAPI.editor.IStandaloneCodeEditor {
+export class EditorService extends AbstractService {
+  getInstance(): monacoAPI.editor.IStandaloneCodeEditor {
     return window.Editor;
   }
 
-  static getValue() {
+  getValue() {
     return this.getInstance()
       ?.getModel()?.getValue() as string;
   }
 
-  static updateState({
+  updateState({
     content,
     updateModel = false,
     sendToServer = true,
@@ -46,7 +44,7 @@ export class EditorService {
       return;
     }
 
-    language = language || FormatService.retrieveLangauge(content);
+    language = language || this.svcs.formatSvc.retrieveLangauge(content);
     if (!language) {
       return;
     }
@@ -64,7 +62,7 @@ export class EditorService {
     }
 
     if (sendToServer) {
-      SocketClient.send('file:update', { code: content });
+      this.svcs.socketClientSvc.send('file:update', { code: content });
     }
 
     if (updateModel) {
@@ -82,15 +80,15 @@ export class EditorService {
     });
   }
 
-  static async convertSpec(version?: string) {
-    const converted = await SpecificationService.convertSpec(
+  async convertSpec(version?: string) {
+    const converted = await this.svcs.specificationSvc.convertSpec(
       this.getValue(),
-      (version || SpecificationService.getLastVersion()) as ConvertVersion,
+      (version || this.svcs.specificationSvc.getLastVersion()) as ConvertVersion,
     );
     this.updateState({ content: converted, updateModel: true });
   }
 
-  static async importFromURL(url: string): Promise<void> {
+  async importFromURL(url: string): Promise<void> {
     if (url) {
       return fetch(url)
         .then(res => res.text())
@@ -100,7 +98,7 @@ export class EditorService {
             documentSource: url,
           });
           this.updateState({ content: text, updateModel: true });
-          await SpecificationService.parseSpec(text, { source: url });
+          await this.svcs.specificationSvc.parseSpec(text, { source: url });
         })
         .catch(err => {
           console.error(err);
@@ -109,7 +107,7 @@ export class EditorService {
     }
   }
 
-  static async importFile(files: FileList | null) {
+  async importFile(files: FileList | null) {
     if (files === null || files?.length !== 1) {
       return;
     }
@@ -126,9 +124,9 @@ export class EditorService {
     fileReader.readAsText(file, 'UTF-8');
   }
 
-  static async importBase64(content: string) {
+  async importBase64(content: string) {
     try {
-      const decoded = FormatService.decodeBase64(content);
+      const decoded = this.svcs.formatSvc.decodeBase64(content);
       state.editor.merge({
         documentFrom: 'base64',
         documentSource: undefined,
@@ -140,9 +138,9 @@ export class EditorService {
     }
   }
 
-  static async convertToYaml() {
+  async convertToYaml() {
     try {
-      const yamlContent = FormatService.convertToYaml(this.getValue());
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.getValue());
       yamlContent && this.updateState({ content: yamlContent, updateModel: true, language: 'yaml' });
     } catch (err) {
       console.error(err);
@@ -150,9 +148,9 @@ export class EditorService {
     }
   }
 
-  static async convertToJSON() {
+  async convertToJSON() {
     try {
-      const jsonContent = FormatService.convertToJSON(this.getValue());
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.getValue());
       jsonContent && this.updateState({ content: jsonContent, updateModel: true, language: 'json' });
     } catch (err) {
       console.error(err);
@@ -160,9 +158,9 @@ export class EditorService {
     }
   }
 
-  static async saveAsYaml() {
+  async saveAsYaml() {
     try {
-      const yamlContent = FormatService.convertToYaml(this.getValue());
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.getValue());
       yamlContent && this.downloadFile(yamlContent, `${this.fileName}.yaml`);
     } catch (err) {
       console.error(err);
@@ -170,9 +168,9 @@ export class EditorService {
     }
   }
 
-  static async saveAsJSON() {
+  async saveAsJSON() {
     try {
-      const jsonContent = FormatService.convertToJSON(this.getValue());
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.getValue());
       jsonContent && this.downloadFile(jsonContent, `${this.fileName}.json`);
     } catch (err) {
       console.error(err);
@@ -180,8 +178,8 @@ export class EditorService {
     }
   }
 
-  static saveToLocalStorage(editorValue?: string, notify = true) {
-    editorValue = editorValue || EditorService.getValue();
+  saveToLocalStorage(editorValue?: string, notify = true) {
+    editorValue = editorValue || this.getValue();
     localStorage.setItem('document', editorValue);
     state.editor.merge({
       documentFrom: 'localStorage',
@@ -210,11 +208,11 @@ export class EditorService {
     }
   }
 
-  static getFromLocalStorage() {
+  getFromLocalStorage() {
     return localStorage.getItem('document');
   }
 
-  static applyMarkers(diagnostics: Diagnostic[] = []) {
+  applyMarkers(diagnostics: Diagnostic[] = []) {
     const editor = this.getInstance();
     const Monaco = window.monaco;
     if (!editor || !Monaco) {
@@ -226,7 +224,7 @@ export class EditorService {
       return;
     }
 
-    diagnostics = SpecificationService.filterDiagnostics(diagnostics);
+    diagnostics = this.svcs.specificationSvc.filterDiagnostics(diagnostics);
     const { markers, decorations } = this.createMarkers(diagnostics);
     Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
     let oldDecorations = state.editor.decorations.get();
@@ -237,7 +235,7 @@ export class EditorService {
     state.editor.decorations.set(oldDecorations || []);
   }
 
-  static createMarkers(diagnostics: Diagnostic[]) {
+  createMarkers(diagnostics: Diagnostic[]) {
     diagnostics = diagnostics || [];
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
@@ -276,7 +274,7 @@ export class EditorService {
     return { decorations: newDecorations, markers: newMarkers };
   }
 
-  private static getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
+  private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
     case DiagnosticSeverity.Error: return MarkerSeverity.Error;
     case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
@@ -286,7 +284,7 @@ export class EditorService {
     }
   }
 
-  private static getSeverityClassName(severity: DiagnosticSeverity): string {
+  private getSeverityClassName(severity: DiagnosticSeverity): string {
     switch (severity) {
     case DiagnosticSeverity.Warning: return 'diagnostic-warning';
     case DiagnosticSeverity.Information: return 'diagnostic-information';
@@ -295,8 +293,8 @@ export class EditorService {
     }
   }
 
-  private static fileName = 'asyncapi';
-  private static downloadFile(content: string, fileName: string) {
+  private fileName = 'asyncapi';
+  private downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
   }
 }

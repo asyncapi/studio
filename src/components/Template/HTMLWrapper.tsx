@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
-import { NavigationService, SpecificationService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
@@ -11,6 +11,7 @@ interface HTMLWrapperProps {}
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
 
+  const { navigationSvc, specificationSvc } = useServices();
   const appState = state.useAppState();
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
@@ -23,19 +24,19 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   useEffect(() => {
     if (editorLoaded === true) {
-      setTimeout(NavigationService.scrollToHash, 0);
+      setTimeout(navigationSvc.scrollToHash, 0);
     }
   }, [editorLoaded]); // eslint-disable-line
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
-      setParsedSpec(SpecificationService.getParsedSpec());
+      setParsedSpec(specificationSvc.getParsedSpec());
     }
   }, [parserState.parsedSpec.get()]); // eslint-disable-line
 
   useEffect(() => {
     if (templateState.rerender.get()) {
-      setParsedSpec(SpecificationService.getParsedSpec());
+      setParsedSpec(specificationSvc.getParsedSpec());
       templateState.rerender.set(false);
     }
   }, [templateState.rerender.get()]); // eslint-disable-line

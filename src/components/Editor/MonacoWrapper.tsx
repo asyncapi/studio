@@ -1,15 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MonacoEditor, {
   EditorProps as MonacoEditorProps,
 } from '@monaco-editor/react';
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { debounce } from '../../helpers';
-import {
-  EditorService,
-  MonacoService,
-  SpecificationService,
-} from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 export type MonacoWrapperProps = MonacoEditorProps
@@ -17,6 +13,7 @@ export type MonacoWrapperProps = MonacoEditorProps
 export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   ...props
 }) => {
+  const { editorSvc, specificationSvc } = useServices();
   const editorState = state.useEditorState();
   const settingsState = state.useSettingsState();
   const autoSaving = settingsState.editor.autoSaving.get();
@@ -28,12 +25,12 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
     // save editor instance to the window
     window.Editor = editor;
     // parse on first run the spec
-    SpecificationService.parseSpec(EditorService.getValue());
+    specificationSvc.parseSpec(editorSvc.getValue());
 
     // apply save command
     editor.addCommand(
       monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KeyS,
-      () => EditorService.saveToLocalStorage(),
+      () => editorSvc.saveToLocalStorage(),
     );
 
     // mark editor as loaded
@@ -41,16 +38,10 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   }
 
   const onChange = debounce((v: string) => {
-    EditorService.updateState({ content: v });
-    if (autoSaving) {
-      autoSaving && EditorService.saveToLocalStorage(v, false);
-    }
-    SpecificationService.parseSpec(v);
+    editorSvc.updateState({ content: v });
+    autoSaving && editorSvc.saveToLocalStorage(v, false);
+    specificationSvc.parseSpec(v);
   }, savingDelay);
-
-  useEffect(() => {
-    MonacoService.loadMonaco();
-  }, []);
 
   return editorState.monacoLoaded.get() ? (
     <MonacoEditor

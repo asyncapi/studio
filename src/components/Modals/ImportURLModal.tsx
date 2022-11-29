@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from './index';
 
-import { EditorService } from '../../services';
+import { useServices } from '../../services';
 
 export const ImportURLModal: React.FunctionComponent = () => {
   const [url, setUrl] = useState('');
+  const { editorSvc } = useServices();
 
   const onSubmit = () => {
-    toast.promise(EditorService.importFromURL(url), {
+    toast.promise(editorSvc.importFromURL(url), {
       loading: 'Importing...',
       success: (
         <div>

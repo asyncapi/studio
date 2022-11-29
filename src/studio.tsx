@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Template, Toolbar } from './components';
 import { ConvertToLatestModal } from './components/Modals';
-import { NavigationService } from './services';
+import { useServices } from './services';
 
 export interface AsyncAPIStudioProps {}
 
 const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
-  useEffect(() => {
-    NavigationService.onInitApp();
-  }, []);
+  const { navigationSvc } = useServices();
 
-  if (NavigationService.isReadOnly(true)) {
+  if (navigationSvc.isReadOnly(true)) {
     return (
       <div className="flex flex-row flex-1 overflow-hidden h-full w-full h-screen">
         <Template />

@@ -11,12 +11,13 @@ import {
 } from '../Modals';
 import { Dropdown } from '../common';
 
-import { EditorService } from '../../services';
+import { useServices } from '../../services';
 import state from '../../state';
 
 interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
+  const { editorSvc } = useServices();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
 
@@ -32,7 +33,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
         type="file"
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
-          toast.promise(EditorService.importFile(event.target.files), {
+          toast.promise(editorSvc.importFile(event.target.files), {
             loading: 'Importing...',
             success: (
               <div>
@@ -63,8 +64,8 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.saveAsYaml()
-            : EditorService.saveAsJSON(),
+            ? editorSvc.saveAsYaml()
+            : editorSvc.saveAsJSON(),
           {
             loading: 'Saving...',
             success: (
@@ -100,8 +101,8 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.saveAsJSON()
-            : EditorService.saveAsYaml(),
+            ? editorSvc.saveAsJSON()
+            : editorSvc.saveAsYaml(),
           {
             loading: 'Saving...',
             success: (
@@ -135,8 +136,8 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.convertToJSON()
-            : EditorService.convertToYaml(),
+            ? editorSvc.convertToJSON()
+            : editorSvc.convertToYaml(),
           {
             loading: 'Saving...',
             success: (
