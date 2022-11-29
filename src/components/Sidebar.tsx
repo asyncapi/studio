@@ -32,7 +32,7 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
   }
 
   panelsState.setState({
-    show: { ...newShow },
+    show: newShow,
     secondaryPanelType,
   });
 }
