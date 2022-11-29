@@ -45,7 +45,8 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "2.4.0",
     "react-icons": "^4.6.0",
-    "reactflow": "^11.2.0"
+    "reactflow": "^11.2.0",
+    "zustand": "^4.1.4"
   },
   "scripts": {
     "dev": "npm run start",
