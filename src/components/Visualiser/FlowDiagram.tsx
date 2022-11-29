@@ -1,44 +1,35 @@
-import { useState, useEffect, useCallback } from 'react';
-import ReactFlow, { Controls as FlowControls, Background, BackgroundVariant, useReactFlow, useStore, useNodesState, useEdgesState, useNodes, useEdges } from 'reactflow';
+import { useEffect } from 'react';
+import ReactFlow, { Controls as FlowControls, Background, BackgroundVariant, useReactFlow, useStore, useNodesState, useEdgesState, useNodes } from 'reactflow';
 
-import { Controls } from './Controls';
 import NodeTypes from './Nodes';
+import { Controls } from './Controls';
 import { getElementsFromAsyncAPISpec } from './utils/node-factory';
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
-import type { FunctionComponent, PropsWithChildren } from 'react';
-import type { ReactFlowInstance } from 'reactflow';
+import type { FunctionComponent } from 'react';
 
 interface FlowDiagramProps {
   parsedSpec: AsyncAPIDocument;
 }
 
-interface AutoLayoutProps extends PropsWithChildren {
-  elementsToRenderNumber: number;
-}
+interface AutoLayoutProps {}
 
-const AutoLayout: FunctionComponent<AutoLayoutProps> = ({ elementsToRenderNumber }) => {
+const AutoLayout: FunctionComponent<AutoLayoutProps> = () => {
   const { fitView } = useReactFlow();
   const nodes = useNodes();
-  const edges = useEdges();
   const setNodes = useStore(state => state.setNodes);
 
-  const rerender = () => {
-    const calculatedNodes = calculateNodesForDynamicLayout(nodes);
-    setNodes(calculatedNodes);
-    fitView();
-  };
-
   useEffect(() => {
-    if (elementsToRenderNumber === (nodes.length + edges.length)) {
-      // stop overlap no nodes when re-render, recalculate where they should go
-      const nodesWithOrginalPosition = nodes.filter(node => node.position.x === 0 && node.position.y === 0);
-      if (nodesWithOrginalPosition.length > 1) {
-        setTimeout(() => {
-          rerender();
-        }, 1);
-      }
+    if (nodes.length === 0 || !nodes[0].width) {
+      return;
+    }
+
+    const nodesWithOrginalPosition = nodes.filter(node => node.position.x === 0 && node.position.y === 0);
+    if (nodesWithOrginalPosition.length > 1) {
+      const calculatedNodes = calculateNodesForDynamicLayout(nodes);
+      setNodes(calculatedNodes);
+      fitView();
     }
   }, [nodes]);
 
@@ -46,19 +37,8 @@ const AutoLayout: FunctionComponent<AutoLayoutProps> = ({ elementsToRenderNumber
 };
 
 export const FlowDiagram: FunctionComponent<FlowDiagramProps> = ({ parsedSpec }) => {
-  const [loaded, setLoaded] = useState(false);
-
-  const elements = getElementsFromAsyncAPISpec(parsedSpec);
-  const _nodes = elements.map(el => el.node).filter(Boolean);
-  const _edges = elements.map(el => el.edge).filter(Boolean);
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(_nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(_edges);
-    
-  const onInit = useCallback((instance: ReactFlowInstance) => {
-    setLoaded(true);
-    instance.fitView();
-  }, []);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   useEffect(() => {
     const elements = getElementsFromAsyncAPISpec(parsedSpec);
@@ -76,15 +56,15 @@ export const FlowDiagram: FunctionComponent<FlowDiagramProps> = ({ parsedSpec })
         nodes={nodes} 
         edges={edges} 
         minZoom={0.1} 
-        onInit={onInit}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        fitView={true}
       >
-        <Background color="#d1d1d3" variant={BackgroundVariant.Dots} gap={20} size={1} className="bg-gray-200" />
-        {loaded && <AutoLayout elementsToRenderNumber={nodes.length + edges.length} />}
+        <Background variant={BackgroundVariant.Dots} gap={20} size={1} className="bg-gray-200" />
+        <AutoLayout />
         <Controls  />
         <div className="-mt-20">
-          <FlowControls style={{ bottom: '105px' }} />
+          <FlowControls style={{ bottom: '95px' }} className='bg-white' />
         </div>
       </ReactFlow>
       <div className="m-4 px-2 text-lg absolute text-gray-800 top-0 left-0 bg-white space-x-2 py-2 border border-gray-100 inline-block">

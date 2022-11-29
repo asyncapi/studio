@@ -22,7 +22,7 @@ export const calculateNodesForDynamicLayout = (elements: Node[]) => {
   const elementsGroupedByColumn = groupNodesByColumn(elements);
 
   const newElements: { nodes: Node[], currentXPosition: number } = Object.keys(elementsGroupedByColumn).reduce(
-    (data: any, group: string) => {
+    (data: { nodes: Node[], currentXPosition: number }, group: string) => {
       const groupNodes = elementsGroupedByColumn[String(group)];
 
       // eslint-disable-next-line
@@ -35,24 +35,21 @@ export const calculateNodesForDynamicLayout = (elements: Node[]) => {
 
       // For each group (column), render the nodes based on height they require (with some padding)
       const { positionedNodes } = groupNodes.reduce(
-        (groupedNodes: any, currentNode: Node) => {
+        (groupedNodes: { positionedNodes: Node[], currentYPosition: number }, currentNode: Node) => {
           const verticalPadding = 40;
 
-          currentNode.position = {
-            x: data.currentXPosition,
-            y: groupedNodes.currentYPosition,
-          };
+          currentNode.position.x = data.currentXPosition;
+          currentNode.position.y = groupedNodes.currentYPosition;
 
           return {
             positionedNodes: groupedNodes.positionedNodes.concat([currentNode]),
-            currentYPosition: groupedNodes.currentYPosition + currentNode.height + verticalPadding,
+            currentYPosition: groupedNodes.currentYPosition + (currentNode.height || 0) + verticalPadding,
           };
         },
         { positionedNodes: [], currentYPosition: 0 }
       );
 
       return {
-        ...data,
         nodes: [...data.nodes, ...positionedNodes],
         currentXPosition: data.currentXPosition + maxWidthOfColumn + 100,
       };
