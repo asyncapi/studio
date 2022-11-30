@@ -1,84 +1,76 @@
-import React from 'react';
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
 
 import { Tooltip } from './common';
 import { SettingsModal } from './Modals/Settings/SettingsModal';
 
-import state from '../state';
+import { usePanelsState, panelsState } from '../state/index.state';
 
-type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
+import type { FunctionComponent, ReactNode } from 'react';
+import type { PanelsState } from '../state/panels.state';
 
-function setActiveNav(navItem: NavItemType) {
-  const panels = state.sidebar.panels;
-  const panelsState = panels.get();
+function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
+  const settingsState = panelsState.getState();
+  let secondaryPanelType = settingsState.secondaryPanelType;
+  const newShow = { ...settingsState.show };
 
-  const newState = {
-    ...panelsState,
-  };
-
-  if (navItem === 'template' || navItem === 'visualiser') {
+  if (type === 'template' || type === 'visualiser') {
     // on current type
-    if (newState.viewType === navItem) {
-      newState.view = !newState.view;
+    if (secondaryPanelType === type) {
+      newShow[`${panelName}`] = !newShow[`${panelName}`];
     } else {
-      newState.viewType = navItem;
-      if (newState.view === false) {
-        newState.view = true;
+      secondaryPanelType = type;
+      if (newShow[`${panelName}`] === false) {
+        newShow[`${panelName}`] = true;
       }
     }
   } else {
-    newState[`${navItem}`] = !newState[`${navItem}`];
+    newShow[`${panelName}`] = !newShow[`${panelName}`];
   }
 
-  if (newState.navigation && !newState.editor && !newState.view) {
-    panels.set({
-      ...newState,
-      view: true,
-    });
-    return;
-  }
-  if (!Object.values(newState).some(itemNav => itemNav === true)) {
-    panels.set({
-      ...newState,
-      view: true,
-    });
-    return;
+  if (!newShow.primaryPanel && !newShow.secondaryPanel) {
+    newShow.secondaryPanel = true;
   }
 
-  panels.set(newState);
+  panelsState.setState({
+    show: newShow,
+    secondaryPanelType,
+  });
 }
 
 interface NavItem {
   name: string;
   title: string;
-  isActive: () => boolean;
-  icon: React.ReactNode;
-  tooltip: React.ReactNode;
+  isActive: boolean;
+  updateState?: () => void;
+  icon: ReactNode;
+  tooltip: ReactNode;
 }
 
 interface SidebarProps {}
 
-export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
-  const sidebarState = state.useSidebarState();
+export const Sidebar: FunctionComponent<SidebarProps> = () => {
+  const { show, secondaryPanelType } = usePanelsState();
 
-  if (sidebarState.show.get() === false) {
+  if (show.activityBar === false) {
     return null;
   }
 
   const navigation: NavItem[] = [
     // navigation
     {
-      name: 'navigation',
+      name: 'primarySidebar',
       title: 'Navigation',
-      isActive: () => sidebarState.panels.navigation.get(),
+      isActive: show.primarySidebar,
+      updateState: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
     },
     // editor
     {
-      name: 'editor',
+      name: 'primaryPanel',
       title: 'Editor',
-      isActive: () => sidebarState.panels.editor.get(),
+      isActive: show.primaryPanel,
+      updateState: () => updateState('primaryPanel'),
       icon: <VscCode className="w-5 h-5" />,
       tooltip: 'Editor',
     },
@@ -86,7 +78,8 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'template',
       title: 'Template',
-      isActive: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
+      isActive: show.secondaryPanel && secondaryPanelType === 'template',
+      updateState: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
     },
@@ -94,7 +87,8 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'visualiser',
       title: 'Visualiser',
-      isActive: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
+      isActive: show.secondaryPanel && secondaryPanelType === 'visualiser',
+      updateState: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
     },
@@ -102,7 +96,8 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     {
       name: 'newFile',
       title: 'New file',
-      isActive: () => false,
+      isActive: false,
+      updateState: () => panelsState.setState({ newFileOpened: true }),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
     },
@@ -115,11 +110,11 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
             <button
               title={item.title}
-              onClick={() => setActiveNav(item.name as NavItemType)}
+              onClick={() => item.updateState?.()}
               className={'flex text-sm focus:outline-none border-box p-2'}
               type="button"
             >
-              <div className={item.isActive() ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
+              <div className={item.isActive ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
                 {item.icon}
               </div>
             </button>
