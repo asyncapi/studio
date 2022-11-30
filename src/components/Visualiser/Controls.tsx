@@ -25,7 +25,7 @@ export const Controls: FunctionComponent<ControlsProps> = () => {
   }, [animateNodes]);
 
   const reloadInterface = () => {
-    setNodes([...calculateNodesForDynamicLayout(nodes)]);
+    setNodes(calculateNodesForDynamicLayout(nodes));
     fitView();
   };
 
