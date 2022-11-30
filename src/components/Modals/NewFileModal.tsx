@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import toast from 'react-hot-toast';
 
-import { ConfirmModal } from './index';
 import examples from '../../examples';
+
+import { ConfirmModal } from './ConfirmModal';
 import { useServices } from '../../services';
-import state from '../../state';
+import { usePanelsState, panelsState } from '../../state/index.state';
+
+import type { ComponentType, MouseEventHandler, FunctionComponent } from 'react';
 
 interface TemplateListItemProps {
   title: string;
-  description: React.ComponentType;
+  description: ComponentType;
   isSelected: boolean;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   key: string;
 }
 
-const TemplateListItem: React.FunctionComponent<TemplateListItemProps> = ({ title, description: Description, onClick, isSelected }) => {
+const TemplateListItem: FunctionComponent<TemplateListItemProps> = ({ title, description: Description, onClick, isSelected }) => {
   const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
   const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
 
@@ -32,15 +35,14 @@ const TemplateListItem: React.FunctionComponent<TemplateListItemProps> = ({ titl
   );
 };
 
-export const NewFileModal: React.FunctionComponent = () => {
+export const NewFileModal: FunctionComponent = () => {
   const { editorSvc } = useServices();
-  const sidebarState = state.useSidebarState();
-  const newFileEnabled = sidebarState.panels.newFile.get();
+  const newFileOpened = usePanelsState(state => state.newFileOpened);
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
   const onSubmit = () => {
     editorSvc.updateState({ content: selectedTemplate.template, updateModel: true });
-    sidebarState.panels.newFile.set(false);
+    panelsState.setState({ newFileOpened: false });
     setSelectedTemplate({ title: '', template: '' });
 
     toast.success(
@@ -51,7 +53,7 @@ export const NewFileModal: React.FunctionComponent = () => {
   };
 
   const onCancel = () => {
-    sidebarState.panels.newFile.set(false);
+    panelsState.setState({ newFileOpened: false });
     setSelectedTemplate({ title: '', template: '' });
   };
 
@@ -64,7 +66,7 @@ export const NewFileModal: React.FunctionComponent = () => {
       title="AsyncAPI Templates - Start with our template examples"
       confirmText="Use Template"
       confirmDisabled={!selectedTemplate.template}
-      show={newFileEnabled}
+      show={newFileOpened}
       onSubmit={onSubmit}
       onCancel={onCancel}
     >
