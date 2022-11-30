@@ -3,6 +3,7 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { useServices } from '../../services';
 import state from '../../state';
+import { useSettingsState } from '../../state/index.state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
@@ -16,11 +17,10 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
   const templateState = state.useTemplateState();
-  const settingsState = state.useSettingsState();
+  const autoRendering = useSettingsState(state => state.templates.autoRendering);
 
   const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
-  const autoRendering = settingsState.templates.autoRendering.get();
 
   useEffect(() => {
     if (editorLoaded === true) {

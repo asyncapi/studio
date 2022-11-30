@@ -7,6 +7,7 @@ import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import { debounce } from '../../helpers';
 import { useServices } from '../../services';
 import state from '../../state';
+import { useSettingsState } from '../../state/index.state';
 
 export type MonacoWrapperProps = MonacoEditorProps
 
@@ -14,10 +15,8 @@ export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
   ...props
 }) => {
   const { editorSvc, specificationSvc } = useServices();
+  const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
   const editorState = state.useEditorState();
-  const settingsState = state.useSettingsState();
-  const autoSaving = settingsState.editor.autoSaving.get();
-  const savingDelay = settingsState.editor.savingDelay.get();
 
   async function handleEditorDidMount(
     editor: monacoAPI.editor.IStandaloneCodeEditor,

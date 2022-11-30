@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { create, useModal } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './ConfirmModal';
 import { Markdown } from '../common';
@@ -20,20 +21,15 @@ Below are the changes compared to the old AsyncAPI Playground:
 - Panels can be stretched.
 `;
 
-export const RedirectedModal: React.FunctionComponent = () => {
-  const [show, setShow] = useState(false);
+export const RedirectedModal = create(() => {
+  const modal = useModal();
   const [showMore, setShowMore] = useState(false);
 
   const appState = state.useAppState();
-  const isRedirected = appState.redirectedFrom.get();
 
   useEffect(() => {
-    isRedirected === 'playground' && setShow(true);
-  }, [isRedirected]);
-
-  useEffect(() => {
-    show === false && appState.redirectedFrom.set(false);
-  }, [show]); // eslint-disable-line
+    modal.visible === false && appState.redirectedFrom.set(false);
+  }, [modal.visible]); // eslint-disable-line
 
   function onCancel() {
     if (typeof window.history.replaceState === 'function') {
@@ -41,7 +37,6 @@ export const RedirectedModal: React.FunctionComponent = () => {
       url.searchParams.delete('redirectedFrom');
       window.history.replaceState({}, window.location.href, url.toString());
     }
-    setShow(false);
   }
 
   function onShowMoreClick() {
@@ -51,7 +46,6 @@ export const RedirectedModal: React.FunctionComponent = () => {
   return (
     <ConfirmModal
       title='Welcome to the AsyncAPI Studio!'
-      show={show}
       cancelText='OK'
       onCancel={onCancel}
     >
@@ -78,4 +72,4 @@ export const RedirectedModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

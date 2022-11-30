@@ -1,34 +1,29 @@
-import React, { Fragment, useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
+import { Fragment, useRef, useCallback } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { useModal } from '@ebay/nice-modal-react';
 
-export interface ConfirmModalHandle {
-  close(): void;
-}
+import type { ReactNode, FunctionComponent, PropsWithChildren } from 'react';
 
 interface ConfirmModalProps {
-  title: React.ReactNode;
-  description?: React.ReactNode;
-  confirmText?: React.ReactNode;
-  cancelText?: React.ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  confirmText?: ReactNode;
+  cancelText?: ReactNode;
   confirmDisabled?: boolean;
   cancelDisabled?: boolean;
-  opener?: React.ReactNode;
-  show?: boolean;
   containerClassName? : string;
   closeAfterSumbit?: boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
 }
 
-const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React.PropsWithChildren<ConfirmModalProps>> = ({
+export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps>> = ({
   title,
   description,
   confirmText = 'Save',
   cancelText = 'Cancel',
   confirmDisabled = true,
   cancelDisabled = false,
-  opener,
-  show = false,
   closeAfterSumbit = true,
   onSubmit,
   onCancel = () => {
@@ -36,43 +31,35 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
   },
   containerClassName,
   children,
-}, modalRef) => {
-  const [showModal, setShowModal] = useState(show);
-
+}) => {
+  const modal = useModal();
   const cancelButtonRef = useRef(null);
-
-  useImperativeHandle(modalRef, () => ({
-    close() {
-      setShowModal(false);
-    },
-  }));
-
-  useEffect(() => {
-    setShowModal(show);
-  }, [show]);
 
   const handleOnSubmit = () => {
     onSubmit && onSubmit();
     if (closeAfterSumbit) {
-      setShowModal(false);
+      modal.hide();
     }
   };
 
   const handleOnCancel = () => {
     onCancel();
-    setShowModal(false);
+    modal.hide();
   };
+
+  const handleAfterLeave = useCallback(() => {
+    modal.remove();
+  }, []);
 
   return (
     <>
-      {opener && <div onClick={() => setShowModal(true)}>{opener}</div>}
-      <Transition.Root show={showModal} as={Fragment}>
+      <Transition.Root show={modal.visible} as={Fragment} afterLeave={handleAfterLeave}>
         <Dialog
           as="div"
           static
           className="fixed z-50 inset-0 overflow-y-auto"
           initialFocus={cancelButtonRef}
-          open={showModal}
+          open={modal.visible}
           onClose={handleOnCancel}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -150,6 +137,3 @@ const ConfirmModalSans: React.ForwardRefRenderFunction<ConfirmModalHandle, React
     </>
   );
 };
-
-const ConfirmModal = forwardRef(ConfirmModalSans);
-export { ConfirmModal };

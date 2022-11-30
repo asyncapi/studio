@@ -1,7 +1,8 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
+import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
-import { SettingsModal } from './Modals/Settings/SettingsModal';
+import { SettingsModal, NewFileModal } from './Modals';
 
 import { usePanelsState, panelsState } from '../state/index.state';
 
@@ -41,7 +42,7 @@ interface NavItem {
   name: string;
   title: string;
   isActive: boolean;
-  updateState?: () => void;
+  onClick: () => void;
   icon: ReactNode;
   tooltip: ReactNode;
 }
@@ -50,7 +51,6 @@ interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
-
   if (show.activityBar === false) {
     return null;
   }
@@ -61,7 +61,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'primarySidebar',
       title: 'Navigation',
       isActive: show.primarySidebar,
-      updateState: () => updateState('primarySidebar'),
+      onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
     },
@@ -70,7 +70,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'primaryPanel',
       title: 'Editor',
       isActive: show.primaryPanel,
-      updateState: () => updateState('primaryPanel'),
+      onClick: () => updateState('primaryPanel'),
       icon: <VscCode className="w-5 h-5" />,
       tooltip: 'Editor',
     },
@@ -79,7 +79,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'template',
       title: 'Template',
       isActive: show.secondaryPanel && secondaryPanelType === 'template',
-      updateState: () => updateState('secondaryPanel', 'template'),
+      onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
     },
@@ -88,7 +88,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'visualiser',
       title: 'Visualiser',
       isActive: show.secondaryPanel && secondaryPanelType === 'visualiser',
-      updateState: () => updateState('secondaryPanel', 'visualiser'),
+      onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
     },
@@ -97,7 +97,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'newFile',
       title: 'New file',
       isActive: false,
-      updateState: () => panelsState.setState({ newFileOpened: true }),
+      onClick: () => showModal(NewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
     },
@@ -110,7 +110,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
             <button
               title={item.title}
-              onClick={() => item.updateState?.()}
+              onClick={() => item.onClick()}
               className={'flex text-sm focus:outline-none border-box p-2'}
               type="button"
             >
@@ -122,7 +122,16 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         ))}
       </div>
       <div className="flex flex-col">
-        <SettingsModal />
+        <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
+          <button
+            title="Studio settings"  
+            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            type="button"  
+            onClick={() => showModal(SettingsModal)}
+          >
+            <VscSettingsGear className="w-5 h-5" />
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
 
 import examples from '../../examples';
 
 import { ConfirmModal } from './ConfirmModal';
 import { useServices } from '../../services';
-import { usePanelsState, panelsState } from '../../state/index.state';
 
 import type { ComponentType, MouseEventHandler, FunctionComponent } from 'react';
 
@@ -35,14 +35,12 @@ const TemplateListItem: FunctionComponent<TemplateListItemProps> = ({ title, des
   );
 };
 
-export const NewFileModal: FunctionComponent = () => {
+export const NewFileModal = create(() => {
   const { editorSvc } = useServices();
-  const newFileOpened = usePanelsState(state => state.newFileOpened);
   const [selectedTemplate, setSelectedTemplate] = useState({ title: '', template: '' });
 
   const onSubmit = () => {
     editorSvc.updateState({ content: selectedTemplate.template, updateModel: true });
-    panelsState.setState({ newFileOpened: false });
     setSelectedTemplate({ title: '', template: '' });
 
     toast.success(
@@ -50,11 +48,6 @@ export const NewFileModal: FunctionComponent = () => {
         <span className="block text-bold">Succesfully reused the {`"${selectedTemplate.title}"`} template.</span>
       </div>
     );
-  };
-
-  const onCancel = () => {
-    panelsState.setState({ newFileOpened: false });
-    setSelectedTemplate({ title: '', template: '' });
   };
 
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
@@ -66,9 +59,7 @@ export const NewFileModal: FunctionComponent = () => {
       title="AsyncAPI Templates - Start with our template examples"
       confirmText="Use Template"
       confirmDisabled={!selectedTemplate.template}
-      show={newFileOpened}
       onSubmit={onSubmit}
-      onCancel={onCancel}
     >
       <div className="flex content-center justify-center">
         <div className="w-full  overflow-auto space-y-8 ">
@@ -105,4 +96,4 @@ export const NewFileModal: FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

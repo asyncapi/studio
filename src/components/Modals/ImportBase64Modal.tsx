@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
+
 import { ConfirmModal } from './index';
 
 import { useServices } from '../../services';
 
-export const ImportBase64Modal: React.FunctionComponent = () => {
+export const ImportBase64Modal = create(() => {
   const [base64, setBase64] = useState('');
   const { editorSvc } = useServices();
 
@@ -33,15 +35,6 @@ export const ImportBase64Modal: React.FunctionComponent = () => {
       title="Import AsyncAPI document from Base64"
       confirmText="Import"
       confirmDisabled={!base64}
-      opener={
-        <button
-          type="button"
-          className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-          title="Import from Base64"
-        >
-          Import from Base64
-        </button>
-      }
       onSubmit={onSubmit}
     >
       <div className="flex content-center justify-center">
@@ -61,4 +54,4 @@ export const ImportBase64Modal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

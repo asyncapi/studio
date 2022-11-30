@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
+import { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
 import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
 import state from '../../../state';
+
+import type { FunctionComponent, ForwardRefRenderFunction, PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
 interface TemplateParameterProps {
   propertyName: string;
@@ -12,7 +14,7 @@ interface TemplateParameterProps {
   setValue: (propertyName: string, value: any, isRequired: boolean) => void;
 }
 
-const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
+const StringParameter: FunctionComponent<TemplateParameterProps> = ({
   propertyName, 
   property,
   isRequired,
@@ -46,7 +48,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
 
 const NumberParameter = StringParameter;
 
-const BooleanParameter: React.FunctionComponent<TemplateParameterProps> = ({
+const BooleanParameter: FunctionComponent<TemplateParameterProps> = ({
   propertyName,
   property,
   isRequired,
@@ -60,7 +62,7 @@ const BooleanParameter: React.FunctionComponent<TemplateParameterProps> = ({
   );
 };
 
-const ParameterItem: React.FunctionComponent<TemplateParameterProps> = (props) => {
+const ParameterItem: FunctionComponent<TemplateParameterProps> = (props) => {
   switch (props.property.type) {
   case 'string': {
     return <StringParameter {...props} />;
@@ -83,10 +85,10 @@ interface TemplateParametersProps {
   templateName: string;
   template: JSONSchema7;
   supportedProtocols: string[];
-  setConfirmDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmDisabled: Dispatch<SetStateAction<boolean>>;
 }
 
-export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplateParametersHandle, React.PropsWithChildren<TemplateParametersProps>> = ({
+export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParametersHandle, PropsWithChildren<TemplateParametersProps>> = ({
   templateName,
   template: { properties = {}, required = [] },
   supportedProtocols = [],

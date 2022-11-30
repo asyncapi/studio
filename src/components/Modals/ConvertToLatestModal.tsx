@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './ConfirmModal';
 
 import { useServices } from '../../services';
 import state from '../../state';
 
-export const ConvertToLatestModal: React.FunctionComponent = () => {
-  const [show, setShow] = useState(false);
+export const ConvertToLatestModal = create(() => {
   const [version, setVersion] = useState('');
 
   const { editorSvc, specificationSvc } = useServices();
   const specState = state.useSpecState();
   const parserState = state.useParserState();
-  const shouldOpenConvertModal = specState.shouldOpenConvertModal.get();
   const convertOnlyToLatest = specState.convertOnlyToLatest.get();
   const forceConvert = specState.forceConvert.get();
 
@@ -23,25 +22,12 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 
-  useEffect(() => {
-    shouldOpenConvertModal && setShow(true);
-  }, [shouldOpenConvertModal]);
-
-  useEffect(() => {
-    show === false && specState.shouldOpenConvertModal.set(false);
-  }, [show]); // eslint-disable-line
-
-  function onCancel() {
-    setShow(false);
-  }
-
   function onSubmit() {
     async function convert() {
       try {
         await editorSvc.convertSpec(convertOnlyToLatest ? latestVersion : version);
       } finally {
         specState.shouldOpenConvertModal.set(false);
-        setShow(false);
       }
     }
 
@@ -79,9 +65,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
       confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : 'Convert'}
       confirmDisabled={false}
       cancelDisabled={forceConvert}
-      show={show}
       onSubmit={onSubmit}
-      onCancel={onCancel}
     >
       <div className="flex flex-col content-center justify-center text-center">
         <p>
@@ -127,4 +111,4 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

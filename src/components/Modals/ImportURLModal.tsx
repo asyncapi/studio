@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
+
 import { ConfirmModal } from './index';
 
 import { useServices } from '../../services';
 
-export const ImportURLModal: React.FunctionComponent = () => {
+export const ImportURLModal = create(() => {
   const [url, setUrl] = useState('');
   const { editorSvc } = useServices();
 
@@ -33,15 +35,6 @@ export const ImportURLModal: React.FunctionComponent = () => {
       title="Import AsyncAPI document from URL"
       confirmText="Import"
       confirmDisabled={!url}
-      opener={
-        <button
-          type="button"
-          className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-          title="Import from URL"
-        >
-          Import from URL
-        </button>
-      }
       onSubmit={onSubmit}
     >
       <div className="flex content-center justify-center">
@@ -61,4 +54,4 @@ export const ImportURLModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

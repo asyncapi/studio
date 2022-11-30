@@ -1,34 +1,35 @@
-import React from 'react';
+import { useCallback } from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
+import { show } from '@ebay/nice-modal-react';
+
+import { ConvertToLatestModal } from '../Modals';
 
 import { useServices } from '../../services';
 import state from '../../state';
+import { useSettingsState } from '../../state/index.state';
+
+import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 
 interface TerminalInfoProps {}
 
-export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
+export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const { specificationSvc } = useServices();
   const appState = state.useAppState();
   const editorState = state.useEditorState();
   const parserState = state.useParserState();
-  const settingsState = state.useSettingsState();
+  const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
   const liveServer = appState.liveServer.get();
   const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
   const latestVersion = specificationSvc.getLastVersion();
   const documentValid = parserState.valid.get();
   const hasErrorDiagnostics = parserState.hasErrorDiagnostics.get();
-  const autoSaving = settingsState.editor.autoSaving.get();
   const modified = editorState.modified.get();
 
-  function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  const onNonLatestClick = useCallback((e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    state.spec.set({
-      shouldOpenConvertModal: true,
-      convertOnlyToLatest: true,
-      forceConvert: false,
-    });
-  }
+    show(ConvertToLatestModal);
+  }, []);
 
   return (
     <div className="flex flex-row px-2">

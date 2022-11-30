@@ -7,8 +7,12 @@ import { untilde } from '@asyncapi/parser/cjs/utils';
 import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
 import YAML from 'js-yaml';
+import { show } from '@ebay/nice-modal-react';
+
+import { ConvertToLatestModal } from '../components/Modals';
 
 import state from '../state';
+import { settingsState } from '../state/index.state';
 
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
@@ -40,7 +44,6 @@ export class SpecificationService extends AbstractService {
     }
 
     let diagnostics: Diagnostic[] = [];
-
     try {
       const { document, diagnostics: validationDiagnostics, extras } = await parser.parse(rawSpec, options);
 
@@ -66,11 +69,7 @@ export class SpecificationService extends AbstractService {
         const version = oldDocument.version() as SpecVersions;
         this.svcs.monacoSvc.updateLanguageConfig(version);
         if (this.shouldInformAboutLatestVersion(version)) {
-          state.spec.set({
-            shouldOpenConvertModal: true,
-            convertOnlyToLatest: false,
-            forceConvert: false,
-          });
+          show(ConvertToLatestModal);
         }
   
         this.svcs.editorSvc.applyMarkers(diagnostics);
@@ -160,7 +159,7 @@ export class SpecificationService extends AbstractService {
   }
 
   filterDiagnostics(diagnostics: Diagnostic[] = state.parser.diagnostics.get()) {
-    const governanceShowState = state.settings.governance.show.get();
+    const governanceShowState = settingsState.getState().governance.show;
     return diagnostics.filter(({ severity }) => {
       return (
         severity === DiagnosticSeverity.Error ||
