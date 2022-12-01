@@ -5,6 +5,8 @@ import { HTMLWrapper } from './HTMLWrapper';
 
 import { useServices } from '../../services';
 
+import { appState } from '../../state/index.state';
+
 interface TemplateProps {}
 
 export const Template: React.FunctionComponent<TemplateProps> = () => {
@@ -12,7 +14,7 @@ export const Template: React.FunctionComponent<TemplateProps> = () => {
 
   return (
     <div className="flex flex-1 flex-col h-full overflow-hidden">
-      {!navigationSvc.isReadOnly(true) && <TemplateSidebar />}
+      {!appState.getState().readOnly && <TemplateSidebar />}
       <HTMLWrapper />
     </div>
   );

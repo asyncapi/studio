@@ -6,7 +6,7 @@ import { ConvertToLatestModal } from '../Modals';
 
 import { useServices } from '../../services';
 import state from '../../state';
-import { useSettingsState } from '../../state/index.state';
+import { useAppState, useDocumentsState, useSettingsState } from '../../state/index.state';
 
 import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 
@@ -14,16 +14,14 @@ interface TerminalInfoProps {}
 
 export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const { specificationSvc } = useServices();
-  const appState = state.useAppState();
   const editorState = state.useEditorState();
-  const parserState = state.useParserState();
+  const document = useDocumentsState(state => state.documents['asyncapi']);
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
-  const liveServer = appState.liveServer.get();
-  const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
-  const latestVersion = specificationSvc.getLastVersion();
-  const documentValid = parserState.valid.get();
-  const hasErrorDiagnostics = parserState.hasErrorDiagnostics.get();
+  const liveServer = useAppState(state => state.liveServer);
+  const actualVersion = document.document?.version() || '2.0.0';
+  const latestVersion = specificationSvc.latestVersion;
+  const documentValid = document.valid;
   const modified = editorState.modified.get();
 
   const onNonLatestClick = useCallback((e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -41,7 +39,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Live server</span>
         </div>
       )}
-      {hasErrorDiagnostics ? (
+      {document.diagnostics.errors.length > 0 ? (
         <div className="ml-3">
           <span className="text-red-500">
             <svg

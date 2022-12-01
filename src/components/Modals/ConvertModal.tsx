@@ -5,18 +5,18 @@ import { create } from '@ebay/nice-modal-react';
 import { ConfirmModal } from './index';
 
 import { useServices } from '../../services';
-import state from '../../state';
+import { useDocumentsState } from '../../state/index.state';
 
 import type { SpecVersions } from '../../types';
 
 export const ConvertModal = create(() => {
   const { editorSvc, specificationSvc } = useServices();
-  const latestVersion = specificationSvc.getLastVersion();
-
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const latestVersion = specificationSvc.latestVersion;
+  
   const [version, setVersion] = useState(latestVersion);
-  const parserState = state.useParserState();
-  const actualVersion = parserState.parsedSpec.get()?.version();
-  const allowedVersions = Object.keys(specificationSvc.getSpecs());
+  const actualVersion = document?.version();
+  const allowedVersions = Object.keys(specificationSvc.specs);
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 

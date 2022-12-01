@@ -10,7 +10,7 @@ export class ConverterService extends AbstractService {
     version?: ConvertVersion,
     options?: ConvertOptions,
   ): Promise<string> {
-    version = version || this.svcs.specificationSvc.getLastVersion();
+    version = version || this.svcs.specificationSvc.latestVersion;
 
     try {
       const converted = convert(spec, version, options);

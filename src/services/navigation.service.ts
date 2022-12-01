@@ -1,48 +1,23 @@
 import { AbstractService } from './abstract.service';
 
-import state from '../state';
-
 export class NavigationService extends AbstractService {
-  override async onInit() {
+  getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
-
-    const documentUrl = urlParams.get('url') || urlParams.get('load');
-    const base64Document = urlParams.get('base64');
-    const liveServerPort = urlParams.get('liveServer');
-    const redirectedFrom = urlParams.get('redirectedFrom');
-
-    const editorSvc = this.svcs.editorSvc;
-    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
-      this.svcs.socketClientSvc.connect(window.location.hostname, liveServerPort);
-    } else if (documentUrl) {
-      await editorSvc.importFromURL(documentUrl);
-    } else if (base64Document) {
-      await editorSvc.importBase64(base64Document);
+    return {
+      url: urlParams.get('url') || urlParams.get('load'),
+      base64: urlParams.get('base64'),
+      readOnly: urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === '',
+      liveServer: urlParams.get('liveServer'),
+      redirectedFrom: urlParams.get('redirectedFrom'),
     }
-
-    const isReadonly = this.isReadOnly(true);
-    if (isReadonly) {
-      await this.svcs.specificationSvc.parseSpec(state.editor.editorValue.get());
-      state.sidebar.show.set(false);
-      state.editor.merge({
-        monacoLoaded: true,
-        editorLoaded: true,
-      });
-    }
-
-    state.app.merge({
-      readOnly: isReadonly,
-      initialized: true,
-      redirectedFrom: redirectedFrom || false,
-    });
   }
 
   async scrollTo(
-    jsonPointer: any,
+    jsonPointer: string | Array<string | number>,
     hash: string,
   ) {
     try {
-      const range = this.svcs.specificationSvc.getRangeForJsonPath(jsonPointer);
+      const range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
       if (range) {
         this.scrollToEditorLine(range.start.line + 1);
       }
@@ -77,7 +52,7 @@ export class NavigationService extends AbstractService {
 
   async scrollToEditorLine(line: number, character = 1) {
     try {
-      const editor = window.Editor;
+      const editor = this.svcs.editorSvc.editor;
       if (editor) {
         editor.revealLineInCenter(line);
         editor.setPosition({ lineNumber: line, column: character });
@@ -85,18 +60,6 @@ export class NavigationService extends AbstractService {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  isReadOnly(strict = false) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isReadonly = urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === ''
-      ? true
-      : false;
-
-    if (strict === false) {
-      return isReadonly;
-    }
-    return isReadonly && !!(urlParams.get('url') || urlParams.get('load') || urlParams.get('base64'));
   }
 
   private emitHashChangeEvent(hash: string) {

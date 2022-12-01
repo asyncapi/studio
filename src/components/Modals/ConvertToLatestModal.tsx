@@ -6,19 +6,20 @@ import { ConfirmModal } from './ConfirmModal';
 
 import { useServices } from '../../services';
 import state from '../../state';
+import { useDocumentsState } from '../../state/index.state';
 
 export const ConvertToLatestModal = create(() => {
   const [version, setVersion] = useState('');
-
   const { editorSvc, specificationSvc } = useServices();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+
   const specState = state.useSpecState();
-  const parserState = state.useParserState();
   const convertOnlyToLatest = specState.convertOnlyToLatest.get();
   const forceConvert = specState.forceConvert.get();
 
-  const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0-rc2';
-  const latestVersion = specificationSvc.getLastVersion();
-  const allowedVersions = Object.keys(specificationSvc.getSpecs());
+  const actualVersion = document?.version() || '2.0.0-rc2';
+  const latestVersion = specificationSvc.latestVersion;
+  const allowedVersions = Object.keys(specificationSvc.specs);
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 

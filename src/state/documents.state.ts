@@ -2,11 +2,20 @@ import create from 'zustand';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOutput } from '@asyncapi/parser/cjs';
 
+export type DocumentDiagnostics = {
+  original: Diagnostic[];
+  filtered: Diagnostic[];
+  errors: Diagnostic[];
+  warnings: Diagnostic[];
+  informations: Diagnostic[];
+  hints: Diagnostic[];
+}
+
 export type Document = {
   uri: string;
   document?: AsyncAPIDocument;
   extras?: ParseOutput['extras'];
-  diagnostics: Diagnostic[];
+  diagnostics: DocumentDiagnostics;
   valid?: boolean;
 }
 
