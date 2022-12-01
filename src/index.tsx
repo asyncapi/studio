@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
 
 import { createServices, ServicesProvider } from './services';
-import App from './App';
+import { App } from './App';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';
@@ -11,7 +12,7 @@ import 'reactflow/dist/style.css';
 import './tailwind.css';
 import './main.css';
 
-function configureMonacEnv() {
+function configureMonacoEnvironment() {
   window.MonacoEnvironment = {
     getWorker(_, label) {
       switch (label) {
@@ -32,7 +33,7 @@ function configureMonacEnv() {
 }
 
 async function bootstrap() {
-  configureMonacEnv();
+  configureMonacoEnvironment();
   const services = await createServices();
 
   const root = createRoot(
@@ -42,7 +43,9 @@ async function bootstrap() {
   root.render(
     <StrictMode>
       <ServicesProvider value={services}>
-        <App />
+        <ModalsProvider>
+          <App />
+        </ModalsProvider>
       </ServicesProvider>
     </StrictMode>
   );

@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
+
 import { ConfirmModal } from './index';
 
 import { useServices } from '../../services';
 import state from '../../state';
 
-export const ConvertModal: React.FunctionComponent = () => {
-  const [version, setVersion] = useState('');
-  
+import type { SpecVersions } from '../../types';
+
+export const ConvertModal = create(() => {
   const { editorSvc, specificationSvc } = useServices();
+  const latestVersion = specificationSvc.getLastVersion();
+
+  const [version, setVersion] = useState(latestVersion);
   const parserState = state.useParserState();
   const actualVersion = parserState.parsedSpec.get()?.version();
-  const latestVersion = specificationSvc.getLastVersion();
   const allowedVersions = Object.keys(specificationSvc.getSpecs());
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
@@ -41,15 +45,6 @@ export const ConvertModal: React.FunctionComponent = () => {
       title={`Convert AsyncAPI ${actualVersion} document`}
       confirmText="Convert"
       confirmDisabled={!version || allowedVersions.length === 0}
-      opener={
-        <button
-          type="button"
-          className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-          title="Convert AsyncAPI document"
-        >
-          Convert document
-        </button>
-      }
       onSubmit={onSubmit}
     >
       <div>
@@ -64,7 +59,7 @@ export const ConvertModal: React.FunctionComponent = () => {
             <select
               name="asyncapi-version"
               className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-              onChange={e => setVersion(e.target.value)}
+              onChange={e => setVersion(e.target.value as SpecVersions)}
               value={version}
             >
               <option value="">Please Select</option>
@@ -81,4 +76,4 @@ export const ConvertModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

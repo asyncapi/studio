@@ -2,13 +2,13 @@ import React from 'react';
 import { VscRefresh } from 'react-icons/vsc';
 
 import state from '../../state';
+import { useSettingsState } from '../../state/index.state';
 
 interface TemplateSidebarProps {}
 
 export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = () => {
   const templateState = state.useTemplateState();
-  const settingsState = state.useSettingsState();
-  const autoRendering = settingsState.templates.autoRendering.get();
+  const autoRendering = useSettingsState(state => state.templates.autoRendering);
 
   return (
     <div

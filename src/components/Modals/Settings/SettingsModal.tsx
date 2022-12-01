@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { VscSettingsGear } from 'react-icons/vsc';
+import { create, useModal } from '@ebay/nice-modal-react';
 
 import { SettingsTabs, SettingTab } from './SettingsTabs';
 
 import { ConfirmModal } from '../index';
-import { Switch, Tooltip } from '../../common';
+import { Switch } from '../../common';
 
-import { isDeepEqual } from '../../../helpers';
 import { useServices } from '../../../services';
 
 import state from '../../../state';
 
-import type { SettingsState } from '../../../state/settings';
+import type { Dispatch, SetStateAction, FunctionComponent } from 'react';
+import type { SettingsState } from '../../../state/settings.state';
 
 interface ShowGovernanceOptionProps {
   label: 'warning' | 'information' | 'hint';
   state: boolean;
-  setState: React.Dispatch<React.SetStateAction<boolean>>;
+  setState: Dispatch<SetStateAction<boolean>>;
 }
 
-const ShowGovernanceOption: React.FunctionComponent<ShowGovernanceOptionProps> = ({
+const ShowGovernanceOption: FunctionComponent<ShowGovernanceOptionProps> = ({
   label,
   state,
   setState
@@ -48,19 +48,25 @@ const ShowGovernanceOption: React.FunctionComponent<ShowGovernanceOptionProps> =
   );
 };
 
-export const SettingsModal: React.FunctionComponent = () => {
-  const { editorSvc } = useServices();
-  const settingsState = state.useSettingsState();
-  const [autoSaving, setAutoSaving] = useState(settingsState.editor.autoSaving.get());
-  const [savingDelay, setSavingDelay] = useState(settingsState.editor.savingDelay.get());
-  const [governanceWarnings, setGovernanceWarnings] = useState(settingsState.governance.show.warnings.get());
-  const [governanceInformations, setGovernanceInformations] = useState(settingsState.governance.show.informations.get());
-  const [governanceHints, setGovernanceHints] = useState(settingsState.governance.show.hints.get());
-  const [autoRendering, setAutoRendering] = useState(settingsState.templates.autoRendering.get());
+interface SettingsModalProps {
+  activeTab?: 'editor' | 'governance' | 'template';
+}
+
+export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' }) => {
+  const { editorSvc, settingsSvc } = useServices();
+  const settings = settingsSvc.get();
+  const modal = useModal();
+
+  const [autoSaving, setAutoSaving] = useState(settings.editor.autoSaving);
+  const [savingDelay, setSavingDelay] = useState(settings.editor.savingDelay);
+  const [governanceWarnings, setGovernanceWarnings] = useState(settings.governance.show.warnings);
+  const [governanceInformations, setGovernanceInformations] = useState(settings.governance.show.informations);
+  const [governanceHints, setGovernanceHints] = useState(settings.governance.show.hints);
+  const [autoRendering, setAutoRendering] = useState(settings.templates.autoRendering);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
 
-  useEffect(() => {
-    const newState: Partial<SettingsState> = {
+  const createNewState = (): SettingsState => {
+    return {
       editor: {
         autoSaving,
         savingDelay,
@@ -75,52 +81,24 @@ export const SettingsModal: React.FunctionComponent = () => {
       templates: {
         autoRendering,
       }
-    }; 
-    let oldState: Partial<SettingsState> = JSON.parse(localStorage.getItem('studio-settings') || '');
-    oldState = {
-      editor: oldState.editor,
-      governance: oldState.governance,
-      templates: oldState.templates,
     };
+  };
 
-    const isThisSameObjects = isDeepEqual(newState, oldState);
+  useEffect(() => {
+    const newState = createNewState();
+    const isThisSameObjects = settingsSvc.isEqual(newState);
     setConfirmDisabled(isThisSameObjects);
   }, [autoSaving, savingDelay, autoRendering, governanceWarnings, governanceInformations, governanceHints]);
 
-  const saveOptions = (settings: Partial<SettingsState> = {}) => {
-    settingsState.merge({
-      ...settings,
-    });
-    localStorage.setItem('studio-settings', JSON.stringify(settingsState.get()));
-  };
-
-  const onCancel = () => {
-    settingsState.merge({
-      showModal: false,
-      activeTab: '',
-    });
-  };
+  const onCancel = useCallback(() => {
+    modal.hide();
+  }, []);
 
   const onSubmit = () => {
-    saveOptions({
-      editor: {
-        autoSaving,
-        savingDelay,
-      },
-      governance: {
-        show: {
-          warnings: governanceWarnings,
-          informations: governanceInformations,
-          hints: governanceHints,
-        }
-      },
-      templates: {
-        autoRendering,
-      }
-    });
+    const newState = createNewState();
+    settingsSvc.set(newState);
 
     editorSvc.applyMarkers(state.parser.diagnostics.get());
-    setConfirmDisabled(true);
     toast.success(
       <div>
         <span className="block text-bold">
@@ -133,7 +111,7 @@ export const SettingsModal: React.FunctionComponent = () => {
 
   const tabs: Array<SettingTab> = [
     {
-      name: 'Editor',
+      name: 'editor',
       tab: <span>Editor</span>,
       content: (
         <div>
@@ -185,7 +163,7 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
     {
-      name: 'Governance',
+      name: 'governance',
       tab: <span>Governance</span>,
       content: (
         <>
@@ -196,7 +174,7 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
     {
-      name: 'Templates',
+      name: 'templates',
       tab: <span>Templates</span>,
       content: (
         <div>
@@ -221,27 +199,16 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
   ];
+
   return (
     <ConfirmModal
-      title={'Studio settings'}
+      title='Studio settings'
       confirmText="Save"
       confirmDisabled={confirmDisabled}
-      show={settingsState.showModal.get()}
-      opener={
-        <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
-          <button
-            title="Studio settings"  
-            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
-            type="button"  
-          >
-            <VscSettingsGear className="w-5 h-5" />
-          </button>
-        </Tooltip>
-      }
       onSubmit={onSubmit}
       onCancel={onCancel}
     >
-      <SettingsTabs tabs={tabs} />
+      <SettingsTabs active={activeTab} tabs={tabs} />
     </ConfirmModal>
   );
-};
+});

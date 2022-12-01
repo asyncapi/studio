@@ -4,6 +4,7 @@ import { FlowDiagram } from './FlowDiagram';
 
 import { useServices } from '../../services';
 import state from '../../state';
+import { useSettingsState } from '../../state/index.state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 import type { FunctionComponent } from 'react';
@@ -17,11 +18,10 @@ export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const parserState = state.useParserState();
   const editorState = state.useEditorState();
   const templateState = state.useTemplateState();
-  const settingsState = state.useSettingsState();
+  const autoRendering = useSettingsState(state => state.templates.autoRendering);
 
   const documentValid = parserState.valid.get();
   const editorLoaded = editorState.editorLoaded.get();
-  const autoRendering = settingsState.templates.autoRendering.get();
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {

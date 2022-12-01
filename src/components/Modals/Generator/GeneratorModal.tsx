@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { create, useModal } from '@ebay/nice-modal-react';
 
-import { ConfirmModal, ConfirmModalHandle } from '../index';
+import { ConfirmModal } from '../index';
 import { TemplateParameters, TemplateParametersHandle } from './TemplateParameters';
 
 import { useServices } from '../../../services';
@@ -11,13 +12,12 @@ import state from '../../../state';
 
 import templates from './template-parameters.json';
 
-export const GeneratorModal: React.FunctionComponent = () => {
+export const GeneratorModal = create(() => {
+  const modal = useModal();
   const [template, setTemplate] = useState('');
   const { serverAPISvc } = useServices();
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
-
-  const modalRef = useRef<ConfirmModalHandle>(null);
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export const GeneratorModal: React.FunctionComponent = () => {
     });
 
     if (response.ok) {
-      modalRef.current?.close();
+      modal.hide();
       setTemplate('');
     } else {
       const responseProblem = await serverAPISvc.retrieveProblem<{ validationErrors: string[] }>(response);
@@ -69,24 +69,15 @@ export const GeneratorModal: React.FunctionComponent = () => {
       setTemplate('');
       setProblem(null);
       setConfirmDisabled(true);
+      modal.hide();
     }, 200);
   };
 
   return (
     <ConfirmModal
-      ref={modalRef}
       title="Generate code/docs based on your AsyncAPI Document"
       confirmText="Generate"
       confirmDisabled={confirmDisabled}
-      opener={
-        <button
-          type="button"
-          className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-          title="Generate code/docs"
-        >
-          Generate code/docs
-        </button>
-      }
       onSubmit={onSubmit}
       onCancel={onCancel}
       closeAfterSumbit={false}
@@ -183,4 +174,4 @@ export const GeneratorModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});
