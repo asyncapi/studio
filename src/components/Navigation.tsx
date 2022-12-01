@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useServices } from '../services';
-import { useDocumentsState } from '../state/index.state';
-import state from '../state';
+import { useDocumentsState, useFilesState } from '../state/index.state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
@@ -248,10 +247,8 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const [hash, setHash] = useState(window.location.hash);
 
   const { navigationSvc } = useServices();
-  const editorState = state.useEditorState();
+  const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
-
-  const rawSpec = editorState.editorValue.get();
 
   useEffect(() => {
     const fn = () => {

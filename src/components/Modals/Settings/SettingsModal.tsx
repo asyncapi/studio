@@ -51,7 +51,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' }) => {
-  const { editorSvc, settingsSvc } = useServices();
+  const { settingsSvc } = useServices();
   const settings = settingsSvc.get();
   const modal = useModal();
 

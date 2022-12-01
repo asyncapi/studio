@@ -9,7 +9,7 @@ export class NavigationService extends AbstractService {
       readOnly: urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === '',
       liveServer: urlParams.get('liveServer'),
       redirectedFrom: urlParams.get('redirectedFrom'),
-    }
+    };
   }
 
   async scrollTo(

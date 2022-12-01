@@ -2,6 +2,9 @@ import { AbstractService } from './abstract.service';
 
 import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
+import YAML from 'js-yaml';
+
+import { documentsState, filesState } from '../state/index.state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
@@ -19,9 +22,11 @@ export class MonacoService extends AbstractService {
     // set monaco theme
     this.setMonacoTheme();
     // prepare JSON Schema specs and definitions for JSON/YAML language config
-    this.prepareJSONSchemas()
+    this.prepareJSONSchemas();
     // load initial language config (for json and yaml)
     this.setLanguageConfig(this.svcs.specificationSvc.latestVersion);
+    // subscribe to document to update JSON/YAML language config
+    this.subcribeToDocuments();
   }
 
   get monaco() {
@@ -37,6 +42,9 @@ export class MonacoService extends AbstractService {
   }
 
   private setLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
+    if (!this.monaco) {
+      return;
+    }
     const options = this.prepareLanguageConfig(version);
 
     // json
@@ -66,7 +74,7 @@ export class MonacoService extends AbstractService {
           fileMatch: ['*'], // associate with all models
           schema: spec,
         },
-        ...this.jsonSchemaDefinitions!,
+        ...(this.jsonSchemaDefinitions || []),
       ],
     } as any;
   }
@@ -82,6 +90,10 @@ export class MonacoService extends AbstractService {
   }
 
   private setMonacoTheme() {
+    if (!this.monaco) {
+      return;
+    }
+
     this.monaco.editor.defineTheme('asyncapi-theme', {
       base: 'vs-dark',
       inherit: true,
@@ -104,10 +116,38 @@ export class MonacoService extends AbstractService {
       delete copiedSpec.definitions;
       this.jsonSchemaSpecs.set(version, copiedSpec);
 
+      const defs: monacoAPI.languages.json.DiagnosticsOptions['schemas'] =  [];
       definitions.forEach(d => {
         if (uris.includes(d.uri)) return;
         uris.push(d.uri);
-        this.jsonSchemaDefinitions!.push(d);
+        defs.push(d);
+      });
+      this.jsonSchemaDefinitions = defs;
+    });
+  }
+
+  private subcribeToDocuments() {
+    documentsState.subscribe((state, prevState) => {
+      const newDocuments = state.documents;
+      const oldDocuments = prevState.documents;
+
+      Object.entries(newDocuments).forEach(([uri, document]) => {
+        const oldDocument = oldDocuments[String(uri)];
+        if (document === oldDocument) return;
+        const version = document.document?.version();
+        if (version) {
+          this.updateLanguageConfig(version as SpecVersions);
+        } else {
+          try {
+            const file = filesState.getState().files['asyncapi'];
+            if (file) {
+              const version = (YAML.load(file.content) as { asyncapi: SpecVersions }).asyncapi;
+              this.svcs.monacoSvc.updateLanguageConfig(version);
+            }
+          } catch (e: any) {
+            // intentional
+          }
+        }
       });
     });
   }

@@ -3,8 +3,7 @@ import MonacoEditor from '@monaco-editor/react';
 
 import { debounce } from '../../helpers';
 import { useServices } from '../../services';
-import state from '../../state';
-import { useSettingsState } from '../../state/index.state';
+import { useFilesState, useSettingsState } from '../../state/index.state';
 
 import type { FunctionComponent } from 'react';
 import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
@@ -14,7 +13,7 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 }) => {
   const { editorSvc, parserSvc } = useServices();
   const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
-  const editorState = state.useEditorState();
+  const file = useFilesState(state => state.files['asyncapi']);
 
   const onChange = useMemo(() => {
     return debounce((v: string) => {
@@ -26,8 +25,8 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 
   return (
     <MonacoEditor
-      language={editorState.language.get()}
-      defaultValue={editorState.editorValue.get()}
+      language={file.language}
+      defaultValue={file.content}
       theme="asyncapi-theme"
       onMount={editorSvc.onDidCreate.bind(editorSvc)}
       onChange={onChange}

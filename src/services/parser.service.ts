@@ -37,8 +37,10 @@ export class ParserService extends AbstractService {
       options.source = uri;
     }
 
+    let diagnostics: Diagnostic[] = [];
     try {
-      const { document, diagnostics, extras } = await this.parser.parse(spec, options);
+      const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
+      diagnostics = _diagnostics;
   
       if (document) {
         const oldDocument = convertToOldAPI(document);
@@ -58,7 +60,7 @@ export class ParserService extends AbstractService {
     this.updateDocument(uri, {
       uri,
       document: undefined,
-      diagnostics: this.createDiagnostics([]),
+      diagnostics: this.createDiagnostics(diagnostics),
       extras: undefined,
       valid: false,
     });
@@ -104,7 +106,7 @@ export class ParserService extends AbstractService {
       warnings: [],
       informations: [],
       hints: [],
-    }
+    };
 
     const { governance: { show } } = settingsState.getState();
     diagnostics.forEach(diagnostic => {
@@ -135,7 +137,7 @@ export class ParserService extends AbstractService {
       Object.entries(newFiles).forEach(([uri, file]) => {
         const oldFile = oldFiles[String(uri)];
         if (file === oldFile) return;
-        this.parse(uri, file.content);
+        this.parse(uri, file.content, { source: file.source });
       });
     });
   }

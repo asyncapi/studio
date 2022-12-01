@@ -1,19 +1,19 @@
-import { editorState, useEditorState } from './editor';
-import { specState, useSpecState } from './spec';
-import { templateState, useTemplateState } from './template';
+// import { editorState, useEditorState } from './editor';
+// import { specState, useSpecState } from './spec';
+// import { templateState, useTemplateState } from './template';
 
 const state = {
-  // editor
-  editor: editorState,
-  useEditorState,
+  // // editor
+  // editor: editorState,
+  // useEditorState,
 
-  // spec
-  spec: specState,
-  useSpecState,
+  // // spec
+  // spec: specState,
+  // useSpecState,
 
   // template
-  template: templateState,
-  useTemplateState,
+  // template: templateState,
+  // useTemplateState,
 };
 
 export default state;

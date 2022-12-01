@@ -5,8 +5,7 @@ import { show } from '@ebay/nice-modal-react';
 import { ConvertToLatestModal } from '../Modals';
 
 import { useServices } from '../../services';
-import state from '../../state';
-import { useAppState, useDocumentsState, useSettingsState } from '../../state/index.state';
+import { useAppState, useDocumentsState, useFilesState, useSettingsState } from '../../state/index.state';
 
 import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 
@@ -14,15 +13,13 @@ interface TerminalInfoProps {}
 
 export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const { specificationSvc } = useServices();
-  const editorState = state.useEditorState();
+  const file = useFilesState(state => state.files['asyncapi']);
   const document = useDocumentsState(state => state.documents['asyncapi']);
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
   const liveServer = useAppState(state => state.liveServer);
   const actualVersion = document.document?.version() || '2.0.0';
   const latestVersion = specificationSvc.latestVersion;
-  const documentValid = document.valid;
-  const modified = editorState.modified.get();
 
   const onNonLatestClick = useCallback((e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -76,7 +73,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {!autoSaving && modified && (
+      {!autoSaving && file.modified && (
         <div className="ml-3">
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -94,7 +91,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
         </span>
         <span>{autoSaving ? 'Autosave: On' : 'Autosave: Off'}</span>
       </div>
-      {actualVersion !== latestVersion && documentValid === true && (
+      {actualVersion !== latestVersion && document.valid === true && (
         <div className="ml-3" onClick={onNonLatestClick}>
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -105,7 +102,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
         </div>
       )}
       <div className="ml-3">
-        <span>{editorState.language.get()}</span>
+        <span>{file.language}</span>
       </div>
     </div>
   );

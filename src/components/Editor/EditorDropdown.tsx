@@ -12,16 +12,14 @@ import {
 import { Dropdown } from '../common';
 
 import { useServices } from '../../services';
-import state from '../../state';
-import { useDocumentsState } from '../../state/index.state';
+import { useDocumentsState, useFilesState } from '../../state/index.state';
 
 interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
   const { editorSvc } = useServices();
-  const isInvalidDocument = !useDocumentsState(state => state.documents['asyncapi']?.valid);
-  const editorState = state.useEditorState();
-  const language = editorState.language.get();
+  const isInvalidDocument = !useDocumentsState(state => state.documents['asyncapi'].valid);
+  const language = useFilesState(state => state.files['asyncapi'].language);
 
   const importUrlButton = (
     <button

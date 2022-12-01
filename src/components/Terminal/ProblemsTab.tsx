@@ -118,7 +118,6 @@ interface SeverityButtonsProps {
 }
 
 const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setActive }) => {
-  const { parserSvc } = useServices();
   const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
   const governanceShowState = useSettingsState(state => state.governance.show);
 

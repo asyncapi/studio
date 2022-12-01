@@ -1,10 +1,19 @@
 import { AbstractService } from './abstract.service';
 
 import specs from '@asyncapi/specs';
+import { show } from '@ebay/nice-modal-react';
+
+import { ConvertToLatestModal } from '../components/Modals';
+
+import { documentsState } from '../state/index.state';
 
 import type { SpecVersions } from '../types';
 
 export class SpecificationService extends AbstractService {
+  override onInit() {
+    this.subcribeToDocuments();
+  }
+
   get specs() {
     return specs;
   }
@@ -14,10 +23,26 @@ export class SpecificationService extends AbstractService {
   }
 
   getSpec(version: SpecVersions) {
-    return specs[version];
+    return specs[String(version) as SpecVersions];
   }
 
-  tryInformAboutLatestVersion(
+  private subcribeToDocuments() {
+    documentsState.subscribe((state, prevState) => {
+      const newDocuments = state.documents;
+      const oldDocuments = prevState.documents;
+
+      Object.entries(newDocuments).forEach(([uri, document]) => {
+        const oldDocument = oldDocuments[String(uri)];
+        if (document === oldDocument) return;
+        const version = document.document?.version();
+        if (version && this.tryInformAboutLatestVersion(version)) {
+          show(ConvertToLatestModal);
+        }
+      });
+    });
+  }
+
+  private tryInformAboutLatestVersion(
     version: string,
   ): boolean {
     const oneDay = 24 * 60 * 60 * 1000; /* ms */

@@ -5,17 +5,16 @@ import { create } from '@ebay/nice-modal-react';
 import { ConfirmModal } from './ConfirmModal';
 
 import { useServices } from '../../services';
-import state from '../../state';
 import { useDocumentsState } from '../../state/index.state';
 
-export const ConvertToLatestModal = create(() => {
+interface ConvertToLatestModal {
+  convertOnlyToLatest: boolean
+}
+
+export const ConvertToLatestModal = create<ConvertToLatestModal>(({ convertOnlyToLatest = false }) => {
   const [version, setVersion] = useState('');
   const { editorSvc, specificationSvc } = useServices();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
-
-  const specState = state.useSpecState();
-  const convertOnlyToLatest = specState.convertOnlyToLatest.get();
-  const forceConvert = specState.forceConvert.get();
 
   const actualVersion = document?.version() || '2.0.0-rc2';
   const latestVersion = specificationSvc.latestVersion;
@@ -26,9 +25,9 @@ export const ConvertToLatestModal = create(() => {
   function onSubmit() {
     async function convert() {
       try {
-        await editorSvc.convertSpec(convertOnlyToLatest ? latestVersion : version);
-      } finally {
-        specState.shouldOpenConvertModal.set(false);
+        await editorSvc.convertSpec(version);
+      } catch (err: any) {
+        // intentionally
       }
     }
 
@@ -54,8 +53,6 @@ export const ConvertToLatestModal = create(() => {
   let content = '';
   if (convertOnlyToLatest) {
     content = `Your document is using not latest version of AsyncAPI. Convert your document to latest (${latestVersion}) version`;
-  } else if (forceConvert) {
-    content = 'Your document is using not supported version of AsyncAPI. Convert your document to newest version to continue.';
   } else {
     content = 'There is a new version of AsyncAPI. Convert your document to newest version if you want.';
   }
@@ -65,7 +62,6 @@ export const ConvertToLatestModal = create(() => {
       title={convertOnlyToLatest ? 'Convert AsyncAPI document to latest version' : 'Convert AsyncAPI document to newest version'}
       confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : 'Convert'}
       confirmDisabled={false}
-      cancelDisabled={forceConvert}
       onSubmit={onSubmit}
     >
       <div className="flex flex-col content-center justify-center text-center">

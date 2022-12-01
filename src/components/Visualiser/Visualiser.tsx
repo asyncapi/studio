@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FlowDiagram } from './FlowDiagram';
 
-import { useServices } from '../../services';
-import state from '../../state';
-import { useDocumentsState, useSettingsState } from '../../state/index.state';
+import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state/index.state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 import type { FunctionComponent } from 'react';
@@ -15,7 +13,7 @@ export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
-  const templateState = state.useTemplateState();
+  const templateRerender = useOtherState(state => state.templateRerender);
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
@@ -24,11 +22,11 @@ export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   }, [document]); // eslint-disable-line
 
   useEffect(() => {
-    if (templateState.rerender.get()) {
+    if (templateRerender) {
       setParsedSpec(document);
-      templateState.rerender.set(false);
+      otherState.setState({ templateRerender: false });
     }
-  }, [templateState.rerender.get()]); // eslint-disable-line
+  }, [templateRerender]); // eslint-disable-line
 
   if (!document) {
     return (

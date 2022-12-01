@@ -6,20 +6,18 @@ import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
-import state from '../state';
-import { appState, documentsState, settingsState } from '../state/index.state';
+import { appState, documentsState, filesState, settingsState } from '../state/index.state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
-
-export type AllowedLanguages = 'json' | 'yaml' | 'yml';
+import type { File } from '../state/files.state';
 
 export interface UpdateState {
-  content: string,
-  updateModel?: boolean,
-  sendToServer?: boolean,
-  language?: AllowedLanguages,
+  content: string;
+  updateModel?: boolean;
+  sendToServer?: boolean;
+  file?: Partial<File>;
 } 
 
 export class EditorService extends AbstractService {
@@ -48,39 +46,24 @@ export class EditorService extends AbstractService {
     return this.instance;
   }
 
-  get value(): string | undefined {
-    return this.editor?.getModel()?.getValue();
+  get value(): string {
+    return this.editor?.getModel()?.getValue() as string;
   }
 
   updateState({
     content,
     updateModel = false,
     sendToServer = true,
-    language,
+    file = {},
   }: UpdateState) {
-    if (state.editor.editorValue.get() === content) {
+    const currentContent = filesState.getState().files['asyncapi']?.content;
+    if (currentContent === content || typeof content !== 'string') {
       return;
     }
 
-    if (!content && typeof content !== 'string') {
-      return;
-    }
-
-    language = language || this.svcs.formatSvc.retrieveLangauge(content);
+    const language = file.language || this.svcs.formatSvc.retrieveLangauge(content);
     if (!language) {
       return;
-    }
-
-    let languageToSave: string;
-    switch (language) {
-    case 'yaml':
-    case 'yml': {
-      languageToSave = 'yaml';
-      break;
-    }
-    default: {
-      languageToSave = 'json';
-    }
     }
 
     if (sendToServer) {
@@ -94,15 +77,17 @@ export class EditorService extends AbstractService {
       }
     }
 
-    state.editor.merge({
-      language: languageToSave,
-      editorValue: content,
+    const { updateFile } = filesState.getState();
+    updateFile('asyncapi', {
+      language,
+      content,
       modified: this.getFromLocalStorage() !== content,
+      ...file,
     });
   }
 
   async convertSpec(version?: ConvertVersion | string) {
-    const converted = await this.svcs.converterSvc.convert(this.value!, version as ConvertVersion);
+    const converted = await this.svcs.converterSvc.convert(this.value, version as ConvertVersion);
     this.updateState({ content: converted, updateModel: true });
   }
 
@@ -111,12 +96,14 @@ export class EditorService extends AbstractService {
       return fetch(url)
         .then(res => res.text())
         .then(async text => {
-          state.editor.merge({
-            documentFrom: 'url',
-            documentSource: url,
+          this.updateState({ 
+            content: text, 
+            updateModel: true, 
+            file: { 
+              source: url, 
+              from: 'url' 
+            },
           });
-          this.updateState({ content: text, updateModel: true });
-          await this.svcs.parserSvc.parse('asyncapi', text, { source: url });
         })
         .catch(err => {
           console.error(err);
@@ -145,11 +132,14 @@ export class EditorService extends AbstractService {
   async importBase64(content: string) {
     try {
       const decoded = this.svcs.formatSvc.decodeBase64(content);
-      state.editor.merge({
-        documentFrom: 'base64',
-        documentSource: undefined,
+      this.updateState({ 
+        content: String(decoded), 
+        updateModel: true, 
+        file: { 
+          from: 'base64', 
+          source: undefined, 
+        },
       });
-      this.updateState({ content: String(decoded), updateModel: true });
     } catch (err) {
       console.error(err);
       throw err;
@@ -158,8 +148,16 @@ export class EditorService extends AbstractService {
 
   async convertToYaml() {
     try {
-      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value!);
-      yamlContent && this.updateState({ content: yamlContent, updateModel: true, language: 'yaml' });
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
+      if (yamlContent) {
+        this.updateState({ 
+          content: yamlContent, 
+          updateModel: true, 
+          file: {
+            language: 'yaml',
+          }
+        });
+      }
     } catch (err) {
       console.error(err);
       throw err;
@@ -168,8 +166,16 @@ export class EditorService extends AbstractService {
 
   async convertToJSON() {
     try {
-      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value!);
-      jsonContent && this.updateState({ content: jsonContent, updateModel: true, language: 'json' });
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
+      if (jsonContent) {
+        this.updateState({ 
+          content: jsonContent, 
+          updateModel: true, 
+          file: {
+            language: 'json',
+          }
+        });
+      }
     } catch (err) {
       console.error(err);
       throw err;
@@ -178,8 +184,10 @@ export class EditorService extends AbstractService {
 
   async saveAsYaml() {
     try {
-      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value!);
-      yamlContent && this.downloadFile(yamlContent, `${this.fileName}.yaml`);
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
+      if (yamlContent) {
+        this.downloadFile(yamlContent, `${this.fileName}.yaml`);
+      }
     } catch (err) {
       console.error(err);
       throw err;
@@ -188,8 +196,10 @@ export class EditorService extends AbstractService {
 
   async saveAsJSON() {
     try {
-      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value!);
-      jsonContent && this.downloadFile(jsonContent, `${this.fileName}.json`);
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
+      if (jsonContent) {
+        this.downloadFile(jsonContent, `${this.fileName}.json`);
+      }
     } catch (err) {
       console.error(err);
       throw err;
@@ -197,11 +207,13 @@ export class EditorService extends AbstractService {
   }
 
   saveToLocalStorage(editorValue?: string, notify = true) {
-    editorValue = editorValue || this.value!;
+    editorValue = editorValue || this.value;
     localStorage.setItem('document', editorValue);
-    state.editor.merge({
-      documentFrom: 'localStorage',
-      documentSource: undefined,
+
+    const { updateFile } = filesState.getState();
+    updateFile('asyncapi', {
+      from: 'storage',
+      source: undefined,
       modified: false,
     });
 
@@ -232,10 +244,10 @@ export class EditorService extends AbstractService {
 
   private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
     const editor = this.editor;
-    const model = editor?.getModel()
+    const model = editor?.getModel();
     const monaco = this.svcs.monacoSvc.monaco;
 
-    if (!editor || ! model || !monaco) {
+    if (!editor || !model || !monaco) {
       return;
     }
 
@@ -314,10 +326,10 @@ export class EditorService extends AbstractService {
       const oldDocuments = prevState.documents;
 
       Object.entries(newDocuments).forEach(([uri, document]) => {
-        const oldDocument = oldDocuments[uri];
+        const oldDocument = oldDocuments[String(uri)];
         if (document === oldDocument) return;
         this.applyMarkersAndDecorations(document.diagnostics.filtered);
-      })
+      });
     });
   }
 }
