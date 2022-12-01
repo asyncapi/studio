@@ -5,7 +5,7 @@ import { show } from '@ebay/nice-modal-react';
 import { ConvertToLatestModal } from '../Modals';
 
 import { useServices } from '../../services';
-import { useAppState, useDocumentsState, useFilesState, useSettingsState } from '../../state/index.state';
+import { useAppState, useDocumentsState, useFilesState, useSettingsState } from '../../state';
 
 import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 

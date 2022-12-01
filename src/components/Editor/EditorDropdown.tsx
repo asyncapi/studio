@@ -12,7 +12,7 @@ import {
 import { Dropdown } from '../common';
 
 import { useServices } from '../../services';
-import { useDocumentsState, useFilesState } from '../../state/index.state';
+import { useDocumentsState, useFilesState } from '../../state';
 
 interface EditorDropdownProps {}
 

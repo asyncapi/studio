@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useServices } from '../services';
-import { useDocumentsState, useFilesState } from '../state/index.state';
+import { useDocumentsState, useFilesState } from '../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 

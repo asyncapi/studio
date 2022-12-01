@@ -4,7 +4,7 @@ import { show } from '@ebay/nice-modal-react';
 
 import { RedirectedModal } from '../components/Modals';
 
-import { appState } from '../state/index.state';
+import { appState } from '../state';
 
 export class ApplicationService extends AbstractService {
   public override onInit(): void {

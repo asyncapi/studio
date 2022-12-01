@@ -6,7 +6,7 @@ import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { isDeepEqual } from '../helpers';
-import { filesState, documentsState, settingsState } from '../state/index.state';
+import { filesState, documentsState, settingsState } from '../state';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { DocumentDiagnostics } from '../state/documents.state';

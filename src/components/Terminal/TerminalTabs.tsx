@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { TerminalInfo } from './TerminalInfo';
-import { otherState } from '../../state/index.state';
+import { otherState } from '../../state';
 
 export interface TerminalTab {
   name: string;

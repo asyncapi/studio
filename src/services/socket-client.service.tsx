@@ -2,7 +2,7 @@ import { AbstractService } from './abstract.service';
 
 import toast from 'react-hot-toast';
 
-import { appState } from '../state/index.state';
+import { appState } from '../state';
 
 interface IncomingMessage {
   type: 'file:loaded' | 'file:changed' | 'file:deleted';

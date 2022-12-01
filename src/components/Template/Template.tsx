@@ -3,7 +3,7 @@ import React from 'react';
 import { TemplateSidebar } from './TemplateSidebar';
 import { HTMLWrapper } from './HTMLWrapper';
 
-import { appState } from '../../state/index.state';
+import { appState } from '../../state';
 
 interface TemplateProps {}
 

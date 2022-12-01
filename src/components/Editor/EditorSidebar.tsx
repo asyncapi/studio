@@ -2,7 +2,7 @@ import React from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
-import { useFilesState } from '../../state/index.state';
+import { useFilesState } from '../../state';
 
 interface EditorSidebarProps {}
 

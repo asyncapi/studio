@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Template, Toolbar } from './components';
 
-import { appState } from './state/index.state';
+import { appState } from './state';
 
 export interface AsyncAPIStudioProps {}
 

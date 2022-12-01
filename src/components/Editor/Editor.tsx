@@ -5,7 +5,7 @@ import { EditorSidebar } from './EditorSidebar';
 import { MonacoWrapper } from './MonacoWrapper';
 import { Terminal } from '../Terminal/Terminal';
 
-import { useOtherState } from '../../state/index.state';
+import { useOtherState } from '../../state';
 
 export interface EditorProps {}
 

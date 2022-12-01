@@ -5,7 +5,7 @@ import { create } from '@ebay/nice-modal-react';
 import { ConfirmModal } from './index';
 
 import { useServices } from '../../services';
-import { useDocumentsState } from '../../state/index.state';
+import { useDocumentsState } from '../../state';
 
 import type { SpecVersions } from '../../types';
 

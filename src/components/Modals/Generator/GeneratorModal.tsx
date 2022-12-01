@@ -8,7 +8,7 @@ import { TemplateParameters, TemplateParametersHandle } from './TemplateParamete
 import { useServices } from '../../../services';
 import { ServerAPIProblem } from '../../../services/server-api.service';
 
-import { filesState } from '../../../state/index.state';
+import { filesState } from '../../../state';
 
 import templates from './template-parameters.json';
 

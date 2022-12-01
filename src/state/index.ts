@@ -1,19 +1,43 @@
-// import { editorState, useEditorState } from './editor';
-// import { specState, useSpecState } from './spec';
-// import { templateState, useTemplateState } from './template';
+import { appState, useAppState } from './app.state';
+import { documentsState, useDocumentsState } from './documents.state';
+import { filesState, useFilesState } from './files.state';
+import { otherState, useOtherState } from './other.state';
+import { panelsState, usePanelsState } from './panels.state';
+import { settingsState, useSettingsState } from './settings.state';
+
+export { 
+  appState, useAppState,
+  documentsState, useDocumentsState,
+  filesState, useFilesState,
+  otherState, useOtherState,
+  panelsState, usePanelsState,
+  settingsState, useSettingsState,
+};
 
 const state = {
-  // // editor
-  // editor: editorState,
-  // useEditorState,
+  // app
+  app: appState,
+  useAppState,
 
-  // // spec
-  // spec: specState,
-  // useSpecState,
+  // documents
+  documents: documentsState,
+  useDocumentsState,
 
-  // template
-  // template: templateState,
-  // useTemplateState,
+  // file-system
+  files: filesState,
+  useFilesState,
+
+  // other
+  other: otherState,
+  useOtherState,
+
+  // panels
+  panels: panelsState,
+  usePanelsState,
+
+  // settings
+  settings: settingsState,
+  useSettingsState,
 };
 
 export default state;

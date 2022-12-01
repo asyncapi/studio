@@ -6,7 +6,7 @@ import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
-import { appState, documentsState, filesState, settingsState } from '../state/index.state';
+import { appState, documentsState, filesState, settingsState } from '../state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';

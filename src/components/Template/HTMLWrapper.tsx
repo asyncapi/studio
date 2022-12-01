@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { useServices } from '../../services';
-import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state/index.state';
+import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 

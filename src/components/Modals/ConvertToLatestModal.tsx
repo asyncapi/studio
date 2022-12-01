@@ -5,7 +5,7 @@ import { create } from '@ebay/nice-modal-react';
 import { ConfirmModal } from './ConfirmModal';
 
 import { useServices } from '../../services';
-import { useDocumentsState } from '../../state/index.state';
+import { useDocumentsState } from '../../state';
 
 interface ConvertToLatestModal {
   convertOnlyToLatest: boolean

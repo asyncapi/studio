@@ -1,7 +1,7 @@
 import React from 'react';
 import { VscRefresh } from 'react-icons/vsc';
 
-import { useSettingsState, otherState } from '../../state/index.state';
+import { useSettingsState, otherState } from '../../state';
 
 interface TemplateSidebarProps {}
 

@@ -3,7 +3,7 @@ import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
-import { useDocumentsState } from '../../../state/index.state';
+import { useDocumentsState } from '../../../state';
 
 import type { FunctionComponent, ForwardRefRenderFunction, PropsWithChildren, Dispatch, SetStateAction } from 'react';
 

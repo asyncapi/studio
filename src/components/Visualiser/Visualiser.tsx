@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FlowDiagram } from './FlowDiagram';
 
-import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state/index.state';
+import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 import type { FunctionComponent } from 'react';

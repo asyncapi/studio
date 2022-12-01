@@ -1,7 +1,7 @@
 import { AbstractService } from './abstract.service';
 
 import { isDeepEqual } from '../helpers';
-import { settingsState } from '../state/index.state';
+import { settingsState } from '../state';
 
 import type { SettingsState } from '../state/settings.state';
 
