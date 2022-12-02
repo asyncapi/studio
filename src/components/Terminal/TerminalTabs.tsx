@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { TerminalInfo } from './TerminalInfo';
-import state from '../../state';
+import { otherState } from '../../state';
 
 export interface TerminalTab {
   name: string;
@@ -19,8 +19,6 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
   active = 0,
 }) => {
   const [activeTab, setActiveTab] = useState(active);
-  const editorState = state.useEditorState();
-
   if (tabs.length === 0) {
     return null;
   }
@@ -37,23 +35,23 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
           const calc160px = 'calc(100% - 160px)';
           const calc36px = 'calc(100% - 36px)';
 
-          editorState.height.set(prevHeight => {
-            const newHeight =
-              height < 50 ? calc160px : calc36px;
-            if (
-              prevHeight === calc160px &&
-              newHeight === calc160px
-            ) {
-              return 'calc(100% - 161px)';
-            }
-            if (
-              prevHeight === calc36px &&
-              newHeight === calc36px
-            ) {
-              return 'calc(100% - 37px)';
-            }
-            return newHeight;
-          });
+          const prevHeight = otherState.getState().editorHeight;
+          const newHeight =
+            height < 50 ? calc160px : calc36px;
+          if (
+            prevHeight === calc160px &&
+            newHeight === calc160px
+          ) {
+            return 'calc(100% - 161px)';
+          }
+          if (
+            prevHeight === calc36px &&
+            newHeight === calc36px
+          ) {
+            return 'calc(100% - 37px)';
+          }
+
+          otherState.setState({ editorHeight: newHeight });
         }}
       >
         <ul className="flex flex-row">

@@ -1,34 +1,43 @@
-import { appState, useAppState } from './app';
-import { editorState, useEditorState } from './editor';
-import { parserState, useParserState } from './parser';
-import { sidebarState, useSidebarState } from './sidebar';
-import { specState, useSpecState } from './spec';
-import { templateState, useTemplateState } from './template';
+import { appState, useAppState } from './app.state';
+import { documentsState, useDocumentsState } from './documents.state';
+import { filesState, useFilesState } from './files.state';
+import { otherState, useOtherState } from './other.state';
+import { panelsState, usePanelsState } from './panels.state';
+import { settingsState, useSettingsState } from './settings.state';
+
+export { 
+  appState, useAppState,
+  documentsState, useDocumentsState,
+  filesState, useFilesState,
+  otherState, useOtherState,
+  panelsState, usePanelsState,
+  settingsState, useSettingsState,
+};
 
 const state = {
   // app
   app: appState,
   useAppState,
 
-  // editor
-  editor: editorState,
-  useEditorState,
+  // documents
+  documents: documentsState,
+  useDocumentsState,
 
-  // parser
-  parser: parserState,
-  useParserState,
+  // file-system
+  files: filesState,
+  useFilesState,
 
-  // sidebar
-  sidebar: sidebarState,
-  useSidebarState,
+  // other
+  other: otherState,
+  useOtherState,
 
-  // spec
-  spec: specState,
-  useSpecState,
+  // panels
+  panels: panelsState,
+  usePanelsState,
 
-  // template
-  template: templateState,
-  useTemplateState,
+  // settings
+  settings: settingsState,
+  useSettingsState,
 };
 
 export default state;

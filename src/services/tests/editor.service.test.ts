@@ -51,7 +51,7 @@ describe('EditorService', () => {
         }
       ];
 
-      const { markers, decorations } = editorSvc.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkersAndDecorations(errors);
 
       // markers
       expect(markers).toHaveLength(2);
@@ -111,7 +111,7 @@ describe('EditorService', () => {
         }
       ];
 
-      const { markers, decorations } = editorSvc.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkersAndDecorations(errors);
 
       // markers
       expect(markers).toHaveLength(0);
@@ -144,7 +144,7 @@ describe('EditorService', () => {
     test('should not create markers and decorators without errors', () => {
       const errors: any[] = [];
 
-      const { markers, decorations } = editorSvc.createMarkers(errors);
+      const { markers, decorations } = editorSvc.createMarkersAndDecorations(errors);
       expect(markers.length).toEqual(0);
       expect(decorations.length).toEqual(0);
     });

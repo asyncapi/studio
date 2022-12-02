@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useServices } from '../services';
-import state from '../state';
+import { useDocumentsState, useFilesState } from '../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
@@ -12,14 +12,13 @@ interface NavigationProps {
 }
 
 interface NavigationSectionProps {
-  spec: AsyncAPIDocument;
+  document: AsyncAPIDocument;
   rawSpec: string;
-  language: string;
   hash: string;
 }
 
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
-  spec,
+  document,
   hash,
 }) => {
   const { navigationSvc } = useServices();
@@ -37,7 +36,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         Servers
       </div>
       <ul>
-        {Object.entries(spec.servers() || {}).map(([serverName, server]) => (
+        {Object.entries(document.servers() || {}).map(([serverName, server]) => (
           <li
             key={serverName}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
@@ -68,12 +67,12 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 };
 
 const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
-  spec,
+  document,
   hash,
 }) => {
   const { navigationSvc } = useServices();
 
-  const operations = Object.entries(spec.channels() || {}).map(
+  const operations = Object.entries(document.channels() || {}).map(
     ([channelName, channel]) => {
       const channels: React.ReactNode[] = [];
 
@@ -153,12 +152,12 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 };
 
 const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
-  spec,
+  document,
   hash,
 }) => {
   const { navigationSvc } = useServices();
 
-  const messages = Object.keys(spec.components()?.messages() || {}).map(
+  const messages = Object.keys(document.components()?.messages() || {}).map(
     messageName => (
       <li
         key={messageName}
@@ -198,12 +197,12 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 };
 
 const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
-  spec,
+  document,
   hash,
 }) => {
   const { navigationSvc } = useServices();
 
-  const schemas = Object.keys(spec.components()?.schemas() || {}).map(
+  const schemas = Object.keys(document.components()?.schemas() || {}).map(
     schemaName => (
       <li
         key={schemaName}
@@ -248,12 +247,8 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const [hash, setHash] = useState(window.location.hash);
 
   const { navigationSvc } = useServices();
-  const editorState = state.useEditorState();
-  const parserState = state.useParserState();
-
-  const rawSpec = editorState.editorValue.get();
-  const language = editorState.language.get();
-  const spec = parserState.parsedSpec.get();
+  const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
 
   useEffect(() => {
     const fn = () => {
@@ -268,22 +263,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
     };
   }, []);
 
-  if (editorState.editorLoaded.get() === false) {
-    return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        <div>
-          <div className="w-full text-center h-8">
-            <div className="rotating-wheel"></div>
-          </div>
-          <p className="mt-1 text-sm">
-            Loading...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!rawSpec || !spec || typeof spec === 'string') {
+  if (!rawSpec || !document) {
     return (
       <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
         Empty or invalid document. Please fix errors/define AsyncAPI document.
@@ -291,6 +271,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
     );
   }
 
+  const components = document.hasComponents() && document.components();
   return (
     <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
       <ul>
@@ -309,40 +290,36 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             Information
           </div>
         </li>
-        {spec.hasServers() && (
+        {document.hasServers() && (
           <li className="mb-4">
             <ServersNavigation
-              spec={spec}
+              document={document}
               rawSpec={rawSpec}
-              language={language}
               hash={hash}
             />
           </li>
         )}
         <li className="mb-4">
           <OperationsNavigation
-            spec={spec}
+            document={document}
             rawSpec={rawSpec}
-            language={language}
             hash={hash}
           />
         </li>
-        {spec.hasComponents() && spec.components()?.hasMessages() && (
+        {components && components.hasMessages() && (
           <li className="mb-4">
             <MessagesNavigation
-              spec={spec}
+              document={document}
               rawSpec={rawSpec}
-              language={language}
               hash={hash}
             />
           </li>
         )}
-        {spec.hasComponents() && spec.components()?.hasSchemas() && (
+        {components && components.hasSchemas() && (
           <li className="mb-4">
             <SchemasNavigation
-              spec={spec}
+              document={document}
               rawSpec={rawSpec}
-              language={language}
               hash={hash}
             />
           </li>

@@ -161,6 +161,8 @@ export type File = {
   uri: string;
   name: string;
   content: string;
+  from: 'storage' | 'url' | 'base64';
+  source?: string;
   language: 'json' | 'yaml';
   modified: boolean;
   stat?: FileStat;
@@ -182,7 +184,9 @@ export const filesState = create(
           uri: 'asyncapi',
           name: 'asyncapi',
           content: schema,
-          language: 'yaml',
+          from: 'storage',
+          source: undefined,
+          language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
           modified: false,
           stat: {
             mtime: (new Date()).getTime(),

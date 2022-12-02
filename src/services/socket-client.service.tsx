@@ -2,7 +2,7 @@ import { AbstractService } from './abstract.service';
 
 import toast from 'react-hot-toast';
 
-import state from '../state';
+import { appState } from '../state';
 
 interface IncomingMessage {
   type: 'file:loaded' | 'file:changed' | 'file:deleted';
@@ -12,13 +12,27 @@ interface IncomingMessage {
 export class SocketClient extends AbstractService {
   private ws!: WebSocket;
 
+  public override onInit(): void {
+    const { url, base64, readOnly, liveServer } = this.svcs.navigationSvc.getUrlParameters();
+
+    const shouldConnect = !(base64 || url || readOnly);
+    if (!shouldConnect) {
+      return;
+    }
+
+    const liveServerPort = liveServer && Number(liveServer);
+    if (typeof liveServerPort === 'number') {
+      this.connect(window.location.hostname, liveServerPort);
+    }
+  }
+
   connect(hostname: string, port: string | number) {
     try {
       const ws = this.ws = new WebSocket(`ws://${hostname || 'localhost'}:${port}/live-server`);
 
-      ws.onopen = this.onOpen;
-      ws.onmessage = this.onMessage;
-      ws.onerror = this.onError;
+      ws.onopen = this.onOpen.bind(this);
+      ws.onmessage = this.onMessage.bind(this);
+      ws.onerror = this.onError.bind(this);
     } catch (e) {
       console.error(e);
       this.onError();
@@ -62,7 +76,7 @@ export class SocketClient extends AbstractService {
         </span>
       </div>
     );
-    state.app.liveServer.set(true);
+    appState.setState({ liveServer: true });
   }
 
   private onError() {
@@ -73,6 +87,6 @@ export class SocketClient extends AbstractService {
         </span>
       </div>
     );
-    state.app.liveServer.set(false);
+    appState.setState({ liveServer: false });
   }
 }

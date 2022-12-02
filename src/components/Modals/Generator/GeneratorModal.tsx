@@ -8,7 +8,7 @@ import { TemplateParameters, TemplateParametersHandle } from './TemplateParamete
 import { useServices } from '../../../services';
 import { ServerAPIProblem } from '../../../services/server-api.service';
 
-import state from '../../../state';
+import { filesState } from '../../../state';
 
 import templates from './template-parameters.json';
 
@@ -29,7 +29,7 @@ export const GeneratorModal = create(() => {
   const generateTemplate = async () => {
     setProblem(null);
     const response = await serverAPISvc.generate({
-      asyncapi: state.editor.editorValue.get(),
+      asyncapi: filesState.getState().files['asyncapi'].content,
       template,
       parameters: templateParamsRef.current?.getValues(),
     });
