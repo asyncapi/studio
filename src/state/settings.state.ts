@@ -36,10 +36,10 @@ export const settingsState = create(
         autoRendering: true,
       },
     }), 
-  {
-    name: 'studio-settings',
-    getStorage: () => localStorage,
-  }
+    {
+      name: 'studio-settings',
+      getStorage: () => localStorage,
+    }
   ),
 );
 

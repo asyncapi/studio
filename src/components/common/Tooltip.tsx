@@ -1,6 +1,8 @@
 import React from 'react';
 import Tippy, { TippyProps } from '@tippyjs/react';
 
+export type TooltipProps = TippyProps;
+
 export const Tooltip: React.FunctionComponent<TippyProps> = ({
   placement = 'bottom',
   arrow = true,

@@ -1,4 +1,4 @@
-import { Fragment, useRef, useCallback } from 'react';
+import { Fragment, useRef, useCallback, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useModal } from '@ebay/nice-modal-react';
 
@@ -10,6 +10,7 @@ interface ConfirmModalProps {
   confirmText?: ReactNode;
   cancelText?: ReactNode;
   confirmDisabled?: boolean;
+  onlyConfirm?: boolean;
   cancelDisabled?: boolean;
   containerClassName? : string;
   closeAfterSumbit?: boolean;
@@ -23,6 +24,7 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
   confirmText = 'Save',
   cancelText = 'Cancel',
   confirmDisabled = true,
+  onlyConfirm = false,
   cancelDisabled = false,
   closeAfterSumbit = true,
   onSubmit,
@@ -35,12 +37,25 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
   const modal = useModal();
   const cancelButtonRef = useRef(null);
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = useCallback(() => {
     onSubmit && onSubmit();
     if (closeAfterSumbit) {
       modal.hide();
     }
-  };
+  }, [onSubmit, closeAfterSumbit, modal]);
+
+  useEffect(() => {
+    function listenerForEnter(event: KeyboardEvent) {
+      if (event.key === "Enter" && !confirmDisabled) {
+        handleOnSubmit();
+      }
+    }
+
+    document.addEventListener('keyup', listenerForEnter);
+    return () => {
+      document.removeEventListener('keyup', listenerForEnter);
+    };
+  }, [confirmDisabled, handleOnSubmit]);
 
   const handleOnCancel = () => {
     onCancel();
@@ -119,15 +134,17 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
                       {confirmText}
                     </button>
                   )}
-                  <button
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-                    onClick={handleOnCancel}
-                    disabled={cancelDisabled}
-                    ref={cancelButtonRef}
-                  >
-                    {cancelText}
-                  </button>
+                  {!onlyConfirm && (
+                    <button
+                      type="button"
+                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                      onClick={handleOnCancel}
+                      disabled={cancelDisabled}
+                      ref={cancelButtonRef}
+                    >
+                      {cancelText}
+                    </button>
+                  )}
                 </div>
               </div>
             </Transition.Child>

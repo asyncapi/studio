@@ -3,6 +3,7 @@ import { createContext, useContext } from 'react';
 import { ApplicationService } from './app.service';
 import { ConverterService } from './converter.service';
 import { EditorService } from './editor.service';
+import { FilesService } from './files/files.service';
 import { FormatService } from './format.service';
 import { MonacoService } from './monaco.service';
 import { NavigationService } from './navigation.service';
@@ -16,6 +17,7 @@ export type Services = {
   appSvc: ApplicationService;
   converterSvc: ConverterService;
   editorSvc: EditorService;
+  filesSvc: FilesService;
   formatSvc: FormatService;
   monacoSvc: MonacoService;
   navigationSvc: NavigationService;
@@ -40,6 +42,7 @@ export async function createServices() {
   services.appSvc = new ApplicationService(services);
   services.converterSvc = new ConverterService(services);
   services.editorSvc = new EditorService(services);
+  services.filesSvc = new FilesService(services);
   services.formatSvc = new FormatService(services);
   services.monacoSvc = new MonacoService(services);
   services.navigationSvc = new NavigationService(services);

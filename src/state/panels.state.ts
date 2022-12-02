@@ -29,10 +29,10 @@ export const panelsState = create(
       },
       secondaryPanelType: 'template',
     }), 
-  {
-    name: 'studio-panels',
-    getStorage: () => localStorage,
-  }
+    {
+      name: 'studio-panels',
+      getStorage: () => localStorage,
+    }
   ),
 );
 

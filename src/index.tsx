@@ -9,6 +9,7 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';
 import '@asyncapi/react-component/styles/default.min.css';
 import 'reactflow/dist/style.css';
+import "allotment/dist/style.css";
 import './tailwind.css';
 import './main.css';
 
