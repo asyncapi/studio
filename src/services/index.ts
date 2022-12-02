@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 
+import { ApplicationService } from './app.service';
 import { ConverterService } from './converter.service';
 import { EditorService } from './editor.service';
 import { FormatService } from './format.service';
@@ -12,6 +13,7 @@ import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
 
 export type Services = {
+  appSvc: ApplicationService;
   converterSvc: ConverterService;
   editorSvc: EditorService;
   formatSvc: FormatService;
@@ -35,6 +37,7 @@ export const ServicesProvider = servicesCtx.Provider;
 export async function createServices() {
   const services: Services = {} as Services;
 
+  services.appSvc = new ApplicationService(services);
   services.converterSvc = new ConverterService(services);
   services.editorSvc = new EditorService(services);
   services.formatSvc = new FormatService(services);

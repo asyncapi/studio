@@ -9,8 +9,6 @@ import { Switch } from '../../common';
 
 import { useServices } from '../../../services';
 
-import state from '../../../state';
-
 import type { Dispatch, SetStateAction, FunctionComponent } from 'react';
 import type { SettingsState } from '../../../state/settings.state';
 
@@ -53,7 +51,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' }) => {
-  const { editorSvc, settingsSvc } = useServices();
+  const { settingsSvc } = useServices();
   const settings = settingsSvc.get();
   const modal = useModal();
 
@@ -98,7 +96,6 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
     const newState = createNewState();
     settingsSvc.set(newState);
 
-    editorSvc.applyMarkers(state.parser.diagnostics.get());
     toast.success(
       <div>
         <span className="block text-bold">

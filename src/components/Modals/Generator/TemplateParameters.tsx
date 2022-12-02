@@ -3,7 +3,7 @@ import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
-import state from '../../../state';
+import { useDocumentsState } from '../../../state';
 
 import type { FunctionComponent, ForwardRefRenderFunction, PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
@@ -96,15 +96,14 @@ export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParameters
 }, templateParamsRef) => {
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
-  const parserState = state.useParserState();
-  const parsedSpec = parserState.parsedSpec.get();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
 
   const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};
     const optionalProperties: Record<string, JSONSchema7> = {};
     let hasSupportedProto = true;
 
-    const servers = parsedSpec?.servers();
+    const servers = document?.servers();
     const availableServers: string[] = [];
     Object.entries(servers || {}).forEach(([serverName, server]) => {
       if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
@@ -131,7 +130,7 @@ export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParameters
     }
 
     return { requiredProps: requiredProperties, optionalProps: optionalProperties, hasSupportedProtocols: hasSupportedProto };
-  }, [properties, required, parsedSpec]);
+  }, [properties, required, document]);
 
   useEffect(() => {
     setValues({});
@@ -176,7 +175,7 @@ export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParameters
     );
   }, [templateName]);
 
-  if (parsedSpec === null) {
+  if (document === null) {
     return null;
   }
 

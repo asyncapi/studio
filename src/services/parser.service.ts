@@ -6,9 +6,10 @@ import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { isDeepEqual } from '../helpers';
-import { filesState, documentsState, settingsState } from '../state/index.state';
+import { filesState, documentsState, settingsState } from '../state';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
+import type { DocumentDiagnostics } from '../state/documents.state';
 
 export class ParserService extends AbstractService {
   private parser!: Parser;
@@ -32,23 +33,21 @@ export class ParserService extends AbstractService {
   }
 
   async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
-    if (!options.source) {
+    if (uri !== 'asyncapi' && !options.source) {
       options.source = uri;
     }
 
-    const { updateDocument } = documentsState.getState();
     let diagnostics: Diagnostic[] = [];
-
     try {
-      const { document, diagnostics: _diagnostics,  extras } = await this.parser.parse(spec, options);
-      diagnostics = this.filterDiagnostics(_diagnostics);
+      const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
+      diagnostics = _diagnostics;
   
       if (document) {
         const oldDocument = convertToOldAPI(document);
-        updateDocument(uri, {
+        this.updateDocument(uri, {
           uri,
           document: oldDocument,
-          diagnostics,
+          diagnostics: this.createDiagnostics(diagnostics),
           extras,
           valid: true,
         });
@@ -56,13 +55,12 @@ export class ParserService extends AbstractService {
       } 
     } catch (err: unknown) {
       console.log(err);
-      diagnostics = [];
     }
 
-    updateDocument(uri, {
+    this.updateDocument(uri, {
       uri,
       document: undefined,
-      diagnostics,
+      diagnostics: this.createDiagnostics(diagnostics),
       extras: undefined,
       valid: false,
     });
@@ -98,6 +96,39 @@ export class ParserService extends AbstractService {
     return diagnostics.filter(diagnostic => diagnostic.severity === severity);
   }
 
+  private updateDocument = documentsState.getState().updateDocument;
+
+  private createDiagnostics(diagnostics: Diagnostic[]) {
+    const collections: DocumentDiagnostics = {
+      original: diagnostics,
+      filtered: [],
+      errors: [],
+      warnings: [],
+      informations: [],
+      hints: [],
+    };
+
+    const { governance: { show } } = settingsState.getState();
+    diagnostics.forEach(diagnostic => {
+      const severity = diagnostic.severity;
+      if (severity === DiagnosticSeverity.Error) {
+        collections.filtered.push(diagnostic);
+        collections.errors.push(diagnostic);
+      } else if (severity === DiagnosticSeverity.Warning && show.warnings) {
+        collections.filtered.push(diagnostic);
+        collections.warnings.push(diagnostic);
+      } else if (severity === DiagnosticSeverity.Information && show.informations) {
+        collections.filtered.push(diagnostic);
+        collections.informations.push(diagnostic);
+      } else if (severity === DiagnosticSeverity.Hint && show.hints) {
+        collections.filtered.push(diagnostic);
+        collections.hints.push(diagnostic);
+      }
+    });
+
+    return collections;
+  }
+
   private subscribeToFiles() {
     filesState.subscribe((state, prevState) => {
       const newFiles = state.files;
@@ -106,7 +137,7 @@ export class ParserService extends AbstractService {
       Object.entries(newFiles).forEach(([uri, file]) => {
         const oldFile = oldFiles[String(uri)];
         if (file === oldFile) return;
-        this.parse(uri, file.content);
+        this.parse(uri, file.content, { source: file.source });
       });
     });
   }

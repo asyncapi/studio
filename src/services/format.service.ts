@@ -34,7 +34,7 @@ export class FormatService extends AbstractService {
   }
 
   retrieveLangauge(content: string) {
-    if (content.trim()[0] === '{') {
+    if (content.trimStart()[0] === '{') {
       return 'json';
     }
     return 'yaml';

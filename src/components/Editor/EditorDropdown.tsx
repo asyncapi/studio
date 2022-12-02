@@ -2,7 +2,6 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { show } from '@ebay/nice-modal-react';
 import { FaEllipsisH } from 'react-icons/fa';
-import { hasErrorDiagnostic } from '@asyncapi/parser/cjs/utils';
 
 import {
   ImportURLModal,
@@ -13,17 +12,14 @@ import {
 import { Dropdown } from '../common';
 
 import { useServices } from '../../services';
-import state from '../../state';
+import { useDocumentsState, useFilesState } from '../../state';
 
 interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
   const { editorSvc } = useServices();
-  const editorState = state.useEditorState();
-  const parserState = state.useParserState();
-
-  const language = editorState.language.get();
-  const hasParserErrors = hasErrorDiagnostic(parserState.diagnostics.get());
+  const isInvalidDocument = !useDocumentsState(state => state.documents['asyncapi'].valid);
+  const language = useFilesState(state => state.files['asyncapi'].language);
 
   const importUrlButton = (
     <button
@@ -84,7 +80,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
       title="Generate code/docs"
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
       onClick={() => show(GeneratorModal)}
     >
       Generate code/docs
@@ -120,7 +116,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Save as {language === 'yaml' ? 'YAML' : 'JSON'}
     </button>
@@ -157,7 +153,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
     </button>
@@ -192,7 +188,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Convert to {language === 'yaml' ? 'JSON' : 'YAML'}
     </button>

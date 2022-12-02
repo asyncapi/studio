@@ -4,7 +4,7 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 import { SettingsModal, NewFileModal } from './Modals';
 
-import { usePanelsState, panelsState } from '../state/index.state';
+import { usePanelsState, panelsState } from '../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';

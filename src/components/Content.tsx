@@ -5,7 +5,7 @@ import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
-import { usePanelsState } from '../state/index.state';
+import { usePanelsState } from '../state';
 
 import type { FunctionComponent } from 'react';
 
