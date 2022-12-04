@@ -9,9 +9,9 @@ interface ExplorerProps {}
 
 export const Explorer: FunctionComponent<ExplorerProps> = () => {
   return (
-    <div className="flex flex-row relative overflow-y-auto overflow-x-hidden bg-gray-500 h-full w-full">
+    <div className="flex flex-row relative overflow-y-auto overflow-x-hidden bg-gray-800 h-full w-full">
       <Allotment vertical>
-        <Allotment.Pane minSize={200} maxSize={300}>
+        <Allotment.Pane minSize={200}>
           <Files />
         </Allotment.Pane>
         <Allotment.Pane snap>

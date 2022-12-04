@@ -5,31 +5,27 @@ import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-
 import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
-import { isDeepEqual } from '../helpers';
 import { filesState, documentsState, settingsState } from '../state';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { DocumentDiagnostics } from '../state/documents.state';
 
 export class ParserService extends AbstractService {
-  private parser!: Parser;
+  private parser: Parser = new Parser({
+    schemaParsers: [
+      OpenAPISchemaParser(),
+      AvroSchemaParser(),
+    ],
+    __unstable: {
+      resolver: {
+        cache: false,
+      }
+    }
+  });
 
   override async onInit() {
-    this.parser = new Parser({
-      schemaParsers: [
-        OpenAPISchemaParser(),
-        AvroSchemaParser(),
-      ],
-      __unstable: {
-        resolver: {
-          cache: false,
-        }
-      }
-    });
-
     this.subscribeToFiles();
-    this.subscribeToSettings();
-    this.parseSavedDocuments();
+    await this.parseSavedDocuments();
   }
 
   async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
@@ -44,22 +40,19 @@ export class ParserService extends AbstractService {
   
       if (document) {
         const oldDocument = convertToOldAPI(document);
-        this.updateDocument(uri, {
-          uri,
+        return this.svcs.documentsSvc.updateDocument(uri, {
           document: oldDocument,
           diagnostics: this.createDiagnostics(diagnostics),
           extras,
           valid: true,
         });
-        return;
       } 
     } catch (err: unknown) {
       console.log(err);
     }
 
-    this.updateDocument(uri, {
-      uri,
-      document: undefined,
+    return this.svcs.documentsSvc.updateDocument(uri, {
+      document: null,
       diagnostics: this.createDiagnostics(diagnostics),
       extras: undefined,
       valid: false,
@@ -96,8 +89,6 @@ export class ParserService extends AbstractService {
     return diagnostics.filter(diagnostic => diagnostic.severity === severity);
   }
 
-  private updateDocument = documentsState.getState().updateDocument;
-
   private createDiagnostics(diagnostics: Diagnostic[]) {
     const collections: DocumentDiagnostics = {
       original: diagnostics,
@@ -130,26 +121,12 @@ export class ParserService extends AbstractService {
   }
 
   private subscribeToFiles() {
-    filesState.subscribe((state, prevState) => {
-      const newFiles = state.files;
-      const oldFiles = prevState.files;
-
-      Object.entries(newFiles).forEach(([uri, file]) => {
-        const oldFile = oldFiles[String(uri)];
-        if (file === oldFile) return;
-        this.parse(uri, file.content, { source: file.source });
-      });
+    this.svcs.eventsSvc.on('fs.file.create', file => {
+      this.parse(file.uri, file.content, { source: file.source });
     });
-  }
 
-  private subscribeToSettings() {
-    settingsState.subscribe((state, prevState) => {
-      if (isDeepEqual(state.governance, prevState.governance)) return;
-
-      const { files } = filesState.getState();
-      Object.entries(files).forEach(([uri, file]) => {
-        this.parse(uri, file.content);
-      });
+    this.svcs.eventsSvc.on('fs.file.update', file => {
+      this.parse(file.uri, file.content, { source: file.source });
     });
   }
 

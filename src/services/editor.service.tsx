@@ -1,17 +1,20 @@
 import { AbstractService } from './abstract.service';
 
-import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
-import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
+import { KeyMod, KeyCode, Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
-import { appState, documentsState, filesState, settingsState } from '../state';
+import { debounce, isDeepEqual } from '../helpers';
+import { appState, filesState, settingsState } from '../state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { File } from '../state/files.state';
+import type { EditorTab } from '../state/panels.state';
+import type { Document } from '../state/documents.state';
+import type { SettingsState } from '../state/settings.state';
 
 export interface UpdateState {
   content: string;
@@ -21,33 +24,42 @@ export interface UpdateState {
 } 
 
 export class EditorService extends AbstractService {
+  private isCreated: boolean = false;
   private decorations: Map<string, string[]> = new Map();
   private instance: monacoAPI.editor.IStandaloneCodeEditor | undefined;
+  private models: Map<string, monacoAPI.editor.ITextModel | null> = new Map();
+  private viewStates: Map<string, monacoAPI.editor.ICodeEditorViewState | null> = new Map();
 
   override onInit() {
+    this.subscribeToFiles();
+    this.subscribeToPanels();
     this.subcribeToDocuments();
   }
 
-  async onDidCreate(editor: monacoAPI.editor.IStandaloneCodeEditor) {
-    this.instance = editor;
-    // parse on first run the spec
-    await this.svcs.parserSvc.parse('asyncapi', editor.getValue());
-    
-    // apply save command
-    editor.addCommand(
-      KeyMod.CtrlCmd | KeyCode.KeyS,
-      () => this.saveToLocalStorage(),
-    );
-    
-    appState.setState({ initialized: true });
-  }
-
-  get editor(): monacoAPI.editor.IStandaloneCodeEditor | undefined {
-    return this.instance;
+  get editor(): monacoAPI.editor.IStandaloneCodeEditor {
+    return this.instance as monacoAPI.editor.IStandaloneCodeEditor;
   }
 
   get value(): string {
     return this.editor?.getModel()?.getValue() as string;
+  }
+
+  async onSetupEditor(elementRef: HTMLElement) {
+    if (this.isCreated) {
+      return;
+    }
+    this.isCreated = true;
+    
+    // // apply save command
+    // this.editor.addCommand(
+    //   KeyMod.CtrlCmd | KeyCode.KeyS,
+    //   () => this.saveToLocalStorage(),
+    // );
+    // this.editor.onDidChangeModelContent(this.onChangeContent.bind(this));
+  
+    this.createEditor(elementRef);
+    this.configureEditor();
+    appState.setState({ initialized: true });
   }
 
   updateState({
@@ -242,32 +254,146 @@ export class EditorService extends AbstractService {
     return localStorage.getItem('document');
   }
 
-  private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
-    const editor = this.editor;
-    const model = editor?.getModel();
-    const monaco = this.svcs.monacoSvc.monaco;
+  private createEditor(elementRef: HTMLElement) {
+    this.instance = this.svcs.monacoSvc.monaco.editor.create(elementRef, {
+      automaticLayout: true,
+      theme: 'asyncapi-theme',
+      wordWrap: 'on',
+      smoothScrolling: true,
+      glyphMargin: true,
+    });
+  }
 
-    if (!editor || !model || !monaco) {
+  private configureEditor() {
+    let unsubscribe = this.editor.onDidChangeModelContent(
+      this.onChangeContent(this.svcs.settingsSvc.get()).bind(this),
+    );
+
+    this.svcs.eventsSvc.on('settings.update', (settings, prevSettings) => {
+      if (isDeepEqual(settings.governance, prevSettings.governance)) {
+        return;
+      }
+
+      if (unsubscribe) {
+        unsubscribe.dispose();
+        unsubscribe = this.editor.onDidChangeModelContent(
+          this.onChangeContent(this.svcs.settingsSvc.get()).bind(this),
+        );
+      }
+    });
+  }
+
+  private getModel(uri: string) {
+    return this.models.get(uri) || this.createModel(uri);
+  }
+
+  private getCurrentModel() {
+    return this.editor?.getModel();
+  }
+
+  private createModel(uri: string, file?: File) {
+    if (this.models.has(uri)) {
       return;
     }
 
-    const { markers, decorations } = this.createMarkersAndDecorations(diagnostics);
-    monaco.editor.setModelMarkers(model, 'asyncapi', markers);
-    let oldDecorations = this.decorations.get('asyncapi') || [];
-    oldDecorations = editor.deltaDecorations(oldDecorations, decorations);
-    this.decorations.set('asyncapi', oldDecorations);
+    const monaco = this.svcs.monacoSvc.monaco;
+    file = file || this.svcs.filesSvc.getFile(uri);
+    if (!file) {
+      return;
+    }
+
+    const modelUri = monaco.Uri.parse(file.uri);
+    const model = monaco.editor.createModel(file.content, file.language, modelUri);
+    this.models.set(uri, model);
+
+    return model;
+  }
+
+  private removeModel(uri: string) {
+    const model = this.models.get(uri);
+    if (!model) {
+      return;
+    }
+
+    model.dispose();
+    return this.models.delete(uri);
+  }
+
+  private onChangeContent(settings: SettingsState) {
+    const editorState = settings.editor;
+    return debounce((e: monacoAPI.editor.IModelContentChangedEvent) => {
+      const model = this.getCurrentModel();
+      if (model) {
+        const content = model.getValue();
+        // this.updateState({ content });
+        // if (editorState.autoSaving) {
+        //   this.saveToLocalStorage(content, false);
+        // }
+        console.log(model.uri.toString());
+        this.svcs.parserSvc.parse(model.uri.toString(), content);
+      } 
+    }, editorState.savingDelay);
+  }
+
+  private onChangeTab(newTab: EditorTab) {
+    const oldModel = this.editor.getModel();
+    if (oldModel) {
+      const viewState = this.editor.saveViewState();
+      const uri = oldModel.uri.toString();
+      this.viewStates.set(uri, viewState);
+    }
+
+    const restoredViewState = this.viewStates.get(newTab.uri);
+    if (restoredViewState) {
+      this.editor.restoreViewState(restoredViewState);
+    }
+
+    const model = this.getModel(newTab.uri);
+    if (model) {
+      this.editor.setModel(model)
+      this.editor.focus();
+    }
+  }
+
+  private applyMarkersAndDecorations(document: Document) {
+    const { uri, diagnostics } = document;
+    const model = this.getModel(uri);
+    if (!model || !this.editor) {
+      return;
+    }
+
+    const { markers, decorations } = this.createMarkersAndDecorations(diagnostics.filtered);
+    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, uri, markers);
+    let oldDecorations = this.decorations.get(uri) || [];
+    console.log(oldDecorations, decorations);
+    oldDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
+    this.decorations.set(uri, oldDecorations);
+  }
+
+  private removeMarkersAndDecorations(document: Document) {
+    const { uri } = document;
+    const model = this.getModel(uri);
+    if (!model || !this.editor) {
+      return;
+    }
+
+    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, uri, []);
+    let oldDecorations = this.decorations.get(uri) || [];
+    oldDecorations = this.editor.deltaDecorations(oldDecorations, []);
+    this.decorations.set(uri, oldDecorations);
   }
 
   createMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
 
-    diagnostics.forEach(diagnostic => {
+    diagnostics.forEach((diagnostic, idx) => {
       const { message, range, severity } = diagnostic;
 
       if (severity !== DiagnosticSeverity.Error) {
+        const className = this.getSeverityClassName(severity);
         newDecorations.push({
-          id: 'asyncapi',
+          id: `${className}-${idx}`,
           ownerId: 0,
           range: new Range(
             range.start.line + 1, 
@@ -320,16 +446,32 @@ export class EditorService extends AbstractService {
     return fileDownload(content, fileName);
   }
 
-  private subcribeToDocuments() {
-    documentsState.subscribe((state, prevState) => {
-      const newDocuments = state.documents;
-      const oldDocuments = prevState.documents;
+  private subscribeToFiles() {
+    this.svcs.eventsSvc.on('fs.file.remove', file => {
+      this.removeModel(file.uri);
+    });
+  }
 
-      Object.entries(newDocuments).forEach(([uri, document]) => {
-        const oldDocument = oldDocuments[String(uri)];
-        if (document === oldDocument) return;
-        this.applyMarkersAndDecorations(document.diagnostics.filtered);
-      });
+  private subscribeToPanels() {
+    this.svcs.eventsSvc.on('panels.panel.set-active-tab', panel => {
+      const tab = this.svcs.panelsSvc.getTab(panel.id, panel.activeTab);
+      if (tab && tab.type === 'editor') {
+        this.onChangeTab(tab);
+      }
+    });
+  }
+
+  private subcribeToDocuments() {
+    this.svcs.eventsSvc.on('documents.document.create', document => {
+      this.applyMarkersAndDecorations(document);
+    });
+
+    this.svcs.eventsSvc.on('documents.document.update', document => {
+      this.applyMarkersAndDecorations(document);
+    });
+
+    this.svcs.eventsSvc.on('documents.document.remove', document => {
+      this.removeMarkersAndDecorations(document);
     });
   }
 }

@@ -1,41 +1,57 @@
-import { useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MonacoEditor from '@monaco-editor/react';
 
 import { debounce } from '../../helpers';
 import { useServices } from '../../services';
-import { useFilesState, useSettingsState } from '../../state';
+import { useFilesState, usePanelsState, useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
 import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
 
-export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
-  ...props
-}) => {
-  const { editorSvc, parserSvc } = useServices();
-  const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
-  const file = useFilesState(state => state.files['asyncapi']);
+export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = (props) => {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const { editorSvc } = useServices();
+  // const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
+  // const { tabs, activeTab } = usePanelsState(state => state.panels['primary']);
+  // const fileUri = tabs.find(t => t.id === activeTab)?.uri || 'asyncapi';
+  // const file = useFilesState(state => state.files[fileUri]);
 
-  const onChange = useMemo(() => {
-    return debounce((v: string) => {
-      editorSvc.updateState({ content: v });
-      autoSaving && editorSvc.saveToLocalStorage(v, false);
-      parserSvc.parse('asyncapi', v);
-    }, savingDelay);
-  }, [autoSaving, savingDelay]);
+  useEffect(() => {
+    if (editorRef.current) {
+      editorSvc.onSetupEditor(editorRef.current);
+    }
+  }, []);
+
+  // const onChange = useMemo(() => {
+  //   return debounce((v: string) => {
+  //     editorSvc.updateState({ content: v });
+  //     autoSaving && editorSvc.saveToLocalStorage(v, false);
+  //     parserSvc.parse('asyncapi', v);
+  //   }, savingDelay);
+  // }, []);
 
   return (
-    <MonacoEditor
-      language={file.language}
-      defaultValue={file.content}
-      theme="asyncapi-theme"
-      onMount={editorSvc.onDidCreate.bind(editorSvc)}
-      onChange={onChange}
-      options={{
-        wordWrap: 'on',
-        smoothScrolling: true,
-        glyphMargin: true,
-      }}
-      {...(props || {})}
-    />
+    <div className='flex flex-row items-center justify-between w-full h-full'>
+      <div 
+        className='flex flex-row items-center justify-between w-full h-full'
+        ref={editorRef} 
+      />
+    </div>
   );
+
+  // return (
+  //   <MonacoEditor
+  //     language={file.language}
+  //     defaultValue={file.content}
+  //     theme="asyncapi-theme"
+  //     onMount={editorSvc.onSetupEditor.bind(editorSvc)}
+  //     onChange={onChange}
+  //     options={{
+  //       wordWrap: 'on',
+  //       smoothScrolling: true,
+  //       glyphMargin: true,
+  //     }}
+  //     {...(props || {})}
+  //   />
+  // );
 };

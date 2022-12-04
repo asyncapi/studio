@@ -5,21 +5,19 @@ import type { TooltipProps } from './Tooltip';
 
 export interface IconButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   icon: ReactNode;
-  tooltip?: ReactNode;
-  tooltipProps?: TooltipProps;
+  tooltip?: TooltipProps;
 }
 
 export const IconButton: FunctionComponent<IconButtonProps> = ({
   icon,
-  tooltip,
-  tooltipProps = {},
+  tooltip = {},
   ...rest
 }) => {
   const button = (
     <button 
       type='button' 
-      className={`${rest.className || ''} flex items-center justify-center bg-inherit hover:bg-gray-600 active:bg-gray-500 text-gray-300 rounded p-0.5`}
       {...rest}
+      className={`${rest.className || ''} flex items-center justify-center bg-inherit hover:bg-gray-600 active:bg-gray-500 text-gray-300 rounded p-0.5`}
     >
       {icon}
     </button>
@@ -30,7 +28,7 @@ export const IconButton: FunctionComponent<IconButtonProps> = ({
   }
 
   return (
-    <Tooltip content={tooltip} hideOnClick={true} {...tooltipProps}>
+    <Tooltip hideOnClick={true} {...tooltip}>
       {button}
     </Tooltip>
   )

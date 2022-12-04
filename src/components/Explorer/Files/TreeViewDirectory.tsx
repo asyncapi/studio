@@ -37,7 +37,10 @@ export const TreeViewDirectoryActions: FunctionComponent<TreeViewDirectoryAction
     return [
       <IconButton
         icon={<VscNewFile className='w-3.5 h-3.5' />}
-        tooltip='Create New File'
+        tooltip={{
+          content: 'Create new file',
+          delay: [500, 0],
+        }} 
         onClick={e => {
           e.stopPropagation();
           show(CreateNewFileModal, { directory });
@@ -45,7 +48,10 @@ export const TreeViewDirectoryActions: FunctionComponent<TreeViewDirectoryAction
       />,
       <IconButton
         icon={<VscNewFolder className='w-3.5 h-3.5' />}
-        tooltip='Create New Directory'
+        tooltip={{
+          content: 'Create new directory',
+          delay: [500, 0],
+        }} 
         onClick={e => {
           e.stopPropagation();
           show(CreateNewDirectoryModal, { directory });
@@ -53,7 +59,10 @@ export const TreeViewDirectoryActions: FunctionComponent<TreeViewDirectoryAction
       />,
       <IconButton
         icon={<VscEdit className='w-3.5 h-3.5' />}
-        tooltip='Edit Directory'
+        tooltip={{
+          content: 'Edit directory',
+          delay: [500, 0],
+        }} 
         onClick={e => {
           e.stopPropagation();
           show(EditFileModal, { item: directory });
@@ -61,7 +70,10 @@ export const TreeViewDirectoryActions: FunctionComponent<TreeViewDirectoryAction
       />,
       <IconButton
         icon={<VscTrash className='w-3.5 h-3.5' />}
-        tooltip='Delete Directory'
+        tooltip={{
+          content: 'Delete directory',
+          delay: [500, 0],
+        }} 
         onClick={e => {
           e.stopPropagation();
           show(DeleteFileModal, { item: directory });
@@ -121,9 +133,9 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
             )}
           </button>
 
-          <h3 className="flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5">
+          <span className="flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5">
             {name}
-          </h3>
+          </span>
 
           <div className={`flex-none transition-opacity ${hover ? 'opacity-1' : 'opacity-0'}`}>
             <TreeViewDirectoryActions directory={directory} />

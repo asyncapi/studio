@@ -1,5 +1,6 @@
 import SplitPane from './SplitPane';
-import { Editor } from './Editor/Editor';
+// import { Editor } from './Editor/Editor';
+import { PrimaryPanel } from './PrimaryPanel/PrimaryPanel';
 import { Explorer } from './Explorer/Explorer';
 import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
@@ -41,7 +42,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
       }, 100)}
     >
       <Explorer />
-      <Editor />
+      <PrimaryPanel />
     </SplitPane>
   );
 

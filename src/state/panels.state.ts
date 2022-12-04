@@ -1,6 +1,26 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export type PanelTabCore = {
+  id: string;
+  panel: string;
+  type: string;
+}
+
+export type EditorTab = {
+  type: 'editor';
+  uri: string;
+} & PanelTabCore;
+
+export type PanelTab = 
+  | EditorTab;
+
+export type Panel = {
+  id: string;
+  tabs: Array<PanelTab>;
+  activeTab: string;
+}
+
 export type PanelsState = {
   show: {
     activityBar: boolean;
@@ -11,12 +31,13 @@ export type PanelsState = {
     secondaryPanel: boolean;
     contextPanel: boolean;
   };
+  panels: Record<string, Panel>;
   // TODO: remove when panels tabs will be introduced
   secondaryPanelType: 'template' | 'visualiser';
 }
 
 export const panelsState = create(
-  persist<PanelsState>(() => 
+  persist<PanelsState>(set => 
     ({
       show: {
         activityBar: true,
@@ -26,6 +47,20 @@ export const panelsState = create(
         primaryPanel: true,
         secondaryPanel: true,
         contextPanel: true,
+      },
+      panels: {
+        primary: {
+          id: 'primary',
+          activeTab: 'asyncapi',
+          tabs: [
+            {
+              id: 'asyncapi',
+              panel: 'primary',
+              type: 'editor',
+              uri: 'asyncapi',
+            }
+          ],
+        },
       },
       secondaryPanelType: 'template',
     }), 

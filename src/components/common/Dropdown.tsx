@@ -27,7 +27,7 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
   return (
     <div className={className}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(state => !state)}
         type="button"
         className={`flex p-2 text-sm rounded-md ${buttonHoverClassName} focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150`}
       >

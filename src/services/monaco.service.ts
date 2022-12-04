@@ -103,6 +103,7 @@ export class MonacoService extends AbstractService {
       },
       rules: [{ token: '', background: '#252f3f' }],
     });
+    this.monaco.editor.setTheme('asyncapi-theme');
   }
 
   private prepareJSONSchemas() {

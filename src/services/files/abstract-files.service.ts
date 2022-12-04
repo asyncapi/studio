@@ -62,6 +62,13 @@ export abstract class AbstractFilesService extends AbstractService {
     return path.path.substring(path.path.lastIndexOf('/') + 1);
 	}
 
+  absolutePath(item: File | Directory): string {
+    if (item.parent && item.parent.uri !== 'root') {
+      return `${this.absolutePath(item.parent)}/${item.name}`;
+    }
+    return item.name;
+  }
+
   getDirectory(uri: string): Directory | undefined {
     return filesState.getState().directories[String(uri)];
   }
@@ -72,12 +79,5 @@ export abstract class AbstractFilesService extends AbstractService {
 
   getRootDirectory(): Directory {
     return this.getDirectory('root') as Directory;
-  }
-
-  absolutePath(item: File | Directory): string {
-    if (item.parent && item.parent.uri !== 'root') {
-      return `${this.absolutePath(item.parent)}/${item.name}`;
-    }
-    return item.name;
   }
 }

@@ -13,10 +13,10 @@ export type DocumentDiagnostics = {
 
 export type Document = {
   uri: string;
-  document?: AsyncAPIDocument;
-  extras?: ParseOutput['extras'];
+  document: AsyncAPIDocument | null;
   diagnostics: DocumentDiagnostics;
-  valid?: boolean;
+  valid: boolean;
+  extras?: ParseOutput['extras'];
 }
 
 export type DocumentsState = {

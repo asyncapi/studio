@@ -44,7 +44,7 @@ export const ExpandedPanel: FunctionComponent<PropsWithChildren<ExpandedPanelPro
         </h3>
 
         {actions.length > 0 ? (
-          <div className={`flex-none ${hover ? 'block' : 'hidden'}`}>
+          <div className={`flex-none transition-opacity ${hover ? 'opacity-1' : 'opacity-0'}`}>
             <ul className='flex flex-row items-center'>
               {actions.map((action, idx) => (
                 <li key={idx}>

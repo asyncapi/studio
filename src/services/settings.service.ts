@@ -11,7 +11,9 @@ export class SettingsService extends AbstractService {
   }
 
   set(state: Partial<SettingsState>) {
+    const oldSettings = this.get();
     settingsState.setState(state);
+    this.svcs.eventsSvc.emit('settings.update', this.get(), oldSettings);
   }
 
   isEqual(newState: Partial<SettingsState>): boolean {

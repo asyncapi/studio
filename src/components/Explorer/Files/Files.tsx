@@ -15,7 +15,10 @@ export const Files: FunctionComponent<FilesProps> = () => {
     return [
       <IconButton
         icon={<VscNewFile className='w-3.5 h-3.5' />}
-        tooltip='Create New File'
+        tooltip={{
+          content: 'Create new file',
+          delay: [500, 0],
+        }}
         onClick={e => {
           e.stopPropagation();
           show(CreateNewFileModal);
@@ -23,7 +26,10 @@ export const Files: FunctionComponent<FilesProps> = () => {
       />,
       <IconButton
         icon={<VscNewFolder className='w-3.5 h-3.5' />}
-        tooltip='Create New Directory'
+        tooltip={{
+          content: 'Create new directory',
+          delay: [500, 0],
+        }}
         onClick={e => {
           e.stopPropagation();
           show(CreateNewDirectoryModal);
@@ -31,15 +37,24 @@ export const Files: FunctionComponent<FilesProps> = () => {
       />,
       <IconButton
         icon={<VscSaveAll className='w-3.5 h-3.5' />} 
-        tooltip='Save All Files'
+        tooltip={{
+          content: 'Save all files',
+          delay: [500, 0],
+        }}
       />,
       <IconButton
         icon={<VscCollapseAll className='w-3.5 h-3.5' />} 
-        tooltip='Collapse All Directories'
+        tooltip={{
+          content: 'Collapse all directories',
+          delay: [500, 0],
+        }}
       />,
       <IconButton
-        icon={<VscRefresh className='w-3.5 h-3.5' />} 
-        tooltip='Refresh All Files'
+        icon={<VscRefresh className='w-3.5 h-3.5' />}
+        tooltip={{
+          content: 'Refresh all files',
+          delay: [500, 0],
+        }} 
       />
     ];
   }, []);
