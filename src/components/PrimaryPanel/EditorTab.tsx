@@ -18,8 +18,13 @@ export const EditorTab: FunctionComponent<EditorTabProps> = ({
 }) => {
   const { panelsSvc } = useServices();
   const [hover, setHover] = useState<boolean>(false);
-  const { name, language } = useFilesState(state => state.files[tab.uri]);
+  const file = useFilesState(state => state.files[tab.uri]);
   const active = usePanelsState(state => state.panels['primary']?.activeTab) || '';
+
+  if (!file) {
+    return null
+  }
+  const { name, language } = file;
 
   return (
     <div 

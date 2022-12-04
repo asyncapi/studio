@@ -9,7 +9,7 @@ export class PanelsService extends AbstractService {
     if (this.getPanel(panelId)?.activeTab === tabId) {
       return;
     }
-    
+
     if (this.hasTab(panelId, tabId)) {
       return this.setActiveTab(panelId, tabId);
     }
@@ -57,13 +57,14 @@ export class PanelsService extends AbstractService {
     }
   
     panel = { ...panel };
-    if (panel.activeTab === tabId) {
+    let activeTab = panel.activeTab;
+    if (activeTab === tabId) {
       const indexOf = panel.tabs.findIndex(t => t.id === tabId);
       if (indexOf === 0) { // set active second tab (if exist)
         const secondTab = panel.tabs[1];
-        panel.activeTab = secondTab ? secondTab.id : '';
+        activeTab = panel.activeTab = secondTab ? secondTab.id : '';
       } else { // otherwise set active previous tab 
-        panel.activeTab = panel.tabs[indexOf - 1].id;
+        activeTab = panel.activeTab = panel.tabs[indexOf - 1].id;
       }
     }
   
@@ -71,6 +72,7 @@ export class PanelsService extends AbstractService {
 
     this.updatePanelState(panelId, panel);
     this.svcs.eventsSvc.emit('panels.tab.remove', tab);
+    this.setActiveTab(panelId, activeTab);
   }
 
   setActiveTab(panelId: string, tabId: string) {

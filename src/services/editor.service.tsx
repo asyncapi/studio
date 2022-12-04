@@ -89,8 +89,7 @@ export class EditorService extends AbstractService {
       }
     }
 
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', {
+    this.svcs.filesSvc.updateFile('asyncapi', {
       language,
       content,
       modified: this.getFromLocalStorage() !== content,
@@ -222,8 +221,7 @@ export class EditorService extends AbstractService {
     editorValue = editorValue || this.value;
     localStorage.setItem('document', editorValue);
 
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', {
+    this.svcs.filesSvc.updateFile('asyncapi', {
       from: 'storage',
       source: undefined,
       modified: false,
@@ -336,22 +334,23 @@ export class EditorService extends AbstractService {
   }
 
   private onChangeTab(newTab: EditorTab) {
-    const oldModel = this.editor.getModel();
+    const oldModel = this.getCurrentModel();
     if (oldModel) {
       const viewState = this.editor.saveViewState();
       const uri = oldModel.uri.toString();
       this.viewStates.set(uri, viewState);
     }
 
-    const restoredViewState = this.viewStates.get(newTab.uri);
-    if (restoredViewState) {
-      this.editor.restoreViewState(restoredViewState);
-    }
-
     const model = this.getModel(newTab.uri);
     if (model) {
       this.editor.setModel(model)
       this.editor.focus();
+
+      const uri = model.uri.toString();
+      const restoredViewState = this.viewStates.get(uri);
+      if (restoredViewState) {
+        this.editor.restoreViewState(restoredViewState);
+      }
     }
   }
 

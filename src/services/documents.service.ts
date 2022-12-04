@@ -80,6 +80,14 @@ export class DocumentsService extends AbstractService {
     return collections;
   }
 
+  getDocument(uri: string): Document | undefined {
+    return this.getState().documents[String(uri)];
+  }
+
+  hasDocument(uri: string) {
+    return Boolean(this.getDocument(uri));
+  }
+
   getState() {
     return documentsState.getState();
   }
@@ -101,14 +109,6 @@ export class DocumentsService extends AbstractService {
     }
   }
 
-  private getDocument(uri: string): Document | undefined {
-    return this.getState().documents[String(uri)];
-  }
-
-  private hasDocument(uri: string) {
-    return Boolean(this.getDocument(uri));
-  }
-
   private subscribeToFiles() {
     this.svcs.eventsSvc.on('fs.file.remove', file => {
       this.removeDocument(file.uri);
@@ -121,12 +121,13 @@ export class DocumentsService extends AbstractService {
         return;
       }
 
-      const { documents } = this.getState();
-      const newDocuments = { ...documents };
+      const newDocuments = { ...this.getState().documents };
       Object.entries(newDocuments).forEach(([uri, document]) => {
-        newDocuments[String(uri)] = {
-          ...document,
-          diagnostics: this.createDiagnostics(document.diagnostics.original),
+        if (document) {
+          newDocuments[String(uri)] = {
+            ...document || {},
+            diagnostics: this.createDiagnostics(document.diagnostics.original),
+          }
         }
       });
       this.setState({ documents: newDocuments });

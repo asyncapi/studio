@@ -18,7 +18,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
   const liveServer = useAppState(state => state.liveServer);
-  const actualVersion = document.document?.version() || '2.0.0';
+  const actualVersion = document?.document?.version() || '2.0.0';
   const latestVersion = specificationSvc.latestVersion;
 
   const onNonLatestClick = useCallback((e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -36,7 +36,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Live server</span>
         </div>
       )}
-      {document.diagnostics.errors.length > 0 ? (
+      {document && document.diagnostics.errors.length > 0 ? (
         <div className="ml-3">
           <span className="text-red-500">
             <svg
@@ -73,7 +73,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {!autoSaving && file.modified && (
+      {!autoSaving && file?.modified ? (
         <div className="ml-3">
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -82,7 +82,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           </span>
           <span>Modified</span>
         </div>
-      )}
+      ): null}
       <div className="ml-3">
         <span className="text-blue-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -91,7 +91,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
         </span>
         <span>{autoSaving ? 'Autosave: On' : 'Autosave: Off'}</span>
       </div>
-      {actualVersion !== latestVersion && document.valid === true && (
+      {actualVersion !== latestVersion && document?.valid === true && (
         <div className="ml-3" onClick={onNonLatestClick}>
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -101,9 +101,11 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Not latest</span>
         </div>
       )}
-      <div className="ml-3">
-        <span>{file.language}</span>
-      </div>
+      {file ? (
+        <div className="ml-3">
+          <span>{file.language}</span>
+        </div>
+      ) : null}
     </div>
   );
 };

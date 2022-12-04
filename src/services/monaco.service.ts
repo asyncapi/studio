@@ -135,7 +135,7 @@ export class MonacoService extends AbstractService {
       Object.entries(newDocuments).forEach(([uri, document]) => {
         const oldDocument = oldDocuments[String(uri)];
         if (document === oldDocument) return;
-        const version = document.document?.version();
+        const version = document?.document?.version();
         if (version) {
           this.updateLanguageConfig(version as SpecVersions);
         } else {

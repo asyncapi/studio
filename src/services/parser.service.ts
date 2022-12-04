@@ -132,10 +132,14 @@ export class ParserService extends AbstractService {
 
   private parseSavedDocuments() {
     const { files } = filesState.getState();
-    return Promise.all(
-      Object.entries(files).map(([uri, file]) => {
-        return this.parse(uri, file.content);
-      }),
-    );
+    const promises = Object.entries(files)
+      .map(([uri, file]) => {
+        if (file) {
+          return this.parse(uri, file.content);
+        }
+      })
+      .filter(Boolean);
+
+    return Promise.all(promises);
   }
 }

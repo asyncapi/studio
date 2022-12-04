@@ -180,19 +180,20 @@ export type File = {
   parent?: Directory;
 }
 
+// TODO: Change to the File | undefined and Directory | undefined
 export type FilesState = {
   files: Record<string, File>;
   directories: Record<string, Directory>;
 }
 
-export type FilesActions = {
-  createDirectory: (uri: string, directory: Partial<Directory>) => void;
-  updateDirectory: (uri: string, directory: Partial<Directory>) => void;
-  removeDirectory: (uri: string) => void;
-  createFile: (uri: string, file: Partial<File>) => void;
-  updateFile: (uri: string, file: Partial<File>) => void;
-  removeFile: (uri: string) => void;
-}
+// export type FilesActions = {
+//   createDirectory: (uri: string, directory: Partial<Directory>) => void;
+//   updateDirectory: (uri: string, directory: Partial<Directory>) => void;
+//   removeDirectory: (uri: string) => void;
+//   createFile: (uri: string, file: Partial<File>) => void;
+//   updateFile: (uri: string, file: Partial<File>) => void;
+//   removeFile: (uri: string) => void;
+// }
 
 const files: Record<string, File> = {
   file1: {
@@ -280,246 +281,240 @@ files.asyncapi.parent = rootDirectory;
 files.file1.parent = rootDirectory;
 files.file2.parent = directories.dir2;
 files.file3.parent = directories.dir1;
-rootDirectory.children = sortChildren([files.asyncapi, files.file1, directories.dir1, directories.dir2]);
+rootDirectory.children = [directories.dir1, directories.dir2, files.asyncapi, files.file1];
 
-function sortFunction(a: File | Directory, b: File | Directory) {
-  const isADirectory = a.type === 'directory';
-  const isBDirectory = b.type === 'directory';
-  // directories
-  if (isADirectory || isBDirectory) {
-    if (isADirectory && isBDirectory) {
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    }
-    return isADirectory ? -1 : 1;
-  }
-  // files
-  if (a.name > b.name) return 1;
-  if (a.name < b.name) return -1;
-  return 0;
-}
+// function sortFunction(a: File | Directory, b: File | Directory) {
+//   const isADirectory = a.type === 'directory';
+//   const isBDirectory = b.type === 'directory';
+//   // directories
+//   if (isADirectory || isBDirectory) {
+//     if (isADirectory && isBDirectory) {
+//       if (a.name > b.name) return 1;
+//       if (a.name < b.name) return -1;
+//       return 0;
+//     }
+//     return isADirectory ? -1 : 1;
+//   }
+//   // files
+//   if (a.name > b.name) return 1;
+//   if (a.name < b.name) return -1;
+//   return 0;
+// }
 
-function sortChildren(children: Array<Directory | File>) {
-  return [...children].sort(sortFunction);
-}
+// function sortChildren(children: Array<Directory | File>) {
+//   return [...children].sort(sortFunction);
+// }
 
-function addChildren(directory: Directory, children: Array<Directory | File>) {
-  return sortChildren([...directory.children, ...children]);
-}
+// function addChildren(directory: Directory, children: Array<Directory | File>) {
+//   return sortChildren([...directory.children, ...children]);
+// }
 
-function mergeDirectories(state: FilesState, uri: string, oldDirectory: Directory, newDirectory: Partial<Directory>): Record<string, Directory> {
-  return { ...state.directories, [String(uri)]: { ...oldDirectory, ...newDirectory } };
-};
+// function mergeDirectories(state: FilesState, uri: string, oldDirectory: Directory, newDirectory: Partial<Directory>): Record<string, Directory> {
+//   return { ...state.directories, [String(uri)]: { ...oldDirectory, ...newDirectory } };
+// };
 
-function mergeFiles(state: FilesState, uri: string, oldFile: File, newFile: Partial<File>): Record<string, File> {
-  return { ...state.files, [String(uri)]: { ...oldFile, ...newFile } };
-};
+// function mergeFiles(state: FilesState, uri: string, oldFile: File, newFile: Partial<File>): Record<string, File> {
+//   return { ...state.files, [String(uri)]: { ...oldFile, ...newFile } };
+// };
 
-function createDirectoryObject(uri: string, directory: Partial<Directory>): Directory {
-  return {
-    type: 'directory',
-    uri,
-    name: directory.name || uri,
-    children: [],
-    from: 'storage',
-    stat: {
-      mtime: (new Date()).getTime(),
-      ...directory?.stat || {},
-    },
-    ...directory
-  }
-}
+// function createDirectoryObject(uri: string, directory: Partial<Directory>): Directory {
+//   return {
+//     type: 'directory',
+//     uri,
+//     name: directory.name || uri,
+//     children: [],
+//     from: 'storage',
+//     stat: {
+//       mtime: (new Date()).getTime(),
+//       ...directory?.stat || {},
+//     },
+//     ...directory
+//   }
+// }
 
-function createFileObject(uri: string, file: Partial<File>): File {
-  return {
-    type: 'file',
-    uri,
-    name: file.name || uri,
-    content: '',
-    language: 'yaml',
-    from: file.from || 'storage',
-    parent: file.parent || rootDirectory,
-    modified: false,
-    stat: {
-      mtime: (new Date()).getTime(),
-      ...file?.stat || {},
-    },
-    ...file
-  }
-}
+// function createFileObject(uri: string, file: Partial<File>): File {
+//   return {
+//     type: 'file',
+//     uri,
+//     name: file.name || uri,
+//     content: '',
+//     language: 'yaml',
+//     from: file.from || 'storage',
+//     parent: file.parent || rootDirectory,
+//     modified: false,
+//     stat: {
+//       mtime: (new Date()).getTime(),
+//       ...file?.stat || {},
+//     },
+//     ...file
+//   }
+// }
 
-function createFile(state: FilesState, uri: string, file: Partial<File>): Partial<FilesState> {
-  const newFile = createFileObject(uri, file);
-  const files = { ...state.files, [String(uri)]: newFile };
-  const parent = newFile.parent;
-  if (!parent) {
-    return { files };
-  }
+// function createFile(state: FilesState, uri: string, file: Partial<File>): Partial<FilesState> {
+//   const newFile = createFileObject(uri, file);
+//   const files = { ...state.files, [String(uri)]: newFile };
+//   const parent = newFile.parent;
+//   if (!parent) {
+//     return { files };
+//   }
 
-  const directories = { ...state.directories };
-  directories[String(parent.uri)] = { 
-    ...parent, 
-    children: addChildren(parent, [newFile]) 
-  };
-  return { files, directories };
-};
+//   const directories = { ...state.directories };
+//   directories[String(parent.uri)] = { 
+//     ...parent, 
+//     children: addChildren(parent, [newFile]) 
+//   };
+//   return { files, directories };
+// };
 
-function collectUris(children: Array<Directory | File>, collection: { files: Array<string>, directories: Array<string> } = { files: [], directories: [] }): { files: Array<string>, directories: Array<string> } {
-  children.forEach(c => {
-    if (c.type === 'file') {
-      collection.files.push(c.uri);
-      return;
-    }
-    collection.directories.push(c.uri);
-    return collectUris(c.children, collection);
-  });
-  return collection;
-}
+// function collectUris(children: Array<Directory | File>, collection: { files: Array<string>, directories: Array<string> } = { files: [], directories: [] }): { files: Array<string>, directories: Array<string> } {
+//   children.forEach(c => {
+//     if (c.type === 'file') {
+//       collection.files.push(c.uri);
+//       return;
+//     }
+//     collection.directories.push(c.uri);
+//     return collectUris(c.children, collection);
+//   });
+//   return collection;
+// }
 
-// TODO: handle overwriting
-function updateFile(state: FilesState, uri: string, file: Partial<File>): Partial<FilesState> {
-  const existingFile = state.files[String(uri)];
-  if (!existingFile) {
-    return createFile(state, uri, file as File)
-  }
+// // TODO: handle overwriting
+// function updateFile(state: FilesState, uri: string, file: Partial<File>): Partial<FilesState> {
+//   const existingFile = state.files[String(uri)];
+//   if (!existingFile) {
+//     return createFile(state, uri, file as File)
+//   }
 
-  const files = mergeFiles(state, uri, existingFile, file);
-  const parent = file.parent;
-  const existingParent = existingFile.parent;
-  if (!parent || (existingParent === parent)) {
-    return { files };
-  }
+//   const files = mergeFiles(state, uri, existingFile, file);
+//   const parent = file.parent;
+//   const existingParent = existingFile.parent;
+//   if (!parent || (existingParent === parent)) {
+//     return { files };
+//   }
 
-  const directories = { ...state.directories };
-  // TODO: add root directory
-  if (existingParent) {
-    directories[String(existingParent.uri)] = { 
-      ...existingParent, 
-      children: existingParent.children.filter(c => !(c.uri === uri && c.type === 'file')),
-    }; 
-    directories[String(parent.uri)] = { 
-      ...parent, 
-      children: addChildren(parent, [file as File]),
-    };
-    return { files, directories };
-  } else {
-    // TODO
-  }
+//   const directories = { ...state.directories };
+//   // TODO: add root directory
+//   if (existingParent) {
+//     directories[String(existingParent.uri)] = { 
+//       ...existingParent, 
+//       children: existingParent.children.filter(c => !(c.uri === uri && c.type === 'file')),
+//     }; 
+//     directories[String(parent.uri)] = { 
+//       ...parent, 
+//       children: addChildren(parent, [file as File]),
+//     };
+//     return { files, directories };
+//   } else {
+//     // TODO
+//   }
 
-  return state;
-};
+//   return state;
+// };
 
-function removeFile(state: FilesState, uri: string): Partial<FilesState> {
-  const file = state.files[String(uri)];
-  if (!file) {
-    return state;
-  }
+// function removeFile(state: FilesState, uri: string): Partial<FilesState> {
+//   const file = state.files[String(uri)];
+//   if (!file) {
+//     return state;
+//   }
 
-  const files = { ...state.files };
-  delete files[String(uri)];
+//   const files = { ...state.files };
+//   delete files[String(uri)];
 
-  const parent = file.parent;
-  if (!parent) {
-    return { files };
-  }
+//   const parent = file.parent;
+//   if (!parent) {
+//     return { files };
+//   }
 
-  const directories = { ...state.directories };
-  directories[String(parent.uri)] = { 
-    ...parent, 
-    children: parent.children.filter(c => !(c.uri === uri && c.type === 'file')),
-  }; 
-  return { files, directories };
-};
+//   const directories = { ...state.directories };
+//   directories[String(parent.uri)] = { 
+//     ...parent, 
+//     children: parent.children.filter(c => !(c.uri === uri && c.type === 'file')),
+//   }; 
+//   return { files, directories };
+// };
 
-function createDirectory(state: FilesState, uri: string, directory: Partial<Directory>): Partial<FilesState>  {
-  const newDirectory = createDirectoryObject(uri, directory);
-  const directories = { ...state.directories, [String(uri)]: newDirectory };
-  const parent = newDirectory.parent;
-  if (!parent) {
-    return { directories };
-  }
+// function createDirectory(state: FilesState, uri: string, directory: Partial<Directory>): Partial<FilesState>  {
+//   const newDirectory = createDirectoryObject(uri, directory);
+//   const directories = { ...state.directories, [String(uri)]: newDirectory };
+//   const parent = newDirectory.parent;
+//   if (!parent) {
+//     return { directories };
+//   }
 
-  directories[String(parent.uri)] = { 
-    ...parent, 
-    children: addChildren(parent, [newDirectory]) 
-  };
-  return { directories };
-}
+//   directories[String(parent.uri)] = { 
+//     ...parent, 
+//     children: addChildren(parent, [newDirectory]) 
+//   };
+//   return { directories };
+// }
 
-// TODO: handle overwriting
-function updateDirectory(state: FilesState, uri: string, directory: Partial<Directory>): Partial<FilesState> {
-  const existingDirectory = state.directories[String(uri)];
-  if (!existingDirectory) {
-    return createDirectory(state, uri, directory as Directory);
-  }
+// // TODO: handle overwriting
+// function updateDirectory(state: FilesState, uri: string, directory: Partial<Directory>): Partial<FilesState> {
+//   const existingDirectory = state.directories[String(uri)];
+//   if (!existingDirectory) {
+//     return createDirectory(state, uri, directory as Directory);
+//   }
 
-  const directories = mergeDirectories(state, uri, existingDirectory, directory);
-  const parent = directory.parent;
-  const existingParent = existingDirectory.parent;
-  if (!parent || (existingParent === parent)) {
-    return { directories };
-  }
+//   const directories = mergeDirectories(state, uri, existingDirectory, directory);
+//   const parent = directory.parent;
+//   const existingParent = existingDirectory.parent;
+//   if (!parent || (existingParent === parent)) {
+//     return { directories };
+//   }
 
-  // TODO: Add moving
-  return state;
-};
+//   // TODO: Add moving
+//   return state;
+// };
 
-function removeDirectory(state: FilesState, uri: string): Partial<FilesState> {
-  const directory = state.directories[String(uri)];
-  if (!directory) {
-    return state;
-  }
+// function removeDirectory(state: FilesState, uri: string): Partial<FilesState> {
+//   const directory = state.directories[String(uri)];
+//   if (!directory) {
+//     return state;
+//   }
 
-  const directories = { ...state.directories };
-  delete directories[String(uri)];
-  const parent = directory.parent;
-  if (directory.children.length === 0) {
-    if (parent) {
-      directories[String(parent.uri)] = {
-        ...parent,
-        children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
-      }
-    }
-    return { directories };
-  }
+//   const directories = { ...state.directories };
+//   delete directories[String(uri)];
+//   const parent = directory.parent;
+//   if (directory.children.length === 0) {
+//     if (parent) {
+//       directories[String(parent.uri)] = {
+//         ...parent,
+//         children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
+//       }
+//     }
+//     return { directories };
+//   }
 
-  let { files: filesUris, directories: directoriesUris } = collectUris(directory.children);
-  directoriesUris.forEach(uri => {
-    if (directories[String(uri)]) {
-      delete directories[String(uri)];
-    }
-  });
-  const files = { ...state.files };
-  filesUris.forEach(uri => {
-    if (files[String(uri)]) {
-      delete files[String(uri)];
-    }
-  });
-  if (parent) {
-    directories[String(parent.uri)] = {
-      ...parent,
-      children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
-    }
-  }
+//   let { files: filesUris, directories: directoriesUris } = collectUris(directory.children);
+//   directoriesUris.forEach(uri => {
+//     if (directories[String(uri)]) {
+//       delete directories[String(uri)];
+//     }
+//   });
+//   const files = { ...state.files };
+//   filesUris.forEach(uri => {
+//     if (files[String(uri)]) {
+//       delete files[String(uri)];
+//     }
+//   });
+//   if (parent) {
+//     directories[String(parent.uri)] = {
+//       ...parent,
+//       children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
+//     }
+//   }
 
-  return { files, directories };
-};
+//   return { files, directories };
+// };
 
 export const filesState = create(
-  persist<FilesState & FilesActions>(set => 
+  persist<FilesState>(() => 
     ({
       files: files,
       directories: {
         root: rootDirectory,
         ...directories,
       },
-      createFile(uri: string, file: Partial<File>) { set(state => createFile(state, uri, file)) },
-      updateFile(uri: string, file: Partial<File>) { set(state => updateFile(state, uri, file)) },
-      removeFile(uri: string) { set(state => removeFile(state, uri)) },
-      createDirectory(uri: string, directory: Partial<Directory>) { set(state => createDirectory(state, uri, directory)) },
-      updateDirectory(uri: string, directory: Partial<Directory>) { set(state => updateDirectory(state, uri, directory)) },
-      removeDirectory(uri: string) { set(state => removeDirectory(state, uri)) },
     }), 
     {
       name: 'studio-files',

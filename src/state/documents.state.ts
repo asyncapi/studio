@@ -19,32 +19,13 @@ export type Document = {
   extras?: ParseOutput['extras'];
 }
 
+// TODO: Change to the Document | undefined
 export type DocumentsState = {
   documents: Record<string, Document>;
-  removeDocument: (uri: string) => void;
 }
 
-export type DocumentsActions = {
-  updateDocument: (uri: string, document: Partial<Document>) => void;
-}
-
-export const documentsState = create<DocumentsState & DocumentsActions>(set => ({
+export const documentsState = create<DocumentsState>(set => ({
   documents: {},
-  updateDocument(uri: string, document: Partial<Document>) {
-    set(state => ({ documents: { ...state.documents, [String(uri)]: { ...state.documents[String(uri)] || {}, ...document } } }));
-  },
-  removeDocument(uri: string) {
-    set(state => {
-      const documents = { ...state.documents };
-      const document = documents[String(uri)];
-      if (!document) {
-        return state;
-      }
-
-      delete documents[String(uri)];
-      return { documents };
-    });
-  }
 }));
 
 export const useDocumentsState = documentsState;
