@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
-import { VscFile, VscEdit, VscTrash } from 'react-icons/vsc';
-import { show } from '@ebay/nice-modal-react';
+import { VscFile, VscClose } from 'react-icons/vsc';
+import { show as showModal } from '@ebay/nice-modal-react';
+import { useContextMenu } from "react-contexify";
 
 import { EditFileModal, DeleteFileModal } from '../../Modals/Files';
 import { IconButton } from '../../common';
 
 import { useServices } from '../../../services';
-import { useFilesState } from '../../../state';
+import { useFilesState, usePanelsState } from '../../../state';
 
 import type { FunctionComponent } from 'react';
 import type { File } from '../../../state/files.state';
@@ -20,28 +21,28 @@ export const TreeViewFileActions: FunctionComponent<TreeViewFileActionsProps> = 
 }) => {
   const actions = useMemo(() => {
     return [
-      <IconButton
-        icon={<VscEdit className='w-3.5 h-3.5' />}
-        tooltip={{
-          content: 'Edit file',
-          delay: [500, 0],
-        }} 
-        onClick={e => {
-          e.stopPropagation();
-          show(EditFileModal, { item: file });
-        }}
-      />,
-      <IconButton
-        icon={<VscTrash className='w-3.5 h-3.5' />}
-        tooltip={{
-          content: 'Delete file',
-          delay: [500, 0],
-        }} 
-        onClick={e => {
-          e.stopPropagation();
-          show(DeleteFileModal, { item: file });
-        }}
-      />,
+      // <IconButton
+      //   icon={<VscClose className='w-3.5 h-3.5' />}
+      //   tooltip={{
+      //     content: 'Close file',
+      //     delay: [500, 0],
+      //   }} 
+      //   // onClick={e => {
+      //   //   e.stopPropagation();
+      //   //   showModal(EditFileModal, { item: file });
+      //   // }}
+      // />,
+      // <IconButton
+      //   icon={<VscTrash className='w-3.5 h-3.5' />}
+      //   tooltip={{
+      //     content: 'Delete file',
+      //     delay: [500, 0],
+      //   }} 
+      //   onClick={e => {
+      //     e.stopPropagation();
+      //     showModal(DeleteFileModal, { item: file });
+      //   }}
+      // />,
     ];
   }, [file]);
 
@@ -67,7 +68,10 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
 }) => {
   const { panelsSvc } = useServices();
   const file = useFilesState(state => state.files[uri]);
+  const activeTab = usePanelsState(() => panelsSvc.getActiveTab('primary'));
   const [hover, setHover] = useState<boolean>(false);
+  const { show: showContextMenu, hideAll: hideAllContextMenus } = useContextMenu({ id: 'fs-file' });
+  
   if (!file) {
     return null;
   }
@@ -80,15 +84,21 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
       onMouseLeave={() => setHover(false)}
       onClick={e => {
         e.stopPropagation();
+        hideAllContextMenus();
         panelsSvc.setActiveTab('primary', uri);
       }}
       onDoubleClick={e => {
         e.stopPropagation();
-        panelsSvc.openTab('primary', uri, { id: uri, panel: 'primary', type: 'editor', uri });
+        hideAllContextMenus();
+        panelsSvc.openEditorTab('primary', file);
+      }}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        showContextMenu({ event, props: { file } });
       }}
     >
       <div 
-        className='flex flex-row items-center justify-between bg-gray-800 hover:bg-gray-700 cursor-pointer text-xs leading-4 text-gray-300 pr-2 py-1'
+        className={`flex flex-row items-center justify-between ${activeTab?.uri === file.uri ? 'bg-gray-700' : 'bg-gray-800 hover:bg-gray-700'} cursor-pointer text-xs leading-4 text-gray-300 pr-2 py-1`}
         style={{ paddingLeft: `${0.5 + 0.5 * deep}rem` }}
       >
         <button className="flex-none flex items-center justify-center mr-1">

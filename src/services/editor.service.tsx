@@ -12,7 +12,7 @@ import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { File } from '../state/files.state';
-import type { EditorTab } from '../state/panels.state';
+import { EditorTab, panelsState } from '../state/panels.state';
 import type { Document } from '../state/documents.state';
 import type { SettingsState } from '../state/settings.state';
 
@@ -59,6 +59,23 @@ export class EditorService extends AbstractService {
   
     this.createEditor(elementRef);
     this.configureEditor();
+
+    const panel = this.svcs.panelsSvc.getPanel('primary');
+    if (panel) {
+      // create models for all tabs from restored state
+      panel.tabs.forEach(t => {
+        if (t.type === 'editor') {
+          this.createModel(t.uri);
+        }
+      });
+
+      // set model for restored active tab
+      const activeTab = this.svcs.panelsSvc.getTab('primary', panel.activeTab);
+      if (activeTab && activeTab.type === 'editor') {
+        this.setModel(activeTab.uri);
+      }
+    }
+
     appState.setState({ initialized: true });
   }
 
@@ -68,7 +85,7 @@ export class EditorService extends AbstractService {
     sendToServer = true,
     file = {},
   }: UpdateState) {
-    const currentContent = filesState.getState().files['asyncapi']?.content;
+    const currentContent = filesState.getState().files['file:///asyncapi']?.content;
     if (currentContent === content || typeof content !== 'string') {
       return;
     }
@@ -314,7 +331,7 @@ export class EditorService extends AbstractService {
     }
 
     model.dispose();
-    return this.models.delete(uri);
+    this.models.delete(uri);
   }
 
   private onChangeContent(settings: SettingsState) {
@@ -327,21 +344,20 @@ export class EditorService extends AbstractService {
         // if (editorState.autoSaving) {
         //   this.saveToLocalStorage(content, false);
         // }
-        console.log(model.uri.toString());
         this.svcs.parserSvc.parse(model.uri.toString(), content);
       } 
     }, editorState.savingDelay);
   }
 
-  private onChangeTab(newTab: EditorTab) {
-    const oldModel = this.getCurrentModel();
-    if (oldModel) {
+  private setModel(uri: string) {
+    const currentModel = this.getCurrentModel();
+    if (currentModel) {
       const viewState = this.editor.saveViewState();
-      const uri = oldModel.uri.toString();
+      const uri = currentModel.uri.toString();
       this.viewStates.set(uri, viewState);
     }
 
-    const model = this.getModel(newTab.uri);
+    const model = this.getModel(uri);
     if (model) {
       this.editor.setModel(model)
       this.editor.focus();
@@ -455,7 +471,7 @@ export class EditorService extends AbstractService {
     this.svcs.eventsSvc.on('panels.panel.set-active-tab', panel => {
       const tab = this.svcs.panelsSvc.getTab(panel.id, panel.activeTab);
       if (tab && tab.type === 'editor') {
-        this.onChangeTab(tab);
+        this.setModel(tab.uri);
       }
     });
   }

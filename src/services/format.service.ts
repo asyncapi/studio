@@ -1,9 +1,14 @@
 import { AbstractService } from './abstract.service';
 
+import { v4 as uuidv4 } from 'uuid';
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
 
 export class FormatService extends AbstractService {
+  generateUuid(): string {
+    return uuidv4();
+  }
+
   convertToYaml(spec: string) {
     try {
       // Editor content -> JS object -> YAML string

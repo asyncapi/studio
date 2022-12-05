@@ -7,7 +7,7 @@ import { useFilesState } from '../../state';
 interface EditorSidebarProps {}
 
 export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => {
-  const { source, from } = useFilesState(state => state.files['asyncapi']);
+  const { source, from } = useFilesState(state => state.files['file:///asyncapi']);
 
   let documentFromText = '';
   if (from === 'storage') {

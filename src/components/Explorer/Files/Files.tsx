@@ -3,8 +3,10 @@ import { VscNewFile, VscNewFolder, VscSaveAll, VscCollapseAll, VscRefresh } from
 import { show } from '@ebay/nice-modal-react';
 
 import { TreeViewDirectory } from './TreeViewDirectory';
+import { TreeViewDirectoryContextMenu } from './TreeViewDirectoryContextMenu';
+import { TreeViewFileContextMenu } from './TreeViewFileContextMenu';
 import { CreateNewDirectoryModal, CreateNewFileModal } from '../../Modals/Files';
-import { ExpandedPanel, IconButton } from '../../common';
+import { ContextMenu, ExpandedPanel, IconButton } from '../../common';
 
 import type { FunctionComponent } from 'react';
 
@@ -14,7 +16,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
   const actions = useMemo(() => {
     return [
       <IconButton
-        icon={<VscNewFile className='w-3.5 h-3.5' />}
+        icon={<VscNewFile className='w-4 h-4' />}
         tooltip={{
           content: 'Create new file',
           delay: [500, 0],
@@ -25,7 +27,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
         }}
       />,
       <IconButton
-        icon={<VscNewFolder className='w-3.5 h-3.5' />}
+        icon={<VscNewFolder className='w-4 h-4' />}
         tooltip={{
           content: 'Create new directory',
           delay: [500, 0],
@@ -36,21 +38,21 @@ export const Files: FunctionComponent<FilesProps> = () => {
         }}
       />,
       <IconButton
-        icon={<VscSaveAll className='w-3.5 h-3.5' />} 
+        icon={<VscSaveAll className='w-4 h-4' />} 
         tooltip={{
           content: 'Save all files',
           delay: [500, 0],
         }}
       />,
       <IconButton
-        icon={<VscCollapseAll className='w-3.5 h-3.5' />} 
+        icon={<VscCollapseAll className='w-4 h-4' />} 
         tooltip={{
           content: 'Collapse all directories',
           delay: [500, 0],
         }}
       />,
       <IconButton
-        icon={<VscRefresh className='w-3.5 h-3.5' />}
+        icon={<VscRefresh className='w-4 h-4' />}
         tooltip={{
           content: 'Refresh all files',
           delay: [500, 0],
@@ -67,8 +69,11 @@ export const Files: FunctionComponent<FilesProps> = () => {
         actions={actions}
       >
         <div className="flex flex-col bg-gray-800">
-          <TreeViewDirectory uri='root' expanded={true} />
+          <TreeViewDirectory uri='file:///root' expanded={true} />
         </div>
+
+        <TreeViewDirectoryContextMenu />
+        <TreeViewFileContextMenu />
       </ExpandedPanel>
     </div>
   );

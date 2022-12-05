@@ -11,7 +11,7 @@ import type { SpecVersions } from '../../types';
 
 export const ConvertModal = create(() => {
   const { editorSvc, specificationSvc } = useServices();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const document = useDocumentsState(state => state.documents['file:///asyncapi']?.document);
   const latestVersion = specificationSvc.latestVersion;
   
   const [version, setVersion] = useState(latestVersion);

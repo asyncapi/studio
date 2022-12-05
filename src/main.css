@@ -113,3 +113,46 @@
 .tippy-box[data-placement^="right"] > .tippy-arrow:before {
   border-right-color: rgba(17, 24, 39) !important;
 }
+
+/** react-contexify */
+.contexify_theme-asyncapi {
+  --contexify-menu-bgColor: #fff;
+  --contexify-separator-color: rgba(0,0,0,0.2);
+  --contexify-item-color: #333;
+  --contexify-activeItem-color: #fff;
+  --contexify-activeItem-bgColor: #ec4899;
+  --contexify-rightSlot-color: #6f6e77;
+  --contexify-activeRightSlot-color: #fff;
+  --contexify-arrow-color: #6f6e77;
+  --contexify-activeArrow-color: #fff;
+}
+
+@keyframes contexify_scaleIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contexify_scaleOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+}
+
+.contexify_willEnter-scale {
+  transform-origin: top left;
+  animation: contexify__scaleIn 0.3s;
+}
+
+.contexify_willLeave-scale {
+  transform-origin: top left;
+  animation: contexify__scaleOut 0.3s;
+}

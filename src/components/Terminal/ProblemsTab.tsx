@@ -17,7 +17,7 @@ import type { DocumentDiagnostics } from '../../state/documents.state';
 interface ProblemsTabProps {}
 
 export const ProblemsTab: FunctionComponent<ProblemsTabProps> = () => {
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useDocumentsState(state => state.documents['file:///asyncapi'].diagnostics);
 
   const errorDiagnosticsLength = diagnostics.errors.length;
   const warningDiagnosticsLength = diagnostics.warnings.length;
@@ -119,7 +119,7 @@ interface SeverityButtonsProps {
 }
 
 const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setActive }) => {
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useDocumentsState(state => state.documents['file:///asyncapi'].diagnostics);
   const governanceShowState = useSettingsState(state => state.governance.show);
 
   const errorDiagnostics = diagnostics.errors;
@@ -202,7 +202,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
 
 export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   const { navigationSvc } = useServices();
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useDocumentsState(state => state.documents['file:///asyncapi'].diagnostics);
   const modal = useModal(SettingsModal);
 
   const [active, setActive] = useState<Array<DiagnosticSeverity>>([]);

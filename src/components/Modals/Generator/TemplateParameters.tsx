@@ -96,7 +96,7 @@ export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParameters
 }, templateParamsRef) => {
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const document = useDocumentsState(state => state.documents['file:///asyncapi']?.document);
 
   const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};

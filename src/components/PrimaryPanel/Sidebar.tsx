@@ -1,7 +1,8 @@
-import { VscAdd } from 'react-icons/vsc';
+import { VscSaveAll, VscCloseAll } from 'react-icons/vsc';
 
 import { Tabs } from './Tabs';
-import { Dropdown } from './Dropdown';
+// import { Dropdown } from './Dropdown';
+import { Dropdown } from './NewDropdown';
 
 import { IconButton } from '../common';
 
@@ -17,8 +18,8 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
           <Tabs />
         </div>
 
-        <IconButton
-          icon={<VscAdd className='w-3.5 h-3.5' />}
+        {/* <IconButton
+          icon={<VscAdd className='w-4 h-4' />}
           tooltip={{
             content: 'Open new tab',
             delay: [500, 0],
@@ -26,11 +27,39 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
           onClick={e => {
             e.stopPropagation();
           }}
-        />
+        /> */}
       </div>
 
       <div className='flex-none flex flex-row'>
-        <Dropdown />
+        <ul className='flex flex-row items-center justify-between'>
+          <li>
+            <IconButton
+              icon={<VscSaveAll className='w-4 h-4' />}
+              tooltip={{
+                content: 'Save all',
+                delay: [500, 0],
+              }} 
+              onClick={e => {
+                e.stopPropagation();
+              }}
+            />
+          </li>
+          <li className='ml-1'>
+            <IconButton
+              icon={<VscCloseAll className='w-4 h-4' />}
+              tooltip={{
+                content: 'Close all tabs',
+                delay: [500, 0],
+              }} 
+              onClick={e => {
+                e.stopPropagation();
+              }}
+            />
+          </li>
+          <li className='ml-1 mr-2'>
+            <Dropdown />
+          </li>
+        </ul>
       </div>
     </div>
   );

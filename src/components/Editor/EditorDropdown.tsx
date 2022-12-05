@@ -18,8 +18,8 @@ interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
   const { editorSvc } = useServices();
-  const isInvalidDocument = !useDocumentsState(state => state.documents['asyncapi'].valid);
-  const language = useFilesState(state => state.files['asyncapi'].language);
+  const isInvalidDocument = !useDocumentsState(state => state.documents['file:///asyncapi'].valid);
+  const language = useFilesState(state => state.files['file:///asyncapi'].language);
 
   const importUrlButton = (
     <button

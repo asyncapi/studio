@@ -196,9 +196,9 @@ export type FilesState = {
 // }
 
 const files: Record<string, File> = {
-  file1: {
+  'file:///file1': {
     type: 'file',
-    uri: 'file1',
+    uri: 'file:///file1',
     name: 'file1',
     content: schema,
     from: 'storage',
@@ -209,9 +209,9 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  file2: {
+  'file:///file2': {
     type: 'file',
-    uri: 'file2',
+    uri: 'file:///file2',
     name: 'file2',
     content: 'lol: 1.2.0',
     from: 'storage',
@@ -222,9 +222,9 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  file3: {
+  'file:///file3': {
     type: 'file',
-    uri: 'file3',
+    uri: 'file:///file3',
     name: 'file3',
     content: '',
     from: 'storage',
@@ -235,9 +235,9 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  asyncapi: {
+  'file:///asyncapi': {
     type: 'file',
-    uri: 'asyncapi',
+    uri: 'file:///asyncapi',
     name: 'asyncapi',
     content: schema,
     from: 'storage',
@@ -252,36 +252,36 @@ const files: Record<string, File> = {
 
 const rootDirectory: Directory = {
   type: 'directory',
-  uri: 'root',
+  uri: 'file:///root',
   name: 'root',
   children: [],
   from: 'storage',
 }
 
 const directories: Record<string, Directory> = {
-  dir1: {
+  'file:///dir1': {
     type: 'directory',
-    uri: 'dir1',
+    uri: 'file:///dir1',
     name: 'dir1',
-    children: [files.file3],
+    children: [files['file:///file3']],
     from: 'storage',
     parent: rootDirectory,
   },
-  dir2: {
+  'file:///dir2': {
     type: 'directory',
-    uri: 'dir2',
+    uri: 'file:///dir2',
     name: 'dir2',
-    children: [files.file2],
+    children: [files['file:///file2']],
     from: 'storage',
     parent: rootDirectory,
   }
 }
 
-files.asyncapi.parent = rootDirectory;
-files.file1.parent = rootDirectory;
-files.file2.parent = directories.dir2;
-files.file3.parent = directories.dir1;
-rootDirectory.children = [directories.dir1, directories.dir2, files.asyncapi, files.file1];
+files['file:///asyncapi'].parent = rootDirectory;
+files['file:///file1'].parent = rootDirectory;
+files['file:///file2'].parent = directories['file:///dir2'];
+files['file:///file3'].parent = directories['file:///dir1'];
+rootDirectory.children = [directories['file:///dir1'], directories['file:///dir2'], files['file:///asyncapi'], files['file:///file1']];
 
 // function sortFunction(a: File | Directory, b: File | Directory) {
 //   const isADirectory = a.type === 'directory';
@@ -512,7 +512,7 @@ export const filesState = create(
     ({
       files: files,
       directories: {
-        root: rootDirectory,
+        'file:///root': rootDirectory,
         ...directories,
       },
     }), 

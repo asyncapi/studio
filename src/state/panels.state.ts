@@ -37,7 +37,7 @@ export type PanelsState = {
 }
 
 export const panelsState = create(
-  persist<PanelsState>(set => 
+  persist<PanelsState>(() => 
     ({
       show: {
         activityBar: true,
@@ -51,13 +51,13 @@ export const panelsState = create(
       panels: {
         primary: {
           id: 'primary',
-          activeTab: 'asyncapi',
+          activeTab: 'file:///asyncapi',
           tabs: [
             {
-              id: 'asyncapi',
+              id: 'file:///asyncapi',
               panel: 'primary',
               type: 'editor',
-              uri: 'asyncapi',
+              uri: 'file:///asyncapi',
             }
           ],
         },

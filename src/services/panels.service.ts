@@ -3,8 +3,13 @@ import { AbstractService } from './abstract.service';
 import { panelsState } from '../state';
 
 import type { Panel, PanelsState, PanelTab } from '../state/panels.state';
+import type { File } from '../state/files.state';
 
 export class PanelsService extends AbstractService {
+  override onInit() {
+    this.subscribeToFiles();
+  }
+
   openTab(panelId: string, tabId: string, tab: PanelTab) {
     if (this.getPanel(panelId)?.activeTab === tabId) {
       return;
@@ -18,6 +23,10 @@ export class PanelsService extends AbstractService {
     this.setActiveTab(panelId, tabId);
   }
 
+  openEditorTab(panelId: string, file: File) {
+    return this.openTab(panelId, file.uri, { id: file.uri, type: 'editor', uri: file.uri, panel: panelId });
+  }
+
   addTab(panelId: string, tabId: string, tab: Partial<PanelTab>): void {
     if (this.hasTab(panelId, tabId)) {
       return this.updateTab(panelId, tabId, tab);
@@ -28,8 +37,8 @@ export class PanelsService extends AbstractService {
     // TODO: Handle that casting to normal PanelTab in argument
     panel.tabs = [...panel.tabs, tab as PanelTab];
 
-    this.updatePanelState(panelId, panel);
     this.svcs.eventsSvc.emit('panels.tab.add', tab as PanelTab);
+    this.updatePanelState(panelId, panel);
   }
 
   updateTab(panelId: string, tabId: string, tab: Partial<PanelTab>): void {
@@ -41,8 +50,8 @@ export class PanelsService extends AbstractService {
     panel = { ...panel };
     panel.tabs = panel.tabs.map(t => t.id === tabId ? (tab = { ...t, ...tab }) : t);
 
-    this.updatePanelState(panelId, panel);
     this.svcs.eventsSvc.emit('panels.tab.update', tab as PanelTab);
+    this.updatePanelState(panelId, panel);
   }
 
   removeTab(panelId: string, tabId: string): void {
@@ -69,18 +78,22 @@ export class PanelsService extends AbstractService {
     }
   
     panel.tabs = panel.tabs.filter(t => t.id !== tabId);
-
-    this.updatePanelState(panelId, panel);
     this.svcs.eventsSvc.emit('panels.tab.remove', tab);
-    this.setActiveTab(panelId, activeTab);
+    this.svcs.eventsSvc.emit('panels.panel.set-active-tab', panel);
+    this.updatePanelState(panelId, panel);
   }
 
   setActiveTab(panelId: string, tabId: string) {
     if (!this.hasTab(panelId, tabId)) {
       return;
     }
-    this.updatePanelState(panelId, { activeTab: tabId });
-    this.svcs.eventsSvc.emit('panels.panel.set-active-tab', this.getPanel(panelId)!);
+
+    const panel = this.getPanel(panelId);
+    if (panel) {
+      const newPanel = { ...panel, activeTab: tabId };
+      this.svcs.eventsSvc.emit('panels.panel.set-active-tab', newPanel);
+      this.updatePanelState(panelId, newPanel);
+    }
   }
 
   getPanel(panelId: string): Panel | undefined {
@@ -96,6 +109,13 @@ export class PanelsService extends AbstractService {
     const panelState = this.getPanel(panelId);
     if (panelState) {
       return panelState.tabs.find(t => t.id === tabId);
+    }
+  }
+
+  getActiveTab(panelId: string) {
+    const panel = this.getPanel(panelId);
+    if (panel) {
+      return panel.tabs.find(t => t.id === panel.activeTab);
     }
   }
   
@@ -123,5 +143,20 @@ export class PanelsService extends AbstractService {
       }));
       this.svcs.eventsSvc.emit('panels.panel.update', newPanelState);
     }
+  }
+
+  private subscribeToFiles() {
+    this.svcs.eventsSvc.on('fs.file.remove', file => {
+      console.log(file);
+      const panel = this.getPanel('primary');
+      if (!panel) {
+        return;
+      }
+
+      const tab = panel.tabs.find(t => t.type === 'editor' && t.uri === file.uri);
+      if (tab) {
+        this.removeTab(tab.panel, tab?.id);
+      }
+    });
   }
 }

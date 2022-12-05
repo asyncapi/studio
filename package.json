@@ -45,11 +45,13 @@
     "monaco-editor": "0.34.1",
     "monaco-yaml": "4.0.2",
     "react": "^18.2.0",
+    "react-contexify": "^6.0.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "2.4.0",
     "react-icons": "^4.6.0",
     "reactflow": "^11.2.0",
     "strict-event-emitter-types": "^2.0.0",
+    "uuid": "^9.0.0",
     "zustand": "^4.1.4"
   },
   "scripts": {
@@ -109,6 +111,7 @@
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
+    "@types/uuid": "^9.0.0",
     "assert": "^2.0.0",
     "autoprefixer": "^10.4.13",
     "browserify-zlib": "^0.2.0",

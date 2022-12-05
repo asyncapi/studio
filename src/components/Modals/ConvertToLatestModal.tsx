@@ -14,7 +14,7 @@ interface ConvertToLatestModal {
 export const ConvertToLatestModal = create<ConvertToLatestModal>(({ convertOnlyToLatest = false }) => {
   const [version, setVersion] = useState('');
   const { editorSvc, specificationSvc } = useServices();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const document = useDocumentsState(state => state.documents['file:///asyncapi']?.document);
 
   const actualVersion = document?.version() || '2.0.0-rc2';
   const latestVersion = specificationSvc.latestVersion;

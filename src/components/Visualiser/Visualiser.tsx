@@ -11,7 +11,7 @@ interface VisualiserProps {}
 
 export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const document = useDocumentsState(state => state.documents['file:///asyncapi']?.document) || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 
