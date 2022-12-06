@@ -140,7 +140,7 @@ export class MonacoService extends AbstractService {
           this.updateLanguageConfig(version as SpecVersions);
         } else {
           try {
-            const file = filesState.getState().files['file:///asyncapi'];
+            const file = filesState.getState().files['asyncapi'];
             if (file) {
               const version = (YAML.load(file.content) as { asyncapi: SpecVersions }).asyncapi;
               this.svcs.monacoSvc.updateLanguageConfig(version);

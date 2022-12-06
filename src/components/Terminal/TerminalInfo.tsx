@@ -13,8 +13,8 @@ interface TerminalInfoProps {}
 
 export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const { specificationSvc } = useServices();
-  const file = useFilesState(state => state.files['file:///asyncapi']);
-  const document = useDocumentsState(state => state.documents['file:///asyncapi']);
+  const file = useFilesState(state => state.files['asyncapi']);
+  const document = useDocumentsState(state => state.documents['asyncapi']);
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
   const liveServer = useAppState(state => state.liveServer);

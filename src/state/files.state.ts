@@ -158,6 +158,7 @@ export interface FileStat {
 }
 
 export type Directory = {
+  id: string;
   type: 'directory';
   uri: string;
   name: string;
@@ -168,6 +169,7 @@ export type Directory = {
 }
 
 export type File = {
+  id: string;
   type: 'file';
   uri: string;
   name: string;
@@ -196,9 +198,10 @@ export type FilesState = {
 // }
 
 const files: Record<string, File> = {
-  'file:///file1': {
+  'file1': {
+    id: 'file1',
     type: 'file',
-    uri: 'file:///file1',
+    uri: 'file1',
     name: 'file1',
     content: schema,
     from: 'storage',
@@ -209,7 +212,8 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  'file:///file2': {
+  'file2': {
+    id: 'file2',
     type: 'file',
     uri: 'file:///file2',
     name: 'file2',
@@ -222,7 +226,8 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  'file:///file3': {
+  'file3': {
+    id: 'file3',
     type: 'file',
     uri: 'file:///file3',
     name: 'file3',
@@ -235,7 +240,8 @@ const files: Record<string, File> = {
       mtime: (new Date()).getTime(),
     }
   },
-  'file:///asyncapi': {
+  'asyncapi': {
+    id: 'asyncapi',
     type: 'file',
     uri: 'file:///asyncapi',
     name: 'asyncapi',
@@ -251,6 +257,7 @@ const files: Record<string, File> = {
 }
 
 const rootDirectory: Directory = {
+  id: 'root',
   type: 'directory',
   uri: 'file:///root',
   name: 'root',
@@ -259,29 +266,31 @@ const rootDirectory: Directory = {
 }
 
 const directories: Record<string, Directory> = {
-  'file:///dir1': {
+  'dir1': {
+    id: 'dir1',
     type: 'directory',
     uri: 'file:///dir1',
     name: 'dir1',
-    children: [files['file:///file3']],
+    children: [files['file3']],
     from: 'storage',
     parent: rootDirectory,
   },
-  'file:///dir2': {
+  'dir2': {
+    id: 'dir2',
     type: 'directory',
     uri: 'file:///dir2',
     name: 'dir2',
-    children: [files['file:///file2']],
+    children: [files['file2']],
     from: 'storage',
     parent: rootDirectory,
   }
 }
 
-files['file:///asyncapi'].parent = rootDirectory;
-files['file:///file1'].parent = rootDirectory;
-files['file:///file2'].parent = directories['file:///dir2'];
-files['file:///file3'].parent = directories['file:///dir1'];
-rootDirectory.children = [directories['file:///dir1'], directories['file:///dir2'], files['file:///asyncapi'], files['file:///file1']];
+files['asyncapi'].parent = rootDirectory;
+files['file1'].parent = rootDirectory;
+files['file2'].parent = directories['dir2'];
+files['file3'].parent = directories['dir1'];
+rootDirectory.children = [directories['dir1'], directories['dir2'], files['asyncapi'], files['file1']];
 
 // function sortFunction(a: File | Directory, b: File | Directory) {
 //   const isADirectory = a.type === 'directory';
@@ -512,7 +521,7 @@ export const filesState = create(
     ({
       files: files,
       directories: {
-        'file:///root': rootDirectory,
+        'root': rootDirectory,
         ...directories,
       },
     }), 

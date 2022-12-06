@@ -29,7 +29,7 @@ export const GeneratorModal = create(() => {
   const generateTemplate = async () => {
     setProblem(null);
     const response = await serverAPISvc.generate({
-      asyncapi: filesState.getState().files['file:///asyncapi'].content,
+      asyncapi: filesState.getState().files['asyncapi'].content,
       template,
       parameters: templateParamsRef.current?.getValues(),
     });

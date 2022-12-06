@@ -85,7 +85,7 @@ export class EditorService extends AbstractService {
     sendToServer = true,
     file = {},
   }: UpdateState) {
-    const currentContent = filesState.getState().files['file:///asyncapi']?.content;
+    const currentContent = filesState.getState().files['asyncapi']?.content;
     if (currentContent === content || typeof content !== 'string') {
       return;
     }

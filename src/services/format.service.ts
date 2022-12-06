@@ -9,6 +9,10 @@ export class FormatService extends AbstractService {
     return uuidv4();
   }
 
+  getCurrentTime() {
+    return (new Date()).getTime();
+  }
+
   convertToYaml(spec: string) {
     try {
       // Editor content -> JS object -> YAML string
@@ -43,5 +47,25 @@ export class FormatService extends AbstractService {
       return 'json';
     }
     return 'yaml';
+  }
+
+  isJSON(content: string): boolean {
+    try {
+      JSON.parse(content);
+      return true;
+    } catch(err) {
+      console.error(err);
+      return false;
+    }
+  }
+
+  isYaml(content: string): boolean {
+    try {
+      YAML.dump(content);
+      return true;
+    } catch(err) {
+      console.error(err);
+      return false;
+    }
   }
 }

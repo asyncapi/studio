@@ -69,7 +69,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
         actions={actions}
       >
         <div className="flex flex-col bg-gray-800">
-          <TreeViewDirectory uri='file:///root' expanded={true} />
+          <TreeViewDirectory uri='root' expanded={true} />
         </div>
 
         <TreeViewDirectoryContextMenu />

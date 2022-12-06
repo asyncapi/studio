@@ -106,22 +106,30 @@ export abstract class AbstractFilesService extends AbstractService {
   }
 
   protected createDirectoryObject(uri: string, directory: Partial<Directory>): Directory {
+    const id = directory.id || this.svcs.formatSvc.generateUuid();
+    const mtime = directory?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
+
     return {
+      id,
       type: 'directory',
       uri,
       name: directory.name || uri,
       children: [],
       from: 'storage',
       stat: {
-        mtime: (new Date()).getTime(),
         ...directory?.stat || {},
+        mtime,
       },
       ...directory
     }
   }
   
   protected createFileObject(uri: string, file: Partial<File>): File {
+    const id = file.id || this.svcs.formatSvc.generateUuid();
+    const mtime = file?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
+
     return {
+      id,
       type: 'file',
       uri,
       name: file.name || uri,
@@ -131,8 +139,8 @@ export abstract class AbstractFilesService extends AbstractService {
       parent: file.parent || this.getRootDirectory(),
       modified: false,
       stat: {
-        mtime: (new Date()).getTime(),
         ...file?.stat || {},
+        mtime,
       },
       ...file
     }
