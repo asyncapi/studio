@@ -8,7 +8,7 @@ import type { File, Directory } from '../../state/files.state';
 
 export class FilesService extends AbstractFilesService {
   private readonly filesSvcs: {
-    storage: MemoryFilesService,
+    ['in-memory']: MemoryFilesService,
     ['file-system']: BrowserAPIFilesService,
     [x: string]: AbstractFilesService;
   };
@@ -16,38 +16,43 @@ export class FilesService extends AbstractFilesService {
   constructor(services: Services) {
     super(services);
     this.filesSvcs = {
-      storage: new MemoryFilesService(services),
+      ['in-memory']: new MemoryFilesService(services),
       ['file-system']: new BrowserAPIFilesService(services),
     }
   }
 
-  override async createDirectory(uri: string, directory: Partial<Directory>): Promise<void> {
-    if (this.hasDirectory(uri)) {
-      return this.updateDirectory(uri, directory);
+  async onInit() {
+    await this.filesSvcs['in-memory'].onInit();
+    await this.filesSvcs['file-system'].onInit();
+  }
+
+  override async createDirectory(id: string, directory: Partial<Directory>): Promise<void> {
+    if (this.hasDirectory(id)) {
+      return this.updateDirectory(id, directory);
     }
 
-    let [newDirectory, directories] = this.mergeDirectories(uri, this.createDirectoryObject(uri, directory));
+    let [newDirectory, directories] = this.mergeDirectories(id, this.createDirectoryObject(id, directory));
     await this.emitCreateDirectory(newDirectory);
     const parent = newDirectory.parent;
     if (!parent) {
       return this.setState({ directories });
     }
   
-    const [newParent, newDirectories] = this.mergeDirectories(parent.uri, { children: this.addChildren(parent, [newDirectory]) });
+    const [newParent, newDirectories] = this.mergeDirectories(parent.id, { children: this.addChildren(parent, [newDirectory]) });
     await this.emitCreateDirectory(newParent);
     return this.setState({ directories: newDirectories });
   }
 
-  override async updateDirectory(uri: string, directory: Partial<Directory>): Promise<void> {
-    const existingDirectory = this.getDirectory(uri);
+  override async updateDirectory(id: string, directory: Partial<Directory>): Promise<void> {
+    const existingDirectory = this.getDirectory(id);
     if (!existingDirectory) {
-      return this.createDirectory(uri, directory);
+      return this.createDirectory(id, directory);
     }
 
     const parent = directory.parent;
     const existingParent = existingDirectory.parent;
-    const [newDirectory, directories] = this.mergeDirectories(uri, directory);
-    await this.emitUpdateDirectory(newDirectory);
+    const [newDirectory, directories] = this.mergeDirectories(id, directory);
+    await this.emitUpdateDirectory(newDirectory, existingDirectory);
     if (!parent || (existingParent === parent)) {
       return this.setState({ directories });
     }
@@ -56,27 +61,27 @@ export class FilesService extends AbstractFilesService {
     return this.setState({ directories });
   }
 
-  override async removeDirectory(uri: string) {
-    const directory = this.getDirectory(uri);
+  override async removeDirectory(id: string) {
+    const directory = this.getDirectory(id);
     if (!directory) {
       return;
     }
   
     let directories = { ...this.getDirectories() };
-    delete directories[String(uri)];
     await this.emitRemoveDirectory(directory);
+    delete directories[String(id)];
 
     const parent = directory.parent;
     if (directory.children.length === 0) {
       if (parent) {
-        const [newParent, filteredDirectories] = this.mergeDirectories(parent.uri, { 
-          children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
+        const [newParent, filteredDirectories] = this.mergeDirectories(parent.id, { 
+          children: parent.children.filter(c => !(c.id === id && c.type === 'directory')),
         });
         directories = { 
           ...directories, 
           ...filteredDirectories,
         };
-        await this.emitUpdateDirectory(newParent);
+        await this.emitUpdateDirectory(newParent, parent);
       }
       return this.setState({ directories });
     }
@@ -85,95 +90,109 @@ export class FilesService extends AbstractFilesService {
     const children = this.collectChildren(directory.children);
     for (let child of children.reverse()) {
       if (child.type === 'directory') {
-        const directory = directories[String(child.uri)];
+        const directory = directories[String(child.id)];
         if (directory) {
-          delete directories[String(child.uri)];
           await this.emitRemoveDirectory(directory);
+          delete directories[String(child.id)];
         }
       } else {
-        const file = files[String(child.uri)];
+        const file = files[String(child.id)];
         if (file) {
-          delete files[String(child.uri)];
           await this.emitRemoveFile(file);
+          delete files[String(child.id)];
         }
       }
     }
 
     if (parent) {
-      const [newParent, filteredDirectories] = this.mergeDirectories(parent.uri, { 
-        children: parent.children.filter(c => !(c.uri === uri && c.type === 'directory')),
+      const [newParent, filteredDirectories] = this.mergeDirectories(parent.id, { 
+        children: parent.children.filter(c => !(c.id === id && c.type === 'directory')),
       });
       directories = {
         ...directories, 
         ...filteredDirectories,
       };
-      await this.emitUpdateDirectory(newParent);
+      await this.emitUpdateDirectory(newParent, parent);
     }
   
     return this.setState({ files, directories });
   }
 
-  override async createFile(uri: string, file: Partial<File>): Promise<void> {
-    if (this.hasFile(uri)) {
-      return this.updateFile(uri, file);
+  override async createFile(id: string, file: Partial<File>): Promise<void> {
+    if (this.hasFile(id)) {
+      return this.updateFile(id, file);
     }
 
-    const [newFile, files] = this.mergeFiles(uri, this.createFileObject(uri, file));
+    const [newFile, files] = this.mergeFiles(id, this.createFileObject(id, file));
     await this.emitCreateFile(newFile);
     const parent = newFile.parent;
     if (!parent) {
       return this.setState({ files });
     }
   
-    const [newParent, directories] = this.mergeDirectories(parent.uri, { 
+    const [newParent, directories] = this.mergeDirectories(parent.id, { 
       children: this.addChildren(parent, [newFile])
     });
-    await this.emitUpdateDirectory(newParent);
+    await this.emitUpdateDirectory(newParent, parent);
     return this.setState({ files, directories });
   }
 
-  override async updateFile(uri: string, file: Partial<File>): Promise<void> {
-    const existingFile = this.getFile(uri);
+  override async updateFile(id: string, file: Partial<File>): Promise<void> {
+    const existingFile = this.getFile(id);
     if (!existingFile) {
-      return this.createFile(uri, file);
+      return this.createFile(id, file);
     }
   
     const parent = file.parent;
     const existingParent = existingFile.parent as Directory;
-    const [newFile, files] = this.mergeFiles(uri, file);
-    await this.emitUpdateFile(newFile);
+    const [newFile, files] = this.mergeFiles(id, file);
+    await this.emitUpdateFile(newFile, existingFile);
     if (!parent || (existingParent === parent)) {
       return this.setState({ files });
     }
   
     // moving file - TODO: add removing previous file
-    const [newExistingParent, existingDirs] = this.mergeDirectories(existingParent.uri, { children: existingParent.children.filter(c => !(c.uri === newFile.uri && c.type === 'file')), });
-    const [newParent, parentDirs] = this.mergeDirectories(parent.uri, { children: this.addChildren(parent, [newFile]), });
-    await this.emitUpdateDirectory(newExistingParent);
-    await this.emitUpdateDirectory(newParent);
+    const [newExistingParent, existingDirs] = this.mergeDirectories(existingParent.id, { children: existingParent.children.filter(c => !(c.id === newFile.id && c.type === 'file')), });
+    const [newParent, parentDirs] = this.mergeDirectories(parent.id, { children: this.addChildren(parent, [newFile]), });
+    await this.emitUpdateDirectory(newExistingParent, existingParent);
+    await this.emitUpdateDirectory(newParent, parent);
     return this.setState({ files, directories: { ...existingDirs, ...parentDirs } });
   }
 
-  override async removeFile(uri: string): Promise<void> {
-    const file = this.getFile(uri);
+  override async removeFile(id: string): Promise<void> {
+    const file = this.getFile(id);
     if (!file) {
       return;
     }
   
     const files = { ...this.getFiles() };
-    delete files[String(uri)];
     await this.emitRemoveFile(file);
+    delete files[String(id)];
   
     const parent = file.parent;
     if (!parent) {
       return this.setState({ files });
     }
 
-    const [newParent, directories] = this.mergeDirectories(parent.uri, { 
-      children: parent.children.filter(c => !(c.uri === uri && c.type === 'file'))
+    const [newParent, directories] = this.mergeDirectories(parent.id, { 
+      children: parent.children.filter(c => !(c.id === id && c.type === 'file'))
     });
-    await this.emitUpdateDirectory(newParent);
+    await this.emitUpdateDirectory(newParent, parent);
     return this.setState({ files, directories });
+  }
+
+  override async getFileContent(fileId: string): Promise<string | undefined> {
+    const file = this.getFile(fileId);
+    if (file) {
+      return await this.filesSvcs[file.from || 'in-memory']?.getFileContent(fileId);
+    }
+  }
+
+  override async saveFileContent(fileId: string, content: string): Promise<void> {
+    const file = this.getFile(fileId);
+    if (!file) {
+      return;
+    }
   }
 
   private collectChildren(children: Array<Directory | File>, collection: Array<Directory | File> = []): Array<Directory | File> {
@@ -187,32 +206,32 @@ export class FilesService extends AbstractFilesService {
   }
 
   private async emitCreateDirectory(directory: Directory) {
-    await this.filesSvcs[directory.from || 'storage']?.createDirectory(directory.uri, directory);
+    await this.filesSvcs[directory.from || 'in-memory']?.createDirectory(directory.id, directory);
     this.svcs.eventsSvc.emit('fs.directory.create', directory);
   }
 
-  private async emitUpdateDirectory(directory: Directory) {
-    await this.filesSvcs[directory.from || 'storage']?.updateDirectory(directory.uri, directory);
-    this.svcs.eventsSvc.emit('fs.directory.update', directory);
+  private async emitUpdateDirectory(directory: Directory, prevDirectory: Directory) {
+    await this.filesSvcs[directory.from || 'in-memory']?.updateDirectory(directory.id, directory);
+    this.svcs.eventsSvc.emit('fs.directory.update', directory, prevDirectory);
   }
 
   private async emitRemoveDirectory(directory: Directory) {
-    await this.filesSvcs[directory.from || 'storage']?.removeDirectory(directory.uri);
+    await this.filesSvcs[directory.from || 'in-memory']?.removeDirectory(directory.id);
     this.svcs.eventsSvc.emit('fs.directory.remove', directory);
   }
 
   private async emitCreateFile(file: File) {
-    await this.filesSvcs[file.from || 'storage']?.createFile(file.uri, file);
+    await this.filesSvcs[file.from || 'in-memory']?.createFile(file.id, file);
     this.svcs.eventsSvc.emit('fs.file.create', file);
   }
 
-  private async emitUpdateFile(file: File) {
-    await this.filesSvcs[file.from || 'storage']?.updateFile(file.uri, file);
-    this.svcs.eventsSvc.emit('fs.file.update', file);
+  private async emitUpdateFile(file: File, prevFile: File) {
+    await this.filesSvcs[file.from || 'in-memory']?.updateFile(file.id, file);
+    this.svcs.eventsSvc.emit('fs.file.update', file, prevFile);
   }
 
   private async emitRemoveFile(file: File) {
-    await this.filesSvcs[file.from || 'storage']?.removeFile(file.uri);
+    await this.filesSvcs[file.from || 'in-memory']?.removeFile(file.id);
     this.svcs.eventsSvc.emit('fs.file.remove', file);
   }
 }

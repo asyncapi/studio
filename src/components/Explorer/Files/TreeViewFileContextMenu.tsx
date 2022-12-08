@@ -24,14 +24,6 @@ export const TreeViewFileContextMenu: FunctionComponent = () => {
 
   return (
     <ContextMenu id='fs-file'>
-      <Item onClick={(args) => handleClickFile(args, 'open-in-tab')} className='group'>
-        <VscEye
-          className="mr-2 w-4 h-4 text-pink-500 group-hover:text-white"
-          aria-hidden="true"
-        />
-        Open in tab
-      </Item>
-
       <Item onClick={(args) => handleClickFile(args, 'rename')} className='group'>
         <VscEdit
           className="mr-2 w-4 h-4 text-pink-500 group-hover:text-white"

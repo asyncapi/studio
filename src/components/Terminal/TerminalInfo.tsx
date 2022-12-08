@@ -73,7 +73,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {!autoSaving && file?.modified ? (
+      {!autoSaving && file ? (
         <div className="ml-3">
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">

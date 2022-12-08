@@ -3,16 +3,16 @@ import { Uri } from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { filesState } from '../../state';
 
-import type { File, Directory, FilesState } from '../../state/files.state';
+import { File, Directory, FilesState, FileFlags } from '../../state/files.state';
 
 export abstract class AbstractFilesService extends AbstractService {
-  abstract createDirectory(uri: string, directory: Partial<Directory>): void | Promise<void>;
-  abstract updateDirectory(uri: string, directory: Partial<Directory>): void | Promise<void>;
-  abstract removeDirectory(uri: string): void | Promise<void>;
+  abstract createDirectory(fileId: string, directory: Partial<Directory>): void | Promise<void>;
+  abstract updateDirectory(fileId: string, directory: Partial<Directory>): void | Promise<void>;
+  abstract removeDirectory(fileId: string): void | Promise<void>;
 
-  abstract createFile(uri: string, file: Partial<File>): void | Promise<void>;
-  abstract updateFile(uri: string, file: Partial<File>): void | Promise<void>;
-  abstract removeFile(uri: string): void | Promise<void>;
+  abstract createFile(fileId: string, file: Partial<File>): void | Promise<void>;
+  abstract updateFile(fileId: string, file: Partial<File>): void | Promise<void>;
+  abstract removeFile(fileId: string): void | Promise<void>;
 
   // abstract getDirectory(uri: string): Directory | undefined | Promise<Directory | undefined>;
 
@@ -20,6 +20,9 @@ export abstract class AbstractFilesService extends AbstractService {
   // abstract readFile(uri: string): File | Promise<string>;
 
   // abstract rename(oldUri: string, newUri: string, options: { overwrite: boolean }): void | Promise<void>;
+
+  abstract getFileContent(fileId: string): string | undefined | Promise<string | undefined>;
+  abstract saveFileContent(fileId: string, content: string): void | Promise<void>;
 
   // TOOD: Probably it's not needed
   toFileUri(pathOrUri: string | Uri): Uri {
@@ -63,7 +66,7 @@ export abstract class AbstractFilesService extends AbstractService {
 	}
 
   absolutePath(item: File | Directory): string {
-    if (item.parent && item.parent.uri !== 'root') {
+    if (item.parent && item.parent.id !== 'root') {
       return `${this.absolutePath(item.parent)}/${item.name}`;
     }
     return item.name;
@@ -73,20 +76,28 @@ export abstract class AbstractFilesService extends AbstractService {
     return filesState.getState().directories[String(uri)];
   }
 
-  hasDirectory(uri: string) {
-    return Boolean(this.getDirectory(uri));
+  hasDirectory(fileId: string) {
+    return Boolean(this.getDirectory(fileId));
   }
 
   getDirectories() {
     return filesState.getState().directories;
   }
 
-  getFile(uri: string): File | undefined {
-    return filesState.getState().files[String(uri)];
+  getFile(fileId: string): File | undefined {
+    return filesState.getState().files[String(fileId)];
   }
 
-  hasFile(uri: string) {
-    return Boolean(this.getFile(uri));
+  hasFile(fileId: string) {
+    return Boolean(this.getFile(fileId));
+  }
+
+  isFileModified(fileId: string) {
+    const file = this.getFile(fileId);
+    if (file) {
+      return Boolean(file.flags & FileFlags.MODIFIED);
+    }
+    return false;
   }
 
   getFiles() {
@@ -115,7 +126,8 @@ export abstract class AbstractFilesService extends AbstractService {
       uri,
       name: directory.name || uri,
       children: [],
-      from: 'storage',
+      from: 'in-memory',
+      flags: FileFlags.NONE,
       stat: {
         ...directory?.stat || {},
         mtime,
@@ -134,10 +146,11 @@ export abstract class AbstractFilesService extends AbstractService {
       uri,
       name: file.name || uri,
       content: '',
+      contentVersion: 0,
       language: 'yaml',
-      from: file.from || 'storage',
+      from: file.from || 'in-memory',
       parent: file.parent || this.getRootDirectory(),
-      modified: false,
+      flags: FileFlags.NONE,
       stat: {
         ...file?.stat || {},
         mtime,
@@ -149,7 +162,7 @@ export abstract class AbstractFilesService extends AbstractService {
   protected mergeDirectories(uri: string, directory: Partial<Directory>): [Directory, Record<string, Directory>] {
     const existingDirectory = this.getDirectory(uri);
     if (existingDirectory) {
-      directory = { ...directory, ...existingDirectory };
+      directory = { ...existingDirectory, ...directory };
     } else {
       directory = this.createDirectoryObject(uri, directory);
     }
@@ -159,7 +172,7 @@ export abstract class AbstractFilesService extends AbstractService {
   protected mergeFiles(uri: string, file: Partial<File>): [File, Record<string, File>] {
     const existingFile = this.getFile(uri);
     if (existingFile) {
-      file = { ...file, ...existingFile };
+      file = { ...existingFile, ...file };
     } else {
       file = this.createFileObject(uri, file);
     }

@@ -14,36 +14,36 @@ export class DocumentsService extends AbstractService {
     this.subscribeToSettings();
   }
 
-  addDocument(uri: string, document: Partial<Document>): void {
-    if (this.hasDocument(uri)) {
-      return this.updateDocument(uri, document);
+  addDocument(fileId: string, document: Partial<Document>): void {
+    if (this.hasDocument(fileId)) {
+      return this.updateDocument(fileId, document);
     }
 
-    const newDocument = this.createDocumentObject(uri, document);
-    documentsState.setState(state => ({ documents: { ...state.documents, [String(uri)]: newDocument } }));
+    const newDocument = this.createDocumentObject(fileId, document);
+    documentsState.setState(state => ({ documents: { ...state.documents, [String(fileId)]: newDocument } }));
     this.svcs.eventsSvc.emit('documents.document.create', newDocument);
   }
   
-  updateDocument(uri: string, document: Partial<Document>): void {
-    const oldDocument = this.getDocument(uri);
+  updateDocument(fileId: string, document: Partial<Document>): void {
+    const oldDocument = this.getDocument(fileId);
     if (!oldDocument) {
-      return this.addDocument(uri, document);
+      return this.addDocument(fileId, document);
     }
   
     const updatedDocument = { ...oldDocument, ...document };
-    documentsState.setState(state => ({ documents: { ...state.documents, [String(uri)]: updatedDocument } }));
-    this.svcs.eventsSvc.emit('documents.document.update', updatedDocument);
+    documentsState.setState(state => ({ documents: { ...state.documents, [String(fileId)]: updatedDocument } }));
+    this.svcs.eventsSvc.emit('documents.document.update', updatedDocument, oldDocument);
   }
 
-  removeDocument(uri: string) {
-    const document = this.getDocument(uri);
+  removeDocument(fileId: string) {
+    const document = this.getDocument(fileId);
     if (!document) {
       return;
     }
 
     documentsState.setState(state => {
       const newDocuments = { ...state.documents };
-      delete newDocuments[String(uri)];
+      delete newDocuments[String(fileId)];
       return { documents: newDocuments };
     });
     this.svcs.eventsSvc.emit('documents.document.remove', document);
@@ -80,12 +80,12 @@ export class DocumentsService extends AbstractService {
     return collections;
   }
 
-  getDocument(uri: string): Document | undefined {
-    return this.getState().documents[String(uri)];
+  getDocument(fileId: string): Document | undefined {
+    return this.getState().documents[String(fileId)];
   }
 
-  hasDocument(uri: string) {
-    return Boolean(this.getDocument(uri));
+  hasDocument(fileId: string) {
+    return Boolean(this.getDocument(fileId));
   }
 
   getState() {
@@ -96,9 +96,9 @@ export class DocumentsService extends AbstractService {
     return documentsState.setState(state);
   }
 
-  private createDocumentObject(uri: string, document: Partial<Document> = {}): Document {
+  private createDocumentObject(filedId: string, document: Partial<Document> = {}): Document {
     return {
-      uri,
+      filedId,
       document: null,
       valid: false,
       extras: undefined,
@@ -110,8 +110,12 @@ export class DocumentsService extends AbstractService {
   }
 
   private subscribeToFiles() {
+    // this.svcs.eventsSvc.on('fs.file.update', (file) => {
+    //   this.removeDocument(file.id);
+    // });
+
     this.svcs.eventsSvc.on('fs.file.remove', file => {
-      this.removeDocument(file.uri);
+      this.removeDocument(file.id);
     });
   }
 

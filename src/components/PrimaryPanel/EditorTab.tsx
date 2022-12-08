@@ -16,15 +16,16 @@ interface EditorTabProps {
 export const EditorTab: FunctionComponent<EditorTabProps> = ({
   tab,
 }) => {
-  const { panelsSvc } = useServices();
+  const { filesSvc, panelsSvc } = useServices();
   const [hover, setHover] = useState<boolean>(false);
-  const file = useFilesState(state => state.files[tab.uri]);
+  const file = useFilesState(state => state.files[tab.fileId]);
   const active = usePanelsState(state => state.panels['primary']?.activeTab) || '';
 
   if (!file) {
     return null
   }
   const { name, language } = file;
+  const isModified = filesSvc.isFileModified(file.id);
 
   return (
     <div 
@@ -40,7 +41,7 @@ export const EditorTab: FunctionComponent<EditorTabProps> = ({
           panelsSvc.setActiveTab(tab.panel, tab.id);
         }}
       >
-        <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis mr-1">
+        <span className={`inline-block overflow-hidden whitespace-nowrap text-ellipsis mr-1 ${isModified ? 'text-yellow-500' : 'text-gray-300'}`}>
           {name}.{language}
         </span>
 

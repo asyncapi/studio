@@ -12,7 +12,7 @@ export type DocumentDiagnostics = {
 }
 
 export type Document = {
-  uri: string;
+  filedId: string;
   document: AsyncAPIDocument | null;
   diagnostics: DocumentDiagnostics;
   valid: boolean;
@@ -24,7 +24,7 @@ export type DocumentsState = {
   documents: Record<string, Document>;
 }
 
-export const documentsState = create<DocumentsState>(set => ({
+export const documentsState = create<DocumentsState>(() => ({
   documents: {},
 }));
 

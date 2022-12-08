@@ -11,7 +11,7 @@ import { appState, filesState, settingsState } from '../state';
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
-import type { File } from '../state/files.state';
+import { File, FileFlags } from '../state/files.state';
 import { EditorTab, panelsState } from '../state/panels.state';
 import type { Document } from '../state/documents.state';
 import type { SettingsState } from '../state/settings.state';
@@ -28,6 +28,7 @@ export class EditorService extends AbstractService {
   private decorations: Map<string, string[]> = new Map();
   private instance: monacoAPI.editor.IStandaloneCodeEditor | undefined;
   private models: Map<string, monacoAPI.editor.ITextModel | null> = new Map();
+  private files: Map<monacoAPI.editor.ITextModel, string> = new Map();
   private viewStates: Map<string, monacoAPI.editor.ICodeEditorViewState | null> = new Map();
 
   override onInit() {
@@ -49,13 +50,6 @@ export class EditorService extends AbstractService {
       return;
     }
     this.isCreated = true;
-    
-    // // apply save command
-    // this.editor.addCommand(
-    //   KeyMod.CtrlCmd | KeyCode.KeyS,
-    //   () => this.saveToLocalStorage(),
-    // );
-    // this.editor.onDidChangeModelContent(this.onChangeContent.bind(this));
   
     this.createEditor(elementRef);
     this.configureEditor();
@@ -63,16 +57,16 @@ export class EditorService extends AbstractService {
     const panel = this.svcs.panelsSvc.getPanel('primary');
     if (panel) {
       // create models for all tabs from restored state
-      panel.tabs.forEach(t => {
-        if (t.type === 'editor') {
-          this.createModel(t.uri);
+      panel.tabs.forEach(tab => {
+        if (tab.type === 'editor') {
+          this.createModel(tab.fileId);
         }
       });
 
       // set model for restored active tab
       const activeTab = this.svcs.panelsSvc.getTab('primary', panel.activeTab);
       if (activeTab && activeTab.type === 'editor') {
-        this.setModel(activeTab.uri);
+        this.setModel(activeTab.fileId);
       }
     }
 
@@ -109,7 +103,7 @@ export class EditorService extends AbstractService {
     this.svcs.filesSvc.updateFile('asyncapi', {
       language,
       content,
-      modified: this.getFromLocalStorage() !== content,
+      // modified: this.getFromLocalStorage() !== content,
       ...file,
     });
   }
@@ -129,7 +123,7 @@ export class EditorService extends AbstractService {
             updateModel: true, 
             file: { 
               source: url, 
-              from: 'url' 
+              // from: 'url' 
             },
           });
         })
@@ -164,7 +158,7 @@ export class EditorService extends AbstractService {
         content: String(decoded), 
         updateModel: true, 
         file: { 
-          from: 'base64', 
+          // from: 'base64', 
           source: undefined, 
         },
       });
@@ -239,9 +233,8 @@ export class EditorService extends AbstractService {
     localStorage.setItem('document', editorValue);
 
     this.svcs.filesSvc.updateFile('asyncapi', {
-      from: 'storage',
+      from: 'in-memory',
       source: undefined,
-      modified: false,
     });
 
     if (notify) {
@@ -281,7 +274,7 @@ export class EditorService extends AbstractService {
 
   private configureEditor() {
     let unsubscribe = this.editor.onDidChangeModelContent(
-      this.onChangeContent(this.svcs.settingsSvc.get()).bind(this),
+      this.onChangeModelContent(this.svcs.settingsSvc.get()).bind(this),
     );
 
     this.svcs.eventsSvc.on('settings.update', (settings, prevSettings) => {
@@ -292,110 +285,155 @@ export class EditorService extends AbstractService {
       if (unsubscribe) {
         unsubscribe.dispose();
         unsubscribe = this.editor.onDidChangeModelContent(
-          this.onChangeContent(this.svcs.settingsSvc.get()).bind(this),
+          this.onChangeModelContent(this.svcs.settingsSvc.get()).bind(this),
         );
       }
     });
+
+    // apply save command
+    this.editor.addCommand(
+      KeyMod.CtrlCmd | KeyCode.KeyS,
+      () => {
+        const currentModel = this.getCurrentModel();
+        if (currentModel) {
+          this.saveModelContent(currentModel);
+        }
+      },
+    );
   }
 
-  private getModel(uri: string) {
-    return this.models.get(uri) || this.createModel(uri);
+  private getModel(fileId?: string) {
+    return fileId && (this.models.get(fileId) || this.createModel(fileId));
   }
 
   private getCurrentModel() {
     return this.editor?.getModel();
   }
 
-  private createModel(uri: string, file?: File) {
-    if (this.models.has(uri)) {
+  private createModel(fileId: string, file?: File) {
+    if (this.models.has(fileId)) {
       return;
     }
 
     const monaco = this.svcs.monacoSvc.monaco;
-    file = file || this.svcs.filesSvc.getFile(uri);
+    file = file || this.svcs.filesSvc.getFile(fileId);
     if (!file) {
       return;
     }
 
     const modelUri = monaco.Uri.parse(file.uri);
     const model = monaco.editor.createModel(file.content, file.language, modelUri);
-    this.models.set(uri, model);
+    this.models.set(fileId, model);
+    this.files.set(model, fileId);
 
     return model;
   }
 
-  private removeModel(uri: string) {
-    const model = this.models.get(uri);
+  private removeModel(fileId: string) {
+    const model = this.models.get(fileId);
     if (!model) {
       return;
     }
 
     model.dispose();
-    this.models.delete(uri);
+    this.models.delete(fileId);
   }
 
-  private onChangeContent(settings: SettingsState) {
+  private onChangeModelContent(settings: SettingsState) {
     const editorState = settings.editor;
-    return debounce((e: monacoAPI.editor.IModelContentChangedEvent) => {
+    return debounce(async (e: monacoAPI.editor.IModelContentChangedEvent) => {
       const model = this.getCurrentModel();
-      if (model) {
-        const content = model.getValue();
-        // this.updateState({ content });
-        // if (editorState.autoSaving) {
-        //   this.saveToLocalStorage(content, false);
-        // }
-        this.svcs.parserSvc.parse(model.uri.toString(), content);
-      } 
+      if (!model) {
+        return;
+      }
+
+      const file = this.getFile(model);
+      if (!file) {
+        return ;
+      }
+
+      const content = model.getValue();
+      if (editorState.autoSaving) {
+        return this.svcs.filesSvc.saveFileContent(file.id, content);
+      } else {
+        this.svcs.parserSvc.parse(file.id, content);
+      }
+
+      let flags = file.flags;
+      const savedContent =  await this.svcs.filesSvc.getFileContent(file.id);
+      if (savedContent !== content) {
+        // set modified flag
+        flags |= FileFlags.MODIFIED;
+      } else {
+        // remove modified flag
+        flags &= FileFlags.MODIFIED;
+      }
+
+      return this.svcs.filesSvc.updateFile(file.id, { flags, content });
     }, editorState.savingDelay);
   }
 
-  private setModel(uri: string) {
-    const currentModel = this.getCurrentModel();
-    if (currentModel) {
-      const viewState = this.editor.saveViewState();
-      const uri = currentModel.uri.toString();
-      this.viewStates.set(uri, viewState);
+  private saveModelContent(model: monacoAPI.editor.ITextModel) {
+    const file = this.getFile(model);
+    if (file) {
+      const content = model.getValue();
+      this.svcs.filesSvc.saveFileContent(file.id, content);
+    }
+  }
+
+  private setModel(fileId: string, prevFileId?: string) {
+    if (prevFileId) {
+      const currentModel = this.getModel(prevFileId)
+      if (currentModel) {
+        const viewState = this.editor.saveViewState();
+        this.viewStates.set(prevFileId, viewState);
+      }
     }
 
-    const model = this.getModel(uri);
+    const model = this.getModel(fileId);
     if (model) {
       this.editor.setModel(model)
       this.editor.focus();
 
-      const uri = model.uri.toString();
-      const restoredViewState = this.viewStates.get(uri);
+      const restoredViewState = this.viewStates.get(fileId);
       if (restoredViewState) {
         this.editor.restoreViewState(restoredViewState);
       }
     }
   }
 
+  private getFile(model: monacoAPI.editor.ITextModel) {
+    const fileId = this.files.get(model);
+    if (fileId) {
+      return this.svcs.filesSvc.getFile(fileId);
+    } 
+  }
+
   private applyMarkersAndDecorations(document: Document) {
-    const { uri, diagnostics } = document;
-    const model = this.getModel(uri);
+    const { filedId, diagnostics } = document;
+    const model = this.getModel(filedId);
     if (!model || !this.editor) {
       return;
     }
 
     const { markers, decorations } = this.createMarkersAndDecorations(diagnostics.filtered);
-    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, uri, markers);
-    let oldDecorations = this.decorations.get(uri) || [];
-    console.log(oldDecorations, decorations);
+    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, filedId, markers);
+    let oldDecorations = this.decorations.get(filedId) || [];
     oldDecorations = this.editor.deltaDecorations(oldDecorations, decorations);
-    this.decorations.set(uri, oldDecorations);
+    this.decorations.set(filedId, oldDecorations);
   }
 
   private removeMarkersAndDecorations(document: Document) {
-    const { uri } = document;
-    const model = this.getModel(uri);
+    const { filedId } = document;
+    const model = this.getModel(filedId);
     if (!model || !this.editor) {
       return;
     }
 
-    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, uri, []);
-    let oldDecorations = this.decorations.get(uri) || [];
+    this.svcs.monacoSvc.monaco.editor.setModelMarkers(model, filedId, []);
+    let oldDecorations = this.decorations.get(filedId) || [];
     oldDecorations = this.editor.deltaDecorations(oldDecorations, []);
-    this.decorations.set(uri, oldDecorations);
+    this.decorations.set(filedId, oldDecorations);
   }
 
   createMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
@@ -463,15 +501,22 @@ export class EditorService extends AbstractService {
 
   private subscribeToFiles() {
     this.svcs.eventsSvc.on('fs.file.remove', file => {
-      this.removeModel(file.uri);
+      this.removeModel(file.id);
     });
   }
 
   private subscribeToPanels() {
-    this.svcs.eventsSvc.on('panels.panel.set-active-tab', panel => {
-      const tab = this.svcs.panelsSvc.getTab(panel.id, panel.activeTab);
-      if (tab && tab.type === 'editor') {
-        this.setModel(tab.uri);
+    this.svcs.eventsSvc.on('panels.panel.set-active-tab', (panelId, activeTab, prevActiveTab) => {
+      const panel = this.svcs.panelsSvc.getPanel(panelId);
+      if (panel) {
+        const currentTab = this.svcs.panelsSvc.getTab(panel.id, activeTab);
+        if (currentTab && currentTab.type === 'editor') {
+          const oldTab = prevActiveTab && this.svcs.panelsSvc.getTab(panel.id, prevActiveTab);
+          if (oldTab && oldTab.type === 'editor') {
+            this.setModel(currentTab.fileId, oldTab.fileId);
+          }
+          this.setModel(currentTab.fileId);
+        }
       }
     });
   }

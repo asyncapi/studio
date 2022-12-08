@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { create } from '@ebay/nice-modal-react';
 
@@ -22,8 +21,8 @@ export const DeleteFileModal = create<DeleteFileModalProps>(({ item }) => {
   const onSubmit = () => {
     toast.promise(
       type === 'directory'
-        ? filesSvc.removeDirectory(item.uri)
-        : filesSvc.removeFile(item.uri),
+        ? filesSvc.removeDirectory(item.id)
+        : filesSvc.removeFile(item.id),
       {
         loading: 'Deleting...',
         success: (

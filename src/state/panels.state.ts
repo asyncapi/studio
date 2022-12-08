@@ -9,7 +9,7 @@ export type PanelTabCore = {
 
 export type EditorTab = {
   type: 'editor';
-  uri: string;
+  fileId: string;
 } & PanelTabCore;
 
 export type PanelTab = 
@@ -51,13 +51,13 @@ export const panelsState = create(
       panels: {
         primary: {
           id: 'primary',
-          activeTab: 'file:///asyncapi',
+          activeTab: 'asyncapi',
           tabs: [
             {
-              id: 'file:///asyncapi',
+              id: 'asyncapi',
               panel: 'primary',
               type: 'editor',
-              uri: 'file:///asyncapi',
+              fileId: 'asyncapi',
             }
           ],
         },

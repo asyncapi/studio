@@ -28,19 +28,20 @@ export class ParserService extends AbstractService {
     await this.parseSavedDocuments();
   }
 
-  async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
-    if (uri !== 'asyncapi' && !options.source) {
-      options.source = uri;
-    }
+  async parse(fileId: string, content: string, options: ParseOptions = {}): Promise<void> {
+    // if (fileId !== 'asyncapi' && !options.source) {
+    //   options.source = uri;
+    // }
 
     let diagnostics: Diagnostic[] = [];
     try {
-      const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
+      const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(content, options);
       diagnostics = _diagnostics;
   
       if (document) {
         const oldDocument = convertToOldAPI(document);
-        return this.svcs.documentsSvc.updateDocument(uri, {
+
+        return this.svcs.documentsSvc.updateDocument(fileId, {
           document: oldDocument,
           diagnostics: this.createDiagnostics(diagnostics),
           extras,
@@ -51,7 +52,7 @@ export class ParserService extends AbstractService {
       console.log(err);
     }
 
-    return this.svcs.documentsSvc.updateDocument(uri, {
+    return this.svcs.documentsSvc.updateDocument(fileId, {
       document: null,
       diagnostics: this.createDiagnostics(diagnostics),
       extras: undefined,
@@ -122,11 +123,11 @@ export class ParserService extends AbstractService {
 
   private subscribeToFiles() {
     this.svcs.eventsSvc.on('fs.file.create', file => {
-      this.parse(file.uri, file.content, { source: file.source });
+      this.parse(file.id, file.content, { source: file.source });
     });
 
     this.svcs.eventsSvc.on('fs.file.update', file => {
-      this.parse(file.uri, file.content, { source: file.source });
+      this.parse(file.id, file.content, { source: file.source });
     });
   }
 

@@ -1,10 +1,6 @@
 import { useState, useMemo } from 'react';
-import { VscFile, VscClose } from 'react-icons/vsc';
-import { show as showModal } from '@ebay/nice-modal-react';
+import { VscFile } from 'react-icons/vsc';
 import { useContextMenu } from "react-contexify";
-
-import { EditFileModal, DeleteFileModal } from '../../Modals/Files';
-import { IconButton } from '../../common';
 
 import { useServices } from '../../../services';
 import { useFilesState, usePanelsState } from '../../../state';
@@ -58,16 +54,16 @@ export const TreeViewFileActions: FunctionComponent<TreeViewFileActionsProps> = 
 }
 
 interface TreeViewFileProps {
-  uri: string;
+  id: string;
   deep?: number
 }
 
 export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
-  uri,
+  id,
   deep = 0,
 }) => {
-  const { panelsSvc } = useServices();
-  const file = useFilesState(state => state.files[uri]);
+  const { filesSvc, panelsSvc } = useServices();
+  const file = useFilesState(state => state.files[id]);
   const activeTab = usePanelsState(() => panelsSvc.getActiveTab('primary'));
   const [hover, setHover] = useState<boolean>(false);
   const { show: showContextMenu, hideAll: hideAllContextMenus } = useContextMenu({ id: 'fs-file' });
@@ -77,6 +73,8 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
   }
 
   const { name, language } = file;
+  const isModified = filesSvc.isFileModified(file.id);
+
   return (
     <div
       className='flex flex-col'
@@ -85,7 +83,7 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
       onClick={e => {
         e.stopPropagation();
         hideAllContextMenus();
-        panelsSvc.setActiveTab('primary', uri);
+        panelsSvc.setActiveTab('primary', id);
       }}
       onDoubleClick={e => {
         e.stopPropagation();
@@ -98,14 +96,14 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
       }}
     >
       <div 
-        className={`flex flex-row items-center justify-between ${activeTab?.uri === file.uri ? 'bg-gray-700' : 'bg-gray-800 hover:bg-gray-700'} cursor-pointer text-xs leading-4 text-gray-300 pr-2 py-1`}
+        className={`flex flex-row items-center justify-between ${activeTab?.fileId === file.id ? 'bg-gray-700' : 'bg-gray-800 hover:bg-gray-700'} cursor-pointer text-xs leading-4 text-gray-300 pr-2 py-1`}
         style={{ paddingLeft: `${0.5 + 0.5 * deep}rem` }}
       >
         <button className="flex-none flex items-center justify-center mr-1">
           <VscFile className='w-3.5 h-3.5' />
         </button>
 
-        <span className="flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5">
+        <span className={`flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5 ${isModified ? 'text-yellow-500' : 'text-gray-300'}`}>
           {name}.{language}
         </span>
 

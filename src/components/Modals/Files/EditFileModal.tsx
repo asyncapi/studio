@@ -23,8 +23,8 @@ export const EditFileModal = create<EditFileModalProps>(({ item }) => {
   const onSubmit = () => {
     toast.promise(
       type === 'directory'
-        ? filesSvc.updateDirectory(item.uri, item)
-        : filesSvc.updateFile(item.uri, item),
+        ? filesSvc.updateDirectory(item.id, item)
+        : filesSvc.updateFile(item.id, item),
       {
         loading: 'Renaming...',
         success: (

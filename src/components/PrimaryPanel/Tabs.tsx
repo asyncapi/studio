@@ -15,7 +15,7 @@ export const Tabs: FunctionComponent<TabsProps> = () => {
   return (
     <ul className='flex flex-row'>
       {tabs.map(tab => (
-        <li key={tab.uri}>
+        <li key={tab.id}>
           <EditorTab tab={tab} />
         </li>
       ))}

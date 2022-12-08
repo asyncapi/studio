@@ -12,7 +12,6 @@ import { useDocumentsState, useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
-import type { DocumentDiagnostics } from '../../state/documents.state';
 
 interface ProblemsTabProps {}
 
