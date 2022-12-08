@@ -1,0 +1,13 @@
+title: AsyncAPI Studio
+description: Visually design your AsyncAPI files and event-driven architecture.
+links:
+  websiteUrl: https://studio.asyncapi.com
+filters:
+  language: JavaScript
+  technology:
+    - React
+    - TypeScript
+  categories:
+    - editor
+    - platform
+    - ui
