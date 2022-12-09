@@ -100,12 +100,12 @@ export class EditorService extends AbstractService {
       }
     }
 
-    this.svcs.filesSvc.updateFile('asyncapi', {
-      language,
-      content,
-      // modified: this.getFromLocalStorage() !== content,
-      ...file,
-    });
+    // this.svcs.filesSvc.updateFile('asyncapi', {
+    //   language,
+    //   content,
+    //   // modified: this.getFromLocalStorage() !== content,
+    //   ...file,
+    // });
   }
 
   async convertSpec(version?: ConvertVersion | string) {
@@ -232,10 +232,10 @@ export class EditorService extends AbstractService {
     editorValue = editorValue || this.value;
     localStorage.setItem('document', editorValue);
 
-    this.svcs.filesSvc.updateFile('asyncapi', {
-      from: 'in-memory',
-      source: undefined,
-    });
+    // this.svcs.filesSvc.updateFile('asyncapi', {
+    //   from: 'in-memory',
+    //   source: undefined,
+    // });
 
     if (notify) {
       if (settingsState.getState().editor.autoSaving) {
@@ -369,7 +369,7 @@ export class EditorService extends AbstractService {
         flags &= FileFlags.MODIFIED;
       }
 
-      return this.svcs.filesSvc.updateFile(file.id, { flags, content });
+      return this.svcs.filesSvc.updateFile({ id: file.id, flags, content });
     }, editorState.savingDelay);
   }
 

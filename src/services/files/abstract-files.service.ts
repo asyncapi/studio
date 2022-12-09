@@ -6,13 +6,13 @@ import { filesState } from '../../state';
 import { File, Directory, FilesState, FileFlags } from '../../state/files.state';
 
 export abstract class AbstractFilesService extends AbstractService {
-  abstract createDirectory(fileId: string, directory: Partial<Directory>): void | Promise<void>;
-  abstract updateDirectory(fileId: string, directory: Partial<Directory>): void | Promise<void>;
-  abstract removeDirectory(fileId: string): void | Promise<void>;
+  abstract createDirectory(directory: Partial<Directory>): void | Promise<void>;
+  abstract updateDirectory(directory: Partial<Directory>): void | Promise<void>;
+  abstract removeDirectory(id: string): void | Promise<void>;
 
-  abstract createFile(fileId: string, file: Partial<File>): void | Promise<void>;
-  abstract updateFile(fileId: string, file: Partial<File>): void | Promise<void>;
-  abstract removeFile(fileId: string): void | Promise<void>;
+  abstract createFile(file: Partial<File>): void | Promise<void>;
+  abstract updateFile(file: Partial<File>): void | Promise<void>;
+  abstract removeFile(id: string): void | Promise<void>;
 
   // abstract getDirectory(uri: string): Directory | undefined | Promise<Directory | undefined>;
 
@@ -21,8 +21,8 @@ export abstract class AbstractFilesService extends AbstractService {
 
   // abstract rename(oldUri: string, newUri: string, options: { overwrite: boolean }): void | Promise<void>;
 
-  abstract getFileContent(fileId: string): string | undefined | Promise<string | undefined>;
-  abstract saveFileContent(fileId: string, content: string): void | Promise<void>;
+  abstract getFileContent(id: string): string | undefined | Promise<string | undefined>;
+  abstract saveFileContent(id: string, content: string): void | Promise<void>;
 
   // TOOD: Probably it's not needed
   toFileUri(pathOrUri: string | Uri): Uri {
@@ -116,15 +116,172 @@ export abstract class AbstractFilesService extends AbstractService {
     filesState.setState(state);
   }
 
-  protected createDirectoryObject(uri: string, directory: Partial<Directory>): Directory {
+  protected __createDirectory(directory: Directory) {
+    const dirId = directory.id;
+    if (dirId && this.hasDirectory(dirId)) {
+      return;
+    }
+
+    let [, directories] = this.mergeDirectories(directory);
+    this.emitCreateDirectory(directory);
+    const parent = directory.parent;
+    if (!parent) {
+      return this.setState({ directories });
+    }
+  
+    const [newParent, newDirectories] = this.mergeDirectories({ children: this.addChildren(parent, [directory]) }, parent.id, directories);
+    this.emitCreateDirectory(newParent);
+    return this.setState({ directories: newDirectories });
+  }
+
+  protected __updateDirectory(directory: Partial<Directory>) {
+    const existingDirectory = directory.id && this.getDirectory(directory.id);
+    if (!existingDirectory) {
+      return;
+    }
+
+    const parent = directory.parent;
+    const existingParent = existingDirectory.parent;
+    const [newDirectory, directories] = this.mergeDirectories(directory, existingDirectory.id);
+    this.emitUpdateDirectory(newDirectory, existingDirectory);
+    if (!parent || (existingParent === parent)) {
+      return this.setState({ directories });
+    }
+  
+    // TODO: Add moving directories
+    return this.setState({ directories });
+  }
+
+  protected __removeDirectory(id: string) {
+    const directory = this.getDirectory(id);
+    if (!directory) {
+      return;
+    }
+  
+    let directories = { ...this.getDirectories() };
+    this.emitRemoveDirectory(directory);
+    delete directories[String(id)];
+
+    const parent = directory.parent;
+    if (directory.children.length === 0) {
+      if (parent) {
+        const [newParent, filteredDirectories] = this.mergeDirectories({ 
+          children: parent.children.filter(c => !(c.id === id && c.type === 'directory')),
+        }, parent.id);
+        directories = { 
+          ...directories, 
+          ...filteredDirectories,
+        };
+        this.emitUpdateDirectory(newParent, parent);
+      }
+      return this.setState({ directories });
+    }
+  
+    const files = { ...this.getFiles() };
+    const children = this.collectChildren(directory.children);
+    for (let child of children.reverse()) {
+      if (child.type === 'directory') {
+        const directory = directories[String(child.id)];
+        if (directory) {
+          this.emitRemoveDirectory(directory);
+          delete directories[String(child.id)];
+        }
+      } else {
+        const file = files[String(child.id)];
+        if (file) {
+          this.emitRemoveFile(file);
+          delete files[String(child.id)];
+        }
+      }
+    }
+
+    if (parent) {
+      const [newParent, filteredDirectories] = this.mergeDirectories({ 
+        children: parent.children.filter(c => !(c.id === id && c.type === 'directory')),
+      }, parent.id);
+      directories = {
+        ...directories, 
+        ...filteredDirectories,
+      };
+      this.emitUpdateDirectory(newParent, parent);
+    }
+  
+    return this.setState({ files, directories });
+  }
+
+  protected __createFile(file: File) {
+    const fileId = file.id;
+    if (fileId && this.hasDirectory(fileId)) {
+      return;
+    }
+
+    const [, files] = this.mergeFiles(file);
+    this.emitCreateFile(file);
+    const parent = file.parent;
+    if (!parent) {
+      return this.setState({ files });
+    }
+  
+    const [newParent, directories] = this.mergeDirectories({ 
+      children: this.addChildren(parent, [file])
+    }, parent.id);
+    this.emitUpdateDirectory(newParent, parent);
+    return this.setState({ files, directories });
+  }
+
+  protected __updateFile(file: Partial<File>) {
+    const existingFile = file.id && this.getFile(file.id);
+    if (!existingFile) {
+      return;
+    }
+  
+    const parent = file.parent;
+    const existingParent = existingFile.parent as Directory;
+    const [newFile, files] = this.mergeFiles(file, existingFile.id);
+    this.emitUpdateFile(newFile, existingFile);
+    if (!parent || (existingParent === parent)) {
+      return this.setState({ files });
+    }
+  
+    // moving file - TODO: add removing previous file
+    const [newExistingParent, existingDirs] = this.mergeDirectories({ children: existingParent.children.filter(c => !(c.id === newFile.id && c.type === 'file')), }, existingParent.id);
+    const [newParent, directories] = this.mergeDirectories({ children: this.addChildren(parent, [newFile]), }, parent.id, existingDirs);
+    this.emitUpdateDirectory(newExistingParent, existingParent);
+    this.emitUpdateDirectory(newParent, parent);
+    return this.setState({ files, directories });
+  }
+
+  protected __removeFile(id: string) {
+    const file = this.getFile(id);
+    if (!file) {
+      return;
+    }
+  
+    const files = { ...this.getFiles() };
+    this.emitRemoveFile(file);
+    delete files[String(id)];
+  
+    const parent = file.parent;
+    if (!parent) {
+      return this.setState({ files });
+    }
+
+    const [newParent, directories] = this.mergeDirectories({ 
+      children: parent.children.filter(c => !(c.id === id && c.type === 'file'))
+    }, parent.id);
+    this.emitUpdateDirectory(newParent, parent);
+    return this.setState({ files, directories });
+  }
+
+  protected createDirectoryObject(directory: Partial<Directory>): Directory {
     const id = directory.id || this.svcs.formatSvc.generateUuid();
     const mtime = directory?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
 
     return {
       id,
       type: 'directory',
-      uri,
-      name: directory.name || uri,
+      uri: '',
+      name: '',
       children: [],
       from: 'in-memory',
       flags: FileFlags.NONE,
@@ -136,15 +293,15 @@ export abstract class AbstractFilesService extends AbstractService {
     }
   }
   
-  protected createFileObject(uri: string, file: Partial<File>): File {
+  protected createFileObject(file: Partial<File>): File {
     const id = file.id || this.svcs.formatSvc.generateUuid();
     const mtime = file?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
 
     return {
       id,
       type: 'file',
-      uri,
-      name: file.name || uri,
+      uri: '',
+      name: '',
       content: '',
       contentVersion: 0,
       language: 'yaml',
@@ -159,24 +316,41 @@ export abstract class AbstractFilesService extends AbstractService {
     }
   }
 
-  protected mergeDirectories(uri: string, directory: Partial<Directory>): [Directory, Record<string, Directory>] {
-    const existingDirectory = this.getDirectory(uri);
+  protected mergeDirectories(directory: Partial<Directory>, id?: string, oldDirectories?: Record<string, Directory>): [Directory, Record<string, Directory>] {
+    const dirId = id || directory.id;
+    let existingDirectory: Directory | undefined = undefined
+    if (dirId) {
+      existingDirectory = this.getDirectory(dirId);
+    }
+
     if (existingDirectory) {
       directory = { ...existingDirectory, ...directory };
     } else {
-      directory = this.createDirectoryObject(uri, directory);
+      directory = this.createDirectoryObject(directory);
     }
-    return [directory, { ...this.getDirectories(), [String(uri)]: directory }] as [Directory, Record<string, Directory>];
+    return [directory, { ...(oldDirectories || this.getDirectories()), [String(directory.id)]: directory }] as [Directory, Record<string, Directory>];
   }
 
-  protected mergeFiles(uri: string, file: Partial<File>): [File, Record<string, File>] {
-    const existingFile = this.getFile(uri);
+  protected mergeFiles(file: Partial<File>, id?: string, oldFiles?: Record<string, File>): [File, Record<string, File>] {
+    const fileId = id || file.id;
+    let existingFile: File | undefined = undefined
+    if (fileId) {
+      existingFile = this.getFile(fileId);
+    }
+
     if (existingFile) {
       file = { ...existingFile, ...file };
     } else {
-      file = this.createFileObject(uri, file);
+      file = this.createFileObject(file);
     }
-    return [file, { ...this.getFiles(), [String(uri)]: file }] as [File, Record<string, File>];
+    return [file, { ...(oldFiles || this.getFiles()), [String(file.id)]: file }] as [File, Record<string, File>];
+  }
+
+  protected mergeState(newState: Partial<FilesState> = {}) {
+    return filesState.setState(state => ({
+      directories: { ...state.directories, ...newState.directories || {} },
+      files: { ...state.files, ...newState.files || {} },
+    }));
   }
   
   protected addChildren(directory: Directory, children: Array<Directory | File>) {
@@ -203,5 +377,39 @@ export abstract class AbstractFilesService extends AbstractService {
     if (a.name > b.name) return 1;
     if (a.name < b.name) return -1;
     return 0;
+  }
+
+  private collectChildren(children: Array<Directory | File>, collection: Array<Directory | File> = []): Array<Directory | File> {
+    children.forEach(c => {
+      collection.push(c);
+      if (c.type === 'directory') {
+        this.collectChildren(c.children, collection);
+      }
+    });
+    return collection;
+  }
+
+  private emitCreateDirectory(directory: Directory) {
+    this.svcs.eventsSvc.emit('fs.directory.create', directory);
+  }
+
+  private emitUpdateDirectory(directory: Directory, prevDirectory: Directory) {
+    this.svcs.eventsSvc.emit('fs.directory.update', directory, prevDirectory);
+  }
+
+  private emitRemoveDirectory(directory: Directory) {
+    this.svcs.eventsSvc.emit('fs.directory.remove', directory);
+  }
+
+  private emitCreateFile(file: File) {
+    this.svcs.eventsSvc.emit('fs.file.create', file);
+  }
+
+  private emitUpdateFile(file: File, prevFile: File) {
+    this.svcs.eventsSvc.emit('fs.file.update', file, prevFile);
+  }
+
+  private emitRemoveFile(file: File) {
+    this.svcs.eventsSvc.emit('fs.file.remove', file);
   }
 }

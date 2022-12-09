@@ -156,7 +156,6 @@ export class PanelsService extends AbstractService {
 
   private subscribeToFiles() {
     this.svcs.eventsSvc.on('fs.file.remove', file => {
-      console.log(file);
       const panel = this.getPanel('primary');
       if (!panel) {
         return;

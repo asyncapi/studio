@@ -80,18 +80,19 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
       className='flex flex-col'
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={e => {
-        e.stopPropagation();
+      onClick={event => {
+        event.stopPropagation();
         hideAllContextMenus();
         panelsSvc.setActiveTab('primary', id);
       }}
-      onDoubleClick={e => {
-        e.stopPropagation();
+      onDoubleClick={event => {
+        event.stopPropagation();
         hideAllContextMenus();
         panelsSvc.openEditorTab('primary', file);
       }}
-      onContextMenu={(event) => {
+      onContextMenu={event => {
         event.preventDefault();
+        event.stopPropagation();
         showContextMenu({ event, props: { file } });
       }}
     >

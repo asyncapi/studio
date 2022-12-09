@@ -7,12 +7,13 @@ import { useServices } from '../../../services';
 
 import type { FunctionComponent } from 'react';
 import type { ItemParams } from "../../common/ContextMenu";
+import type { File } from '../../../state/files.state';
 
 export const TreeViewFileContextMenu: FunctionComponent = () => {
   const { panelsSvc } = useServices();
 
-  const handleClickFile = useCallback(({ props }: ItemParams, action: 'open-in-tab' | 'rename' | 'remove') => {
-    const file = props.file;
+  const handleClickFile = useCallback(({ props }: ItemParams<{ file: File }>, action: 'open-in-tab' | 'rename' | 'remove') => {
+    const file = props?.file;
     if (!file) {
       return;
     }

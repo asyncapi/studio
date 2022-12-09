@@ -120,15 +120,16 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
       <div 
         className='flex flex-row items-center justify-between bg-gray-800 hover:bg-gray-700 cursor-pointer text-xs leading-2 text-gray-300 pr-2 py-1'
         style={{ paddingLeft: `${0.5 + 0.5 * deep}rem` }}
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={event => {
+          event.stopPropagation();
           hideAllContextMenus();
           setExpanded(oldState => !oldState);
         }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        onContextMenu={(event) => {
+        onContextMenu={event => {
           event.preventDefault();
+          event.stopPropagation();
           showContextMenu({ event, props: { directory } });
         }}
       >

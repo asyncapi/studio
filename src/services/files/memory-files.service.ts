@@ -2,106 +2,17 @@ import { AbstractFilesService } from './abstract-files.service';
 
 import Dexie from 'dexie';
 
-import { FileFlags, schema } from '../../state/files.state';
-
 import type { Table } from 'dexie';
 import type { Directory, File } from '../../state/files.state';
 
-const files: Record<string, File> = {
-  'file1': {
-    id: 'file1',
-    type: 'file',
-    uri: 'file1',
-    name: 'file1',
-    content: '',
-    contentVersion: 0,
-    from: 'in-memory',
-    source: undefined,
-    language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-    flags: FileFlags.NONE,
-    stat: {
-      mtime: (new Date()).getTime(),
-    }
-  },
-  'file2': {
-    id: 'file2',
-    type: 'file',
-    uri: 'file:///file2',
-    name: 'file2',
-    content: 'lol: 1.2.0',
-    contentVersion: 0,
-    from: 'in-memory',
-    source: undefined,
-    language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-    flags: FileFlags.NONE,
-    stat: {
-      mtime: (new Date()).getTime(),
-    }
-  },
-  'file3': {
-    id: 'file3',
-    type: 'file',
-    uri: 'file:///file3',
-    name: 'file3',
-    content: '',
-    contentVersion: 0,
-    from: 'in-memory',
-    source: undefined,
-    language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-    flags: FileFlags.NONE,
-    stat: {
-      mtime: (new Date()).getTime(),
-    }
-  },
-  'asyncapi': {
-    id: 'asyncapi',
-    type: 'file',
-    uri: 'file:///asyncapi',
-    name: 'asyncapi',
-    content: schema,
-    contentVersion: 0,
-    from: 'in-memory',
-    source: undefined,
-    language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-    flags: FileFlags.NONE,
-    stat: {
-      mtime: (new Date()).getTime(),
-    }
-  },
-}
+type TableDirectory = {
+  children: string[];
+  parent: string;
+} & Omit<Directory, 'children' | 'parent'>;
 
-const rootDirectory: Directory = {
-  id: 'root',
-  type: 'directory',
-  uri: 'file:///root',
-  name: 'root',
-  children: [],
-  from: 'in-memory',
-  flags: FileFlags.NONE,
-}
-
-const directories: Record<string, Directory> = {
-  'dir1': {
-    id: 'dir1',
-    type: 'directory',
-    uri: 'file:///dir1',
-    name: 'dir1',
-    children: [files['file3']],
-    from: 'in-memory',
-    flags: FileFlags.NONE,
-    parent: rootDirectory,
-  },
-  'dir2': {
-    id: 'dir2',
-    type: 'directory',
-    uri: 'file:///dir2',
-    name: 'dir2',
-    children: [files['file2']],
-    from: 'in-memory',
-    flags: FileFlags.NONE,
-    parent: rootDirectory,
-  }
-}
+type TableFile = {
+  parent: string;
+} & Omit<File, 'parent'>;
 
 /**
  * Each operation is performed by the state. 
@@ -109,8 +20,8 @@ const directories: Record<string, Directory> = {
  */
 export class MemoryFilesService extends AbstractFilesService {
   private database!: Dexie;
-  private directories!: Table<Directory>; 
-  private files!: Table<File>; 
+  private directories!: Table<TableDirectory>; 
+  private files!: Table<TableFile>; 
 
   async onInit() {
     const database = this.database = new Dexie('in-memory-files');
@@ -123,81 +34,185 @@ export class MemoryFilesService extends AbstractFilesService {
     this.directories = (database as any).directories;
     this.files = (database as any).files;
 
-    const asyncapiFile = files.asyncapi;
-    asyncapiFile.parent = rootDirectory;
-    (rootDirectory.children as any) = [asyncapiFile];
+    await this.readFiles();
+  }
 
-    try {
-      await this.createDirectory('root', rootDirectory);
-      await this.createFile('asyncapi', asyncapiFile);
-    } catch(e) {
-      console.log(e);
-    }
-
-    if (Object.keys(this.getState().directories).length) {
+  override async createDirectory(directory: Directory) {
+    if (await this.directories.get(directory.id)) {
       return;
     }
 
-    const state = {
-      files: {
-        asyncapi: asyncapiFile,
-      },
-      directories: {
-        root: rootDirectory,
+    try {
+      const tableDirectory = this.serializeDirectory(directory);
+      await this.directories.add(tableDirectory);
+
+      const parent = directory.parent && await this.directories.get(directory.parent.id);
+      if (parent) {
+        parent.children.push(directory.id)
+        await this.directories.update(parent.id, parent);     
       }
-    };
-    this.setState(state);
-  }
 
-  override async createDirectory(_: string, directory: Directory) {
-    await this.directories.add(this.serializeDirectory(directory) as Directory);
-  }
-
-  override async updateDirectory(dirId: string, directory: Partial<Directory>) {
-    await this.files.update(dirId, this.serializeDirectory(directory));
-  }
-
-  override async removeDirectory(dirId: string) {
-    await this.directories.delete(dirId);
-  }
-
-  override async createFile(_: string, file: File) {
-    await this.files.add(this.serializeFile(file) as File);
-  }
-
-  override async updateFile(fileId: string, file: Partial<File>) {
-    await this.files.update(fileId, this.serializeFile(file));
-  }
-
-  override async removeFile(fileId: string) {
-    await this.files.delete(fileId);
-  }
-
-  override async getFileContent(fileId: string) {
-    const file = await this.getMemoryFile(fileId);
-    return file?.content;
-  }
-
-  override async saveFileContent(fileId: string, content: string) {
-    const file = await this.getMemoryFile(fileId);
-    await this.updateFile(fileId, { content });
-  }
-
-  private getMemoryFile(fileId: string) {
-    return this.files.get(fileId);
-  }
-
-  private serializeDirectory(directory: Partial<Directory>): Partial<Directory> {
-    return {
-      ...directory,
-      children: (directory.children || []).map(d => d.id) as any,
+      this.__createDirectory(directory);
+    } catch(err) {
+      console.error(err);
     }
   }
 
-  private serializeFile(file: Partial<File>): Partial<File> {
+  override async updateDirectory(directory: Partial<Directory>) {
+    if (!directory.id || !(await this.directories.get(directory.id))) {
+      return;
+    }
+
+    try {
+      const tableDirectory = this.serializeDirectory(directory);
+      await this.directories.update(directory.id, tableDirectory);
+      this.__updateDirectory(directory);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  override async removeDirectory(id: string) {
+    try {
+      const directory = await this.directories.get(id);
+      if (!directory) {
+        return;
+      }
+
+      await this.directories.delete(id);
+      await this.removeChildren(directory.children);
+
+      const parent = directory.parent && await this.directories.get(directory.parent);
+      if (parent) {
+        parent.children = parent.children.filter(child => child !== directory.id);
+        await this.directories.update(parent.id, parent);        
+      }
+
+      this.__removeDirectory(id);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  override async createFile(file: File) {
+    if (await this.files.get(file.id)) {
+      return;
+    }
+
+    try {
+      await this.files.add(this.serializeFile(file));
+
+      const parent = file.parent && await this.directories.get(file.parent.id);
+      if (parent) {
+        parent.children.push(file.id)
+        await this.directories.update(parent.id, parent);
+      }
+
+      this.__createFile(file);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  override async updateFile(file: Partial<File>) {
+    if (!file.id || !(await this.files.get(file.id))) {
+      return;
+    }
+
+    try {
+      await this.files.update(file.id, this.serializeFile(file));
+      this.__updateFile(file);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  override async removeFile(id: string) {
+    try {
+      const file = await this.files.get(id);
+      if (!file) {
+        return;
+      }
+
+      await this.files.delete(id);
+      const parent = file.parent && await this.directories.get(file.parent);
+      if (parent) {
+        parent.children = parent.children.filter(child => child !== file.id);
+        await this.directories.update(parent.id, parent);   
+      }
+
+      this.__removeFile(id);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  override async getFileContent(id: string) {
+    const file = await this.files.get(id);
+    return file?.content;
+  }
+
+  override async saveFileContent(id: string, content: string) {
+    await this.updateFile({ id, content });
+  }
+
+  private serializeDirectory(directory: Directory): TableDirectory;
+  private serializeDirectory(directory: Partial<Directory>): Partial<TableDirectory>;
+  private serializeDirectory(directory: Partial<Directory>): Partial<TableDirectory> {
+    return {
+      ...directory,
+      children: directory.children?.map(c => c.id) || [],
+      parent: directory.parent?.id,
+    }
+  }
+
+  private serializeFile(file: File): TableFile;
+  private serializeFile(file: Partial<File>): Partial<TableFile>;
+  private serializeFile(file: Partial<File>): Partial<TableFile> {
     return {
       ...file,
-      parent: file.parent?.id as any,
+      parent: file.parent?.id,
+    }
+  }
+
+  private async removeChildren(children: Array<string>) {
+    return Promise.all(
+      children.map(async child => {
+        if (await this.directories.get(child)) {
+          return this.directories.delete(child);
+        }
+        if (await this.files.get(child)) {
+          return this.files.delete(child);
+        }
+      })
+    );
+  }
+
+  private async readFiles() {
+    const allDirectories = await this.directories.toArray();
+    const allFiles = await this.files.toArray();
+    const directories: Record<string, Directory> = {};
+    const files: Record<string, File> = {};
+
+    allDirectories.forEach(directory => {
+      directories[String(directory.id)] = directory as unknown as Directory;
+    });
+    allFiles.forEach(file => {
+      files[String(file.id)] = file as unknown as File;
+    });
+    Object.values(directories).forEach(directory => {
+      directory.children = directory.children.map(c => directories[String(c)] || files[String(c)]);
+      directory.parent = directories[String(directory.parent)];
+    });
+    Object.values(files).forEach(file => {
+      file.parent = directories[String(file.parent)];
+    });
+
+    if (Object.keys(directories).length === 0) {
+      await this.createDirectory(this.createDirectoryObject({ id: 'root', name: 'root' }));
+      await this.createFile(this.createFileObject({ id: 'asyncapi', name: 'asyncapi' }));
+    } else {
+      this.mergeState({ directories, files });
     }
   }
 }

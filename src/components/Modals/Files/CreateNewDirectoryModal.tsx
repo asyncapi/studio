@@ -19,7 +19,7 @@ export const CreateNewDirectoryModal = create<CreateNewDirectoryModalProps>(({ d
   const absolutePath = filesSvc.absolutePath(directory);
 
   const onSubmit = () => {
-    toast.promise(filesSvc.createDirectory(uri, { parent: directory }), {
+    toast.promise(filesSvc.createDirectory({ uri, name: uri, parent: directory }), {
       loading: 'Creating...',
       success: (
         <div>
