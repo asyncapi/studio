@@ -15,7 +15,8 @@ import gitterStreaming from './real-world/gitter-streaming.yml';
 
 const templateTypes = {
   protocol: 'protocol-example',
-  realExample: 'real-example'
+  realExample: 'real-example',
+  tutorial: 'tutorial-example'
 };
 
 export default [
@@ -29,7 +30,7 @@ export default [
     title: 'Tutorial Example',
     description: () => <>An example of an invalid AsyncAPI document. This is only for educational purposes, to learn document validation.</>,
     template: tutorial,
-    type: templateTypes.protocol
+    type: templateTypes.tutorial
   },
   {
     title: 'Apache Kafka',
