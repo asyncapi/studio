@@ -52,6 +52,7 @@ export const NewFileModal = create(() => {
 
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
   const templates = examples.filter((template) => template.type === 'protocol-example');
+  const templates = examples.filter((template) => template.type === 'tutorial-example');
 
   return (
     <ConfirmModal
