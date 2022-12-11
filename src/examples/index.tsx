@@ -6,6 +6,9 @@ import websocket from './websocket-gemini.yml';
 import mqtt from './streetlights-mqtt.yml';
 import simple from './simple.yml';
 
+// tutorial example
+import tutorial from './tutorials/tutorial.yml';
+
 // real world examples
 import slack from './real-world/slack-rtm.yml';
 import gitterStreaming from './real-world/gitter-streaming.yml';
@@ -20,6 +23,12 @@ export default [
     title: 'Simple Example',
     description: () => <>A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
     template: simple,
+    type: templateTypes.protocol
+  },
+  {
+    title: 'Tutorial Example',
+    description: () => <>An example of an invalid AsyncAPI document. This is only for educational purposes, to learn document validation.</>,
+    template: tutorial,
     type: templateTypes.protocol
   },
   {
