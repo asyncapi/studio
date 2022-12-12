@@ -7,7 +7,7 @@ import mqtt from './streetlights-mqtt.yml';
 import simple from './simple.yml';
 
 // tutorial example
-import tutorial from './tutorials/tutorial.yml';
+import invalid from './tutorials/invalid.yml';
 
 // real world examples
 import slack from './real-world/slack-rtm.yml';
