@@ -27,9 +27,9 @@ export default [
     type: templateTypes.protocol
   },
   {
-    title: 'Tutorial Example',
+    title: 'Invalid Example',
     description: () => <>An example of an invalid AsyncAPI document. This is only for educational purposes, to learn document validation.</>,
-    template: tutorial,
+    template: invalid,
     type: templateTypes.tutorial
   },
   {
