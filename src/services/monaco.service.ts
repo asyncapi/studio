@@ -126,7 +126,7 @@ export class MonacoService extends AbstractService {
       return {
         uri, 
         schema,
-      }
+      };
     });
     delete copiedSpec.definitions;
 
