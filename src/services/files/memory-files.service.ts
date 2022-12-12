@@ -19,12 +19,11 @@ type TableFile = {
  * This class is a placeholder to implement the appropriate interface.
  */
 export class MemoryFilesService extends AbstractFilesService {
-  private database!: Dexie;
   private directories!: Table<TableDirectory>; 
   private files!: Table<TableFile>; 
 
   async onInit() {
-    const database = this.database = new Dexie('in-memory-files');
+    const database = new Dexie('in-memory-files');
 
     database.version(1).stores({
       directories: '&id, type, uri, name, from, flags, stat.mtime, parent, children',
@@ -34,7 +33,7 @@ export class MemoryFilesService extends AbstractFilesService {
     this.directories = (database as any).directories;
     this.files = (database as any).files;
 
-    await this.readFiles();
+    await this.restoreFiles();
   }
 
   override async createDirectory(directory: Directory) {
@@ -159,20 +158,29 @@ export class MemoryFilesService extends AbstractFilesService {
   private serializeDirectory(directory: Directory): TableDirectory;
   private serializeDirectory(directory: Partial<Directory>): Partial<TableDirectory>;
   private serializeDirectory(directory: Partial<Directory>): Partial<TableDirectory> {
+    if (directory.parent) {
+      return {
+        ...directory,
+        children: directory.children?.map(c => c.id) || [],
+        parent: directory.parent?.id,
+      }
+    }
     return {
       ...directory,
       children: directory.children?.map(c => c.id) || [],
-      parent: directory.parent?.id,
-    }
+    } as Partial<TableDirectory>;
   }
 
   private serializeFile(file: File): TableFile;
   private serializeFile(file: Partial<File>): Partial<TableFile>;
   private serializeFile(file: Partial<File>): Partial<TableFile> {
-    return {
-      ...file,
-      parent: file.parent?.id,
+    if (file.parent) {
+      return {
+        ...file,
+        parent: file.parent?.id,
+      }
     }
+    return file as Partial<TableFile>;
   }
 
   private async removeChildren(children: Array<string>) {
@@ -188,28 +196,37 @@ export class MemoryFilesService extends AbstractFilesService {
     );
   }
 
-  private async readFiles() {
+  private async restoreFiles() {
     const allDirectories = await this.directories.toArray();
     const allFiles = await this.files.toArray();
-    const directories: Record<string, Directory> = {};
-    const files: Record<string, File> = {};
+    const directories: Record<string, Directory> = { ...this.getDirectories() };
+    const files: Record<string, File> = { ...this.getFiles() };
 
     allDirectories.forEach(directory => {
+      directory.children = [];
       directories[String(directory.id)] = directory as unknown as Directory;
     });
     allFiles.forEach(file => {
       files[String(file.id)] = file as unknown as File;
     });
     Object.values(directories).forEach(directory => {
-      directory.children = directory.children.map(c => directories[String(c)] || files[String(c)]);
-      directory.parent = directories[String(directory.parent)];
+      if (typeof directory.parent === 'string') {
+        directory.parent = directories[String(directory.parent)];
+        if (directory.parent) {
+          directory.parent.children.push(directory);
+        }
+      }
     });
     Object.values(files).forEach(file => {
-      file.parent = directories[String(file.parent)];
+      if (typeof file.parent === 'string') {
+        file.parent = directories[String(file.parent)];
+        if (file.parent) {
+          file.parent.children.push(file);
+        }
+      }
     });
 
-    if (Object.keys(directories).length === 0) {
-      await this.createDirectory(this.createDirectoryObject({ id: 'root', name: 'root' }));
+    if (Object.keys(directories).length === 1 && Object.keys(files).length === 0) {
       await this.createFile(this.createFileObject({ id: 'asyncapi', name: 'asyncapi' }));
     } else {
       this.mergeState({ directories, files });

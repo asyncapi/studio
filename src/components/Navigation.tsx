@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
+import { useCurrentDocument, useCurrentFile } from '../helpers';
 import { useServices } from '../services';
 import { useDocumentsState, useFilesState } from '../state';
 
@@ -247,8 +248,8 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const [hash, setHash] = useState(window.location.hash);
 
   const { navigationSvc } = useServices();
-  const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const rawSpec = useCurrentFile()?.content;
+  const document = useCurrentDocument()?.document;
 
   useEffect(() => {
     const fn = () => {

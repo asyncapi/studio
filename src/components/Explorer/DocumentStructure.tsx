@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 import { ExpandedPanel } from '../common';
 
+import { useCurrentDocument, useCurrentFile } from '../../helpers';
 import { useServices } from '../../services';
-import { useDocumentsState, useFilesState } from '../../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
@@ -250,8 +250,8 @@ export const DocumentStructureContent: FunctionComponent<DocumentStructureProps>
   const [hash, setHash] = useState(window.location.hash);
 
   const { navigationSvc } = useServices();
-  const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const rawSpec = useCurrentFile()?.content;
+  const document = useCurrentDocument()?.document;
 
   useEffect(() => {
     const fn = () => {

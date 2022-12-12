@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
+import { useCurrentDocument } from '../../helpers';
 import { useServices } from '../../services';
-import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
+import { appState, useSettingsState, useOtherState, otherState } from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
@@ -11,7 +12,7 @@ interface HTMLWrapperProps {}
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
   const { navigationSvc } = useServices();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const document = useCurrentDocument()?.document || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 

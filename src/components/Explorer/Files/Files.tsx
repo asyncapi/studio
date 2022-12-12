@@ -9,6 +9,7 @@ import { TreeViewFileContextMenu } from './TreeViewFileContextMenu';
 import { CreateNewDirectoryModal, CreateNewFileModal } from '../../Modals/Files';
 import { ExpandedPanel, IconButton } from '../../common';
 
+import { useServices } from '../../../services';
 import { useFilesState } from '../../../state';
 
 import type { FunctionComponent } from 'react';
@@ -16,8 +17,10 @@ import type { FunctionComponent } from 'react';
 interface FilesProps {}
 
 export const Files: FunctionComponent<FilesProps> = () => {
-  const root = useFilesState(state => state.directories['root']);
-  const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });
+  const { filesSvc } = useServices();
+  const root = useFilesState(state => state.directories['@@root']);
+  const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });;
+  const hasSavedBrowserAPIDirectories = filesSvc.hasSavedBrowserAPIDirectories();
 
   const actions = useMemo(() => {
     return [
@@ -74,6 +77,18 @@ export const Files: FunctionComponent<FilesProps> = () => {
         expanded={true}
         actions={actions}
       >
+        {hasSavedBrowserAPIDirectories && (
+          <div className='px-4 py-2'>
+            <button
+              type="button"
+              className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-xs font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2'
+              onClick={() => filesSvc.restoreBrowserAPIDirectories()}
+            >
+              Load restored directories
+            </button>
+          </div>
+        )}
+        
         <div 
           className="flex flex-col bg-gray-800 pb-6"
           onContextMenu={event => {
@@ -82,7 +97,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
             showContextMenu({ event, props: { directory: root } });
           }}
         >
-          <TreeViewDirectory id='root' expanded={true} />
+          <TreeViewDirectory id={root.id} expanded={true} />
         </div>
 
         <TreeViewDirectoryContextMenu id='fs-root' onRoot={true} />

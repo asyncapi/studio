@@ -45,9 +45,8 @@ export function useServices() {
 
 export const ServicesProvider = servicesCtx.Provider;
 
+let services: Services = {} as Services;
 export async function createServices() {
-  const services: Services = {} as Services;
-
   /**
    * First create most needed services
    */
@@ -68,9 +67,26 @@ export async function createServices() {
   services.socketClientSvc = new SocketClient(services);
   services.specificationSvc = new SpecificationService(services);
 
+  await onInitServices();
+  await onAfterInitServices();
+
+  return services;
+}
+
+async function onInitServices() {
   for (const service in services) {
     await services[service as keyof Services].onInit();
   }
+}
 
-  return services;
+async function onAfterInitServices() {
+  for (const service in services) {
+    await services[service as keyof Services].onAfterInit();
+  }
+}
+
+export async function onAfterAppInit() {
+  for (const service in services) {
+    await services[service as keyof Services].onAfterAppInit();
+  }
 }

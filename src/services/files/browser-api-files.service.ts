@@ -1,30 +1,93 @@
 import { AbstractFilesService } from './abstract-files.service';
 
+import Dexie from 'dexie';
+
+import type { Table } from 'dexie';
 import type { File, Directory, FilesState } from '../../state/files.state';
 
-type DirectoryHandle = {
-  id: string;
-  handle: FileSystemDirectoryHandle,
-  children: Array<DirectoryHandle | FileHandle>;
-  parent?: DirectoryHandle;
-}
-
-type FileHandle = {
-  id: string;
-  handle: FileSystemFileHandle,
-  parent?: DirectoryHandle;
-}
-
 export class BrowserAPIFilesService extends AbstractFilesService {
+  private hasSavedDirectories: boolean = false;
+  private dbHandles!: Table<{ name: string, handle: FileSystemDirectoryHandle }>;
+  private readonly rootHandles = new Map<string, FileSystemDirectoryHandle>();
   private readonly directoryHandles = new Map<string, FileSystemDirectoryHandle>();
   private readonly fileHandles = new Map<string, FileSystemFileHandle>();
   private readonly handles = new Map<string, FileSystemDirectoryHandle | FileSystemFileHandle>();
 
+  override async onInit() {
+    if (!this.isSupportedBrowserAPI()) {
+      return;
+    }
+
+    const database = new Dexie('fs-directory-handles');
+    database.version(1).stores({
+      handles: '++, name, handle',
+    });
+
+    this.dbHandles = (database as any).handles;
+    const rootHandles = await this.dbHandles.toArray();
+    if (rootHandles.length) {
+      rootHandles.forEach(({ name, handle }) => {
+        this.rootHandles.set(name, handle);
+      });
+      this.hasSavedDirectories = true;
+    }
+  }
+
+  override async onAfterAppInit() {
+    // const rootHandles = await this.dbHandles.toArray();
+
+    // if (rootHandles[0]) {
+    //   const handle = rootHandles[0].handle;
+    //   if (await this.verifyPermission(handle)) {
+    //     for await (const entry of handle.values()) {
+    //       console.log(entry);
+    //     }
+    //   }
+    // }
+  }
+
   async openDirectory() {
+    if (!this.isSupportedBrowserAPI()) {
+      return;
+    }
+
     const handle = await window.showDirectoryPicker({
       mode: 'readwrite',
     });
+
+    let exist = false;
+    for (const savedHandle of this.rootHandles.values()) {
+      if (await handle.isSameEntry(savedHandle)) {
+        exist = true;
+        break;
+      }
+    }
+
+    // TOOD: Add notification with information that given directory is used
+    if (exist) {
+      return;
+    }
+
+    const name = handle.name;
+    this.dbHandles.add({ name, handle });
+    this.rootHandles.set(name, handle);
     await this.readDirectory(handle);
+  }
+
+  isSupportedBrowserAPI() {
+    return typeof window === 'object' && 'showOpenFilePicker' in window;
+  }
+
+  hasSavedBrowserAPIDirectories() {
+    return this.hasSavedDirectories;
+  }
+
+  async restoreDirectories() {
+    for (const handle of this.rootHandles.values()) {
+      if (await this.verifyPermission(handle)) {
+        await this.readDirectory(handle);
+      }
+    }
   }
 
   override async createDirectory(directory: Directory): Promise<void> {
@@ -159,39 +222,69 @@ export class BrowserAPIFilesService extends AbstractFilesService {
   }
 
   private async readDirectory(handle: FileSystemDirectoryHandle) {
-    const state: FilesState = { directories: {}, files: {} };
-    await this.traverseDirectory(handle, state);
-    console.log(state);
+    const state = this.getState();
+    await this.traverseDirectory(handle, state, this.getRootDirectory());
+    state.directories = this.sortDirectories(state.directories);
     this.mergeState(state);
   }
 
-  private async traverseDirectory(handle: FileSystemDirectoryHandle | FileSystemFileHandle, state: FilesState, parent?: Directory) {
-    const uri = parent ? `${parent.uri}/${handle.name}` : `file:///${handle.name}`;
-    this.handles.set(uri, handle);
+  private async traverseDirectory(handle: FileSystemDirectoryHandle | FileSystemFileHandle, state: FilesState, parent: Directory) {
+    let item: File | Directory;
 
     if (this.isFileSystemDirectoryHandle(handle)) {
-      const directory = this.createDirectoryObject({ uri, name: handle.name, parent, from: 'file-system' })
-      state.directories[String(directory.id)] = directory;
-      if (parent) {
-        parent.children.push(directory);
-      }
+      item = this.createDirectoryObject({ name: handle.name, parent, from: 'file-system' }, { schema: 'file' });
+      state.directories[String(item.id)] = item;
 
       for await (const entry of handle.values()) {
-        await this.traverseDirectory(entry, state, directory);
+        await this.traverseDirectory(entry, state, item);
       }
 
-      directory.children = this.sortChildren(directory.children);
-      return;
+      item.children = this.sortChildren(item.children);
+    } else {
+      item = this.createFileObject({ name: handle.name, parent, from: 'file-system' }, { schema: 'file' });
+      state.files[String(item.id)] = item;
     }
 
-    const file = this.createFileObject({ uri, name: handle.name, parent, from: 'file-system' })
-    state.files[String(file.id)] = file;
+    this.handles.set(item.uri, handle);
     if (parent) {
-      parent.children.push(file);
+      parent.children.push(item);
     }
   }
 
   private isFileSystemDirectoryHandle(handle: FileSystemHandle): handle is FileSystemDirectoryHandle {
 		return handle.kind === 'directory';
 	}
+
+  private watchHandles() {
+    let mutex = false;
+    setInterval(async () => {
+      if (mutex) {
+        return;
+      }
+      mutex = true;
+      mutex = false;
+    }, 1000);
+  }
+
+  private async refreshDirectory(handle: FileSystemDirectoryHandle) {
+
+  }
+
+  private async verifyPermission(handle: FileSystemDirectoryHandle) {
+    try {
+      // Check if permission was already granted. If so, return true.
+      if ((await handle.queryPermission({ mode: 'readwrite' })) === 'granted') {
+        return true;
+      }
+      // Request permission. If the user grants permission, return true.
+      if ((await handle.requestPermission({ mode: 'readwrite' })) === 'granted') {
+        return true;
+      }
+      // The user didn't grant permission, so return false.
+      return false;
+    } catch(err) {
+      console.log(err);
+      return false;
+    }
+  }
 }

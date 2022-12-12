@@ -26,6 +26,8 @@ export class EventEmitterService extends EventEmitter2 {
   }
 
   public onInit(): void | Promise<void> {}
+  public onAfterInit(): void | Promise<void> {}
+  public onAfterAppInit(): void | Promise<void> {}
 
   subscribe(event: event | eventNS, listenerFn: ListenerFn, options?: boolean | Exclude<OnOptions, 'objectify'>) {
     const listener = this.on(event, listenerFn, this.serializeOptions(options)) as Listener;

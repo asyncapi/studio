@@ -6,4 +6,6 @@ export abstract class AbstractService {
   ) {}
 
   public onInit(): void | Promise<void> {}
+  public onAfterInit(): void | Promise<void> {}
+  public onAfterAppInit(): void | Promise<void> {}
 }

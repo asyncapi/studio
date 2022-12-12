@@ -21,14 +21,38 @@ export class FilesService extends AbstractFilesService {
     }
   }
 
-  async onInit() {
+  override async onInit() {
+    this.getRootDirectory();
     await this.filesSvcs['in-memory'].onInit();
     await this.filesSvcs['file-system'].onInit();
     this.sortAllDirectories();
   }
 
+  override async onAfterInit() {    
+    await this.filesSvcs['in-memory'].onAfterInit();
+    await this.filesSvcs['file-system'].onAfterInit();
+  }
+
+  override async onAfterAppInit() {    
+    await this.filesSvcs['in-memory'].onAfterAppInit();
+    await this.filesSvcs['file-system'].onAfterAppInit();
+  }
+
   async openDirectory() {
     await this.filesSvcs['file-system'].openDirectory();
+    this.sortAllDirectories();
+  }
+
+  isSupportedBrowserAPI() {
+    return this.filesSvcs['file-system'].isSupportedBrowserAPI();
+  }
+
+  hasSavedBrowserAPIDirectories() {
+    return this.filesSvcs['file-system'].hasSavedBrowserAPIDirectories();
+  }
+
+  restoreBrowserAPIDirectories() {
+    return this.filesSvcs['file-system'].restoreDirectories();
   }
 
   override async createDirectory(directory: Partial<Directory>) {
@@ -87,14 +111,13 @@ export class FilesService extends AbstractFilesService {
     }
   }
 
-  isSupportedBrowserAPI() {
-    return typeof window === 'object' && 'showOpenFilePicker' in window;
-  }
-
   private sortAllDirectories() {
-    const directories = { ...this.getDirectories() };
-    Object.values(directories).forEach(directory => {
-      directory.children = this.sortChildren(directory.children);
+    const directories: Record<string, Directory> = {};
+    Object.values(this.getDirectories()).forEach(directory => {
+      directories[String(directory.id)] = {
+        ...directory,
+        children: this.sortChildren(directory.children),
+      }
     });
     this.setState({ directories });
   }

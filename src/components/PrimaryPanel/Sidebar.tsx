@@ -17,17 +17,6 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         <div className='mr-2'>
           <Tabs />
         </div>
-
-        {/* <IconButton
-          icon={<VscAdd className='w-4 h-4' />}
-          tooltip={{
-            content: 'Open new tab',
-            delay: [500, 0],
-          }} 
-          onClick={e => {
-            e.stopPropagation();
-          }}
-        /> */}
       </div>
 
       <div className='flex-none flex flex-row'>

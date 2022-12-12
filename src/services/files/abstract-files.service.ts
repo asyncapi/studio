@@ -6,6 +6,8 @@ import { filesState } from '../../state';
 import { File, Directory, FilesState, FileFlags } from '../../state/files.state';
 
 export abstract class AbstractFilesService extends AbstractService {
+  protected rootDirId: string = '@@root';
+
   abstract createDirectory(directory: Partial<Directory>): void | Promise<void>;
   abstract updateDirectory(directory: Partial<Directory>): void | Promise<void>;
   abstract removeDirectory(id: string): void | Promise<void>;
@@ -66,10 +68,14 @@ export abstract class AbstractFilesService extends AbstractService {
 	}
 
   absolutePath(item: File | Directory): string {
-    if (item.parent && item.parent.id !== 'root') {
+    if (item.parent && item.parent.id !== this.rootDirId) {
       return `${this.absolutePath(item.parent)}/${item.name}`;
     }
     return item.name;
+  }
+
+  createUri(item: File | Directory, schema: string = 'in-memory') {
+    return `${schema}:///${this.absolutePath(item)}`
   }
 
   getDirectory(uri: string): Directory | undefined {
@@ -104,8 +110,8 @@ export abstract class AbstractFilesService extends AbstractService {
     return filesState.getState().files;
   }
 
-  getRootDirectory(): Directory {
-    return this.getDirectory('root') as Directory;
+  getRootDirectory() {
+    return this.getDirectory(this.rootDirId) || this.createRootDirectory();
   }
 
   getState() {
@@ -273,47 +279,80 @@ export abstract class AbstractFilesService extends AbstractService {
     return this.setState({ files, directories });
   }
 
-  protected createDirectoryObject(directory: Partial<Directory>): Directory {
+  protected createDirectoryObject(directory: Partial<Directory>, { schema }: { schema?: 'file' | 'in-memory' } = {}): Directory {
+    schema = schema || 'in-memory';
     const id = directory.id || this.svcs.formatSvc.generateUuid();
     const mtime = directory?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
 
-    return {
-      id,
-      type: 'directory',
+    const newDirectory: Directory = {
       uri: '',
       name: '',
       children: [],
-      from: 'in-memory',
       flags: FileFlags.NONE,
       stat: {
         ...directory?.stat || {},
         mtime,
       },
-      ...directory
-    }
+      ...directory,
+      id,
+      type: 'directory',
+      from: directory.from || 'in-memory',
+    };
+    newDirectory.uri = newDirectory.uri || this.createUri(newDirectory, schema);
+    return newDirectory;
   }
   
-  protected createFileObject(file: Partial<File>): File {
+  protected createFileObject(file: Partial<File>, { schema }: { schema?: 'file' | 'in-memory' } = {}): File {
+    schema = schema || 'in-memory';
+    const { name, language } = this.serializeName(file.name, file.language);
     const id = file.id || this.svcs.formatSvc.generateUuid();
     const mtime = file?.stat?.mtime || this.svcs.formatSvc.getCurrentTime();
 
-    return {
-      id,
-      type: 'file',
+    const newFile: File = {
       uri: '',
-      name: '',
       content: '',
       contentVersion: 0,
-      language: 'yaml',
-      from: file.from || 'in-memory',
-      parent: file.parent || this.getRootDirectory(),
       flags: FileFlags.NONE,
       stat: {
         ...file?.stat || {},
         mtime,
       },
-      ...file
+      ...file,
+      id,
+      name,
+      type: 'file',
+      language,
+      parent: file.parent || this.getRootDirectory(),
+      from: file.from || 'in-memory',
+    };
+    newFile.uri = newFile.uri || this.createUri(newFile, schema);
+    return newFile;
+  }
+
+  private createRootDirectory() {
+    let rootDirectory = this.getDirectory(this.rootDirId);
+    if (rootDirectory) {
+      return rootDirectory;
     }
+
+    const rootDirId = this.rootDirId;
+    rootDirectory = this.createDirectoryObject({ from: 'in-memory', name: rootDirId, id: rootDirId });
+    this.mergeState({ directories: { [String(rootDirId)]: rootDirectory } });
+    return rootDirectory;
+  }
+
+  private serializeName(name: string = '', language: string = ''): { name: string, language: 'json' | 'yaml' } {
+    const parts = name.split('.');
+    if (parts.length > 1) {
+      language = parts.pop() || '';
+      name = parts.join('.');
+    }
+
+    if (!['json', 'yaml'].includes(language) || language === 'yml') {
+      language = 'yaml';
+    };
+
+    return { name: name, language: (language as 'json' | 'yaml') };
   }
 
   protected mergeDirectories(directory: Partial<Directory>, id?: string, oldDirectories?: Record<string, Directory>): [Directory, Record<string, Directory>] {
@@ -359,6 +398,17 @@ export abstract class AbstractFilesService extends AbstractService {
 
   protected sortChildren(children: Array<Directory | File>) {
     return [...children].sort(this.sortFunction);
+  }
+
+  protected sortDirectories(directories: Record<string, Directory>) {
+    const sorted: Record<string, Directory> = {};
+    Object.values(directories).forEach(directory => {
+      sorted[String(directory.id)] = {
+        ...directory,
+        children: this.sortChildren(directory.children),
+      }
+    });
+    return sorted;
   }
 
   protected sortFunction(a: File | Directory, b: File | Directory) {

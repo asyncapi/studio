@@ -98,7 +98,7 @@ export const TreeViewFile: FunctionComponent<TreeViewFileProps> = ({
     >
       <div 
         className={`flex flex-row items-center justify-between ${activeTab?.fileId === file.id ? 'bg-gray-700' : 'bg-gray-800 hover:bg-gray-700'} cursor-pointer text-xs leading-4 text-gray-300 pr-2 py-1`}
-        style={{ paddingLeft: `${0.5 + 0.5 * deep}rem` }}
+        style={{ paddingLeft: `${0.5 * deep}rem` }}
       >
         <button className="flex-none flex items-center justify-center mr-1">
           <VscFile className='w-3.5 h-3.5' />

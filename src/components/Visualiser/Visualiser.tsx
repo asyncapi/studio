@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 
 import { FlowDiagram } from './FlowDiagram';
 
-import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
+import { useCurrentDocument } from '../../helpers';
+import { useSettingsState, useOtherState, otherState } from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 import type { FunctionComponent } from 'react';
@@ -11,7 +12,7 @@ interface VisualiserProps {}
 
 export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const document = useCurrentDocument()?.document || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 

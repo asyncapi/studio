@@ -11,6 +11,7 @@ import { useFilesState } from '../../../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { File, Directory } from '../../../state/files.state';
+import { useServices } from '../../../services';
 
 function renderChild(child: Directory | File, deep: number = 0) {
   let content: ReactNode = null;
@@ -105,6 +106,7 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
   expanded: initialExpanded = false,
   deep = 0,
 }) => {
+  const { filesSvc } = useServices();
   const directory = useFilesState(state => state.directories[id]);
   const [expanded, setExpanded] = useState<boolean>(initialExpanded);
   const [hover, setHover] = useState<boolean>(false);
@@ -114,41 +116,44 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
     return null;
   }
 
+  const rootDirectory = filesSvc.getRootDirectory();
   const { children, name } = directory;
   return (
     <div className='flex flex-col'>
-      <div 
-        className='flex flex-row items-center justify-between bg-gray-800 hover:bg-gray-700 cursor-pointer text-xs leading-2 text-gray-300 pr-2 py-1'
-        style={{ paddingLeft: `${0.5 + 0.5 * deep}rem` }}
-        onClick={event => {
-          event.stopPropagation();
-          hideAllContextMenus();
-          setExpanded(oldState => !oldState);
-        }}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        onContextMenu={event => {
-          event.preventDefault();
-          event.stopPropagation();
-          showContextMenu({ event, props: { directory } });
-        }}
-      >
-        <button className="flex-none flex items-center justify-center mr-1">
-          {expanded ? (
-            <VscFolderOpened className='w-3.5 h-3.5' />
-          ) : (
-            <VscFolder className='w-3.5 h-3.5' />
-          )}
-        </button>
+      {id !== rootDirectory.id && (
+        <div 
+          className='flex flex-row items-center justify-between bg-gray-800 hover:bg-gray-700 cursor-pointer text-xs leading-2 text-gray-300 pr-2 py-1'
+          style={{ paddingLeft: `${0.5 * deep}rem` }}
+          onClick={event => {
+            event.stopPropagation();
+            hideAllContextMenus();
+            setExpanded(oldState => !oldState);
+          }}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          onContextMenu={event => {
+            event.preventDefault();
+            event.stopPropagation();
+            showContextMenu({ event, props: { directory } });
+          }}
+        >
+          <button className="flex-none flex items-center justify-center mr-1">
+            {expanded ? (
+              <VscFolderOpened className='w-3.5 h-3.5' />
+            ) : (
+              <VscFolder className='w-3.5 h-3.5' />
+            )}
+          </button>
 
-        <span className="flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5">
-          {name}
-        </span>
+          <span className="flex-1 inline-block overflow-hidden whitespace-nowrap text-ellipsis p-0.5">
+            {name}
+          </span>
 
-        <div className={`flex-none transition-opacity ${hover ? 'opacity-1' : 'opacity-0'}`}>
-          <TreeViewDirectoryActions directory={directory} />
+          <div className={`flex-none transition-opacity ${hover ? 'opacity-1' : 'opacity-0'}`}>
+            <TreeViewDirectoryActions directory={directory} />
+          </div>
         </div>
-      </div>
+      )}
 
       {children.length > 0 ? (
         <div className={`${expanded ? 'block' : 'hidden'}`}>
