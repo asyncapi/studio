@@ -82,6 +82,15 @@ export const NewFileModal = create(() => {
               })}
             </div>
           </div>
+          <div>
+            <span className="uppercase text-gray-800 text-sm underline font-bold">Tutorials</span>
+            <div className="grid grid-cols-3 gap-4 py-4">
+              {tutorials.map(({ title, description, template }) => {
+                const isSelected = selectedTemplate.title === title;
+                return <TemplateListItem title={title} description={description} isSelected={isSelected} key={title} onClick={() => setSelectedTemplate({ title, template })} />;
+              })}
+            </div>
+          </div>
           <span className=" text-xs block text-gray-900 text-right ">
             Don&apos;t see what you&apos;re looking for? <br />
             <a
