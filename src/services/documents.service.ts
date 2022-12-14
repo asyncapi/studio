@@ -103,9 +103,7 @@ export class DocumentsService extends AbstractService {
       valid: false,
       extras: undefined,
       ...document,
-      diagnostics: document.diagnostics 
-        ? document.diagnostics 
-        : this.createDiagnostics([]),
+      diagnostics: document.diagnostics || this.createDiagnostics([]),
     }
   }
 

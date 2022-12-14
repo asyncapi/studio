@@ -163,7 +163,7 @@ export class PanelsService extends AbstractService {
 
       const tab = panel.tabs.find(t => t.type === 'editor' && t.fileId === file.id);
       if (tab) {
-        this.removeTab(tab.panel, tab?.id);
+        this.removeTab(tab.panel, tab.id);
       }
     });
   }

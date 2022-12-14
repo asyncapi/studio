@@ -10,16 +10,16 @@ import type { ItemParams } from "../../common/ContextMenu";
 import type { File } from '../../../state/files.state';
 
 export const TreeViewFileContextMenu: FunctionComponent = () => {
-  const { panelsSvc } = useServices();
+  const { filesSvc } = useServices();
 
-  const handleClickFile = useCallback(({ props }: ItemParams<{ file: File }>, action: 'open-in-tab' | 'rename' | 'remove') => {
+  const handleClickFile = useCallback(({ props }: ItemParams<{ file: File }>, action: 'rename' | 'remove') => {
     const file = props?.file;
     if (!file) {
       return;
     }
 
     switch (action) {
-      case 'open-in-tab': return panelsSvc.openEditorTab('primary', file);
+      case 'remove': return filesSvc.removeFile(file.id);
     }
   }, []);
 

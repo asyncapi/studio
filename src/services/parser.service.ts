@@ -8,6 +8,7 @@ import { untilde } from '@asyncapi/parser/cjs/utils';
 import { filesState, documentsState, settingsState } from '../state';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
+import type { Resolver } from '@asyncapi/parser/cjs/resolver';
 import type { DocumentDiagnostics } from '../state/documents.state';
 
 export class ParserService extends AbstractService {
@@ -19,6 +20,7 @@ export class ParserService extends AbstractService {
     __unstable: {
       resolver: {
         cache: false,
+        resolvers: this.createResolvers(),
       }
     }
   });
@@ -119,6 +121,27 @@ export class ParserService extends AbstractService {
     });
 
     return collections;
+  }
+
+  private createResolvers(): Array<Resolver> {
+    const fileSvc = this.svcs.filesSvc;
+    function read(uri: Parameters<Resolver['read']>[0]) {
+      const file = fileSvc.getFileByUri(uri.valueOf());
+      if (file) {
+        return file.content;
+      }
+    }
+
+    return [
+      {
+        schema: 'file',
+        read,
+      },
+      {
+        schema: 'in-memory',
+        read,
+      }
+    ]
   }
 
   private subscribeToFiles() {

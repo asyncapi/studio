@@ -75,7 +75,10 @@ export abstract class AbstractFilesService extends AbstractService {
   }
 
   createUri(item: File | Directory, schema: string = 'in-memory') {
-    return `${schema}:///${this.absolutePath(item)}`
+    if (item.type === 'file') {
+      return `${schema}:///${this.absolutePath(item)}.${item.language}`;
+    }
+    return `${schema}:///${this.absolutePath(item)}`;
   }
 
   getDirectory(uri: string): Directory | undefined {
@@ -84,6 +87,10 @@ export abstract class AbstractFilesService extends AbstractService {
 
   hasDirectory(fileId: string) {
     return Boolean(this.getDirectory(fileId));
+  }
+
+  getDirectoryByUri(uri: string): Directory | undefined {
+    return Object.values(filesState.getState().directories).find(f => f.uri === uri);
   }
 
   getDirectories() {
@@ -96,6 +103,10 @@ export abstract class AbstractFilesService extends AbstractService {
 
   hasFile(fileId: string) {
     return Boolean(this.getFile(fileId));
+  }
+
+  getFileByUri(uri: string): File | undefined {
+    return Object.values(filesState.getState().files).find(f => f.uri === uri);
   }
 
   isFileModified(fileId: string) {
