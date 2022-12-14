@@ -1,24 +1,57 @@
 import type { SpecTypesV2 } from '@asyncapi/parser/cjs';
 
-interface ReferenceMap extends Record<string | symbol, keyof SpecTypesV2.ComponentsObject | ReferenceMap> {}
+interface ReferenceMap extends Record<string | symbol, keyof SpecTypesV2.ComponentsObject | `__${keyof SpecTypesV2.ComponentsObject}__` | ReferenceMap> {}
 
 export const AllSymbol = Symbol('studio:references:all');
 export const DeepAllSymbol = Symbol('studio:references:deep-all');
 
-export const referencesMap: ReferenceMap = {
-  'servers': {
-    [AllSymbol]: {
-      '$ref': 'servers',
-      'variables': {
-        [AllSymbol]: {
-          '$ref': 'serverVariables',
-        },
+const serversMap: ReferenceMap = {
+  [AllSymbol]: {
+    '$ref': 'servers',
+    'variables': {
+      [AllSymbol]: {
+        '$ref': 'serverVariables',
+      },
+    },
+    'bindings': {
+      '$ref': 'serverBindings',
+    },
+  }
+}
+
+const channelsMap: ReferenceMap = {
+  [AllSymbol]: {
+    '$ref': 'channels',
+    'parameters': {
+      [AllSymbol]: {
+        '$ref': '__parameters__',
+      },
+    },
+    'bindings': {
+      '$ref': 'channelBindings',
+    },
+
+    'publish': {
+      'message': {
+        '$ref': 'messages',
       },
       'bindings': {
-        '$ref': 'serverBindings',
+        '$ref': 'operationBindings',
       },
+      'traits': {
+        [AllSymbol]: {
+          '$ref': 'operationTraits',
+        },
+      }
+    },
+    'subscribe': {
+      
     }
-  },
+  }
+}
+
+export const referencesMap: ReferenceMap = {
+  'servers': serversMap,
 
   'channels': {
     [AllSymbol]: {

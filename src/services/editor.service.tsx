@@ -288,7 +288,7 @@ export class EditorService extends AbstractService {
     );
 
     this.svcs.eventsSvc.on('settings.update', (settings, prevSettings) => {
-      if (isDeepEqual(settings.governance, prevSettings.governance)) {
+      if (isDeepEqual(settings.editor, prevSettings.editor)) {
         return;
       }
 
@@ -366,7 +366,7 @@ export class EditorService extends AbstractService {
       if (editorState.autoSaving) {
         return this.svcs.filesSvc.saveFileContent(file.id, content);
       } else {
-        this.svcs.parserSvc.parse(file.id, content);
+        await this.svcs.parserSvc.parse(file.id, content);
       }
 
       let flags = file.flags;
@@ -375,8 +375,9 @@ export class EditorService extends AbstractService {
         // set modified flag
         flags |= FileFlags.MODIFIED;
       } else {
+        console.log('lol')
         // remove modified flag
-        flags &= FileFlags.MODIFIED;
+        flags &= ~FileFlags.MODIFIED;
       }
 
       return this.svcs.filesSvc.updateFile({ id: file.id, flags, content });
