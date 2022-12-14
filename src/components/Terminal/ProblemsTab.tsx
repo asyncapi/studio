@@ -7,7 +7,7 @@ import { SettingsModal } from '../Modals/Settings/SettingsModal';
 
 import { Tooltip } from '../common';
 import { useServices } from '../../services';
-import { debounce } from '../../helpers';
+import { debounce, useCurrentDocument } from '../../helpers';
 import { useDocumentsState, useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
@@ -16,7 +16,7 @@ import type { Diagnostic } from '@asyncapi/parser/cjs';
 interface ProblemsTabProps {}
 
 export const ProblemsTab: FunctionComponent<ProblemsTabProps> = () => {
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useCurrentDocument()?.diagnostics;
 
   const errorDiagnosticsLength = diagnostics.errors.length;
   const warningDiagnosticsLength = diagnostics.warnings.length;
@@ -118,7 +118,7 @@ interface SeverityButtonsProps {
 }
 
 const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setActive }) => {
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useCurrentDocument()?.diagnostics;
   const governanceShowState = useSettingsState(state => state.governance.show);
 
   const errorDiagnostics = diagnostics.errors;
@@ -201,7 +201,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
 
 export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   const { navigationSvc } = useServices();
-  const diagnostics = useDocumentsState(state => state.documents['asyncapi'].diagnostics);
+  const diagnostics = useCurrentDocument()?.diagnostics;
   const modal = useModal(SettingsModal);
 
   const [active, setActive] = useState<Array<DiagnosticSeverity>>([]);

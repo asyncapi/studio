@@ -2,17 +2,26 @@ import { AbstractService } from './abstract.service';
 
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { KeyMod, KeyCode, Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
+
+// @ts-ignore
+import { ILanguageFeaturesService } from 'monaco-editor/esm/vs/editor/common/services/languageFeatures';
+// @ts-ignore
+import { OutlineModel } from 'monaco-editor/esm/vs/editor/contrib/documentSymbols/browser/outlineModel';
+// @ts-ignore
+import { StandaloneServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices';
+
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
 import { debounce, isDeepEqual } from '../helpers';
 import { appState, filesState, settingsState } from '../state';
 
+import { FileFlags } from '../state/files.state';
+
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
-import { File, FileFlags } from '../state/files.state';
-import { EditorTab, panelsState } from '../state/panels.state';
+import type { File } from '../state/files.state';
 import type { Document } from '../state/documents.state';
 import type { SettingsState } from '../state/settings.state';
 
@@ -35,6 +44,7 @@ export class EditorService extends AbstractService {
     this.subscribeToFiles();
     this.subscribeToPanels();
     this.subcribeToDocuments();
+    this.registerCompletionItemProvider();
   }
 
   get editor(): monacoAPI.editor.IStandaloneCodeEditor {
@@ -399,8 +409,35 @@ export class EditorService extends AbstractService {
       if (restoredViewState) {
         this.editor.restoreViewState(restoredViewState);
       }
+
+      const document = this.svcs.documentsSvc.getDocument(fileId);
+      if (document) {
+        this.applyMarkersAndDecorations(document);
+      }
     }
   }
+
+  private changeModel(fileId: string, prevFileId?: string) {
+    if (prevFileId) {
+      const currentModel = this.getModel(prevFileId)
+      if (currentModel) {
+        const viewState = this.editor.saveViewState();
+        this.viewStates.set(prevFileId, viewState);
+      }
+    }
+
+    const model = this.getModel(fileId);
+    if (model) {
+      this.editor.setModel(model)
+      this.editor.focus();
+
+      const restoredViewState = this.viewStates.get(fileId);
+      if (restoredViewState) {
+        this.editor.restoreViewState(restoredViewState);
+      }
+    }
+  }
+
 
   private getFile(model: monacoAPI.editor.ITextModel) {
     const fileId = this.files.get(model);
@@ -497,6 +534,57 @@ export class EditorService extends AbstractService {
   private fileName = 'asyncapi';
   private downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
+  }
+
+  private registerCompletionItemProvider() {
+    const monaco = this.svcs.monacoSvc.monaco;
+    if (!monaco) {
+      return;
+    }
+
+    const provideCompletionItems = this.provideCompletionItems.bind(this);
+    monaco.languages.registerCompletionItemProvider('json', { provideCompletionItems });
+    monaco.languages.registerCompletionItemProvider('yaml', { provideCompletionItems });
+  }
+
+  private async provideCompletionItems(model: monacoAPI.editor.ITextModel, position: monacoAPI.Position): Promise<monacoAPI.languages.CompletionList> {
+    const referenceKind = await this.retrieveReferenceKind(model, position);
+    console.log(referenceKind);
+
+    // for (const symbol of this.iterateSymbols(symbols, position)) {
+    //   console.log(symbol);
+    // }
+
+    return {
+      suggestions: [],
+    }
+  }
+
+  private async retrieveReferenceKind(model: monacoAPI.editor.ITextModel, position: monacoAPI.Position): Promise<string | undefined> {
+    const { documentSymbolProvider } = StandaloneServices.get(ILanguageFeaturesService);
+    const outline = await OutlineModel.create(documentSymbolProvider, model);
+    const symbols = outline.asListOfDocumentSymbols() as monacoAPI.languages.DocumentSymbol[];
+
+    let kind: string = '';
+    for (const symbol of this.iterateSymbols(symbols, position)) {
+      kind += '/' + symbol.name;
+    }
+
+    return kind.endsWith('$ref') ? kind : undefined;
+  }
+
+  private *iterateSymbols(
+    symbols: monacoAPI.languages.DocumentSymbol[],
+    position: monacoAPI.Position,
+  ): Iterable<monacoAPI.languages.DocumentSymbol> {
+    for (const symbol of symbols) {
+      if (Range.containsPosition(symbol.range, position)) {
+        yield symbol;
+        if (symbol.children) {
+          yield* this.iterateSymbols(symbol.children, position);
+        }
+      }
+    }
   }
 
   private subscribeToFiles() {

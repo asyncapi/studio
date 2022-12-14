@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TerminalTabs, TerminalTab } from './TerminalTabs';
-import { DiagnosticTab, DiagnosticsContent } from './Diagnostics';
+import { ProblemsTab, ProblemsTabContent } from './ProblemsTab';
 
 interface TerminalProps {}
 
@@ -9,8 +9,8 @@ export const Terminal: React.FunctionComponent<TerminalProps> = () => {
   const tabs: Array<TerminalTab> = [
     {
       name: 'problems',
-      tab: <DiagnosticTab />,
-      content: <DiagnosticsContent />,
+      tab: <ProblemsTab />,
+      content: <ProblemsTabContent />,
     },
   ];
 

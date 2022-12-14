@@ -5,8 +5,13 @@ import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { isDeepEqual } from '../helpers';
 import { documentsState, settingsState } from '../state';
 
-import type { Diagnostic } from '@asyncapi/parser/cjs';
+import type { Diagnostic, SpecTypesV2 } from '@asyncapi/parser/cjs';
 import type { DocumentsState, Document, DocumentDiagnostics } from '../state/documents.state';
+
+type AutocompletionReferences = {
+  path: string;
+  description: string;
+}
 
 export class DocumentsService extends AbstractService {
   override onInit(): void {
@@ -80,12 +85,45 @@ export class DocumentsService extends AbstractService {
     return collections;
   }
 
-  getDocument(fileId: string): Document | undefined {
-    return this.getState().documents[String(fileId)];
+  getPossibleRefs(id: string, fromUriPov: string): Record<keyof SpecTypesV2.ComponentsObject, Array<AutocompletionReferences>> | undefined {
+    const document = this.getDocument(id);
+    if (!document) {
+      return;
+    }
+
+    const file = this.svcs.filesSvc.getFile(document.filedId);
+    if (!file) {
+      return;
+    }
+
+    const documentComponents = document.document?.components()?.json();
+    if (!documentComponents) {
+      return;
+    }
+
+    const refs: Record<string, Array<AutocompletionReferences>> = {}
+    Object.entries(documentComponents).forEach(([kind, values]) => {
+      refs[String(kind)] = Object.entries(values).map(([name, component]: [string, any]) => {
+        return {
+          path: `${file.uri}#/components/${kind}/${name}`,
+          description: component.description || component.sumamry,
+        }
+      });
+    });
+
+    return refs as Record<keyof SpecTypesV2.ComponentsObject, Array<AutocompletionReferences>>;
   }
 
-  hasDocument(fileId: string) {
-    return Boolean(this.getDocument(fileId));
+  getReferenceKind(path: string) {
+
+  }
+
+  getDocument(id: string): Document | undefined {
+    return this.getState().documents[String(id)];
+  }
+
+  hasDocument(id: string) {
+    return Boolean(this.getDocument(id));
   }
 
   getState() {
@@ -96,9 +134,9 @@ export class DocumentsService extends AbstractService {
     return documentsState.setState(state);
   }
 
-  private createDocumentObject(filedId: string, document: Partial<Document> = {}): Document {
+  private createDocumentObject(id: string, document: Partial<Document> = {}): Document {
     return {
-      filedId,
+      filedId: id,
       document: null,
       valid: false,
       extras: undefined,
