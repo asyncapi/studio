@@ -54,10 +54,10 @@ export async function createServices() {
   services.eventsSvc = new EventEmitterService(services);
   services.monacoSvc = new MonacoService(services);
   services.editorSvc = new EditorService(services);
+  services.filesSvc = new FilesService(services);
 
   services.converterSvc = new ConverterService(services);
   services.documentsSvc = new DocumentsService(services);
-  services.filesSvc = new FilesService(services);
   services.formatSvc = new FormatService(services);
   services.navigationSvc = new NavigationService(services);
   services.panelsSvc = new PanelsService(services);

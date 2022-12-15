@@ -1,20 +1,22 @@
 import { AbstractService } from './abstract.service';
 
+import { Uri } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
+import { untilde } from '@asyncapi/parser/cjs/utils';
+import resolvePath from '@einheit/path-resolve';
 
-import { isDeepEqual } from '../helpers';
+import { getReferenceKind } from './documents/reference-maps';
+import { isDeepEqual, traverseObject } from '../helpers';
 import { documentsState, settingsState } from '../state';
 
-import type { Diagnostic, SpecTypesV2 } from '@asyncapi/parser/cjs';
-import type { DocumentsState, Document, DocumentDiagnostics } from '../state/documents.state';
-
-type AutocompletionReferences = {
-  path: string;
-  description: string;
-}
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import type { Diagnostic, SpecTypesV2, OldAsyncAPIDocument } from '@asyncapi/parser/cjs';
+import type { DocumentsState, Document, DocumentComponentReference, DocumentDiagnostics } from '../state/documents.state';
+import type { File } from '../state/files.state';
 
 export class DocumentsService extends AbstractService {
-  override onInit(): void {
+  override async onInit() {
+    await this.handleSavedFiles();
     this.subscribeToFiles();
     this.subscribeToSettings();
   }
@@ -54,7 +56,112 @@ export class DocumentsService extends AbstractService {
     this.svcs.eventsSvc.emit('documents.document.remove', document);
   }
 
-  createDiagnostics(diagnostics: Diagnostic[]) {
+  getReferenceKind(model: monacoAPI.editor.ITextModel, position: monacoAPI.Position) {
+    return getReferenceKind(model, position);
+  }
+
+  getPossibleReferences(id: string, kind: keyof SpecTypesV2.ComponentsObject, fromDocument: boolean = true): Array<DocumentComponentReference> {
+    const document = this.getDocument(id);
+    if (!document) {
+      return [];
+    }
+    const possibleRefs: Array<DocumentComponentReference> = [];
+
+    // from this same document
+    if (fromDocument) {
+      const fromComponents = document.refs.fromComponents[kind];
+      if (fromComponents) {
+        possibleRefs.push(...fromComponents);
+      }
+    }
+
+    // from sibling documents
+    document.refs.siblingFiles.forEach(fileId => {
+      const fromComponents = this.getDocument(fileId)?.refs?.fromComponents?.[kind];
+      if (fromComponents) {
+        fromComponents.forEach(ref => ({
+          ...ref,
+          path: ref.path, // TODO: fix relative path
+        }));
+      }
+    });
+    
+    return possibleRefs;
+  }
+
+  getRangeForJsonPath(uri: string, jsonPath: string | Array<string | number>) {
+    try {
+      const { documents } = documentsState.getState();
+      const extras = documents[String(uri)]?.extras;
+      if (extras) {
+        jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
+        if (jsonPath[0] === '') jsonPath.shift();
+        return extras.document.getRangeForJsonPath(jsonPath, true);
+      }
+    } catch (err: any) {
+      return;
+    }
+  }
+
+  filterDiagnostics(diagnostics: Diagnostic[]) {
+    const { governance: { show } } = settingsState.getState();
+    return diagnostics.filter(({ severity }) => {
+      return (
+        severity === DiagnosticSeverity.Error ||
+        (severity === DiagnosticSeverity.Warning && show.warnings) ||
+        (severity === DiagnosticSeverity.Information && show.informations) ||
+        (severity === DiagnosticSeverity.Hint && show.hints)
+      );
+    });
+  }
+
+  filterDiagnosticsBySeverity(diagnostics: Diagnostic[], severity: DiagnosticSeverity) {
+    return diagnostics.filter(diagnostic => diagnostic.severity === severity);
+  }
+
+  getDocument(id: string): Document | undefined {
+    return this.getState().documents[String(id)];
+  }
+
+  hasDocument(id: string) {
+    return Boolean(this.getDocument(id));
+  }
+
+  getState() {
+    return documentsState.getState();
+  }
+
+  setState(state: Partial<DocumentsState>) {
+    return documentsState.setState(state);
+  }
+
+  async handleDocument(file: File) {
+    const { id, content, uri } = file;
+
+    const parseResult = await this.svcs.parserSvc.parse(content, { source: uri });
+    if (!parseResult) {
+      return this.updateDocument(file.id, {
+        document: null,
+        diagnostics: this.serializeDiagnostics(),
+        extras: undefined,
+        valid: false,
+      });
+    }
+
+    const { document, diagnostics, extras } = parseResult;
+    const serializedDiagnostics = this.serializeDiagnostics(diagnostics);
+    const newDocument: Document = {
+      filedId: id,
+      document: document as OldAsyncAPIDocument || null,
+      diagnostics: serializedDiagnostics,
+      valid: serializedDiagnostics.errors.length > 0,
+      refs: this.createDocumentRefs(file.uri, extras?.document?.data as SpecTypesV2.AsyncAPIObject),
+      extras,
+    }
+    return this.updateDocument(id, newDocument);
+  }
+
+  private serializeDiagnostics(diagnostics: Diagnostic[] = []) {
     const collections: DocumentDiagnostics = {
       original: diagnostics,
       filtered: [],
@@ -85,53 +192,53 @@ export class DocumentsService extends AbstractService {
     return collections;
   }
 
-  getPossibleRefs(id: string, fromUriPov: string): Record<keyof SpecTypesV2.ComponentsObject, Array<AutocompletionReferences>> | undefined {
-    const document = this.getDocument(id);
+  private createDocumentRefs(fromUriPov: string, document?: SpecTypesV2.AsyncAPIObject): Document['refs'] {
+    const refs: Document['refs'] = {
+      fromComponents: {} as any,
+      siblingFiles: [],
+    }
     if (!document) {
-      return;
+      return refs;
     }
 
-    const file = this.svcs.filesSvc.getFile(document.filedId);
-    if (!file) {
-      return;
+    refs.siblingFiles = this.findSiblingFiles(fromUriPov, document);
+    const components = document?.components;
+    if (components) {
+      refs.fromComponents = this.getComponentReferences(components);
     }
 
-    const documentComponents = document.document?.components()?.json();
-    if (!documentComponents) {
-      return;
-    }
+    return refs;
+  }
 
-    const refs: Record<string, Array<AutocompletionReferences>> = {}
-    Object.entries(documentComponents).forEach(([kind, values]) => {
-      refs[String(kind)] = Object.entries(values).map(([name, component]: [string, any]) => {
+  private getComponentReferences(components: SpecTypesV2.ComponentsObject): Document['refs']['fromComponents'] {
+    const refs: Document['refs']['fromComponents'] = {} as any;
+    Object.entries(components).forEach(([kind, values]) => {
+      refs[String(kind) as keyof SpecTypesV2.ComponentsObject] = Object.entries(values).map(([name, component]: [string, any]) => {
         return {
-          path: `${file.uri}#/components/${kind}/${name}`,
-          description: component.description || component.sumamry,
+          path: `#/components/${kind}/${name}`,
+          description: component?.description || component?.sumamry,
         }
       });
     });
-
-    return refs as Record<keyof SpecTypesV2.ComponentsObject, Array<AutocompletionReferences>>;
+    return refs;
   }
 
-  getReferenceKind(path: string) {
-
-  }
-
-  getDocument(id: string): Document | undefined {
-    return this.getState().documents[String(id)];
-  }
-
-  hasDocument(id: string) {
-    return Boolean(this.getDocument(id));
-  }
-
-  getState() {
-    return documentsState.getState();
-  }
-
-  setState(state: Partial<DocumentsState>) {
-    return documentsState.setState(state);
+  private findSiblingFiles(fromUriPov: string, document: SpecTypesV2.AsyncAPIObject): Document['refs']['siblingFiles'] {
+    const uri = Uri.parse(fromUriPov);
+    const uriDirname = this.svcs.filesSvc.dirname(uri);
+    const siblingFiles: Array<string> = [];
+    traverseObject(document, (key, value) => {
+      if (key === '$ref' && typeof value === 'string' && value[0] !== '#') {
+        const [file] = value.split('#');
+        const resolvedPath = resolvePath(uriDirname, file);
+        const resolvedUri = uri.with({ path: resolvedPath })
+        const possibleFile = this.svcs.filesSvc.getFileByUri(resolvedUri.toString());
+        if (possibleFile) {
+          siblingFiles.push(possibleFile.id);
+        }
+      }
+    });
+    return siblingFiles;
   }
 
   private createDocumentObject(id: string, document: Partial<Document> = {}): Document {
@@ -141,18 +248,30 @@ export class DocumentsService extends AbstractService {
       valid: false,
       extras: undefined,
       ...document,
-      diagnostics: document.diagnostics || this.createDiagnostics([]),
+      refs: document.refs || this.createDocumentRefs(''),
+      diagnostics: document.diagnostics || this.serializeDiagnostics([]),
     }
   }
 
   private subscribeToFiles() {
-    // this.svcs.eventsSvc.on('fs.file.update', (file) => {
-    //   this.removeDocument(file.id);
-    // });
+    this.svcs.eventsSvc.on('fs.file.create', file => {
+      this.handleDocument(file);
+    });
+
+    this.svcs.eventsSvc.on('fs.file.update', file => {
+      this.handleDocument(file);
+    });
 
     this.svcs.eventsSvc.on('fs.file.remove', file => {
       this.removeDocument(file.id);
     });
+  }
+
+  private handleSavedFiles() {
+    const files = this.svcs.filesSvc.getFiles();  
+    return Promise.all(
+      Object.values(files).map(file => this.handleDocument(file))
+    );
   }
 
   private subscribeToSettings() {
@@ -162,11 +281,11 @@ export class DocumentsService extends AbstractService {
       }
 
       const newDocuments = { ...this.getState().documents };
-      Object.entries(newDocuments).forEach(([uri, document]) => {
+      Object.entries(newDocuments).forEach(([id, document]) => {
         if (document) {
-          newDocuments[String(uri)] = {
-            ...document || {},
-            diagnostics: this.createDiagnostics(document.diagnostics.original),
+          newDocuments[String(id)] = {
+            ...document,
+            diagnostics: this.serializeDiagnostics(document.diagnostics.original),
           }
         }
       });

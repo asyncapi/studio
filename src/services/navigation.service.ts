@@ -17,7 +17,7 @@ export class NavigationService extends AbstractService {
     hash: string,
   ) {
     try {
-      const range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
+      const range = this.svcs.documentsSvc.getRangeForJsonPath('asyncapi', jsonPointer);
       if (range) {
         this.scrollToEditorLine(range.start.line + 1);
       }

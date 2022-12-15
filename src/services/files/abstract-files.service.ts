@@ -106,6 +106,9 @@ export abstract class AbstractFilesService extends AbstractService {
   }
 
   getFileByUri(uri: string): File | undefined {
+    if (!uri.includes(':///')) {
+      uri = uri.replace(':/', ':///');
+    }
     return Object.values(filesState.getState().files).find(f => f.uri === uri);
   }
 

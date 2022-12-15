@@ -1,6 +1,6 @@
 import create from 'zustand';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOutput } from '@asyncapi/parser/cjs';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, Diagnostic, ParseOutput, SpecTypesV2 } from '@asyncapi/parser/cjs';
 
 export type DocumentDiagnostics = {
   original: Diagnostic[];
@@ -11,11 +11,20 @@ export type DocumentDiagnostics = {
   hints: Diagnostic[];
 }
 
+export type DocumentComponentReference = {
+  path: string;
+  description?: string;
+}
+
 export type Document = {
   filedId: string;
   document: AsyncAPIDocument | null;
   diagnostics: DocumentDiagnostics;
   valid: boolean;
+  refs: {
+    fromComponents: Record<keyof SpecTypesV2.ComponentsObject, Array<DocumentComponentReference> | undefined>;
+    siblingFiles: Array<string>;
+  }
   extras?: ParseOutput['extras'];
 }
 

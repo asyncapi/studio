@@ -8,7 +8,7 @@ import { SettingsModal } from '../Modals/Settings/SettingsModal';
 import { Tooltip } from '../common';
 import { useServices } from '../../services';
 import { debounce, useCurrentDocument } from '../../helpers';
-import { useDocumentsState, useSettingsState } from '../../state';
+import { useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
 import type { Diagnostic } from '@asyncapi/parser/cjs';

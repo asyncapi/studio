@@ -1,7 +1,7 @@
 import { AbstractService } from './abstract.service';
 
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
-import { KeyMod, KeyCode, Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
+import { KeyMod, KeyCode, Range, MarkerSeverity, languages } from 'monaco-editor/esm/vs/editor/editor.api';
 
 // @ts-ignore
 import { ILanguageFeaturesService } from 'monaco-editor/esm/vs/editor/common/services/languageFeatures';
@@ -24,6 +24,7 @@ import type { ConvertVersion } from '@asyncapi/converter';
 import type { File } from '../state/files.state';
 import type { Document } from '../state/documents.state';
 import type { SettingsState } from '../state/settings.state';
+import { getReferenceKind } from './documents/reference-maps';
 
 export interface UpdateState {
   content: string;
@@ -366,7 +367,8 @@ export class EditorService extends AbstractService {
       if (editorState.autoSaving) {
         return this.svcs.filesSvc.saveFileContent(file.id, content);
       } else {
-        await this.svcs.parserSvc.parse(file.id, content);
+        // console.log('lol');
+        // await this.svcs.documentsSvc.handleDocument(file.id);
       }
 
       let flags = file.flags;
@@ -375,7 +377,6 @@ export class EditorService extends AbstractService {
         // set modified flag
         flags |= FileFlags.MODIFIED;
       } else {
-        console.log('lol')
         // remove modified flag
         flags &= ~FileFlags.MODIFIED;
       }
@@ -549,42 +550,38 @@ export class EditorService extends AbstractService {
   }
 
   private async provideCompletionItems(model: monacoAPI.editor.ITextModel, position: monacoAPI.Position): Promise<monacoAPI.languages.CompletionList> {
-    const referenceKind = await this.retrieveReferenceKind(model, position);
-    console.log(referenceKind);
+    const fileId = this.files.get(model);
+    if (!fileId) {
+      return {
+        suggestions: [],
+      }
+    }
 
-    // for (const symbol of this.iterateSymbols(symbols, position)) {
-    //   console.log(symbol);
-    // }
+    const possibleResult = await this.svcs.documentsSvc.getReferenceKind(model, position);
+    if (!possibleResult) {
+      return {
+        suggestions: [],
+      }
+    }
+
+    const { kind, isInComponent } = possibleResult;
+    const possibleRefs = this.svcs.documentsSvc.getPossibleReferences(fileId, kind, !isInComponent);
+		const word = model.getWordUntilPosition(position);
+		const range = {
+			startLineNumber: position.lineNumber,
+			endLineNumber: position.lineNumber,
+			startColumn: word.startColumn,
+			endColumn: word.endColumn
+		};
 
     return {
-      suggestions: [],
-    }
-  }
-
-  private async retrieveReferenceKind(model: monacoAPI.editor.ITextModel, position: monacoAPI.Position): Promise<string | undefined> {
-    const { documentSymbolProvider } = StandaloneServices.get(ILanguageFeaturesService);
-    const outline = await OutlineModel.create(documentSymbolProvider, model);
-    const symbols = outline.asListOfDocumentSymbols() as monacoAPI.languages.DocumentSymbol[];
-
-    let kind: string = '';
-    for (const symbol of this.iterateSymbols(symbols, position)) {
-      kind += '/' + symbol.name;
-    }
-
-    return kind.endsWith('$ref') ? kind : undefined;
-  }
-
-  private *iterateSymbols(
-    symbols: monacoAPI.languages.DocumentSymbol[],
-    position: monacoAPI.Position,
-  ): Iterable<monacoAPI.languages.DocumentSymbol> {
-    for (const symbol of symbols) {
-      if (Range.containsPosition(symbol.range, position)) {
-        yield symbol;
-        if (symbol.children) {
-          yield* this.iterateSymbols(symbol.children, position);
-        }
-      }
+      suggestions: possibleRefs.map(ref => ({
+        label: `'${ref.path}'`,
+        kind: languages.CompletionItemKind.Reference,
+        documentation: ref.description,
+        insertText: `'${ref.path}'`,
+        range,
+      })),
     }
   }
 
