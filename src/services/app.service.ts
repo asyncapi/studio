@@ -38,6 +38,10 @@ export class ApplicationService extends AbstractService {
   }
 
   private async fetchResource(url: string | null, base64: string | null) {
+    if (!url && !base64) {
+      return;
+    }
+    
     const { updateFile } = filesState.getState();
     let content = '';
     if (url) {
