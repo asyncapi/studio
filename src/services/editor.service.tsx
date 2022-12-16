@@ -37,7 +37,7 @@ export class EditorService extends AbstractService {
     this.instance = editor;
 
     // parse on first run - only when document is undefined
-    const document = documentsState.getState().documents['asyncapi'];
+    const document = documentsState.getState().documents.asyncapi;
     if (!document) {
       await this.svcs.parserSvc.parse('asyncapi', editor.getValue());
     } else {
