@@ -4,10 +4,10 @@ import { show } from '@ebay/nice-modal-react';
 
 import { RedirectedModal } from '../components/Modals';
 
-import { appState } from '../state';
+import { appState, filesState } from '../state';
 
 export class ApplicationService extends AbstractService {
-  public override onInit(): void {
+  override async onInit() {
     // subscribe to state to hide preloader
     this.hidePreloader();
 
@@ -15,7 +15,16 @@ export class ApplicationService extends AbstractService {
 
     // readOnly state should be only set to true when someone pass also url or base64 parameter
     const isStrictReadonly = Boolean(readOnly && (url || base64));
-    if (isStrictReadonly) {
+
+    let error: any; 
+    try {
+      await this.fetchResource(url, base64);
+    } catch (err) {
+      error = err;
+      console.error(err);
+    }
+
+    if (isStrictReadonly && !error) {
       appState.setState({
         readOnly,
         initialized: true,
@@ -26,6 +35,30 @@ export class ApplicationService extends AbstractService {
     if (!isStrictReadonly && redirectedFrom) {
       show(RedirectedModal);
     }
+  }
+
+  private async fetchResource(url: string | null, base64: string | null) {
+    if (!url && !base64) {
+      return;
+    }
+    
+    const { updateFile } = filesState.getState();
+    let content = '';
+    if (url) {
+      content = await fetch(url).then(res => res.text());
+    } else if (base64) {
+      content = this.svcs.formatSvc.decodeBase64(base64);
+    }
+
+    const language = this.svcs.formatSvc.retrieveLangauge(content);
+    const source = url || undefined;
+    updateFile('asyncapi', {
+      content,
+      language,
+      source,
+      from: url ? 'url' : 'base64',
+    });
+    await this.svcs.parserSvc.parse('asyncapi', content, { source });
   }
 
   private hidePreloader() {
