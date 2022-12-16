@@ -52,6 +52,7 @@ export const NewFileModal = create(() => {
 
   const realLifeExamples = examples.filter((template) => template.type === 'real-example');
   const templates = examples.filter((template) => template.type === 'protocol-example');
+  const tutorials = examples.filter((template) => template.type === 'tutorial-example');
 
   return (
     <ConfirmModal
@@ -76,6 +77,15 @@ export const NewFileModal = create(() => {
             <span className="uppercase text-gray-800 text-sm underline font-bold">Real world Examples</span>
             <div className="grid grid-cols-3 gap-4 py-4">
               {realLifeExamples.map(({ title, description, template }) => {
+                const isSelected = selectedTemplate.title === title;
+                return <TemplateListItem title={title} description={description} isSelected={isSelected} key={title} onClick={() => setSelectedTemplate({ title, template })} />;
+              })}
+            </div>
+          </div>
+          <div>
+            <span className="uppercase text-gray-800 text-sm underline font-bold">Tutorials</span>
+            <div className="grid grid-cols-3 gap-4 py-4">
+              {tutorials.map(({ title, description, template }) => {
                 const isSelected = selectedTemplate.title === title;
                 return <TemplateListItem title={title} description={description} isSelected={isSelected} key={title} onClick={() => setSelectedTemplate({ title, template })} />;
               })}
