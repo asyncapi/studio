@@ -135,17 +135,28 @@ export class DocumentsService extends AbstractService {
     return documentsState.setState(state);
   }
 
-  async handleDocument(file: File) {
-    const { id, content, uri } = file;
+  async handleDocument(fileOrId: string | File): Promise<Document | undefined> {
+    let file: File | undefined;
+    if (typeof fileOrId === 'string') {
+      file = this.svcs.filesSvc.getFile(fileOrId);
+    }
+    if (!file) {
+      return;
+    }
 
+    const { id, content, uri } = file;
     const parseResult = await this.svcs.parserSvc.parse(content, { source: uri });
     if (!parseResult) {
-      return this.updateDocument(file.id, {
+      const newDocument: Document = {
+        filedId: id,
         document: null,
         diagnostics: this.serializeDiagnostics(),
-        extras: undefined,
         valid: false,
-      });
+        refs: this.createDocumentRefs(''),
+        extras: undefined,
+      };
+      this.updateDocument(file.id, newDocument);
+      return newDocument;
     }
 
     const { document, diagnostics, extras } = parseResult;
@@ -157,8 +168,9 @@ export class DocumentsService extends AbstractService {
       valid: serializedDiagnostics.errors.length > 0,
       refs: this.createDocumentRefs(file.uri, extras?.document?.data as SpecTypesV2.AsyncAPIObject),
       extras,
-    }
-    return this.updateDocument(id, newDocument);
+    };
+    this.updateDocument(id, newDocument);
+    return newDocument;
   }
 
   private serializeDiagnostics(diagnostics: Diagnostic[] = []) {
@@ -258,8 +270,11 @@ export class DocumentsService extends AbstractService {
       this.handleDocument(file);
     });
 
-    this.svcs.eventsSvc.on('fs.file.update', file => {
-      this.handleDocument(file);
+    this.svcs.eventsSvc.on('fs.file.update', async file => {
+      const document = await this.handleDocument(file);
+      document?.refs.siblingFiles.forEach(async fileId => {
+        await this.handleDocument(fileId);
+      });
     });
 
     this.svcs.eventsSvc.on('fs.file.remove', file => {
