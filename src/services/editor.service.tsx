@@ -304,12 +304,7 @@ export class EditorService extends AbstractService {
     // apply save command
     this.editor.addCommand(
       KeyMod.CtrlCmd | KeyCode.KeyS,
-      () => {
-        const currentModel = this.getCurrentModel();
-        if (currentModel) {
-          this.saveModelContent(currentModel);
-        }
-      },
+      () => this.saveModelContent(),
     );
   }
 
@@ -364,32 +359,18 @@ export class EditorService extends AbstractService {
       }
 
       const content = model.getValue();
-      if (editorState.autoSaving) {
-        return this.svcs.filesSvc.saveFileContent(file.id, content);
-      } else {
-        // console.log('lol');
-        // await this.svcs.documentsSvc.handleDocument(file.id);
-      }
-
-      let flags = file.flags;
-      const savedContent =  await this.svcs.filesSvc.getFileContent(file.id);
-      if (savedContent !== content) {
-        // set modified flag
-        flags |= FileFlags.MODIFIED;
-      } else {
-        // remove modified flag
-        flags &= ~FileFlags.MODIFIED;
-      }
-
-      return this.svcs.filesSvc.updateFile({ id: file.id, flags, content });
+      return this.svcs.filesSvc.updateFile({ id: file.id, content }, { saveContent: editorState.autoSaving });
     }, editorState.savingDelay);
   }
 
-  private saveModelContent(model: monacoAPI.editor.ITextModel) {
-    const file = this.getFile(model);
-    if (file) {
-      const content = model.getValue();
-      this.svcs.filesSvc.saveFileContent(file.id, content);
+  private saveModelContent(model?: monacoAPI.editor.ITextModel) {
+    const currentModel = model || this.getCurrentModel();
+    if (currentModel) {
+      const file = this.getFile(currentModel);
+      if (file) {
+        const content = currentModel.getValue();
+        this.svcs.filesSvc.saveFileContent(file.id, content);
+      }
     }
   }
 

@@ -16,9 +16,12 @@ import type { File } from '../state/files.state';
 
 export class DocumentsService extends AbstractService {
   override async onInit() {
-    await this.handleSavedFiles();
     this.subscribeToFiles();
     this.subscribeToSettings();
+  }
+
+  override async onAfterInit() {
+    await this.handleSavedFiles();
   }
 
   addDocument(fileId: string, document: Partial<Document>): void {
@@ -139,7 +142,10 @@ export class DocumentsService extends AbstractService {
     let file: File | undefined;
     if (typeof fileOrId === 'string') {
       file = this.svcs.filesSvc.getFile(fileOrId);
+    } else {
+      file = fileOrId;
     }
+
     if (!file) {
       return;
     }

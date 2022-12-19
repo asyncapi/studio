@@ -47,8 +47,8 @@ export class FilesService extends AbstractFilesService {
     return this.filesSvcs['file-system'].isSupportedBrowserAPI();
   }
 
-  hasSavedBrowserAPIDirectories() {
-    return this.filesSvcs['file-system'].hasSavedBrowserAPIDirectories();
+  hasBrowserAPIDirectories() {
+    return this.filesSvcs['file-system'].hasBrowserAPIDirectories();
   }
 
   restoreBrowserAPIDirectories() {
@@ -84,9 +84,9 @@ export class FilesService extends AbstractFilesService {
     return this.filesSvcs[newFile.from || 'in-memory']?.createFile(newFile);
   }
 
-  override async updateFile(file: Partial<File>) {
+  override async updateFile(file: Partial<File>, options?: { saveContent: boolean }) {
     if (file.id && this.hasFile(file.id)) {
-      return this.filesSvcs[file.from || 'in-memory']?.updateFile(file);
+      return this.filesSvcs[file.from || 'in-memory']?.updateFile(file, options);
     }
   }
 

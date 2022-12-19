@@ -13,7 +13,7 @@ export abstract class AbstractFilesService extends AbstractService {
   abstract removeDirectory(id: string): void | Promise<void>;
 
   abstract createFile(file: Partial<File>): void | Promise<void>;
-  abstract updateFile(file: Partial<File>): void | Promise<void>;
+  abstract updateFile(file: Partial<File>, options?: { saveContent: boolean }): void | Promise<void>;
   abstract removeFile(id: string): void | Promise<void>;
 
   // abstract getDirectory(uri: string): Directory | undefined | Promise<Directory | undefined>;
@@ -112,8 +112,14 @@ export abstract class AbstractFilesService extends AbstractService {
     return Object.values(filesState.getState().files).find(f => f.uri === uri);
   }
 
-  isFileModified(fileId: string) {
-    const file = this.getFile(fileId);
+  isFileModified(fileOrId: File | string) {
+    let file: File | undefined;
+    if (typeof fileOrId === 'string') {
+      file = this.svcs.filesSvc.getFile(fileOrId);
+    } else {
+      file = fileOrId;
+    }
+
     if (file) {
       return Boolean(file.flags & FileFlags.MODIFIED);
     }
@@ -249,7 +255,7 @@ export abstract class AbstractFilesService extends AbstractService {
     return this.setState({ files, directories });
   }
 
-  protected __updateFile(file: Partial<File>) {
+  protected async __updateFile(file: Partial<File>) {
     const existingFile = file.id && this.getFile(file.id);
     if (!existingFile) {
       return;
@@ -258,6 +264,19 @@ export abstract class AbstractFilesService extends AbstractService {
     const parent = file.parent;
     const existingParent = existingFile.parent as Directory;
     const [newFile, files] = this.mergeFiles(file, existingFile.id);
+
+    // check if content is modified
+    const savedContent = await this.svcs.filesSvc.getFileContent(newFile.id);
+    if (savedContent !== newFile.content) {
+      // set modified flag
+      newFile.flags |= FileFlags.MODIFIED;
+    } else {
+      // remove modified flag
+      newFile.flags &= ~FileFlags.MODIFIED;
+    }
+
+    console.log(savedContent === newFile.content);
+
     this.emitUpdateFile(newFile, existingFile);
     if (!parent || (existingParent === parent)) {
       return this.setState({ files });

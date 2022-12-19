@@ -20,7 +20,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
   const { filesSvc } = useServices();
   const root = useFilesState(state => state.directories['@@root']);
   const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });;
-  const hasSavedBrowserAPIDirectories = filesSvc.hasSavedBrowserAPIDirectories();
+  const hasBrowserAPIDirectories = filesSvc.hasBrowserAPIDirectories();
 
   const actions = useMemo(() => {
     return [
@@ -77,7 +77,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
         expanded={true}
         actions={actions}
       >
-        {hasSavedBrowserAPIDirectories && (
+        {hasBrowserAPIDirectories && (
           <div className='px-4 py-2'>
             <button
               type="button"

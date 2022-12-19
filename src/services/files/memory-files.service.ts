@@ -113,14 +113,20 @@ export class MemoryFilesService extends AbstractFilesService {
     }
   }
 
-  override async updateFile(file: Partial<File>) {
+  override async updateFile(file: Partial<File>, options?: { saveContent: boolean }) {
     if (!file.id || !(await this.files.get(file.id))) {
       return;
     }
 
     try {
-      await this.files.update(file.id, this.serializeFile(file));
-      this.__updateFile(file);
+      const serializedFile = this.serializeFile(file);
+      if (options?.saveContent !== true) {
+        // don't save content to the storage
+        delete serializedFile.content;
+      }
+      console.log(options);
+      await this.files.update(file.id, serializedFile);
+      await this.__updateFile(file);
     } catch(err) {
       console.error(err);
     }
@@ -152,7 +158,17 @@ export class MemoryFilesService extends AbstractFilesService {
   }
 
   override async saveFileContent(id: string, content: string) {
-    await this.updateFile({ id, content });
+    const file = await this.files.get(id);
+    if (!file) {
+      return;
+    }
+
+    try {
+      file.content = content;
+      await this.files.update(file.id, file);
+    } catch(err) {
+      console.error(err);
+    }
   }
 
   private serializeDirectory(directory: Directory): TableDirectory;

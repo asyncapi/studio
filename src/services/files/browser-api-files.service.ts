@@ -6,7 +6,6 @@ import type { Table } from 'dexie';
 import type { File, Directory, FilesState } from '../../state/files.state';
 
 export class BrowserAPIFilesService extends AbstractFilesService {
-  private hasSavedDirectories: boolean = false;
   private dbHandles!: Table<{ name: string, handle: FileSystemDirectoryHandle }>;
   private readonly rootHandles = new Map<string, FileSystemDirectoryHandle>();
   private readonly directoryHandles = new Map<string, FileSystemDirectoryHandle>();
@@ -29,7 +28,6 @@ export class BrowserAPIFilesService extends AbstractFilesService {
       rootHandles.forEach(({ name, handle }) => {
         this.rootHandles.set(name, handle);
       });
-      this.hasSavedDirectories = true;
     }
   }
 
@@ -78,8 +76,8 @@ export class BrowserAPIFilesService extends AbstractFilesService {
     return typeof window === 'object' && 'showOpenFilePicker' in window;
   }
 
-  hasSavedBrowserAPIDirectories() {
-    return this.hasSavedDirectories;
+  hasBrowserAPIDirectories(): boolean {
+    return this.rootHandles.size > 0;
   }
 
   async restoreDirectories() {
@@ -162,9 +160,14 @@ export class BrowserAPIFilesService extends AbstractFilesService {
     this.__createFile(file);
   }
 
-  override async updateFile(file: Partial<File>): Promise<void> {
+  override async updateFile(file: Partial<File>, options?: { saveContent: boolean }): Promise<void> {
     if (!file.id || !this.fileHandles.has(file.id)) {
       return;
+    }
+
+    // save content
+    if (options?.saveContent && typeof file.content === 'string') {
+      await this.saveFileContent(file.id, file.content);
     }
   }
 
@@ -207,7 +210,7 @@ export class BrowserAPIFilesService extends AbstractFilesService {
     }
 
     const writable = await handle.createWritable();
-		await writable.write(content);
+		await writable.write(content || '');
 		await writable.close();
   }
 
