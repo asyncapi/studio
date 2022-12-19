@@ -17,7 +17,7 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 
   const onChange = useMemo(() => {
     return debounce((v: string) => {
-      editorSvc.updateState({ content: v });
+      editorSvc.updateState({ content: v, file: { from: 'storage', source: undefined } });
       autoSaving && editorSvc.saveToLocalStorage(v, false);
       parserSvc.parse('asyncapi', v);
     }, savingDelay);
