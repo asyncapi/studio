@@ -6,13 +6,17 @@ import websocket from './websocket-gemini.yml';
 import mqtt from './streetlights-mqtt.yml';
 import simple from './simple.yml';
 
+// tutorial example
+import invalid from './tutorials/invalid.yml';
+
 // real world examples
 import slack from './real-world/slack-rtm.yml';
 import gitterStreaming from './real-world/gitter-streaming.yml';
 
 const templateTypes = {
   protocol: 'protocol-example',
-  realExample: 'real-example'
+  realExample: 'real-example',
+  tutorial: 'tutorial-example'
 };
 
 export default [
@@ -21,6 +25,12 @@ export default [
     description: () => <>A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.</>,
     template: simple,
     type: templateTypes.protocol
+  },
+  {
+    title: 'Invalid Example',
+    description: () => <>An example of an invalid AsyncAPI document. This is only for educational purposes, to learn document validation.</>,
+    template: invalid,
+    type: templateTypes.tutorial
   },
   {
     title: 'Apache Kafka',

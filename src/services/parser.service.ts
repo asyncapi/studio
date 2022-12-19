@@ -99,6 +99,13 @@ export class ParserService extends AbstractService {
   private updateDocument = documentsState.getState().updateDocument;
 
   private createDiagnostics(diagnostics: Diagnostic[]) {
+    // map messages of invalid ref to file
+    diagnostics.forEach(diagnostic => {
+      if (diagnostic.code === 'invalid-ref' && diagnostic.message.endsWith('readFile is not a function')) {
+        diagnostic.message = 'File references are not yet supported in Studio';
+      }
+    });
+    
     const collections: DocumentDiagnostics = {
       original: diagnostics,
       filtered: [],

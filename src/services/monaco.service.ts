@@ -9,6 +9,7 @@ import { documentsState, filesState } from '../state';
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
 import type { SpecVersions } from '../types';
+import type { JSONSchema7 } from 'json-schema';
 
 export class MonacoService extends AbstractService {
   private jsonSchemaSpecs: Map<string, any> = new Map();
@@ -63,7 +64,7 @@ export class MonacoService extends AbstractService {
     const spec = this.jsonSchemaSpecs.get(version);
 
     return {
-      enableSchemaRequest: true,
+      enableSchemaRequest: false,
       hover: true,
       completion: true,
       validate: true,
@@ -108,22 +109,53 @@ export class MonacoService extends AbstractService {
   private prepareJSONSchemas() {
     const uris: string[] = [];
     Object.entries(this.svcs.specificationSvc.specs).forEach(([version, spec]) => {
-      const copiedSpec = { ...spec };
-      const definitions = Object.entries(copiedSpec.definitions || {}).map(([uri, schema]) => ({
-        uri,
-        schema,
-      }));
-      delete copiedSpec.definitions;
-      this.jsonSchemaSpecs.set(version, copiedSpec);
-
-      const defs: monacoAPI.languages.json.DiagnosticsOptions['schemas'] =  [];
-      definitions.forEach(d => {
-        if (uris.includes(d.uri)) return;
-        uris.push(d.uri);
-        defs.push(d);
-      });
-      this.jsonSchemaDefinitions = defs;
+      this.serializeSpec(spec, version, uris);
     });
+  }
+
+  private serializeSpec(spec: JSONSchema7, version: string, uris: string[]) {
+    // copy whole spec
+    const copiedSpec = this.copySpecification(spec);
+
+    // serialize definitions
+    const definitions = Object.entries(copiedSpec.definitions || {}).map(([uri, schema]) => {
+      if (uri === 'http://json-schema.org/draft-07/schema') {
+        uri = 'https://json-schema.org/draft-07/schema';
+      }
+
+      return {
+        uri, 
+        schema,
+      };
+    });
+    delete copiedSpec.definitions;
+
+    // save spec to map
+    this.jsonSchemaSpecs.set(version, copiedSpec);
+
+    // save definitions
+    definitions.forEach(definition => {
+      if (uris.includes(definition.uri)) {
+        return;
+      }
+
+      uris.push(definition.uri);
+      if (Array.isArray(this.jsonSchemaDefinitions)) {
+        this.jsonSchemaDefinitions.push(definition);
+      }
+    });
+  }
+
+  private copySpecification(spec: JSONSchema7): JSONSchema7 {
+    return JSON.parse(JSON.stringify(spec, (_, value) => {
+      if (
+        value === 'http://json-schema.org/draft-07/schema#' ||
+        value === 'http://json-schema.org/draft-07/schema'
+      ) {
+        return 'https://json-schema.org/draft-07/schema';
+      }
+      return value;
+    })) as JSONSchema7;
   }
 
   private subcribeToDocuments() {

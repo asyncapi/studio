@@ -37,13 +37,13 @@ export const ServicesProvider = servicesCtx.Provider;
 export async function createServices() {
   const services: Services = {} as Services;
 
+  services.parserSvc = new ParserService(services);
   services.appSvc = new ApplicationService(services);
   services.converterSvc = new ConverterService(services);
   services.editorSvc = new EditorService(services);
   services.formatSvc = new FormatService(services);
   services.monacoSvc = new MonacoService(services);
   services.navigationSvc = new NavigationService(services);
-  services.parserSvc = new ParserService(services);
   services.serverAPISvc = new ServerAPIService(services);
   services.settingsSvc = new SettingsService(services);
   services.socketClientSvc = new SocketClient(services);

@@ -21,6 +21,7 @@ export interface UpdateState {
 } 
 
 export class EditorService extends AbstractService {
+  private created = false;
   private decorations: Map<string, string[]> = new Map();
   private instance: monacoAPI.editor.IStandaloneCodeEditor | undefined;
 
@@ -29,9 +30,19 @@ export class EditorService extends AbstractService {
   }
 
   async onDidCreate(editor: monacoAPI.editor.IStandaloneCodeEditor) {
+    if (this.created) {
+      return;
+    }
+    this.created = true;
     this.instance = editor;
-    // parse on first run the spec
-    await this.svcs.parserSvc.parse('asyncapi', editor.getValue());
+
+    // parse on first run - only when document is undefined
+    const document = documentsState.getState().documents.asyncapi;
+    if (!document) {
+      await this.svcs.parserSvc.parse('asyncapi', editor.getValue());
+    } else {
+      this.applyMarkersAndDecorations(document.diagnostics.filtered);
+    }
     
     // apply save command
     editor.addCommand(

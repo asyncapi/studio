@@ -1,5 +1,4 @@
 import create from 'zustand';
-import { persist } from 'zustand/middleware';
 
 const schema =
   localStorage.getItem('document') || `asyncapi: '2.5.0'
@@ -176,32 +175,24 @@ export type FilesActions = {
   updateFile: (uri: string, file: Partial<File>) => void;
 }
 
-export const filesState = create(
-  persist<FilesState & FilesActions>(set => 
-    ({
-      files: {
-        asyncapi: {
-          uri: 'asyncapi',
-          name: 'asyncapi',
-          content: schema,
-          from: 'storage',
-          source: undefined,
-          language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-          modified: false,
-          stat: {
-            mtime: (new Date()).getTime(),
-          }
-        }
-      },
-      updateFile(uri: string, file: Partial<File>) {
-        set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
-      },
-    }), 
-  {
-    name: 'studio-files',
-    getStorage: () => localStorage,
+export const filesState = create<FilesState & FilesActions>(set => ({
+  files: {
+    asyncapi: {
+      uri: 'asyncapi',
+      name: 'asyncapi',
+      content: schema,
+      from: 'storage',
+      source: undefined,
+      language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
+      modified: false,
+      stat: {
+        mtime: (new Date()).getTime(),
+      }
+    }
+  },
+  updateFile(uri: string, file: Partial<File>) {
+    set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
   }
-  ),
-);
+}));
 
 export const useFilesState = filesState;
