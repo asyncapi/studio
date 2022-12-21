@@ -8,3 +8,6 @@ export * from './ImportBase64Modal';
 export * from './ImportURLModal';
 export * from './NewFileModal';
 export * from './RedirectedModal';
+
+export * from './Popover';
+export * from './ConfirmPopover';

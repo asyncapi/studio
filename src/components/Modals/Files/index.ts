@@ -1,4 +1,4 @@
 export * from './CreateNewDirectoryModal';
 export * from './CreateNewFileModal';
-export * from './DeleteFileModal';
+export * from './DeleteFilePopover';
 export * from './EditFileModal';

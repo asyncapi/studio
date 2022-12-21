@@ -1,17 +1,15 @@
 import { useCallback } from 'react';
-import { VscEdit, VscTrash, VscEye } from 'react-icons/vsc';
+import { VscEdit, VscTrash } from 'react-icons/vsc';
+import { show as showModal } from '@ebay/nice-modal-react';
 
+import { DeleteFilePopover } from '../../Modals/Files';
 import { ContextMenu, Item } from "../../common";
-
-import { useServices } from '../../../services';
 
 import type { FunctionComponent } from 'react';
 import type { ItemParams } from "../../common/ContextMenu";
 import type { File } from '../../../state/files.state';
 
 export const TreeViewFileContextMenu: FunctionComponent = () => {
-  const { filesSvc } = useServices();
-
   const handleClickFile = useCallback(({ props }: ItemParams<{ file: File }>, action: 'rename' | 'remove') => {
     const file = props?.file;
     if (!file) {
@@ -19,7 +17,7 @@ export const TreeViewFileContextMenu: FunctionComponent = () => {
     }
 
     switch (action) {
-      case 'remove': return filesSvc.removeFile(file.id);
+      case 'remove': return showModal(DeleteFilePopover, { item: file });
     }
   }, []);
 

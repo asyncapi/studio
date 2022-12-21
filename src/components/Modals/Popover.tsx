@@ -2,52 +2,45 @@ import { Fragment, useRef, useCallback, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useModal } from '@ebay/nice-modal-react';
 
+import { noop } from '../../helpers';
+
 import type { ReactNode, FunctionComponent, PropsWithChildren } from 'react';
 
-interface ConfirmModalProps {
+export interface PopoverProps extends PropsWithChildren {
   title: ReactNode;
   description?: ReactNode;
   confirmText?: ReactNode;
   cancelText?: ReactNode;
-  confirmDisabled?: boolean;
-  onlyConfirm?: boolean;
-  cancelDisabled?: boolean;
-  containerClassName? : string;
-  closeAfterSumbit?: boolean;
-  onSubmit?: () => void;
-  onCancel?: () => void;
+  onConfirm?: () => void | Promise<void>;
+  onCancel?: () => void | Promise<void>;
 }
 
-export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps>> = ({
+export const Popover: FunctionComponent<PopoverProps> = ({
   title,
   description,
-  confirmText = 'Save',
+  confirmText = 'Confirm',
   cancelText = 'Cancel',
-  confirmDisabled = true,
-  onlyConfirm = false,
-  cancelDisabled = false,
-  closeAfterSumbit = true,
-  onSubmit,
-  onCancel = () => {
-    // This is intentional
-  },
-  containerClassName,
+  onConfirm = noop,
+  onCancel = noop,
   children,
 }) => {
   const modal = useModal();
-  const cancelButtonRef = useRef(null);
+  const confirmButtonRef = useRef(null);
 
-  const handleOnSubmit = useCallback(() => {
-    onSubmit && onSubmit();
-    if (closeAfterSumbit) {
-      modal.hide();
-    }
-  }, [onSubmit, closeAfterSumbit, modal]);
+  const handleOnConfirm = useCallback(async () => {
+    await onConfirm();
+    modal.hide();
+  }, [onConfirm, modal]);
+
+  const handleOnCancel = useCallback(async () => {
+    await onCancel();
+    modal.hide();
+  }, [onCancel, modal]);
 
   useEffect(() => {
     function listenerForEnter(event: KeyboardEvent) {
-      if (event.key === "Enter" && !confirmDisabled) {
-        handleOnSubmit();
+      if (event.key === "Enter") {
+        handleOnConfirm();
       }
     }
 
@@ -55,25 +48,19 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
     return () => {
       document.removeEventListener('keyup', listenerForEnter);
     };
-  }, [confirmDisabled, handleOnSubmit]);
-
-  const handleOnCancel = () => {
-    onCancel();
-    modal.hide();
-  };
+  }, [handleOnConfirm]);
 
   const handleAfterLeave = useCallback(() => {
     modal.remove();
   }, []);
 
   return (
-    <>
       <Transition.Root show={modal.visible} as={Fragment} afterLeave={handleAfterLeave}>
         <Dialog
           as="div"
           static
           className="fixed z-50 inset-0 overflow-y-auto"
-          initialFocus={cancelButtonRef}
+          initialFocus={confirmButtonRef}
           open={modal.visible}
           onClose={handleOnCancel}
         >
@@ -97,7 +84,7 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
             >
               &#8203;
             </span>
-            
+
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -107,51 +94,46 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className={`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6 ${containerClassName}`}>
-                <div>
+              {/* <Dialog.Panel> */}
+                <div className='inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:p-6'>
                   <div>
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg leading-6 font-medium text-gray-900"
-                    >
-                      {title}
-                    </Dialog.Title>
-                    {description && (
-                      <p className="text-gray-500 text-xs">{description}</p>
-                    )}
-                    <div className="my-8 space-y-4">{children}</div>
+                    <div>
+                      <Dialog.Title
+                        as="h3"
+                        className="text-lg leading-6 font-medium text-gray-900"
+                      >
+                        {title}
+                      </Dialog.Title>
+                      {description && (
+                        <Dialog.Description>
+                          {description}
+                        </Dialog.Description>
+                      )}
+                      <div className="my-8 space-y-4">{children}</div>
+                    </div>
                   </div>
-                </div>
-                <div className={`mt-5 sm:mt-6 sm:grid sm:gap-3 sm:grid-flow-row-dense ${onSubmit ? 'sm:grid-cols-2' : ''}`}>
-                  {onSubmit && (
+                  <div className='mt-5 sm:mt-6 sm:grid sm:gap-3 sm:grid-flow-row-dense'>
                     <button
                       type="button"
-                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2 sm:text-sm ${
-                        confirmDisabled ? 'opacity-10' : 'opacity-100'
-                      }`}
-                      disabled={confirmDisabled}
-                      onClick={handleOnSubmit}
+                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                      onClick={handleOnConfirm}
+                      ref={confirmButtonRef}
                     >
                       {confirmText}
                     </button>
-                  )}
-                  {!onlyConfirm && (
                     <button
                       type="button"
                       className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                       onClick={handleOnCancel}
-                      disabled={cancelDisabled}
-                      ref={cancelButtonRef}
                     >
                       {cancelText}
                     </button>
-                  )}
+                  </div>
                 </div>
-              </div>
+              {/* </Dialog.Panel> */}
             </Transition.Child>
           </div>
         </Dialog>
       </Transition.Root>
-    </>
   );
 };

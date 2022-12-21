@@ -13,14 +13,13 @@ interface CreateNewFileModalProps {
 }
 
 export const CreateNewFileModal = create<CreateNewFileModalProps>(({ directory }) => {
-  const [uri, setUri] = useState('');
+  const [name, setName] = useState('');
   const { filesSvc } = useServices();
   directory = directory || filesSvc.getRootDirectory();
   const absolutePath = filesSvc.absolutePath(directory);
 
   const onSubmit = () => {
-    const [name, language] = uri.split('.');
-    toast.promise(filesSvc.createFile({ name, language: language as 'json' | 'yaml', parent: directory, from: directory.from }), {
+    toast.promise(filesSvc.createFile({ name: name, parent: directory, from: directory.from }), {
       loading: 'Creating...',
       success: (
         <div>
@@ -43,7 +42,7 @@ export const CreateNewFileModal = create<CreateNewFileModalProps>(({ directory }
     <ConfirmModal
       title={`Create new file on ${absolutePath || 'root'} location`}
       confirmText="Create"
-      confirmDisabled={!uri}
+      confirmDisabled={!name}
       onSubmit={onSubmit}
     >
       <div className="flex content-center justify-center">
@@ -58,7 +57,7 @@ export const CreateNewFileModal = create<CreateNewFileModalProps>(({ directory }
           name="url"
           placeholder="Paste URL here"
           className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-3 text-gray-700 border-pink-300 border-2"
-          onChange={e => setUri(e.target.value)}
+          onChange={e => setName(e.target.value)}
         />
       </div>
     </ConfirmModal>
