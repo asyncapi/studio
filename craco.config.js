@@ -79,7 +79,7 @@ function configureCraco() {
   return {
     webpack: {
       configure: configureWebpack,
-    }
+    },
   };
 }
 

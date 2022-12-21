@@ -6,6 +6,7 @@ import type { Table } from 'dexie';
 import type { File, Directory, FilesState } from '../../state/files.state';
 
 export class BrowserAPIFilesService extends AbstractFilesService {
+  private restoredDirectories: boolean = false;
   private dbHandles!: Table<{ name: string, handle: FileSystemDirectoryHandle }>;
   private readonly rootHandles = new Map<string, FileSystemDirectoryHandle>();
   private readonly directoryHandles = new Map<string, FileSystemDirectoryHandle>();
@@ -14,6 +15,7 @@ export class BrowserAPIFilesService extends AbstractFilesService {
 
   override async onInit() {
     if (!this.isSupportedBrowserAPI()) {
+      this.restoredDirectories = true;
       return;
     }
 
@@ -76,11 +78,16 @@ export class BrowserAPIFilesService extends AbstractFilesService {
     return typeof window === 'object' && 'showOpenFilePicker' in window;
   }
 
-  hasBrowserAPIDirectories(): boolean {
-    return this.rootHandles.size > 0;
+  hasDirectoriesToRestore(): boolean {
+    return !this.restoredDirectories && this.rootHandles.size > 0;
   }
 
   async restoreDirectories() {
+    if (this.restoredDirectories) {
+      return;
+    }
+
+    this.restoredDirectories = true;
     for (const handle of this.rootHandles.values()) {
       if (await this.verifyPermission(handle)) {
         await this.readDirectory(handle);
@@ -161,14 +168,19 @@ export class BrowserAPIFilesService extends AbstractFilesService {
   }
 
   override async updateFile(file: Partial<File>, options?: { saveContent: boolean }): Promise<void> {
-    if (!file.id || !this.fileHandles.has(file.id)) {
+    const handle = file.id && this.fileHandles.get(file.id);
+    if (!handle) {
       return;
     }
 
     // save content
     if (options?.saveContent && typeof file.content === 'string') {
-      await this.saveFileContent(file.id, file.content);
+      const writable = await handle.createWritable();
+      await writable.write(file.content || '');
+      await writable.close();
     }
+
+    await this.__updateFile(file);
   }
 
   override async removeFile(id: string): Promise<void> {
@@ -204,14 +216,7 @@ export class BrowserAPIFilesService extends AbstractFilesService {
   }
 
   override async saveFileContent(id: string, content: string): Promise<void> {
-    const handle = this.fileHandles.get(id);
-    if (!handle) {
-      return;
-    }
-
-    const writable = await handle.createWritable();
-		await writable.write(content || '');
-		await writable.close();
+    await this.updateFile({ id, content }, { saveContent: true });
   }
 
   private collectIds(children: Array<Directory | File>, ids: Array<string> = []): Array<string> {
@@ -225,27 +230,34 @@ export class BrowserAPIFilesService extends AbstractFilesService {
   }
 
   private async readDirectory(handle: FileSystemDirectoryHandle) {
-    const state = this.getState();
-    await this.traverseDirectory(handle, state, this.getRootDirectory());
-    state.directories = this.sortDirectories(state.directories);
-    this.mergeState(state);
+    const newState = this.getState();
+    const events: Array<() => void> = [];
+    await this.traverseDirectory(handle, newState, this.getRootDirectory(), events);
+    newState.directories = this.sortDirectories(newState.directories);
+    events.forEach(e => e());
+    this.mergeState(newState);
   }
 
-  private async traverseDirectory(handle: FileSystemDirectoryHandle | FileSystemFileHandle, state: FilesState, parent: Directory) {
+  private async traverseDirectory(handle: FileSystemDirectoryHandle | FileSystemFileHandle, state: FilesState, parent: Directory, events: Array<() => void>) {
     let item: File | Directory;
 
     if (this.isFileSystemDirectoryHandle(handle)) {
       item = this.createDirectoryObject({ name: handle.name, parent, from: 'file-system' }, { schema: 'file' });
+      this.directoryHandles.set(item.id, handle);
       state.directories[String(item.id)] = item;
 
       for await (const entry of handle.values()) {
-        await this.traverseDirectory(entry, state, item);
+        await this.traverseDirectory(entry, state, item, events);
       }
 
       item.children = this.sortChildren(item.children);
+      events.push(() => this.emitCreateDirectory(item as Directory));
     } else {
-      item = this.createFileObject({ name: handle.name, parent, from: 'file-system' }, { schema: 'file' });
+      const content = await (await handle.getFile()).text();
+      item = this.createFileObject({ name: handle.name, parent, from: 'file-system', content, }, { schema: 'file' });
+      this.fileHandles.set(item.id, handle);
       state.files[String(item.id)] = item;
+      events.push(() => this.emitCreateFile(item as File));
     }
 
     this.handles.set(item.uri, handle);
@@ -265,6 +277,9 @@ export class BrowserAPIFilesService extends AbstractFilesService {
         return;
       }
       mutex = true;
+      for (const handle of this.rootHandles.values()) {
+        await this.refreshDirectory(handle);
+      }
       mutex = false;
     }, 1000);
   }

@@ -171,7 +171,7 @@ export class DocumentsService extends AbstractService {
       filedId: id,
       document: document as OldAsyncAPIDocument || null,
       diagnostics: serializedDiagnostics,
-      valid: serializedDiagnostics.errors.length > 0,
+      valid: serializedDiagnostics.errors.length === 0,
       refs: this.createDocumentRefs(file.uri, extras?.document?.data as SpecTypesV2.AsyncAPIObject),
       extras,
     };
@@ -180,6 +180,13 @@ export class DocumentsService extends AbstractService {
   }
 
   private serializeDiagnostics(diagnostics: Diagnostic[] = []) {
+    // map messages of invalid ref to file
+    diagnostics.forEach(diagnostic => {
+      if (diagnostic.code === 'invalid-ref' && diagnostic.message.endsWith('readFile is not a function')) {
+        diagnostic.message = 'Reference does not exist in a known contex.';
+      }
+    });
+
     const collections: DocumentDiagnostics = {
       original: diagnostics,
       filtered: [],
@@ -246,17 +253,36 @@ export class DocumentsService extends AbstractService {
     const uriDirname = this.svcs.filesSvc.dirname(uri);
     const siblingFiles: Array<string> = [];
     traverseObject(document, (key, value) => {
-      if (key === '$ref' && typeof value === 'string' && value[0] !== '#') {
+      if (key === '$ref' && typeof value === 'string' && (value = value.trim())[0] !== '#') {
         const [file] = value.split('#');
-        const resolvedPath = resolvePath(uriDirname, file);
-        const resolvedUri = uri.with({ path: resolvedPath })
-        const possibleFile = this.svcs.filesSvc.getFileByUri(resolvedUri.toString());
+        const resolvedPath = this.resolvePath(fromUriPov, file);
+        const possibleFile = this.svcs.filesSvc.getFileByUri(resolvedPath);
+        // console.log(possibleFile);
         if (possibleFile) {
           siblingFiles.push(possibleFile.id);
         }
       }
     });
     return siblingFiles;
+  }
+
+  private resolvePath(base: string, path: string) {
+    const baseUri = Uri.parse(base);
+    const baseSchema = baseUri.scheme;
+    const pathUri = Uri.parse(path);
+    const pathSchema = pathUri.scheme;
+
+    // console.log(base, baseSchema, path, pathSchema, hasPathSchema);
+
+    // with this same schema it's possibility to make the relative path
+    if (baseSchema === pathSchema) {
+      const baseDirname = this.svcs.filesSvc.dirname(baseUri);
+      const pathPath = pathUri.path[0] === '/' ? pathUri.path.substring(1) : pathUri.path;
+      return `${baseSchema}://${resolvePath(baseDirname, pathPath)}`;
+    }
+
+    // need to use absolute path
+    return '';
   }
 
   private createDocumentObject(id: string, document: Partial<Document> = {}): Document {

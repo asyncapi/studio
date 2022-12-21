@@ -20,7 +20,7 @@ export const CreateNewFileModal = create<CreateNewFileModalProps>(({ directory }
 
   const onSubmit = () => {
     const [name, language] = uri.split('.');
-    toast.promise(filesSvc.createFile({ name, language: language as 'json' | 'yaml', parent: directory }), {
+    toast.promise(filesSvc.createFile({ name, language: language as 'json' | 'yaml', parent: directory, from: directory.from }), {
       loading: 'Creating...',
       success: (
         <div>

@@ -4,7 +4,7 @@ import { VscClose } from 'react-icons/vsc';
 import { IconButton } from '../common';
 
 import { useServices } from '../../services';
-import { useFilesState, usePanelsState } from '../../state';
+import { useDocumentsState, useFilesState, usePanelsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
 import type { PanelTab } from '../../state/panels.state';
@@ -19,13 +19,17 @@ export const EditorTab: FunctionComponent<EditorTabProps> = ({
   const { filesSvc, panelsSvc } = useServices();
   const [hover, setHover] = useState<boolean>(false);
   const file = useFilesState(state => state.files[tab.fileId]);
+  const document = useDocumentsState(state => state.documents[tab.fileId]);
   const active = usePanelsState(state => state.panels['primary']?.activeTab) || '';
 
   if (!file) {
-    return null
+    return null;
   }
+
   const { name, language } = file;
   const isModified = filesSvc.isFileModified(file.id);
+  const isValid = document?.valid ?? true;
+  const colorText = isValid ? (isModified ? 'text-yellow-500' : 'text-gray-300') : 'text-red-400';
 
   return (
     <div 
@@ -41,8 +45,11 @@ export const EditorTab: FunctionComponent<EditorTabProps> = ({
           panelsSvc.setActiveTab(tab.panel, tab.id);
         }}
       >
-        <span className={`inline-block overflow-hidden whitespace-nowrap text-ellipsis mr-1 ${isModified ? 'text-yellow-500' : 'text-gray-300'}`}>
-          {name}.{language}
+        <span className={`inline-block overflow-hidden whitespace-nowrap text-ellipsis mr-1 ${colorText}`}>
+          <span>{name}.{language}</span>
+          {isModified && (
+            <span className='inline-block ml-1.5'>M</span>
+          )}
         </span>
 
         <IconButton

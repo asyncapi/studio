@@ -18,10 +18,10 @@ interface ProblemsTabProps {}
 export const ProblemsTab: FunctionComponent<ProblemsTabProps> = () => {
   const diagnostics = useCurrentDocument()?.diagnostics;
 
-  const errorDiagnosticsLength = diagnostics.errors.length;
-  const warningDiagnosticsLength = diagnostics.warnings.length;
-  const informationDiagnosticsLength = diagnostics.informations.length;
-  const hintDiagnosticsLength = diagnostics.hints.length;
+  const errorDiagnosticsLength = diagnostics?.errors?.length;
+  const warningDiagnosticsLength = diagnostics?.warnings?.length;
+  const informationDiagnosticsLength = diagnostics?.informations?.length;
+  const hintDiagnosticsLength = diagnostics?.hints?.length;
 
   return (
     <div className='flex flex-row items-center'>
@@ -121,10 +121,10 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
   const diagnostics = useCurrentDocument()?.diagnostics;
   const governanceShowState = useSettingsState(state => state.governance.show);
 
-  const errorDiagnostics = diagnostics.errors;
-  const warningDiagnostics = diagnostics.warnings;
-  const infoDiagnostics = diagnostics.informations;
-  const hintDiagnostics = diagnostics.hints;
+  const errorDiagnosticsLength = diagnostics?.errors?.length || 0;
+  const warningDiagnosticsLength = diagnostics?.warnings?.length || 0;
+  const infoDiagnosticsLength = diagnostics?.informations?.length || 0;
+  const hintDiagnosticsLength = diagnostics?.hints?.length || 0;
 
   const errorsTooltip = createProperMessage(false, active, DiagnosticSeverity.Error, 'Show errors', 'Hide errors', 'Show only errors');
   const warningsTooltip = createProperMessage(!governanceShowState.warnings, active, DiagnosticSeverity.Warning, 'Show warnings', 'Hide warnings', 'Show only warnings');
@@ -145,7 +145,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={0} />
-              <span className='ml-1'>{errorDiagnostics.length}</span>
+              <span className='ml-1'>{errorDiagnosticsLength}</span>
             </div>
           </button>
         </li>
@@ -160,7 +160,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={1} />
-              <span className='ml-1'>{warningDiagnostics.length}</span>
+              <span className='ml-1'>{warningDiagnosticsLength}</span>
             </div>
           </button>
         </li>
@@ -175,7 +175,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={2} />
-              <span className='ml-1'>{infoDiagnostics.length}</span>
+              <span className='ml-1'>{infoDiagnosticsLength}</span>
             </div>
           </button>
         </li>
@@ -190,7 +190,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
           >
             <div className='flex flex-row items-center justify-center'>
               <SeverityIcon severity={3} />
-              <span className='ml-1'>{hintDiagnostics.length}</span>
+              <span className='ml-1'>{hintDiagnosticsLength}</span>
             </div>
           </button>
         </li>
@@ -218,6 +218,10 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   }, [setActive]);
 
   const filteredDiagnostics = useMemo(() => {
+    if (!diagnostics?.filtered) {
+      return [];
+    }
+
     return diagnostics.filtered.filter(diagnostic => {
       const { severity, message } = diagnostic;
 

@@ -2,6 +2,7 @@ import { AbstractFilesService } from './abstract-files.service'
 
 import { BrowserAPIFilesService } from './browser-api-files.service';
 import { MemoryFilesService } from './memory-files.service';
+import { FileFlags } from '../../state/files.state';
 
 import type { Services } from '../index';
 import type { File, Directory } from '../../state/files.state';
@@ -25,6 +26,7 @@ export class FilesService extends AbstractFilesService {
     this.getRootDirectory();
     await this.filesSvcs['in-memory'].onInit();
     await this.filesSvcs['file-system'].onInit();
+    this.setAllFilesToUnmodified();
     this.sortAllDirectories();
   }
 
@@ -47,8 +49,8 @@ export class FilesService extends AbstractFilesService {
     return this.filesSvcs['file-system'].isSupportedBrowserAPI();
   }
 
-  hasBrowserAPIDirectories() {
-    return this.filesSvcs['file-system'].hasBrowserAPIDirectories();
+  hasDirectoriesToRestore() {
+    return this.filesSvcs['file-system'].hasDirectoriesToRestore();
   }
 
   restoreBrowserAPIDirectories() {
@@ -64,8 +66,9 @@ export class FilesService extends AbstractFilesService {
   }
 
   override async updateDirectory(directory: Partial<Directory>) {
-    if (directory.id && this.hasDirectory(directory.id)) {
-      return this.filesSvcs[directory.from || 'in-memory']?.updateDirectory(directory);
+    const existingDirectory = directory.id && this.getDirectory(directory.id);
+    if (existingDirectory) {
+      return this.filesSvcs[existingDirectory.from || 'in-memory']?.updateDirectory(directory);
     }
   }
 
@@ -85,8 +88,9 @@ export class FilesService extends AbstractFilesService {
   }
 
   override async updateFile(file: Partial<File>, options?: { saveContent: boolean }) {
-    if (file.id && this.hasFile(file.id)) {
-      return this.filesSvcs[file.from || 'in-memory']?.updateFile(file, options);
+    const existingFile = file.id && this.getFile(file.id);
+    if (existingFile) {
+      return this.filesSvcs[existingFile.from || 'in-memory']?.updateFile(file, options);
     }
   }
 
@@ -109,6 +113,13 @@ export class FilesService extends AbstractFilesService {
     if (file) {
       return this.filesSvcs[file.from || 'in-memory']?.saveFileContent(id, content);
     }
+  }
+
+  private setAllFilesToUnmodified() {
+    Object.values(this.getFiles()).forEach(file => {
+      // remove modified flag
+      file.flags &= ~FileFlags.MODIFIED;
+    });
   }
 
   private sortAllDirectories() {

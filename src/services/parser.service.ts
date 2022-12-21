@@ -31,7 +31,6 @@ export class ParserService extends AbstractService {
     } catch(err) {
       console.error(err);
     }
-    return this.parser.parse(content, options);
   }
 
   private createResolvers(): Array<Resolver> {

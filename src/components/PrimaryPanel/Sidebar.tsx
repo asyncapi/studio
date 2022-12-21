@@ -1,16 +1,19 @@
 import { VscSaveAll, VscCloseAll } from 'react-icons/vsc';
 
 import { Tabs } from './Tabs';
-// import { Dropdown } from './Dropdown';
 import { Dropdown } from './NewDropdown';
 
 import { IconButton } from '../common';
+
+import { useServices } from '../../services';
 
 import type { FunctionComponent } from 'react';
 
 interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
+  const { editorSvc, panelsSvc } = useServices();
+
   return (
     <div className="flex flex-row items-center justify-between bg-gray-800 border-b border-gray-700">
       <div className='flex-1 flex items-center'>
@@ -29,6 +32,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
                 delay: [500, 0],
               }} 
               onClick={e => {
+                editorSvc.saveAllOpenedModels();
                 e.stopPropagation();
               }}
             />
@@ -42,6 +46,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
               }} 
               onClick={e => {
                 e.stopPropagation();
+                panelsSvc.removeAllTabs('primary');
               }}
             />
           </li>

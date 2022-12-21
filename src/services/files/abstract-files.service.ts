@@ -275,8 +275,6 @@ export abstract class AbstractFilesService extends AbstractService {
       newFile.flags &= ~FileFlags.MODIFIED;
     }
 
-    console.log(savedContent === newFile.content);
-
     this.emitUpdateFile(newFile, existingFile);
     if (!parent || (existingParent === parent)) {
       return this.setState({ files });
@@ -472,27 +470,27 @@ export abstract class AbstractFilesService extends AbstractService {
     return collection;
   }
 
-  private emitCreateDirectory(directory: Directory) {
+  protected emitCreateDirectory(directory: Directory) {
     this.svcs.eventsSvc.emit('fs.directory.create', directory);
   }
 
-  private emitUpdateDirectory(directory: Directory, prevDirectory: Directory) {
+  protected emitUpdateDirectory(directory: Directory, prevDirectory: Directory) {
     this.svcs.eventsSvc.emit('fs.directory.update', directory, prevDirectory);
   }
 
-  private emitRemoveDirectory(directory: Directory) {
+  protected emitRemoveDirectory(directory: Directory) {
     this.svcs.eventsSvc.emit('fs.directory.remove', directory);
   }
 
-  private emitCreateFile(file: File) {
+  protected emitCreateFile(file: File) {
     this.svcs.eventsSvc.emit('fs.file.create', file);
   }
 
-  private emitUpdateFile(file: File, prevFile: File) {
+  protected emitUpdateFile(file: File, prevFile: File) {
     this.svcs.eventsSvc.emit('fs.file.update', file, prevFile);
   }
 
-  private emitRemoveFile(file: File) {
+  protected emitRemoveFile(file: File) {
     this.svcs.eventsSvc.emit('fs.file.remove', file);
   }
 }

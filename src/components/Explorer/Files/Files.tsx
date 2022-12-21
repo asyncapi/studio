@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { VscNewFile, VscNewFolder, VscSaveAll, VscCollapseAll, VscRefresh } from 'react-icons/vsc';
+import { useMemo, useState } from 'react';
+import { VscRootFolder, VscNewFile, VscNewFolder, VscSaveAll, VscCollapseAll, VscRefresh } from 'react-icons/vsc';
 import { show } from '@ebay/nice-modal-react';
 import { useContextMenu } from "react-contexify";
 
@@ -17,13 +17,27 @@ import type { FunctionComponent } from 'react';
 interface FilesProps {}
 
 export const Files: FunctionComponent<FilesProps> = () => {
-  const { filesSvc } = useServices();
-  const root = useFilesState(state => state.directories['@@root']);
-  const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });;
-  const hasBrowserAPIDirectories = filesSvc.hasBrowserAPIDirectories();
+  const { filesSvc, editorSvc } = useServices();
+  const root = useFilesState(state => state.directories[filesSvc.getRootDirectory().name]);
+  const [hasRestoredDirectories, setHasRestoredDirectories] = useState(filesSvc.hasDirectoriesToRestore());
+  const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });
 
   const actions = useMemo(() => {
     return [
+      hasRestoredDirectories && (
+        <IconButton
+          icon={<VscRootFolder className='w-4 h-4' />}
+          tooltip={{
+            content: 'Restore opened directories',
+            delay: [500, 0],
+          }}
+          onClick={async e => {
+            e.stopPropagation();
+            await filesSvc.restoreBrowserAPIDirectories();
+            setHasRestoredDirectories(filesSvc.hasDirectoriesToRestore());
+          }}
+        />
+      ),
       <IconButton
         icon={<VscNewFile className='w-4 h-4' />}
         tooltip={{
@@ -52,23 +66,27 @@ export const Files: FunctionComponent<FilesProps> = () => {
           content: 'Save all files',
           delay: [500, 0],
         }}
-      />,
-      <IconButton
-        icon={<VscCollapseAll className='w-4 h-4' />} 
-        tooltip={{
-          content: 'Collapse all directories',
-          delay: [500, 0],
+        onClick={e => {
+          e.stopPropagation();
+          editorSvc.saveAllModels();
         }}
       />,
-      <IconButton
-        icon={<VscRefresh className='w-4 h-4' />}
-        tooltip={{
-          content: 'Refresh all files',
-          delay: [500, 0],
-        }} 
-      />
-    ];
-  }, []);
+      // <IconButton
+      //   icon={<VscCollapseAll className='w-4 h-4' />} 
+      //   tooltip={{
+      //     content: 'Collapse all directories',
+      //     delay: [500, 0],
+      //   }}
+      // />,
+      // <IconButton
+      //   icon={<VscRefresh className='w-4 h-4' />}
+      //   tooltip={{
+      //     content: 'Refresh all files',
+      //     delay: [500, 0],
+      //   }} 
+      // />
+    ].filter(Boolean);
+  }, [hasRestoredDirectories, setHasRestoredDirectories, filesSvc]);
 
   return (
     <div>
@@ -76,19 +94,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
         title='Files' 
         expanded={true}
         actions={actions}
-      >
-        {hasBrowserAPIDirectories && (
-          <div className='px-4 py-2'>
-            <button
-              type="button"
-              className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-xs font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2'
-              onClick={() => filesSvc.restoreBrowserAPIDirectories()}
-            >
-              Load restored directories
-            </button>
-          </div>
-        )}
-        
+      >        
         <div 
           className="flex flex-col bg-gray-800 pb-6"
           onContextMenu={event => {

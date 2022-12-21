@@ -1,17 +1,15 @@
 import { useState, useMemo } from 'react';
-import { VscFolder, VscFolderOpened, VscEdit, VscTrash, VscNewFile, VscNewFolder } from 'react-icons/vsc';
-import { show as showModal } from '@ebay/nice-modal-react';
+import { VscFolder, VscFolderOpened, VscRootFolder } from 'react-icons/vsc';
 import { useContextMenu } from "react-contexify";
 
 import { TreeViewFile } from './TreeViewFile';
-import { CreateNewDirectoryModal, CreateNewFileModal, EditFileModal, DeleteFileModal } from '../../Modals/Files';
 import { IconButton } from '../../common';
 
+import { useServices } from '../../../services';
 import { useFilesState } from '../../../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { File, Directory } from '../../../state/files.state';
-import { useServices } from '../../../services';
 
 function renderChild(child: Directory | File, deep: number = 0) {
   let content: ReactNode = null;
@@ -28,65 +26,36 @@ function renderChild(child: Directory | File, deep: number = 0) {
   );
 }
 
-interface TreeViewDirectoryActionsProps {
+interface TreeViewDirectoryInfosProps {
   directory: Directory;
+  deep: number;
 }
 
-export const TreeViewDirectoryActions: FunctionComponent<TreeViewDirectoryActionsProps> = ({
+export const TreeViewDirectoryInfos: FunctionComponent<TreeViewDirectoryInfosProps> = ({
   directory,
+  deep,
 }) => {
-  const actions = useMemo(() => {
+  const infos = useMemo(() => {
     return [
-      // <IconButton
-      //   icon={<VscNewFile className='w-3.5 h-3.5' />}
-      //   tooltip={{
-      //     content: 'Create new file',
-      //     delay: [500, 0],
-      //   }} 
-      //   onClick={e => {
-      //     e.stopPropagation();
-      //     showModal(CreateNewFileModal, { directory });
-      //   }}
-      // />,
-      // <IconButton
-      //   icon={<VscNewFolder className='w-3.5 h-3.5' />}
-      //   tooltip={{
-      //     content: 'Create new directory',
-      //     delay: [500, 0],
-      //   }} 
-      //   onClick={e => {
-      //     e.stopPropagation();
-      //     showModal(CreateNewDirectoryModal, { directory });
-      //   }}
-      // />,
-      // <IconButton
-      //   icon={<VscEdit className='w-3.5 h-3.5' />}
-      //   tooltip={{
-      //     content: 'Edit directory',
-      //     delay: [500, 0],
-      //   }} 
-      //   onClick={e => {
-      //     e.stopPropagation();
-      //     showModal(EditFileModal, { item: directory });
-      //   }}
-      // />,
-      // <IconButton
-      //   icon={<VscTrash className='w-3.5 h-3.5' />}
-      //   tooltip={{
-      //     content: 'Delete directory',
-      //     delay: [500, 0],
-      //   }} 
-      //   onClick={e => {
-      //     e.stopPropagation();
-      //     showModal(DeleteFileModal, { item: directory });
-      //   }}
-      // />,
-    ];
+      deep === 1 && directory.from === 'file-system' && (
+        <IconButton
+          icon={<VscRootFolder className='w-3.5 h-3.5' />}
+          tooltip={{
+            content: 'File system directory',
+            delay: [500, 0],
+          }}
+        />
+      ),
+    ].filter(Boolean);
   }, [directory]);
+
+  if (infos.length === 0) {
+    return null;
+  }
 
   return (
     <ul className='flex flex-row items-center justify-between'>
-      {actions.map((action, idx) => (
+      {infos.map((action, idx) => (
         <li key={idx}>
           {action}
         </li>
@@ -109,7 +78,6 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
   const { filesSvc } = useServices();
   const directory = useFilesState(state => state.directories[id]);
   const [expanded, setExpanded] = useState<boolean>(initialExpanded);
-  const [hover, setHover] = useState<boolean>(false);
   const { show: showContextMenu, hideAll: hideAllContextMenus } = useContextMenu({ id: 'fs-directory' });
 
   if (!directory) {
@@ -129,8 +97,6 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
             hideAllContextMenus();
             setExpanded(oldState => !oldState);
           }}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
           onContextMenu={event => {
             event.preventDefault();
             event.stopPropagation();
@@ -149,8 +115,8 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
             {name}
           </span>
 
-          <div className={`flex-none transition-opacity ${hover ? 'opacity-1' : 'opacity-0'}`}>
-            <TreeViewDirectoryActions directory={directory} />
+          <div className='flex-none'>
+            <TreeViewDirectoryInfos directory={directory} deep={deep} />
           </div>
         </div>
       )}

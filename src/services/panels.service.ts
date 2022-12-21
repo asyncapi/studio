@@ -92,6 +92,14 @@ export class PanelsService extends AbstractService {
     this.updatePanelState(panelId, panel);
   }
 
+  removeAllTabs(panelId: string): void {
+    let panel = this.getPanel(panelId);
+    if (!panel) {
+      return;
+    }
+    panel.tabs.forEach(tab => this.removeTab(panelId, tab.id));
+  }
+
   setActiveTab(panelId: string, tabId: string) {
     if (!this.hasTab(panelId, tabId)) {
       return;
