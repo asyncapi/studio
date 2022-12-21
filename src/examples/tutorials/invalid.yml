@@ -1,4 +1,4 @@
-# The purpose of this invalid file is only for learning and if you came across it, here's the tutorial https://www.asyncapi.com/docs/tutorials/validate-documents
+# This invalid file exists solely for educational purposes, and if you come across it, here is the tutorial: https://www.asyncapi.com/docs/tutorials/validate-documents
 
 asyncapi: '1.0.0'
 info:
