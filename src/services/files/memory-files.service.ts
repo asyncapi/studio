@@ -232,7 +232,8 @@ export class MemoryFilesService extends AbstractFilesService {
     });
 
     if (Object.keys(directories).length === 1 && Object.keys(files).length === 0) {
-      await this.createFile(this.createFileObject({ id: 'asyncapi', name: 'asyncapi' }));
+      const storageContent = localStorage.getItem('document') || '';
+      await this.createFile(this.createFileObject({ id: this.svcs.formatSvc.generateUuid(), name: 'asyncapi', language: 'yaml', content: storageContent }));
     } else {
       this.mergeState({ directories, files });
     }
