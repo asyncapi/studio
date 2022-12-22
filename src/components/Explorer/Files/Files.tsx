@@ -20,7 +20,7 @@ export const Files: FunctionComponent<FilesProps> = () => {
   const { filesSvc, editorSvc } = useServices();
   const root = useFilesState(state => state.directories[filesSvc.getRootDirectory().name]);
   const [hasRestoredDirectories, setHasRestoredDirectories] = useState(filesSvc.hasDirectoriesToRestore());
-  const { show: showContextMenu } = useContextMenu({ id: 'fs-root' });
+  const { show: showContextMenu } = useContextMenu({ id: 'fs-directory' });
 
   const actions = useMemo(() => {
     return [
@@ -89,27 +89,24 @@ export const Files: FunctionComponent<FilesProps> = () => {
   }, [hasRestoredDirectories, setHasRestoredDirectories, filesSvc]);
 
   return (
-    <div>
-      <ExpandedPanel 
-        title='Files' 
-        expanded={true}
-        actions={actions}
-      >        
-        <div 
-          className="flex flex-col bg-gray-800 pb-6"
-          onContextMenu={event => {
-            event.preventDefault();
-            event.stopPropagation();
-            showContextMenu({ event, props: { directory: root } });
-          }}
-        >
-          <TreeViewDirectory id={root.id} expanded={true} />
-        </div>
+    <ExpandedPanel 
+      title='Files' 
+      expanded={true}
+      actions={actions}
+    >        
+      <div 
+        className="flex flex-col bg-gray-800 h-full"
+        onContextMenu={event => {
+          event.preventDefault();
+          event.stopPropagation();
+          showContextMenu({ event, props: { directory: root } });
+        }}
+      >
+        <TreeViewDirectory id={root.id} expanded={true} />
+      </div>
 
-        <TreeViewDirectoryContextMenu id='fs-root' onRoot={true} />
-        <TreeViewDirectoryContextMenu />
-        <TreeViewFileContextMenu />
-      </ExpandedPanel>
-    </div>
+      <TreeViewDirectoryContextMenu />
+      <TreeViewFileContextMenu />
+    </ExpandedPanel>
   );
 };

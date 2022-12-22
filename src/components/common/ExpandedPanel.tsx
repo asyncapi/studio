@@ -20,7 +20,7 @@ export const ExpandedPanel: FunctionComponent<PropsWithChildren<ExpandedPanelPro
 
   return (
     <div 
-      className='flex flex-col'
+      className='flex flex-col w-full h-full'
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -55,7 +55,7 @@ export const ExpandedPanel: FunctionComponent<PropsWithChildren<ExpandedPanelPro
           </div>
         ) : null}
       </div>
-      <div className={`${expanded ? 'block' : 'hidden'}`}>
+      <div className={`relative h-full ${expanded ? 'block' : 'hidden'}`}>
         {children}
       </div>
     </div>

@@ -134,6 +134,21 @@ export abstract class AbstractFilesService extends AbstractService {
     return this.getDirectory(this.rootDirId) || this.createRootDirectory();
   }
 
+  hasInDeepChildren(directory: Directory, itemId: string): boolean {
+    return Boolean(this.getInDeepChildren(directory, itemId));
+  }
+
+  getInDeepChildren(directory: Directory, itemId: string): Directory | File | undefined {
+    for (const child of directory.children) {
+      if (child.id === itemId) {
+        return child;
+      }
+      if (child.type === 'directory') {
+        return this.getInDeepChildren(child, itemId);
+      }
+    }
+  }
+
   getState() {
     return filesState.getState();
   }

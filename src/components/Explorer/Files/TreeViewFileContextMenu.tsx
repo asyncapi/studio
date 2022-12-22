@@ -3,7 +3,7 @@ import { VscEdit, VscTrash } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { DeleteFilePopover } from '../../Modals/Files';
-import { ContextMenu, Item } from "../../common";
+import { ContextMenu, Item, Separator } from "../../common";
 
 import type { FunctionComponent } from 'react';
 import type { ItemParams } from "../../common/ContextMenu";
@@ -23,13 +23,31 @@ export const TreeViewFileContextMenu: FunctionComponent = () => {
 
   return (
     <ContextMenu id='fs-file'>
+      {/* <Item onClick={(args) => handleClickFile(args, 'rename')} className='group'>
+        <VscEdit
+          className="mr-2 w-4 h-4 text-pink-500 group-hover:text-white"
+          aria-hidden="true"
+        />
+        Copy Path
+      </Item>
+
       <Item onClick={(args) => handleClickFile(args, 'rename')} className='group'>
         <VscEdit
           className="mr-2 w-4 h-4 text-pink-500 group-hover:text-white"
           aria-hidden="true"
         />
-        Rename...
+        Copy Relative Path
       </Item>
+
+      <Separator /> */}
+
+      {/* <Item onClick={(args) => handleClickFile(args, 'rename')} className='group'>
+        <VscEdit
+          className="mr-2 w-4 h-4 text-pink-500 group-hover:text-white"
+          aria-hidden="true"
+        />
+        Rename
+      </Item> */}
 
       <Item onClick={(args) => handleClickFile(args, 'remove')} className='group'>
         <VscTrash

@@ -6,6 +6,7 @@ import { TreeViewFile } from './TreeViewFile';
 import { IconButton } from '../../common';
 
 import { useServices } from '../../../services';
+import { useOnEvent } from '../../../helpers';
 import { useFilesState } from '../../../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
@@ -75,10 +76,22 @@ export const TreeViewDirectory: FunctionComponent<TreeViewDirectoryProps> = ({
   expanded: initialExpanded = false,
   deep = 0,
 }) => {
-  const { filesSvc } = useServices();
+  const { filesSvc, panelsSvc } = useServices();
   const directory = useFilesState(state => state.directories[id]);
   const [expanded, setExpanded] = useState<boolean>(initialExpanded);
   const { show: showContextMenu, hideAll: hideAllContextMenus } = useContextMenu({ id: 'fs-directory' });
+
+  useOnEvent('panels.panel.set-active-tab', (panelId, tabId) => {
+    const tab = panelsSvc.getTab(panelId, tabId);
+    if (!tab) {
+      return;
+    }
+
+    const deepChild = filesSvc.getInDeepChildren(directory, tab.fileId);
+    if (deepChild) {
+      setExpanded(true);
+    }
+  }, [filesSvc, panelsSvc, directory, setExpanded]); 
 
   if (!directory) {
     return null;
