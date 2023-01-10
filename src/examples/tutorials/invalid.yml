@@ -1,3 +1,5 @@
+# This invalid file exists solely for educational purposes, and if you come across it, here is the tutorial: https://www.asyncapi.com/docs/tutorials/validate-documents
+
 asyncapi: '1.0.0'
 info:
   title: Streetlights API
