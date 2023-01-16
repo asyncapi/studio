@@ -18,7 +18,11 @@ interface PublishNodeProps {
 
 export const SubscribeNode: FunctionComponent<PublishNodeProps> = ({ data: { channel, description, messages } }) => {
   return (
-    <div className="bg-white shadow sm:rounded-lg border-2 border-yellow-400">
+    <div
+      className="bg-white shadow sm:rounded-lg border-2 border-yellow-400"
+      data-message-type={messages['0']['title']}
+      data-operation-type={channel}
+    >
       <Handle
         type="target"
         position={Position.Left}

@@ -52,7 +52,11 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
   const { description, title, version, license, externalDocs, servers, defaultContentType } = buildNodeData(spec as AsyncAPIDocument);
 
   return (
-    <div className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex">
+    <div
+      className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex"
+      data-group="server"
+      data-subgroup="server-test"
+    >
       <Handle
         type="target"
         position={Position.Left}

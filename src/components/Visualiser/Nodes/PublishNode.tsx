@@ -20,8 +20,13 @@ interface PublishNodeProps {
 export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
   data: { messages = [], channel, description },
 }) => {
+ 
   return (
-    <div className="bg-white shadow sm:rounded-lg border-2 border-green-400">
+    <div
+      className="bg-white shadow sm:rounded-lg border-2 border-green-400"
+      data-message-type={messages['0']['title']}
+      data-operation-type={channel}
+    >
       <div className="px-4 py-5 sm:px-6 space-y-4">
         <span className="block leading-6  text-gray-900 text-xs font-light uppercase">You can publish</span>
         <div>
