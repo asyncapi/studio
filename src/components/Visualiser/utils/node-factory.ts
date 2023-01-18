@@ -46,7 +46,7 @@ function buildFlowElementsForOperation({ operation, spec, applicationLinkType, d
         description: channelModel.description(),
         operationId: operationModel.id(),
         elementType: operation,
-        theme: operation === 'subscribe' ? 'yellow' : 'green',
+        theme: operation === 'subscribe' ? 'green' : 'blue',
         ...data
       },
       position: { x: 0, y: 0 },
@@ -57,7 +57,7 @@ function buildFlowElementsForOperation({ operation, spec, applicationLinkType, d
       // type: 'smoothstep',
       // animated: true,
       // label: messagesModel.map(message => message.uid()).join(','),
-      style: { stroke: applicationLinkType === 'target' ? '#7ee3be' : 'orange', strokeWidth: 4 },
+      style: { stroke: applicationLinkType === 'target' ? '#00A5FA' : '#7ee3be', strokeWidth: 4 },
       source: applicationLinkType === 'target' ? `${operation}-${channel.channel}` : 'application',
       target: applicationLinkType === 'target' ? 'application' : `${operation}-${channel.channel}`,
     };

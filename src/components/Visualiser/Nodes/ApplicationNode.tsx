@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
+import { useServices } from '../../../services';
 import { Markdown } from '../../common';
 
 import type { FunctionComponent } from 'react';
@@ -49,28 +51,30 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
 export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
   data: { spec } = {},
 }) => {
+  const { navigationSvc } = useServices();
+  const [highlight, setHighlight] = useState(false);
   const { description, title, version, license, externalDocs, servers, defaultContentType } = buildNodeData(spec as AsyncAPIDocument);
 
+  useEffect(() => {
+    return navigationSvc.highlightVisualiserNode('#server', setHighlight);
+  }, [navigationSvc, setHighlight]);
+
   return (
-    <div
-      className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex nodes"
-      data-group="servers"
-      data-subgroup="server-test"
-    >
+    <div className={`flex transition duration-500 ease-out shadow sm:rounded-lg border-2 ${highlight ? 'bg-gray-300 border-gray-600' : 'bg-white border-gray-300'}`}>
       <Handle
         type="target"
         position={Position.Left}
         style={{ background: 'gray' }}
       />
       <div className="flex justify-center items-center border-r border-gray-200">
-        <span className="block transform -rotate-90 uppercase text-green-500 w-full font-bold tracking-widest px-2 ">
+        <span className="block transform -rotate-90 uppercase text-blue-500 w-full font-bold tracking-widest px-2 ">
           In
         </span>
       </div>
       <div>
         <div className="px-4 py-5 sm:px-6">
           <div className="flex justify-between mb-4">
-            <span className="block leading-6 text-gray-900 uppercase text-xs  font-light">
+            <span className="block leading-6 text-gray-900 uppercase text-xs font-light">
               application
             </span>
           </div>
@@ -150,7 +154,7 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
         </div>
       </div>
       <div className="flex justify-center items-center  border-l border-gray-2">
-        <span className="block transform -rotate-90 uppercase text-yellow-500 w-full font-bold tracking-widest">
+        <span className="block transform -rotate-90 uppercase text-green-500 w-full font-bold tracking-widest">
           Out
         </span>
       </div>
