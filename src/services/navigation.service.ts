@@ -48,7 +48,7 @@ export class NavigationService extends AbstractService {
           const value: string | null = node.getAttribute(attribute);
 
           if(value === hash) {
-            this.blinkNode(node, 200);
+            this.highlightBorder(node, 400);
           }
         })
       }
@@ -90,12 +90,12 @@ export class NavigationService extends AbstractService {
     }
   }
 
-  private blinkNode(node: HTMLElement, timeDuration: number) {
+  private highlightBorder(node: HTMLElement, timeDuration: number) {
     setTimeout(() => {
-      node.style.display = 'none';
+      node.style.borderWidth = '6px';
 
       setTimeout(() => {
-        node.style.display = 'block';
+        node.style.borderWidth = '2px';
       }, timeDuration);
     }, timeDuration);
   }
