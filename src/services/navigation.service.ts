@@ -23,9 +23,37 @@ export class NavigationService extends AbstractService {
       }
 
       this.scrollToHash(hash);
+      this.highlightNode(hash);
       this.emitHashChangeEvent(hash);
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  async highlightNode(hash?: string) {
+    hash = hash || window.location.hash.substring(1);
+    try {
+      const escapedHash = CSS.escape(hash);
+      if (!escapedHash || escapedHash === '#') {
+        return;
+      }
+
+      const nodes = Array.from(document.getElementsByClassName("nodes") as HTMLCollectionOf<HTMLElement>);
+
+      for(let idx in nodes) {
+        const node: HTMLElement = nodes[idx];
+        const attributes: string[] = node.getAttributeNames();
+
+        attributes.filter((attribute) => {
+          const value: string | null = node.getAttribute(attribute);
+
+          if(value === hash) {
+            this.blinkNode(node, 200);
+          }
+        })
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -60,6 +88,16 @@ export class NavigationService extends AbstractService {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  private blinkNode(node: HTMLElement, timeDuration: number) {
+    setTimeout(() => {
+      node.style.display = 'none';
+
+      setTimeout(() => {
+        node.style.display = 'block';
+      }, timeDuration);
+    }, timeDuration);
   }
 
   private emitHashChangeEvent(hash: string) {

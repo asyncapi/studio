@@ -53,8 +53,8 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
 
   return (
     <div
-      className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex"
-      data-group="server"
+      className="bg-white shadow sm:rounded-lg border-2 border-gray-300 flex nodes"
+      data-group="servers"
       data-subgroup="server-test"
     >
       <Handle

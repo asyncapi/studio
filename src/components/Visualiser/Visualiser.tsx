@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FlowDiagram } from './FlowDiagram';
 
+import { useServices } from '../../services';
 import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
@@ -11,9 +12,14 @@ interface VisualiserProps {}
 
 export const Visualiser: FunctionComponent<VisualiserProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
+  const { navigationSvc } = useServices();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
+
+  useEffect(() => {
+    navigationSvc.highlightNode();
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
