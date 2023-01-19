@@ -1,6 +1,17 @@
 import { AbstractService } from './abstract.service';
 
+import type React from 'react';
+
 export class NavigationService extends AbstractService {
+  override afterAppInit() {
+    try {
+      this.scrollToHash();
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
+
   getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
@@ -30,16 +41,13 @@ export class NavigationService extends AbstractService {
   }
 
   async scrollToHash(hash?: string) {
-    hash = hash || window.location.hash.substring(1);
     try {
-      const escapedHash = CSS.escape(hash);
-      if (!escapedHash || escapedHash === '#') {
+      const sanitizedHash = this.sanitizeHash(hash);
+      if (!sanitizedHash) {
         return;
       }
 
-      const items = document.querySelectorAll(
-        escapedHash.startsWith('#') ? escapedHash : `#${escapedHash}`,
-      );
+      const items = document.querySelectorAll(`#${sanitizedHash}`);
       if (items.length) {
         const element = items[0];
         typeof element.scrollIntoView === 'function' &&
@@ -59,6 +67,32 @@ export class NavigationService extends AbstractService {
       }
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  highlightVisualiserNode(nodeId: string, setState: React.Dispatch<React.SetStateAction<boolean>>) {
+    function hashChanged() {
+      if (location.hash.startsWith(nodeId)) {
+        setState(true);
+        setTimeout(() => {
+          setState(false);
+        }, 1000);
+      }
+    }
+
+    window.addEventListener('hashchange', hashChanged);
+    return () => {
+      window.removeEventListener('hashchange', hashChanged);
+    };
+  }
+
+  private sanitizeHash(hash?: string): string | undefined {
+    hash = hash || window.location.hash.substring(1);
+    try {
+      const escapedHash = CSS.escape(hash);
+      return escapedHash.startsWith('#') ? hash.substring(1) : escapedHash;
+    } catch (err: any) {
+      return;
     }
   }
 
