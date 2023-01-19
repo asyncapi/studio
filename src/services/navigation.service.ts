@@ -3,6 +3,15 @@ import { AbstractService } from './abstract.service';
 import type React from 'react';
 
 export class NavigationService extends AbstractService {
+  override afterAppInit() {
+    try {
+      this.scrollToHash();
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
+
   getUrlParameters() {
     const urlParams = new URLSearchParams(window.location.search);
     return {

@@ -55,3 +55,9 @@ export async function createServices() {
 
   return services;
 }
+
+export async function afterAppInit(services: Services) {
+  for (const service in services) {
+    await services[service as keyof Services].afterAppInit();
+  }
+}
