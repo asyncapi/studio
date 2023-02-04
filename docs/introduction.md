@@ -14,5 +14,10 @@ Studio is a tool to develop AsyncAPI documentation. It allows you to visualize t
 # Usage
 
 To start using Studio, [create an AsyncAPI file](https://www.asyncapi.com/docs/tutorials/streetlights#creating-the-asyncapi-file) for your API.
+<Remember>
 
+If you do not have an `asyncapi.yaml` file ready, then generate one by running: 
+`asyncapi new --example=tutorial.yml --no-tty`.
+
+</Remember>
 Use the `Block visualizer` button to toggle the Event Visualizer window from the navigation panel. You will find the navigation panel to the extreme left your screen. 
