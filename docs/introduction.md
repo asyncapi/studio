@@ -11,7 +11,7 @@ Studio is a tool to develop AsyncAPI documentation. It allows you to visualize t
 - Straightforward and effortless in building APIs.
 - Interactive AsyncAPI documentation.
 
-# Process
+# Usage
 
 To start using Studio, [create an AsyncAPI file](https://www.asyncapi.com/docs/tutorials/streetlights#creating-the-asyncapi-file) for your API.
 
