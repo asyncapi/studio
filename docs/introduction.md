@@ -19,7 +19,7 @@ You can use it to view the events, publishers, subscribers, messages, payload as
 
 # Usage
 
-To start using Studio, [create an AsyncAPI file](https://www.asyncapi.com/docs/tutorials/create-asyncapi-document#create-AsyncAPI-document) for your API. 
+To start using Studio, make sure you have an AsyncAPI file for your API. 
 <Remember>
 
 If you do not have an `asyncapi.yaml` file ready, then generate one by running: 
