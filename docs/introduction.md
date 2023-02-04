@@ -12,7 +12,7 @@ You can use it to view the events, publishers, subscribers, messages, payload as
 
 # Studio Advantages 
 - User-friendly.
-- Visualizing events flow..
+- Visualizing events flow.
 - Interactive AsyncAPI documentation.
 - Straightforward and effortless in building APIs.
 
