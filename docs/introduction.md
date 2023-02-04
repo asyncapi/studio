@@ -17,8 +17,13 @@ You can use it to view the events, publishers, subscribers, messages, payload as
 - Straightforward and effortless in building APIs.
 
 
-# Process
+# Usage
 
-To start using Studio, [create the AsyncAPI](https://www.asyncapi.com/docs/tutorials/streetlights#creating-the-asyncapi-file) file for your API.
+To start using Studio, [create an AsyncAPI file](https://www.asyncapi.com/docs/tutorials/create-asyncapi-document#create-AsyncAPI-document) for your API. 
+<Remember>
 
+If you do not have an `asyncapi.yaml` file ready, then generate one by running: 
+`asyncapi new --example=tutorial.yml --no-tty`.
+
+</Remember>
 Use the `Block visualizer` button to toggle the Event Visualizer window from the navigation panel. You will find the navigation panel to the extreme left your screen. 
