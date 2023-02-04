@@ -1,4 +1,8 @@
-Studio is a tool to develop AsyncAPI documentation. It allows you to visualize the flow, events, publishers, subscribers as you design your API.
+Studio is a tool to develop AsyncAPI documentation. 
+
+Using Studio you can develop an AsyncAPI document, visualize the flow of events, preview, validate, and convert the document to the latest version in one place.
+
+You can use it to view the events, publishers, subscribers, messages, payload as you design your API.
 
 # Studio Use Cases
 
@@ -8,8 +12,10 @@ Studio is a tool to develop AsyncAPI documentation. It allows you to visualize t
 
 # Studio Advantages 
 - User-friendly.
-- Straightforward and effortless in building APIs.
+- Visualizing events flow..
 - Interactive AsyncAPI documentation.
+- Straightforward and effortless in building APIs.
+
 
 # Process
 
