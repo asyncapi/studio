@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 const schema =
-  localStorage.getItem('document') || `asyncapi: '2.5.0'
+  localStorage.getItem('document') || `asyncapi: '2.6.0'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'
