@@ -87,7 +87,7 @@
     "@asyncapi/java-template": "^0.2.1",
     "@asyncapi/markdown-template": "^1.2.1",
     "@asyncapi/nodejs-template": "^0.13.1",
-    "@asyncapi/nodejs-ws-template": "^0.9.28",
+    "@asyncapi/nodejs-ws-template": "^0.9.29",
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.2",
     "@craco/craco": "^7.0.0",
