@@ -39,7 +39,12 @@ Click on the individual elements of the Navigation button to jump to those secti
 
 ## Diagnostics Window
 
-The Editor also has resizeable Diagnostics window. It shows a quick count of number of errors (in red) and warnings (in yellow) by its title. The description of the warnings and errors with line number is displayed in a table.
+The Editor also has resizeable Diagnostics window. It shows a quick count of number of 
+- errors (in red),
+- warnings (in yellow),
+- informations (in blue),
+- hints (in green)
+by its title. The description of the diagnostics with line number is displayed in a table.
 
 To the right side of the title bar there are three indicators of the Diagnostics window: 
 
@@ -47,14 +52,14 @@ To the right side of the title bar there are three indicators of the Diagnostics
 - Autosave - It shows whether Autosave is on or off.
 - Type - Shows the language in which the API is written: `JSON` or `YAML`.
 
-Bwlow the title bar there is a control panel. You can the buttons to:
+Below the title bar there is a control panel. You can the buttons to:
 
 - Hide and show erros
 - Hide and show warnings
 - Hide and show information messages
 - Hide and show hints
 
-There is also search bar to search that aids in finding issues by their names. You will see Settings icon to the right. It will take you to the governance of Diagnostic window.
+There is also search bar to search that aids in finding issues by their names. You will see Settings icon to the right. It will take you to the governance of Diagnostic's settings window.
 
 # HTML Preview
 
@@ -84,7 +89,7 @@ To create a new file you can pick one of the available templates.
 
 There are 5 available to quick start Studio. 
 
-- _Simple Example - A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.
+- Simple Example - A basic example of a service that is in charge of processing user signups. Great place to start learning AsyncAPI.
 
 - Apache Kafka - A framework implementation of a software bus using stream-processing. Open Source developed by the Apache Software Foundation.
 
