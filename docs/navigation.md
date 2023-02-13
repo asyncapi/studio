@@ -23,11 +23,12 @@ The Operations section lists all the operations that are a part of the AsyncAPI.
 
 ## Messages
 
-This Messages section displays the title of each message used to communicate to the API.
+This Messages section displays the messages stored in `components.messages` section.
+
 
 ## Schemas
 
-The Schemas displays the title of the schemas defined.
+The Schemas displays the schemas stored in the `components.schemas` section.
 
 
 # Editor
