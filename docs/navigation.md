@@ -23,12 +23,12 @@ The Operations section lists all the operations that are a part of the AsyncAPI.
 
 ## Messages
 
-This Messages section displays the messages stored in `components.messages` section.
+This Messages section displays the messages stored in `components.messages` section. This does not mean that every message in the component is used.  It can be defined but it may not used by references in the `operation` field.
 
 
 ## Schemas
 
-The Schemas displays the schemas stored in the `components.schemas` section.
+The Schemas displays the schemas stored in the `components.schemas` section. This does not mean that every schema is used in the document. You can have it defined but it may not be used by references in the `message.payload` field.
 
 
 # Editor
