@@ -45,7 +45,7 @@ export const NewFileModal = create(() => {
 
     toast.success(
       <div>
-        <span className="block text-bold">Succesfully reused the {`"${selectedTemplate.title}"`} template.</span>
+        <span className="block text-bold">Successfully reused the {`"${selectedTemplate.title}"`} template.</span>
       </div>
     );
   };
