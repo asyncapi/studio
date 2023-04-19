@@ -5,6 +5,7 @@ import kafka from './streetlights-kafka.yml';
 import websocket from './websocket-gemini.yml';
 import mqtt from './streetlights-mqtt.yml';
 import simple from './simple.yml';
+import ibmmq from './ibmmq.yml';
 
 // tutorial example
 import invalid from './tutorials/invalid.yml';
@@ -46,8 +47,14 @@ export default [
   },
   {
     title: 'MQTT',
-    description: () => <>A protocol for fetching resources. It is the foundation of any data exchange on the Web and it is a client-server protocol.</>,
+    description: () => <>An OASIS standard messaging protocol for the Internet of Things. Ideal for connecting remote devices with limited processing power and bandwidth.</>,
     template: mqtt,
+    type: templateTypes.protocol
+  },
+  {
+    title: 'IBM MQ',
+    description: () => <>A robust, reliable, and secure messaging solution. IBM MQ simplifies and accelerates the integration of different applications across multiple platforms and supports a wide range of APIs and languages.</>,
+    template: ibmmq,
     type: templateTypes.protocol
   },
   {
