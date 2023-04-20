@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@asyncapi/dotnet-nats-template": "^0.11.0",
-    "@asyncapi/go-watermill-template": "^0.2.20",
+    "@asyncapi/go-watermill-template": "^0.2.21",
     "@asyncapi/html-template": "^0.28.3",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^0.28.0",
