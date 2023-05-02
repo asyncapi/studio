@@ -26,7 +26,7 @@
     "./LICENSE"
   ],
   "dependencies": {
-    "@asyncapi/avro-schema-parser": "^1.1.0",
+    "@asyncapi/avro-schema-parser": "^3.0.0",
     "@asyncapi/converter": "^1.2.0",
     "@asyncapi/openapi-schema-parser": "^2.0.3",
     "@asyncapi/parser": "^2.0.0-next-major.14",
