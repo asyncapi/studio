@@ -16,7 +16,7 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
         const url = `${window.location.origin}/?base64=${encodeURIComponent(
           base64
         )}`;
-        navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(url);
       }()),
       {
         loading: 'Copying URL to clipboard...',
