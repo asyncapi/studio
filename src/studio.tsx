@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Template, Toolbar } from './components';
 
@@ -24,6 +24,13 @@ export const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () =
       </div>
     );
   }
+  const unsubscribe = appState.subscribe((state) => {
+    state.initErrors.forEach(e => {
+      toast.error(e.message);
+    });
+    unsubscribe();
+    appState.setState({initErrors: []});
+  });
 
   return (
     <div className="flex flex-col h-full w-full h-screen">

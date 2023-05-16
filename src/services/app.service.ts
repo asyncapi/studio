@@ -31,6 +31,10 @@ export class ApplicationService extends AbstractService {
       });
     }
 
+    if (error) {
+      appState.setState({initErrors: [error]});
+    }
+
     // show RedirectedModal modal if the redirectedFrom is set (only when readOnly state is set to false)
     if (!isStrictReadonly && redirectedFrom) {
       show(RedirectedModal);
