@@ -83,7 +83,7 @@
     "@asyncapi/go-watermill-template": "^0.2.24",
     "@asyncapi/html-template": "^0.28.3",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
-    "@asyncapi/java-spring-template": "^0.28.0",
+    "@asyncapi/java-spring-template": "^0.29.0",
     "@asyncapi/java-template": "^0.2.1",
     "@asyncapi/markdown-template": "^1.2.1",
     "@asyncapi/nodejs-template": "^0.13.1",
