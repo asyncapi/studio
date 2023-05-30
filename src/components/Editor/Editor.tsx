@@ -5,13 +5,12 @@ import { EditorSidebar } from './EditorSidebar';
 import { MonacoWrapper } from './MonacoWrapper';
 import { Terminal } from '../Terminal/Terminal';
 
-import state from '../../state';
+import { useOtherState } from '../../state';
 
 export interface EditorProps {}
 
 export const Editor: React.FunctionComponent<EditorProps> = () => {
-  const editorState = state.useEditorState();
-  const editorHeight = editorState.height.get();
+  const editorHeight = useOtherState(state => state.editorHeight);
 
   return (
     <div className="flex flex-1 overflow-hidden">

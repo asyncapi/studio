@@ -1,53 +1,101 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { VscSettingsGear } from 'react-icons/vsc';
+import { create, useModal } from '@ebay/nice-modal-react';
 
 import { SettingsTabs, SettingTab } from './SettingsTabs';
 
 import { ConfirmModal } from '../index';
 import { Switch } from '../../common';
 
-import state from '../../../state';
-import { SettingsState } from '../../../state/settings';
+import { useServices } from '../../../services';
 
-function saveOptions(settings: SettingsState = {} as any) {
-  state.settings.merge({
-    ...settings,
-  });
-  localStorage.setItem('studio-settings', JSON.stringify(state.settings.get()));
+import type { Dispatch, SetStateAction, FunctionComponent } from 'react';
+import type { SettingsState } from '../../../state/settings.state';
+
+interface ShowGovernanceOptionProps {
+  label: 'warning' | 'information' | 'hint';
+  state: boolean;
+  setState: Dispatch<SetStateAction<boolean>>;
 }
 
-export const SettingsModal: React.FunctionComponent = () => {
-  const settingsState = state.useSettingsState();
-  const [autoSaving, setAutoSaving] = useState(settingsState.editor.autoSaving.get());
-  const [savingDelay, setSavingDelay] = useState(settingsState.editor.savingDelay.get());
-  const [autoRendering, setAutoRendering] = useState(settingsState.templates.autoRendering.get());
+const ShowGovernanceOption: FunctionComponent<ShowGovernanceOptionProps> = ({
+  label,
+  state,
+  setState
+}) => {
+  return (
+    <div>
+      <div className="flex flex-col mt-4 text-sm">
+        <div className="flex flex-row content-center justify-between">
+          <label
+            htmlFor={`settings-governance-show-${label}`}
+            className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+          >
+            Show&nbsp;<strong>{label}</strong>&nbsp;governance issues
+          </label>
+          <Switch
+            toggle={state}
+            onChange={setState}
+          />
+        </div>
+        <div className='text-gray-400 text-xs'>
+          Show {label} governance issues in the editor&apos;s&nbsp;<strong>Diagnostics</strong>&nbsp;tab.
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface SettingsModalProps {
+  activeTab?: 'editor' | 'governance' | 'template';
+}
+
+export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' }) => {
+  const { settingsSvc } = useServices();
+  const settings = settingsSvc.get();
+  const modal = useModal();
+
+  const [autoSaving, setAutoSaving] = useState(settings.editor.autoSaving);
+  const [savingDelay, setSavingDelay] = useState(settings.editor.savingDelay);
+  const [governanceWarnings, setGovernanceWarnings] = useState(settings.governance.show.warnings);
+  const [governanceInformations, setGovernanceInformations] = useState(settings.governance.show.informations);
+  const [governanceHints, setGovernanceHints] = useState(settings.governance.show.hints);
+  const [autoRendering, setAutoRendering] = useState(settings.templates.autoRendering);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
 
-  useEffect(() => {
-    const disable = JSON.stringify({
+  const createNewState = (): SettingsState => {
+    return {
       editor: {
         autoSaving,
         savingDelay,
       },
+      governance: {
+        show: {
+          warnings: governanceWarnings,
+          informations: governanceInformations,
+          hints: governanceHints,
+        },
+      },
       templates: {
         autoRendering,
       }
-    }) === localStorage.getItem('studio-settings');
-    setConfirmDisabled(disable);
-  }, [autoSaving, savingDelay, autoRendering]);
+    };
+  };
+
+  useEffect(() => {
+    const newState = createNewState();
+    const isThisSameObjects = settingsSvc.isEqual(newState);
+    setConfirmDisabled(isThisSameObjects);
+  }, [autoSaving, savingDelay, autoRendering, governanceWarnings, governanceInformations, governanceHints]);
+
+  const onCancel = useCallback(() => {
+    modal.hide();
+  }, []);
 
   const onSubmit = () => {
-    saveOptions({
-      editor: {
-        autoSaving,
-        savingDelay,
-      },
-      templates: {
-        autoRendering,
-      }
-    });
-    setConfirmDisabled(true);
+    const newState = createNewState();
+    settingsSvc.set(newState);
+
     toast.success(
       <div>
         <span className="block text-bold">
@@ -55,21 +103,22 @@ export const SettingsModal: React.FunctionComponent = () => {
         </span>
       </div>
     );
+    onCancel();
   };
 
   const tabs: Array<SettingTab> = [
     {
-      name: 'Editor',
+      name: 'editor',
       tab: <span>Editor</span>,
       content: (
         <div>
           <div className="flex flex-col mt-4 text-sm">
             <div className="flex flex-row content-center justify-between">
               <label
-                htmlFor="asyncapi-version"
+                htmlFor="settings-auto-saving"
                 className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
               >
-                Auto saving:
+                Auto saving
               </label>
               <Switch
                 toggle={autoSaving}
@@ -83,13 +132,13 @@ export const SettingsModal: React.FunctionComponent = () => {
           <div className={`flex flex-col mt-4 text-sm pl-8 ${autoSaving ? 'opacity-1' : 'opacity-25'}`}>
             <div className="flex flex-row content-center justify-between">
               <label
-                htmlFor="template-delay"
+                htmlFor="settings-template-delay"
                 className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
               >
-                Delay (in miliseconds):
+                Delay (in miliseconds)
               </label>
               <select
-                name="asyncapi-version"
+                name="settings-template-delay"
                 className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
                 onChange={e => setSavingDelay(JSON.parse(e.target.value))}
                 value={autoSaving ? savingDelay : ''}
@@ -111,7 +160,18 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
     {
-      name: 'Templates',
+      name: 'governance',
+      tab: <span>Governance</span>,
+      content: (
+        <>
+          <ShowGovernanceOption label='warning' state={governanceWarnings} setState={setGovernanceWarnings} />
+          <ShowGovernanceOption label='information' state={governanceInformations} setState={setGovernanceInformations} />
+          <ShowGovernanceOption label='hint' state={governanceHints} setState={setGovernanceHints} />
+        </>
+      ),
+    },
+    {
+      name: 'templates',
       tab: <span>Templates</span>,
       content: (
         <div>
@@ -121,7 +181,7 @@ export const SettingsModal: React.FunctionComponent = () => {
                 htmlFor="asyncapi-version"
                 className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
               >
-                Auto rendering:
+                Auto rendering
               </label>
               <Switch
                 toggle={autoRendering}
@@ -136,23 +196,16 @@ export const SettingsModal: React.FunctionComponent = () => {
       ),
     },
   ];
+
   return (
     <ConfirmModal
-      title={'Studio settings'}
+      title='Studio settings'
       confirmText="Save"
       confirmDisabled={confirmDisabled}
-      opener={
-        <button
-          className={'flex border-l-2 text-gray-500 hover:text-white border-gray-800 focus:outline-none border-box p-4'}
-          type="button"  
-          title="Settings"  
-        >
-          <VscSettingsGear className="w-5 h-5" />
-        </button>
-      }
       onSubmit={onSubmit}
+      onCancel={onCancel}
     >
-      <SettingsTabs tabs={tabs} />
+      <SettingsTabs active={activeTab} tabs={tabs} />
     </ConfirmModal>
   );
-};
+});

@@ -1,24 +1,23 @@
-import React from 'react';
-
 import SplitPane from './SplitPane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Template } from './Template';
-import { NewFileModal, RedirectedModal } from './Modals';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
-import state from '../state';
+import { usePanelsState } from '../state';
+
+import type { FunctionComponent } from 'react';
 
 interface ContentProps {}
 
-export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
-  const sidebarState = state.useSidebarState();
+export const Content: FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
+  const { show, secondaryPanelType } = usePanelsState();
 
-  const navigationEnabled = sidebarState.panels.navigation.get();
-  const editorEnabled = sidebarState.panels.editor.get();
-  const viewEnabled = sidebarState.panels.view.get();
-  const viewType = sidebarState.panels.viewType.get();
+  const navigationEnabled = show.primarySidebar;
+  const editorEnabled = show.primaryPanel;
+  const viewEnabled = show.secondaryPanel;
+  const viewType = secondaryPanelType;
 
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
@@ -49,8 +48,6 @@ export const Content: React.FunctionComponent<ContentProps> = () => { // eslint-
   return (
     <div className="flex flex-1 flex-row relative">
       <div className="flex flex-1 flex-row relative">
-        <NewFileModal />
-        <RedirectedModal />
         <SplitPane
           size={viewEnabled ? secondPaneSize : 0}
           minSize={0}

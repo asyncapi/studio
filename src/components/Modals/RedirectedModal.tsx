@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { create } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './ConfirmModal';
 import { Markdown } from '../common';
-
-import state from '../../state';
 
 const CHANGES = `
 Below are the changes compared to the old AsyncAPI Playground:
@@ -20,38 +19,20 @@ Below are the changes compared to the old AsyncAPI Playground:
 - Panels can be stretched.
 `;
 
-export const RedirectedModal: React.FunctionComponent = () => {
-  const [show, setShow] = useState(false);
+function onCancel() {
+  if (typeof window.history.replaceState === 'function') {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('redirectedFrom');
+    window.history.replaceState({}, window.location.href, url.toString());
+  }
+}
+
+export const RedirectedModal = create(() => {
   const [showMore, setShowMore] = useState(false);
-
-  const appState = state.useAppState();
-  const isRedirected = appState.redirectedFrom.get();
-
-  useEffect(() => {
-    isRedirected === 'playground' && setShow(true);
-  }, [isRedirected]);
-
-  useEffect(() => {
-    show === false && appState.redirectedFrom.set(false);
-  }, [show]); // eslint-disable-line
-
-  function onCancel() {
-    if (typeof window.history.replaceState === 'function') {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('redirectedFrom');
-      window.history.replaceState({}, window.location.href, url.toString());
-    }
-    setShow(false);
-  }
-
-  function onShowMoreClick() {
-    setShowMore(true);
-  }
 
   return (
     <ConfirmModal
       title='Welcome to the AsyncAPI Studio!'
-      show={show}
       cancelText='OK'
       onCancel={onCancel}
     >
@@ -67,7 +48,7 @@ export const RedirectedModal: React.FunctionComponent = () => {
                 <button
                   type="button"
                   className='mx-auto rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm'
-                  onClick={onShowMoreClick}
+                  onClick={() => setShowMore(true)}
                 >
                   Show what&apos;s changed
                 </button>
@@ -78,4 +59,4 @@ export const RedirectedModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

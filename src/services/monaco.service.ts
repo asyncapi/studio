@@ -1,50 +1,70 @@
-// @ts-ignore
-import specs from '@asyncapi/specs';
+import { AbstractService } from './abstract.service';
+
 import { loader } from '@monaco-editor/react';
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { setDiagnosticsOptions } from 'monaco-yaml';
+import YAML from 'js-yaml';
 
-import { SpecificationService } from './specification.service';
-import state from '../state';
+import { documentsState, filesState } from '../state';
 
-export class MonacoService {
-  private static actualVersion = 'X.X.X';
-  private static Monaco: any = null;
-  private static Editor: any = null;
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';
+import type { SpecVersions } from '../types';
+import type { JSONSchema7 } from 'json-schema';
 
-  static get monaco() {
-    return MonacoService.Monaco;
+export class MonacoService extends AbstractService {
+  private jsonSchemaSpecs: Map<string, any> = new Map();
+  private jsonSchemaDefinitions: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+  private actualVersion = 'X.X.X';
+  private monacoInstance!: typeof monacoAPI;
+
+  override async onInit() {
+    // load monaco instance
+    await this.loadMonaco();
+    // set monaco theme
+    this.setMonacoTheme();
+    // prepare JSON Schema specs and definitions for JSON/YAML language config
+    this.prepareJSONSchemas();
+    // load initial language config (for json and yaml)
+    this.setLanguageConfig(this.svcs.specificationSvc.latestVersion);
+    // subscribe to document to update JSON/YAML language config
+    this.subcribeToDocuments();
   }
-  static set monaco(value: any) {
-    MonacoService.Monaco = value;
+
+  get monaco() {
+    return this.monacoInstance;
   }
 
-  static get editor() {
-    return MonacoService.Editor;
-  }
-  static set editor(value: any) {
-    MonacoService.Editor = value;
-  }
-
-  static updateLanguageConfig(version: string = SpecificationService.getLastVersion()) {
+  updateLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
     if (version === this.actualVersion) {
       return;
     }
-    this.loadLanguageConfig(version);
+    this.setLanguageConfig(version);
     this.actualVersion = version;
   }
 
-  static prepareLanguageConfig(
-    asyncAPIVersion: string,
+  private setLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
+    if (!this.monaco) {
+      return;
+    }
+    const options = this.prepareLanguageConfig(version);
+
+    // json
+    const json = this.monaco.languages.json;
+    if (json && json.jsonDefaults) {
+      json.jsonDefaults.setDiagnosticsOptions(options);
+    }
+
+    // yaml
+    setDiagnosticsOptions(options as YAMLDiagnosticsOptions);
+  }
+
+  private prepareLanguageConfig(
+    version: SpecVersions,
   ): monacoAPI.languages.json.DiagnosticsOptions {
-    const spec = { ...specs[String(asyncAPIVersion)] };
-    const definitions = Object.entries(spec.definitions).map(([uri, schema]) => ({
-      uri,
-      schema,
-    }));
-    delete spec.definitions;
+    const spec = this.jsonSchemaSpecs.get(version);
 
     return {
-      enableSchemaRequest: true,
+      enableSchemaRequest: false,
       hover: true,
       completion: true,
       validate: true,
@@ -55,29 +75,27 @@ export class MonacoService {
           fileMatch: ['*'], // associate with all models
           schema: spec,
         },
-        ...definitions,
+        ...(this.jsonSchemaDefinitions || []),
       ],
     } as any;
   }
 
-  static loadLanguageConfig(asyncAPIVersion: string) {
-    const monacoInstance = window.monaco;
-    if (!monacoInstance) return;
-
-    const options = this.prepareLanguageConfig(asyncAPIVersion);
-
-    const json = monacoInstance.languages.json;
-    json && json.jsonDefaults && json.jsonDefaults.setDiagnosticsOptions(options);
-
-    const yaml = (monacoInstance.languages as any).yaml;
-    yaml && yaml.yamlDefaults && yaml.yamlDefaults.setDiagnosticsOptions(options);
+  private async loadMonaco() {
+    // in test environment we don't need monaco loaded
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+    
+    const monaco = this.monacoInstance = await import('monaco-editor');
+    loader.config({ monaco });
   }
 
-  static loadMonacoConfig() {
-    const monacoInstance = window.monaco;
-    if (!monacoInstance) return;
+  private setMonacoTheme() {
+    if (!this.monaco) {
+      return;
+    }
 
-    monacoInstance.editor.defineTheme('asyncapi-theme', {
+    this.monaco.editor.defineTheme('asyncapi-theme', {
       base: 'vs-dark',
       inherit: true,
       colors: {
@@ -88,28 +106,81 @@ export class MonacoService {
     });
   }
 
-  static async loadMonaco() {
-    let monaco: typeof monacoAPI;
+  private prepareJSONSchemas() {
+    const uris: string[] = [];
+    Object.entries(this.svcs.specificationSvc.specs).forEach(([version, spec]) => {
+      this.serializeSpec(spec, version, uris);
+    });
+  }
 
-    // JEST cannot bundle monaco-editor in test environment so we need to fetch that package from cdn
-    // in dev or production environment we will use bundled monaco-editor
-    if (process.env.NODE_ENV === 'test') {
-      monaco = await loader.init();
-    } else {
-      monaco = await import('monaco-editor');
-      loader.config({ monaco });
-    }
-    window.monaco = monaco;
+  private serializeSpec(spec: JSONSchema7, version: string, uris: string[]) {
+    // copy whole spec
+    const copiedSpec = this.copySpecification(spec);
 
-    // load monaco config
-    this.loadMonacoConfig();
-    
-    // load yaml plugin
-    // @ts-ignore
-    await import('monaco-yaml/lib/esm/monaco.contribution');
-    
-    // load language config (for json and yaml)
-    this.loadLanguageConfig(SpecificationService.getLastVersion());
-    state.editor.monacoLoaded.set(true);
+    // serialize definitions
+    const definitions = Object.entries(copiedSpec.definitions || {}).map(([uri, schema]) => {
+      if (uri === 'http://json-schema.org/draft-07/schema') {
+        uri = 'https://json-schema.org/draft-07/schema';
+      }
+
+      return {
+        uri, 
+        schema,
+      };
+    });
+    delete copiedSpec.definitions;
+
+    // save spec to map
+    this.jsonSchemaSpecs.set(version, copiedSpec);
+
+    // save definitions
+    definitions.forEach(definition => {
+      if (uris.includes(definition.uri)) {
+        return;
+      }
+
+      uris.push(definition.uri);
+      if (Array.isArray(this.jsonSchemaDefinitions)) {
+        this.jsonSchemaDefinitions.push(definition);
+      }
+    });
+  }
+
+  private copySpecification(spec: JSONSchema7): JSONSchema7 {
+    return JSON.parse(JSON.stringify(spec, (_, value) => {
+      if (
+        value === 'http://json-schema.org/draft-07/schema#' ||
+        value === 'http://json-schema.org/draft-07/schema'
+      ) {
+        return 'https://json-schema.org/draft-07/schema';
+      }
+      return value;
+    })) as JSONSchema7;
+  }
+
+  private subcribeToDocuments() {
+    documentsState.subscribe((state, prevState) => {
+      const newDocuments = state.documents;
+      const oldDocuments = prevState.documents;
+
+      Object.entries(newDocuments).forEach(([uri, document]) => {
+        const oldDocument = oldDocuments[String(uri)];
+        if (document === oldDocument) return;
+        const version = document.document?.version();
+        if (version) {
+          this.updateLanguageConfig(version as SpecVersions);
+        } else {
+          try {
+            const file = filesState.getState().files['asyncapi'];
+            if (file) {
+              const version = (YAML.load(file.content) as { asyncapi: SpecVersions }).asyncapi;
+              this.svcs.monacoSvc.updateLanguageConfig(version);
+            }
+          } catch (e: any) {
+            // intentional
+          }
+        }
+      });
+    });
   }
 }

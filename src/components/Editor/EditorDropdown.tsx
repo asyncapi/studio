@@ -1,26 +1,36 @@
 import React from 'react';
 import toast from 'react-hot-toast';
+import { show } from '@ebay/nice-modal-react';
 import { FaEllipsisH } from 'react-icons/fa';
 
 import {
-  ConvertModal,
-  GeneratorModal,
-  ImportBase64Modal,
   ImportURLModal,
+  ImportBase64Modal,
+  GeneratorModal,
+  ConvertModal,
 } from '../Modals';
 import { Dropdown } from '../common';
 
-import { EditorService } from '../../services';
-import state from '../../state';
+import { useServices } from '../../services';
+import { useDocumentsState, useFilesState } from '../../state';
 
 interface EditorDropdownProps {}
 
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
-  const editorState = state.useEditorState();
-  const parserState = state.useParserState();
+  const { editorSvc } = useServices();
+  const isInvalidDocument = !useDocumentsState(state => state.documents['asyncapi'].valid);
+  const language = useFilesState(state => state.files['asyncapi'].language);
 
-  const language = editorState.language.get();
-  const hasParserErrors = parserState.errors.get().length > 0;
+  const importUrlButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Import from URL"
+      onClick={() => show(ImportURLModal)}
+    >
+      Import from URL
+    </button>
+  );
 
   const importFileButton = (
     <label
@@ -31,7 +41,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
         type="file"
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
-          toast.promise(EditorService.importFile(event.target.files), {
+          toast.promise(editorSvc.importFile(event.target.files), {
             loading: 'Importing...',
             success: (
               <div>
@@ -54,16 +64,39 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </label>
   );
 
-  const saveFileButton = (
+  const importBase64Button = (
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Import from Base64"
+      onClick={() => show(ImportBase64Modal)}
+    >
+      Import from Base64
+    </button>
+  );
+
+  const generateButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
+      title="Generate code/docs"
+      disabled={isInvalidDocument}
+      onClick={() => show(GeneratorModal)}
+    >
+      Generate code/docs
+    </button>
+  );
+
+  const saveFileButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
       title={`Save as ${language === 'yaml' ? 'YAML' : 'JSON'}`}
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.saveAsYaml()
-            : EditorService.saveAsJSON(),
+            ? editorSvc.saveAsYaml()
+            : editorSvc.saveAsJSON(),
           {
             loading: 'Saving...',
             success: (
@@ -83,7 +116,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Save as {language === 'yaml' ? 'YAML' : 'JSON'}
     </button>
@@ -92,15 +125,15 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   const convertLangAndSaveButton = (
     <button
       type="button"
-      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
       title={`Convert and save as ${
         language === 'yaml' ? 'JSON' : 'YAML'
       }`}
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.saveAsJSON()
-            : EditorService.saveAsYaml(),
+            ? editorSvc.saveAsJSON()
+            : editorSvc.saveAsYaml(),
           {
             loading: 'Saving...',
             success: (
@@ -120,7 +153,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
     </button>
@@ -129,13 +162,13 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   const convertLangButton = (
     <button
       type="button"
-      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
       title={`Convert to ${language === 'yaml' ? 'JSON' : 'YAML'}`}
       onClick={() => {
         toast.promise(
           language === 'yaml'
-            ? EditorService.convertToJSON()
-            : EditorService.convertToYaml(),
+            ? editorSvc.convertToJSON()
+            : editorSvc.convertToYaml(),
           {
             loading: 'Saving...',
             success: (
@@ -155,9 +188,20 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={hasParserErrors}
+      disabled={isInvalidDocument}
     >
       Convert to {language === 'yaml' ? 'JSON' : 'YAML'}
+    </button>
+  );
+
+  const convertButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Convert AsyncAPI document"
+      onClick={() => show(ConvertModal)}
+    >
+      Convert document
     </button>
   );
 
@@ -169,18 +213,18 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       <ul className="bg-gray-800 text-md text-white">
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
-            <ImportURLModal />
+            {importUrlButton}
           </li>
           <li className="hover:bg-gray-900">
             {importFileButton}
           </li>
           <li className="hover:bg-gray-900">
-            <ImportBase64Modal />
+            {importBase64Button}
           </li>
         </div>
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
-            <GeneratorModal />
+            {generateButton}
           </li>
         </div>
         <div className="border-b border-gray-700">
@@ -196,7 +240,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
             {convertLangButton}
           </li>
           <li className="hover:bg-gray-900">
-            <ConvertModal />
+            {convertButton}
           </li>
         </div>
       </ul>

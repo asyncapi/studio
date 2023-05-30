@@ -1,13 +1,16 @@
+import { useState, useEffect } from 'react';
+import { Handle, Position } from 'reactflow';
 
-import React from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { useServices } from '../../../services';
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore
 import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
 
+import type React from 'react';
+
 interface IData {
-  messages: any []
+  messages: any[];
   channel: string
   description: string
 }
@@ -19,8 +22,15 @@ interface PublishNodeProps {
 export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
   data: { messages = [], channel, description },
 }) => {
+  const { navigationSvc } = useServices();
+  const [highlight, setHighlight] = useState(false);
+
+  useEffect(() => {
+    return navigationSvc.highlightVisualiserNode(`#operation-publish-${channel}`, setHighlight);
+  }, [navigationSvc, setHighlight]);
+
   return (
-    <div className="bg-white shadow sm:rounded-lg border-2 border-green-400">
+    <div className={`flex transition duration-500 ease-out shadow sm:rounded-lg border-2 ${highlight ? 'bg-blue-100 border-blue-700' : 'bg-white border-blue-400'}`}>
       <div className="px-4 py-5 sm:px-6 space-y-4">
         <span className="block leading-6  text-gray-900 text-xs font-light uppercase">You can publish</span>
         <div>

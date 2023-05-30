@@ -1,67 +1,41 @@
-import React, { useEffect } from 'react';
-import MonacoEditor, {
-  EditorProps as MonacoEditorProps,
-} from '@monaco-editor/react';
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { useMemo } from 'react';
+import MonacoEditor from '@monaco-editor/react';
 
 import { debounce } from '../../helpers';
-import {
-  EditorService,
-  MonacoService,
-  SpecificationService,
-} from '../../services';
-import state from '../../state';
+import { useServices } from '../../services';
+import { useFilesState, useSettingsState } from '../../state';
 
-export type MonacoWrapperProps = MonacoEditorProps
+import type { FunctionComponent } from 'react';
+import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
 
-export const MonacoWrapper: React.FunctionComponent<MonacoWrapperProps> = ({
+export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   ...props
 }) => {
-  const editorState = state.useEditorState();
-  const settingsState = state.useSettingsState();
-  const autoSaving = settingsState.editor.autoSaving.get();
-  const savingDelay = settingsState.editor.savingDelay.get();
+  const { editorSvc, parserSvc } = useServices();
+  const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
+  const file = useFilesState(state => state.files['asyncapi']);
 
-  async function handleEditorDidMount(
-    editor: monacoAPI.editor.IStandaloneCodeEditor,
-  ) {
-    // save editor instance to the window
-    window.Editor = editor;
-    // parse on first run the spec
-    SpecificationService.parseSpec(EditorService.getValue());
+  const onChange = useMemo(() => {
+    return debounce((v: string) => {
+      editorSvc.updateState({ content: v, file: { from: 'storage', source: undefined } });
+      autoSaving && editorSvc.saveToLocalStorage(v, false);
+      parserSvc.parse('asyncapi', v);
+    }, savingDelay);
+  }, [autoSaving, savingDelay]);
 
-    // apply save command
-    editor.addCommand(
-      monacoAPI.KeyMod.CtrlCmd | monacoAPI.KeyCode.KEY_S,
-      () => EditorService.saveToLocalStorage(),
-    );
-
-    // mark editor as loaded
-    editorState.editorLoaded.set(true);
-  }
-
-  const onChange = debounce((v: string) => {
-    EditorService.updateState({ content: v });
-    autoSaving && EditorService.saveToLocalStorage(v, false);
-    SpecificationService.parseSpec(v);
-  }, savingDelay);
-
-  useEffect(() => {
-    MonacoService.loadMonaco();
-  }, []);
-
-  return editorState.monacoLoaded.get() ? (
+  return (
     <MonacoEditor
-      language={editorState.language.get()}
-      defaultValue={editorState.editorValue.get()}
+      language={file.language}
+      defaultValue={file.content}
       theme="asyncapi-theme"
-      onMount={handleEditorDidMount}
+      onMount={editorSvc.onDidCreate.bind(editorSvc)}
       onChange={onChange}
       options={{
         wordWrap: 'on',
         smoothScrolling: true,
+        glyphMargin: true,
       }}
       {...(props || {})}
     />
-  ) : null;
+  );
 };

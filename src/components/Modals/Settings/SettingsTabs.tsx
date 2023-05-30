@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import type { ReactNode, FunctionComponent } from 'react';
 
 export interface SettingTab {
   name: string;
-  tab: React.ReactNode;
-  content: React.ReactNode;
+  tab: ReactNode;
+  content: ReactNode;
 }
 
 interface SettingTabsProps {
+  active: string;
   tabs: Array<SettingTab>;
-  active?: string;
 }
 
-export const SettingsTabs: React.FunctionComponent<SettingTabsProps> = ({
+export const SettingsTabs: FunctionComponent<SettingTabsProps> = ({
+  active,
   tabs = [],
-  active = '',
 }) => {
-  const [activeTab, setActiveTab] = useState(active || tabs[0]?.name);
-
+  const [activeTab, setActiveTab] = useState(
+    tabs.some(tab => tab.name === active) ? active : tabs[0]?.name
+  );
+  
   if (tabs.length === 0) {
     return null;
   }

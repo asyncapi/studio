@@ -1,8 +1,10 @@
+import { AbstractService } from './abstract.service';
+
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
 
-export class FormatService {
-  static convertToYaml(spec: string) {
+export class FormatService extends AbstractService {
+  convertToYaml(spec: string) {
     try {
       // Editor content -> JS object -> YAML string
       const jsonContent = YAML.load(spec);
@@ -12,7 +14,7 @@ export class FormatService {
     }
   }
 
-  static convertToJSON(spec: string) {
+  convertToJSON(spec: string) {
     try {
       // JSON or YAML String -> JS object
       const jsonContent = YAML.load(spec);
@@ -23,16 +25,16 @@ export class FormatService {
     }
   }
 
-  static encodeBase64(content: string) {
+  encodeBase64(content: string) {
     return encode(content);
   }
 
-  static decodeBase64(content: string) {
+  decodeBase64(content: string) {
     return decode(content);
   }
 
-  static retrieveLangauge(content: string) {
-    if (content.trim()[0] === '{') {
+  retrieveLangauge(content: string) {
+    if (content.trimStart()[0] === '{') {
       return 'json';
     }
     return 'yaml';

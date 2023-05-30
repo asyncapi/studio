@@ -1,46 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './ConfirmModal';
 
-import { EditorService, SpecificationService } from '../../services';
-import state from '../../state';
+import { useServices } from '../../services';
+import { useDocumentsState } from '../../state';
 
-export const ConvertToLatestModal: React.FunctionComponent = () => {
-  const [show, setShow] = useState(false);
+interface ConvertToLatestModal {
+  convertOnlyToLatest: boolean
+}
+
+export const ConvertToLatestModal = create<ConvertToLatestModal>(({ convertOnlyToLatest = false }) => {
   const [version, setVersion] = useState('');
+  const { editorSvc, specificationSvc } = useServices();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
 
-  const specState = state.useSpecState();
-  const parserState = state.useParserState();
-  const shouldOpenConvertModal = specState.shouldOpenConvertModal.get();
-  const convertOnlyToLatest = specState.convertOnlyToLatest.get();
-  const forceConvert = specState.forceConvert.get();
-
-  const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0-rc2';
-  const latestVersion = SpecificationService.getLastVersion();
-  const allowedVersions = Object.keys(SpecificationService.getSpecs());
+  const actualVersion = document?.version() || '2.0.0-rc2';
+  const latestVersion = specificationSvc.latestVersion;
+  const allowedVersions = Object.keys(specificationSvc.specs);
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
-
-  useEffect(() => {
-    shouldOpenConvertModal && setShow(true);
-  }, [shouldOpenConvertModal]);
-
-  useEffect(() => {
-    show === false && specState.shouldOpenConvertModal.set(false);
-  }, [show]); // eslint-disable-line
-
-  function onCancel() {
-    setShow(false);
-  }
 
   function onSubmit() {
     async function convert() {
       try {
-        await EditorService.convertSpec(convertOnlyToLatest ? latestVersion : version);
-      } finally {
-        specState.shouldOpenConvertModal.set(false);
-        setShow(false);
+        await editorSvc.convertSpec(version);
+      } catch (err: any) {
+        // intentionally
       }
     }
 
@@ -66,8 +53,6 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
   let content = '';
   if (convertOnlyToLatest) {
     content = `Your document is using not latest version of AsyncAPI. Convert your document to latest (${latestVersion}) version`;
-  } else if (forceConvert) {
-    content = 'Your document is using not supported version of AsyncAPI. Convert your document to newest version to continue.';
   } else {
     content = 'There is a new version of AsyncAPI. Convert your document to newest version if you want.';
   }
@@ -77,10 +62,7 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
       title={convertOnlyToLatest ? 'Convert AsyncAPI document to latest version' : 'Convert AsyncAPI document to newest version'}
       confirmText={convertOnlyToLatest ? `Convert to ${latestVersion}` : 'Convert'}
       confirmDisabled={false}
-      cancelDisabled={forceConvert}
-      show={show}
       onSubmit={onSubmit}
-      onCancel={onCancel}
     >
       <div className="flex flex-col content-center justify-center text-center">
         <p>
@@ -126,4 +108,4 @@ export const ConvertToLatestModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

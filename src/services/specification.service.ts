@@ -1,94 +1,48 @@
-// @ts-ignore
-import { convert, ConvertVersion } from '@asyncapi/converter';
-import { parse, registerSchemaParser, AsyncAPIDocument } from '@asyncapi/parser';
-// @ts-ignore
-import openapiSchemaParser from '@asyncapi/openapi-schema-parser';
-// @ts-ignore
-import avroSchemaParser from '@asyncapi/avro-schema-parser';
-// @ts-ignore
+import { AbstractService } from './abstract.service';
+
 import specs from '@asyncapi/specs';
-import YAML from 'js-yaml';
+import { show } from '@ebay/nice-modal-react';
 
-import { EditorService } from './editor.service';
-import { MonacoService } from './monaco.service';
+import { ConvertToLatestModal } from '../components/Modals';
 
-import state from '../state';
+import { documentsState } from '../state';
 
-registerSchemaParser(openapiSchemaParser);
-registerSchemaParser(avroSchemaParser);
+import type { SpecVersions } from '../types';
 
-export class SpecificationService {
-  static getParsedSpec() {
-    return window.ParsedSpec || null;
+export class SpecificationService extends AbstractService {
+  override onInit() {
+    this.subcribeToDocuments();
   }
 
-  static async parseSpec(rawSpec: string): Promise<AsyncAPIDocument | void> {
-    const parserState = state.parser;
-    return parse(rawSpec)
-      .then(asyncApiDoc => {
-        window.ParsedSpec = asyncApiDoc;
-        parserState.set({
-          parsedSpec: asyncApiDoc,
-          valid: true,
-          errors: [],
-        });
-
-        const version = asyncApiDoc.version();
-        MonacoService.updateLanguageConfig(version);
-        if (this.shouldInformAboutLatestVersion(version)) {
-          state.spec.set({
-            shouldOpenConvertModal: true,
-            convertOnlyToLatest: false,
-            forceConvert: false,
-          });
-        }
-
-        EditorService.applyErrorMarkers([]);
-        return asyncApiDoc;
-      })
-      .catch(err => {
-        try {
-          const asyncapiSpec = YAML.load(rawSpec) as { asyncapi: string };
-          MonacoService.updateLanguageConfig(asyncapiSpec.asyncapi);
-        } catch (e: any) {
-          // intentional
-        }
-        const errors = this.filterErrors(err, rawSpec);
-
-        parserState.set({
-          parsedSpec: null,
-          valid: false,
-          errors,
-        });
-        EditorService.applyErrorMarkers(errors);
-      });
-  }
-
-  static async convertSpec(
-    spec: string,
-    version: ConvertVersion = this.getLastVersion() as ConvertVersion,
-  ): Promise<string> {
-    try {
-      const converted = convert(spec, version);
-      if (typeof converted === 'object') {
-        return JSON.stringify(converted, undefined, 2);
-      }
-      return converted;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static getSpecs() {
+  get specs() {
     return specs;
   }
 
-  static getLastVersion(): string {
-    return Object.keys(specs).pop() as string;
+  get latestVersion(): SpecVersions {
+    return Object.keys(specs).pop() as SpecVersions;
   }
 
-  static shouldInformAboutLatestVersion(
+  getSpec(version: SpecVersions) {
+    return specs[String(version) as SpecVersions];
+  }
+
+  private subcribeToDocuments() {
+    documentsState.subscribe((state, prevState) => {
+      const newDocuments = state.documents;
+      const oldDocuments = prevState.documents;
+
+      Object.entries(newDocuments).forEach(([uri, document]) => {
+        const oldDocument = oldDocuments[String(uri)];
+        if (document === oldDocument) return;
+        const version = document.document?.version();
+        if (version && this.tryInformAboutLatestVersion(version)) {
+          show(ConvertToLatestModal);
+        }
+      });
+    });
+  }
+
+  private tryInformAboutLatestVersion(
     version: string,
   ): boolean {
     const oneDay = 24 * 60 * 60 * 1000; /* ms */
@@ -103,99 +57,11 @@ export class SpecificationService {
     const isOvertime =
       nowDate === dateOfLastQuestion ||
       nowDate.getTime() - dateOfLastQuestion.getTime() > oneDay;
-    if (isOvertime && version !== this.getLastVersion()) {
+    if (isOvertime && version !== this.latestVersion) {
       sessionStorage.setItem('informed-about-latest', nowDate.toString());
       return true;
     }
 
-    return false;
-  }
-
-  static errorHasLocation(err: any) {
-    return (
-      this.isValidationError(err) ||
-      this.isJsonError(err) ||
-      this.isYamlError(err) ||
-      this.isDereferenceError(err) ||
-      this.isUnsupportedVersionError(err)
-    );
-  }
-
-  private static notSupportedVersions = /('|"|)asyncapi('|"|): ('|"|)(1.0.0|1.1.0|1.2.0|2.0.0-rc1|2.0.0-rc2)('|"|)/;
-
-  private static filterErrors(err: any, rawSpec: string) {
-    const errors = [];
-    if (this.isUnsupportedVersionError(err)) {
-      errors.push({
-        type: err.type,
-        title: err.message,
-        location: err.validationErrors,
-      });
-      this.isNotSupportedVersion(rawSpec) &&
-        state.spec.set({
-          shouldOpenConvertModal: true,
-          convertOnlyToLatest: false,
-          forceConvert: true,
-        });
-    }
-    if (this.isValidationError(err)) {
-      errors.push(...err.validationErrors);
-    }
-    if (this.isYamlError(err) || this.isJsonError(err)) {
-      errors.push(err);
-    }
-    if (this.isDereferenceError(err)) {
-      errors.push(
-        ...err.refs.map((ref: any) => ({
-          type: err.type,
-          title: err.title,
-          location: { ...ref },
-        })),
-      );
-    }
-    if (errors.length === 0) {
-      errors.push(err);
-    }
-    return errors;
-  }
-
-  private static isValidationError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/validation-errors'
-    );
-  }
-
-  private static isJsonError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-json'
-    );
-  }
-
-  private static isYamlError(err: any) {
-    return (
-      err && err.type === 'https://github.com/asyncapi/parser-js/invalid-yaml'
-    );
-  }
-
-  private static isUnsupportedVersionError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/unsupported-version'
-    );
-  }
-
-  private static isDereferenceError(err: any) {
-    return (
-      err &&
-      err.type === 'https://github.com/asyncapi/parser-js/dereference-error'
-    );
-  }
-
-  static isNotSupportedVersion(rawSpec: string): boolean {
-    if (this.notSupportedVersions.test(rawSpec.trim())) {
-      return true;
-    }
     return false;
   }
 }

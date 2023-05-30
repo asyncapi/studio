@@ -1,28 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useStore, useReactFlow, useNodes, useEdges } from 'reactflow';
+import { VscDebugStart, VscDebugPause, VscRefresh } from 'react-icons/vsc';
 
-import { VscDebugStart, VscDebugPause, VscRefresh  } from 'react-icons/vsc';
-import { useStoreActions, useStoreState, useZoomPanHelper } from 'react-flow-renderer';
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
+
+import type { FunctionComponent } from 'react';
 
 interface ControlsProps {}
 
-export const Controls: React.FunctionComponent<ControlsProps> = () => {
+export const Controls: FunctionComponent<ControlsProps> = () => {
   const [animateNodes, setAnimateNodes] = useState(false);
 
-  const nodeStates = useStoreState((store) => store.nodes);
-  const nodeEdges = useStoreState((store) => store.edges);
-  const setElements = useStoreActions((actions) => actions.setElements);
-  const { fitView } = useZoomPanHelper();
+  const { fitView } = useReactFlow();
+  const nodes = useNodes();
+  const edges = useEdges();
+  const setNodes = useStore(state => state.setNodes);
+  const setEdges = useStore(state => state.setEdges);
 
   useEffect(() => {
-    if (nodeStates.length > 0) {
-      const newNodeEdges = nodeEdges.map(nodeEdge => ({...nodeEdge, animated: animateNodes}));
-      setElements([...nodeStates, ...newNodeEdges]);
+    if (nodes.length > 0) {
+      const newNodeEdges = edges.map(edge => ({ ...edge, animated: animateNodes }));
+      setEdges([...newNodeEdges]);
     } 
   }, [animateNodes]);
 
   const reloadInterface = () => {
-    setElements([...calculateNodesForDynamicLayout(nodeStates), ...nodeEdges]);
+    setNodes(calculateNodesForDynamicLayout(nodes));
     fitView();
   };
 

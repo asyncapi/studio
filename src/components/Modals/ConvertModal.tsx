@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { create } from '@ebay/nice-modal-react';
+
 import { ConfirmModal } from './index';
 
-import { EditorService, SpecificationService } from '../../services';
-import state from '../../state';
+import { useServices } from '../../services';
+import { useDocumentsState } from '../../state';
 
-export const ConvertModal: React.FunctionComponent = () => {
-  const [version, setVersion] = useState('');
-  const parserState = state.useParserState();
+import type { SpecVersions } from '../../types';
 
-  const actualVersion = parserState.parsedSpec.get()?.version();
-  const latestVersion = SpecificationService.getLastVersion();
-  const allowedVersions = Object.keys(SpecificationService.getSpecs());
+export const ConvertModal = create(() => {
+  const { editorSvc, specificationSvc } = useServices();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const latestVersion = specificationSvc.latestVersion;
+  
+  const [version, setVersion] = useState(latestVersion);
+  const actualVersion = document?.version();
+  const allowedVersions = Object.keys(specificationSvc.specs);
   actualVersion && (allowedVersions.splice(0, allowedVersions.indexOf(actualVersion) + 1));
   const reservedAllowedVersions = [...allowedVersions].reverse();
 
   const onSubmit = () => {
-    toast.promise(EditorService.convertSpec(version), {
+    toast.promise(editorSvc.convertSpec(version), {
       loading: 'Converting...',
       success: (
         <div>
@@ -40,15 +45,6 @@ export const ConvertModal: React.FunctionComponent = () => {
       title={`Convert AsyncAPI ${actualVersion} document`}
       confirmText="Convert"
       confirmDisabled={!version || allowedVersions.length === 0}
-      opener={
-        <button
-          type="button"
-          className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-          title="Convert AsyncAPI document"
-        >
-          Convert document
-        </button>
-      }
       onSubmit={onSubmit}
     >
       <div>
@@ -63,7 +59,7 @@ export const ConvertModal: React.FunctionComponent = () => {
             <select
               name="asyncapi-version"
               className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block w-full sm:text-sm border-gray-300 rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-              onChange={e => setVersion(e.target.value)}
+              onChange={e => setVersion(e.target.value as SpecVersions)}
               value={version}
             >
               <option value="">Please Select</option>
@@ -80,4 +76,4 @@ export const ConvertModal: React.FunctionComponent = () => {
       </div>
     </ConfirmModal>
   );
-};
+});

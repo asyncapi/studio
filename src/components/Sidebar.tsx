@@ -1,97 +1,105 @@
-import React from 'react';
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
+import { show as showModal } from '@ebay/nice-modal-react';
 
-import { SettingsModal } from './Modals/Settings/SettingsModal';
+import { Tooltip } from './common';
+import { SettingsModal, NewFileModal } from './Modals';
 
-import state from '../state';
+import { usePanelsState, panelsState } from '../state';
 
-type NavItemType = 'navigation' | 'editor' | 'template' | 'visualiser';
+import type { FunctionComponent, ReactNode } from 'react';
+import type { PanelsState } from '../state/panels.state';
 
-function setActiveNav(navItem: NavItemType) {
-  const panels = state.sidebar.panels;
-  const panelsState = panels.get();
+function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
+  const settingsState = panelsState.getState();
+  let secondaryPanelType = settingsState.secondaryPanelType;
+  const newShow = { ...settingsState.show };
 
-  const newState = {
-    ...panelsState,
-  };
-
-  if (navItem === 'template' || navItem === 'visualiser') {
+  if (type === 'template' || type === 'visualiser') {
     // on current type
-    if (newState.viewType === navItem) {
-      newState.view = !newState.view;
+    if (secondaryPanelType === type) {
+      newShow[`${panelName}`] = !newShow[`${panelName}`];
     } else {
-      newState.viewType = navItem;
-      if (newState.view === false) {
-        newState.view = true;
+      secondaryPanelType = type;
+      if (newShow[`${panelName}`] === false) {
+        newShow[`${panelName}`] = true;
       }
     }
   } else {
-    (newState as any)[String(navItem)] = !(newState as any)[String(navItem)];
+    newShow[`${panelName}`] = !newShow[`${panelName}`];
   }
 
-  if (newState.navigation && !newState.editor && !newState.view) {
-    panels.set({
-      ...newState,
-      view: true,
-    });
-    return;
-  }
-  if (!Object.values(newState).some(itemNav => itemNav === true)) {
-    panels.set({
-      ...newState,
-      view: true,
-    });
-    return;
+  if (!newShow.primaryPanel && !newShow.secondaryPanel) {
+    newShow.secondaryPanel = true;
   }
 
-  panels.set(newState);
+  panelsState.setState({
+    show: newShow,
+    secondaryPanelType,
+  });
 }
 
 interface NavItem {
   name: string;
-  state: () => boolean;
-  icon: React.ReactNode;
+  title: string;
+  isActive: boolean;
+  onClick: () => void;
+  icon: ReactNode;
+  tooltip: ReactNode;
 }
 
 interface SidebarProps {}
 
-export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
-  const sidebarState = state.useSidebarState();
-
-  if (sidebarState.show.get() === false) {
+export const Sidebar: FunctionComponent<SidebarProps> = () => {
+  const { show, secondaryPanelType } = usePanelsState();
+  if (show.activityBar === false) {
     return null;
   }
 
   const navigation: NavItem[] = [
     // navigation
     {
-      name: 'navigation',
-      state: () => sidebarState.panels.navigation.get(),
+      name: 'primarySidebar',
+      title: 'Navigation',
+      isActive: show.primarySidebar,
+      onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
+      tooltip: 'Navigation',
     },
     // editor
     {
-      name: 'editor',
-      state: () => sidebarState.panels.editor.get(),
+      name: 'primaryPanel',
+      title: 'Editor',
+      isActive: show.primaryPanel,
+      onClick: () => updateState('primaryPanel'),
       icon: <VscCode className="w-5 h-5" />,
+      tooltip: 'Editor',
     },
     // template
     {
       name: 'template',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'template',
+      title: 'Template',
+      isActive: show.secondaryPanel && secondaryPanelType === 'template',
+      onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
+      tooltip: 'HTML preview',
     },
     // visuliser
     {
       name: 'visualiser',
-      state: () => sidebarState.panels.view.get() && sidebarState.panels.viewType.get() === 'visualiser',
+      title: 'Visualiser',
+      isActive: show.secondaryPanel && secondaryPanelType === 'visualiser',
+      onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
+      tooltip: 'Blocks visualiser',
     },
     // newFile
     {
       name: 'newFile',
-      state: () => false,
+      title: 'New file',
+      isActive: false,
+      onClick: () => showModal(NewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
+      tooltip: 'New file',
     },
   ];
 
@@ -99,23 +107,31 @@ export const Sidebar: React.FunctionComponent<SidebarProps> = () => {
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between">
       <div className="flex flex-col">
         {navigation.map(item => (
-          <button
-            key={item.name}
-            title={(item.name.charAt(0).toUpperCase() + item.name.slice(1))}
-            onClick={() => setActiveNav(item.name as NavItemType)}
-            className={`flex text-sm border-l-2  ${
-              item.state()
-                ? 'text-white hover:text-gray-500 border-white'
-                : 'text-gray-500 hover:text-white border-gray-800'
-            } focus:outline-none border-box p-4`}
-            type="button"
-          >
-            {item.icon}
-          </button>
+          <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
+            <button
+              title={item.title}
+              onClick={() => item.onClick()}
+              className={'flex text-sm focus:outline-none border-box p-2'}
+              type="button"
+            >
+              <div className={item.isActive ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
+                {item.icon}
+              </div>
+            </button>
+          </Tooltip>
         ))}
       </div>
       <div className="flex flex-col">
-        <SettingsModal />
+        <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
+          <button
+            title="Studio settings"  
+            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            type="button"  
+            onClick={() => showModal(SettingsModal)}
+          >
+            <VscSettingsGear className="w-5 h-5" />
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

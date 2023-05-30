@@ -1,7 +1,7 @@
 /// <reference types="react-scripts" />
 
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
-import { AsyncAPIDocument } from '@asyncapi/parser';
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, ParseOutput } from '@asyncapi/parser/cjs';
 
 declare global {
   interface Window {
@@ -9,6 +9,7 @@ declare global {
     monaco: typeof monacoAPI;
     Editor: monacoAPI.editor.IStandaloneCodeEditor;
     MonacoEnvironment: monacoAPI.Environment | undefined;
-    ParsedSpec: AsyncAPIDocument;
+    ParsedSpec?: AsyncAPIDocument;
+    ParsedExtras?: ParseOutput['extras'];
   }
 }

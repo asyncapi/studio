@@ -1,29 +1,54 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
 
+import { createServices, ServicesProvider } from './services';
+import { App } from './App';
+
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
 import '@asyncapi/react-component/styles/default.min.css';
+import 'reactflow/dist/style.css';
 import './tailwind.css';
 import './main.css';
 
-window.MonacoEnvironment = window.MonacoEnvironment || {
-  getWorkerUrl(_: string, label: string) {
-    // for json worker
-    if (label === 'json') {
-      return `${process.env.PUBLIC_URL}/js/monaco/json.worker.bundle.js`;
-    }
-    // for yaml worker
-    if (label === 'yaml' || label === 'yml') {
-      return `${process.env.PUBLIC_URL}/js/monaco/yaml.worker.bundle.js`;
-    }
-    // for core editor worker
-    return `${process.env.PUBLIC_URL}/js/monaco/editor.worker.bundle.js`;
-  },
-};
+function configureMonacoEnvironment() {
+  window.MonacoEnvironment = {
+    getWorker(_, label) {
+      switch (label) {
+      case 'editorWorkerService':
+        return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url));
+      case 'json':
+        return new Worker(
+          new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url),
+        );
+      case 'yaml':
+      case 'yml':
+        return new Worker(new URL('monaco-yaml/yaml.worker', import.meta.url));
+      default:
+        throw new Error(`Unknown worker ${label}`);
+      }
+    },
+  };
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+async function bootstrap() {
+  configureMonacoEnvironment();
+  const services = await createServices();
+
+  const root = createRoot(
+    document.getElementById('root') as HTMLElement,
+  );
+
+  root.render(
+    <StrictMode>
+      <ServicesProvider value={services}>
+        <ModalsProvider>
+          <App />
+        </ModalsProvider>
+      </ServicesProvider>
+    </StrictMode>
+  );
+}
+
+bootstrap();

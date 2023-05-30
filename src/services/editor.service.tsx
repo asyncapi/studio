@@ -1,98 +1,120 @@
-import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import { AbstractService } from './abstract.service';
+
+import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
+import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
+import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
-import { FormatService } from './format.service';
-import { SpecificationService } from './specification.service';
+import { appState, documentsState, filesState, settingsState } from '../state';
 
-import state from '../state';
-import { SocketClient } from './socket-client.service';
-import { ConvertVersion } from '@asyncapi/converter';
-
-export type AllowedLanguages = 'json' | 'yaml' | 'yml';
+import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
+import type { Diagnostic } from '@asyncapi/parser/cjs';
+import type { ConvertVersion } from '@asyncapi/converter';
+import type { File } from '../state/files.state';
 
 export interface UpdateState {
-  content: string,
-  updateModel?: boolean,
-  sendToServer?: boolean,
-  language?: AllowedLanguages,
+  content: string;
+  updateModel?: boolean;
+  sendToServer?: boolean;
+  file?: Partial<File>;
 } 
 
-export class EditorService {
-  static getInstance(): monacoAPI.editor.IStandaloneCodeEditor {
-    return window.Editor;
+export class EditorService extends AbstractService {
+  private created = false;
+  private decorations: Map<string, string[]> = new Map();
+  private instance: monacoAPI.editor.IStandaloneCodeEditor | undefined;
+
+  override onInit() {
+    this.subcribeToDocuments();
   }
 
-  static getValue() {
-    return this.getInstance()
-      ?.getModel()?.getValue() as string;
+  async onDidCreate(editor: monacoAPI.editor.IStandaloneCodeEditor) {
+    if (this.created) {
+      return;
+    }
+    this.created = true;
+    this.instance = editor;
+
+    // parse on first run - only when document is undefined
+    const document = documentsState.getState().documents.asyncapi;
+    if (!document) {
+      await this.svcs.parserSvc.parse('asyncapi', editor.getValue());
+    } else {
+      this.applyMarkersAndDecorations(document.diagnostics.filtered);
+    }
+    
+    // apply save command
+    editor.addCommand(
+      KeyMod.CtrlCmd | KeyCode.KeyS,
+      () => this.saveToLocalStorage(),
+    );
+    
+    appState.setState({ initialized: true });
   }
 
-  static updateState({
+  get editor(): monacoAPI.editor.IStandaloneCodeEditor | undefined {
+    return this.instance;
+  }
+
+  get value(): string {
+    return this.editor?.getModel()?.getValue() as string;
+  }
+
+  updateState({
     content,
     updateModel = false,
     sendToServer = true,
-    language,
+    file = {},
   }: UpdateState) {
-    if (state.editor.editorValue.get() === content) {
+    const currentContent = filesState.getState().files['asyncapi']?.content;
+    if (currentContent === content || typeof content !== 'string') {
       return;
     }
 
-    if (!content && typeof content !== 'string') {
-      return;
-    }
-
-    language = language || FormatService.retrieveLangauge(content);
+    const language = file.language || this.svcs.formatSvc.retrieveLangauge(content);
     if (!language) {
       return;
     }
 
-    let languageToSave: string;
-    switch (language) {
-    case 'yaml':
-    case 'yml': {
-      languageToSave = 'yaml';
-      break;
-    }
-    default: {
-      languageToSave = 'json';
-    }
-    }
-
     if (sendToServer) {
-      SocketClient.send('file:update', { code: content });
+      this.svcs.socketClientSvc.send('file:update', { code: content });
     }
 
-    if (updateModel) {
-      const instance = this.getInstance();
-      if (instance) {
-        const model = instance.getModel();
-        model && model.setValue(content);
+    if (updateModel && this.editor) {
+      const model = this.editor.getModel();
+      if (model) {
+        model.setValue(content);
       }
     }
 
-    state.editor.merge({
-      language: languageToSave,
-      editorValue: content,
+    const { updateFile } = filesState.getState();
+    updateFile('asyncapi', {
+      language,
+      content,
       modified: this.getFromLocalStorage() !== content,
+      ...file,
     });
   }
 
-  static async convertSpec(version?: string) {
-    const converted = await SpecificationService.convertSpec(
-      this.getValue(),
-      (version || SpecificationService.getLastVersion()) as ConvertVersion,
-    );
+  async convertSpec(version?: ConvertVersion | string) {
+    const converted = await this.svcs.converterSvc.convert(this.value, version as ConvertVersion);
     this.updateState({ content: converted, updateModel: true });
   }
 
-  static async importFromURL(url: string): Promise<void> {
+  async importFromURL(url: string): Promise<void> {
     if (url) {
       return fetch(url)
         .then(res => res.text())
-        .then(text => {
-          state.editor.documentFrom.set(`URL: ${url}` as any);
-          this.updateState({ content: text, updateModel: true });
+        .then(async text => {
+          this.updateState({ 
+            content: text, 
+            updateModel: true, 
+            file: { 
+              source: url, 
+              from: 'url' 
+            },
+          });
         })
         .catch(err => {
           console.error(err);
@@ -101,7 +123,7 @@ export class EditorService {
     }
   }
 
-  static async importFile(files: FileList | null) {
+  async importFile(files: FileList | null) {
     if (files === null || files?.length !== 1) {
       return;
     }
@@ -113,73 +135,101 @@ export class EditorService {
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
       const content = fileLoadedEvent.target?.result;
-      console.log(content);
       this.updateState({ content: String(content), updateModel: true });
     };
     fileReader.readAsText(file, 'UTF-8');
   }
 
-  static async importBase64(content: string) {
+  async importBase64(content: string) {
     try {
-      const decoded = FormatService.decodeBase64(content);
-      state.editor.documentFrom.set('Base64');
-      this.updateState({ content: String(decoded), updateModel: true });
+      const decoded = this.svcs.formatSvc.decodeBase64(content);
+      this.updateState({ 
+        content: String(decoded), 
+        updateModel: true, 
+        file: { 
+          from: 'base64', 
+          source: undefined, 
+        },
+      });
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
-  static async convertToYaml() {
+  async convertToYaml() {
     try {
-      const yamlContent = FormatService.convertToYaml(this.getValue());
-      yamlContent && this.updateState({ content: yamlContent, updateModel: true, language: 'yaml' });
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
+      if (yamlContent) {
+        this.updateState({ 
+          content: yamlContent, 
+          updateModel: true, 
+          file: {
+            language: 'yaml',
+          }
+        });
+      }
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
-  static async convertToJSON() {
+  async convertToJSON() {
     try {
-      const jsonContent = FormatService.convertToJSON(this.getValue());
-      jsonContent && this.updateState({ content: jsonContent, updateModel: true, language: 'json' });
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
+      if (jsonContent) {
+        this.updateState({ 
+          content: jsonContent, 
+          updateModel: true, 
+          file: {
+            language: 'json',
+          }
+        });
+      }
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
-  static async saveAsYaml() {
+  async saveAsYaml() {
     try {
-      const yamlContent = FormatService.convertToYaml(this.getValue());
-      yamlContent && this.downloadFile(yamlContent, `${this.fileName}.yaml`);
+      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
+      if (yamlContent) {
+        this.downloadFile(yamlContent, `${this.fileName}.yaml`);
+      }
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
-  static async saveAsJSON() {
+  async saveAsJSON() {
     try {
-      const jsonContent = FormatService.convertToJSON(this.getValue());
-      jsonContent && this.downloadFile(jsonContent, `${this.fileName}.json`);
+      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
+      if (jsonContent) {
+        this.downloadFile(jsonContent, `${this.fileName}.json`);
+      }
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
 
-  static saveToLocalStorage(editorValue?: string, notify = true) {
-    editorValue = editorValue || EditorService.getValue();
+  saveToLocalStorage(editorValue?: string, notify = true) {
+    editorValue = editorValue || this.value;
     localStorage.setItem('document', editorValue);
-    state.editor.merge({
-      documentFrom: 'localStorage',
+
+    const { updateFile } = filesState.getState();
+    updateFile('asyncapi', {
+      from: 'storage',
+      source: undefined,
       modified: false,
     });
 
     if (notify) {
-      if (state.settings.editor.autoSaving.get()) {
+      if (settingsState.getState().editor.autoSaving) {
         toast.success(
           <div>
             <span className="block text-bold">
@@ -199,80 +249,98 @@ export class EditorService {
     }
   }
 
-  static getFromLocalStorage() {
+  getFromLocalStorage() {
     return localStorage.getItem('document');
   }
 
-  static applyErrorMarkers(errors: any[] = []) {
-    const editor = this.getInstance();
-    const Monaco = window.monaco;
+  private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
+    const editor = this.editor;
+    const model = editor?.getModel();
+    const monaco = this.svcs.monacoSvc.monaco;
 
-    if (!editor || !Monaco) {
+    if (!editor || !model || !monaco) {
       return;
     }
 
-    const model = editor.getModel();
-    if (!model) {
-      return;
-    }
-    
-    const oldDecorations = state.editor.decorations.get();
-    editor.deltaDecorations(oldDecorations, []);
-    Monaco.editor.setModelMarkers(model, 'asyncapi', []);
-    if (errors.length === 0) {
-      return;
-    }
-
-    const { markers, decorations } = this.createErrorMarkers(errors, model, Monaco);
-    Monaco.editor.setModelMarkers(model, 'asyncapi', markers);
-    editor.deltaDecorations(oldDecorations, decorations);
+    const { markers, decorations } = this.createMarkersAndDecorations(diagnostics);
+    monaco.editor.setModelMarkers(model, 'asyncapi', markers);
+    let oldDecorations = this.decorations.get('asyncapi') || [];
+    oldDecorations = editor.deltaDecorations(oldDecorations, decorations);
+    this.decorations.set('asyncapi', oldDecorations);
   }
 
-  static createErrorMarkers(errors: any[], model: monacoAPI.editor.ITextModel, Monaco: typeof monacoAPI) {
-    errors = errors || [];
+  createMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
     const newDecorations: monacoAPI.editor.IModelDecoration[] = [];
     const newMarkers: monacoAPI.editor.IMarkerData[] = [];
-    errors.forEach(err => {
-      const { title, detail } = err;
-      let location = err.location;
 
-      if (!location || location.jsonPointer === '/') {
-        const fullRange = model.getFullModelRange();
-        location = {};
-        location.startLine = fullRange.startLineNumber;
-        location.startColumn = fullRange.startColumn;
-        location.endLine = fullRange.endLineNumber;
-        location.endColumn = fullRange.endColumn;
+    diagnostics.forEach(diagnostic => {
+      const { message, range, severity } = diagnostic;
+
+      if (severity !== DiagnosticSeverity.Error) {
+        newDecorations.push({
+          id: 'asyncapi',
+          ownerId: 0,
+          range: new Range(
+            range.start.line + 1, 
+            range.start.character + 1,
+            range.end.line + 1,
+            range.end.character + 1
+          ),
+          options: {
+            glyphMarginClassName: this.getSeverityClassName(severity),
+            glyphMarginHoverMessage: { value: message },
+          },
+        });
+        return;
       }
-      const { startLine, startColumn, endLine, endColumn } = location;
   
-      const detailContent = detail ? `\n\n${detail}` : '';
       newMarkers.push({
-        startLineNumber: startLine,
-        startColumn,
-        endLineNumber: typeof endLine === 'number' ? endLine : startLine,
-        endColumn: typeof endColumn === 'number' ? endColumn : startColumn,
-        severity: monacoAPI.MarkerSeverity.Error,
-        message: `${title}${detailContent}`,
-      });
-      newDecorations.push({
-        id: 'asyncapi',
-        ownerId: 0,
-        range: new Monaco.Range(
-          startLine, 
-          startColumn, 
-          typeof endLine === 'number' ? endLine : startLine, 
-          typeof endColumn === 'number' ? endColumn : startColumn
-        ),
-        options: { inlineClassName: 'bg-red-500-20' },
+        startLineNumber: range.start.line + 1,
+        startColumn: range.start.character + 1,
+        endLineNumber: range.end.line + 1,
+        endColumn: range.end.character + 1,
+        severity: this.getSeverity(severity),
+        message,
       });
     });
 
     return { decorations: newDecorations, markers: newMarkers };
   }
 
-  private static fileName = 'asyncapi';
-  private static downloadFile(content: string, fileName: string) {
+  private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
+    switch (severity) {
+    case DiagnosticSeverity.Error: return MarkerSeverity.Error;
+    case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
+    case DiagnosticSeverity.Information: return MarkerSeverity.Info;
+    case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
+    default: return MarkerSeverity.Error;
+    }
+  }
+
+  private getSeverityClassName(severity: DiagnosticSeverity): string {
+    switch (severity) {
+    case DiagnosticSeverity.Warning: return 'diagnostic-warning';
+    case DiagnosticSeverity.Information: return 'diagnostic-information';
+    case DiagnosticSeverity.Hint: return 'diagnostic-hint';
+    default: return 'diagnostic-warning';
+    }
+  }
+
+  private fileName = 'asyncapi';
+  private downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
+  }
+
+  private subcribeToDocuments() {
+    documentsState.subscribe((state, prevState) => {
+      const newDocuments = state.documents;
+      const oldDocuments = prevState.documents;
+
+      Object.entries(newDocuments).forEach(([uri, document]) => {
+        const oldDocument = oldDocuments[String(uri)];
+        if (document === oldDocument) return;
+        this.applyMarkersAndDecorations(document.diagnostics.filtered);
+      });
+    });
   }
 }

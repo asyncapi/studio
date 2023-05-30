@@ -1,53 +1,53 @@
-// @ts-ignore
-import { getLocationOf } from '@asyncapi/parser/lib/utils';
+import { AbstractService } from './abstract.service';
 
-import { EditorService } from './editor.service';
-import { SocketClient } from './socket-client.service';
-import { SpecificationService } from './specification.service';
-import state from '../state';
+import type React from 'react';
 
-interface LocationOf {
-  jsonPointer: string;
-  startLine: number;
-  startColumn: number;
-  startOffset: number;
-  endLine?: number;
-  endColumn?: number;
-  endOffset?: number;
-}
+export class NavigationService extends AbstractService {
+  override afterAppInit() {
+    try {
+      this.scrollToHash();
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
 
-export class NavigationService {
-  static async scrollTo(
-    jsonPointer: any,
-    spec: any,
+  getUrlParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      url: urlParams.get('url') || urlParams.get('load'),
+      base64: urlParams.get('base64'),
+      readOnly: urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === '',
+      liveServer: urlParams.get('liveServer'),
+      redirectedFrom: urlParams.get('redirectedFrom'),
+    };
+  }
+
+  async scrollTo(
+    jsonPointer: string | Array<string | number>,
     hash: string,
-    language = 'yaml',
   ) {
     try {
-      const location: LocationOf = getLocationOf(jsonPointer, spec, language);
-      if (!location || typeof location.startLine !== 'number') {
-        return;
+      const range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
+      if (range) {
+        this.scrollToEditorLine(range.start.line + 1);
       }
 
       this.scrollToHash(hash);
-      this.scrollToEditorLine(location.startLine);
       this.emitHashChangeEvent(hash);
     } catch (e) {
       console.error(e);
     }
   }
 
-  static async scrollToHash(hash?: string) {
-    hash = hash || window.location.hash.substring(1);
+  async scrollToHash(hash?: string) {
     try {
-      const escapedHash = CSS.escape(hash);
-      if (!escapedHash || escapedHash === '#') {
+      const sanitizedHash = this.sanitizeHash(hash);
+      if (!sanitizedHash) {
         return;
       }
 
-      const items = document.querySelectorAll(
-        escapedHash.startsWith('#') ? escapedHash : `#${escapedHash}`,
-      );
+      const items = document.querySelectorAll(`#${sanitizedHash}`);
       if (items.length) {
         const element = items[0];
         typeof element.scrollIntoView === 'function' &&
@@ -58,35 +58,27 @@ export class NavigationService {
     }
   }
 
-  static async scrollToEditorLine(startLine: number, columnLine = 1) {
+  async scrollToEditorLine(line: number, character = 1) {
     try {
-      const editor = window.Editor;
-      editor && editor.revealLineInCenter(startLine);
-      editor && editor.setPosition({ lineNumber: startLine, column: columnLine });
+      const editor = this.svcs.editorSvc.editor;
+      if (editor) {
+        editor.revealLineInCenter(line);
+        editor.setPosition({ lineNumber: line, column: character });
+      }
     } catch (err) {
       console.error(err);
     }
   }
 
-  static isReadOnly(strict = false) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isReadonly = urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === ''
-      ? true
-      : false;
-
-    if (strict === false) {
-      return isReadonly;
+  highlightVisualiserNode(nodeId: string, setState: React.Dispatch<React.SetStateAction<boolean>>) {
+    function hashChanged() {
+      if (location.hash.startsWith(nodeId)) {
+        setState(true);
+        setTimeout(() => {
+          setState(false);
+        }, 1000);
+      }
     }
-    return isReadonly && !!(urlParams.get('url') || urlParams.get('load') || urlParams.get('base64'));
-  }
-
-  static async onInitApp() {
-    const urlParams = new URLSearchParams(window.location.search);
-
-    const documentUrl = urlParams.get('url') || urlParams.get('load');
-    const base64Document = urlParams.get('base64');
-    const liveServerPort = urlParams.get('liveServer');
-    const redirectedFrom = urlParams.get('redirectedFrom');
 
     if (liveServerPort && typeof Number(liveServerPort) === 'number') {
       SocketClient.connect(window.location.hostname, liveServerPort);
@@ -101,24 +93,23 @@ export class NavigationService {
       ]);
     }
 
-    const isReadonly = this.isReadOnly(true);
-    if (isReadonly) {
-      await SpecificationService.parseSpec(state.editor.editorValue.get());
-      state.sidebar.show.set(false);
-      state.editor.merge({
-        monacoLoaded: true,
-        editorLoaded: true,
-      });
-    }
-
-    state.app.merge({
-      readOnly: isReadonly,
-      initialized: true,
-      redirectedFrom: redirectedFrom || false,
-    });
+    window.addEventListener('hashchange', hashChanged);
+    return () => {
+      window.removeEventListener('hashchange', hashChanged);
+    };
   }
 
-  private static emitHashChangeEvent(hash: string) {
+  private sanitizeHash(hash?: string): string | undefined {
+    hash = hash || window.location.hash.substring(1);
+    try {
+      const escapedHash = CSS.escape(hash);
+      return escapedHash.startsWith('#') ? hash.substring(1) : escapedHash;
+    } catch (err: any) {
+      return;
+    }
+  }
+
+  private emitHashChangeEvent(hash: string) {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
     window.history.pushState({}, '', hash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));

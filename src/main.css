@@ -88,3 +88,28 @@
 .Resizer.disabled:hover {
   border-color: transparent;
 }
+
+/** Monaco editor */
+.diagnostic-warning {
+  background: rgba(245, 158, 11);
+  width: 3px !important;
+}
+
+.diagnostic-information {
+  background: rgba(59, 130, 246);
+  width: 3px !important;
+}
+
+.diagnostic-hint {
+  background: rgba(16, 185, 129);
+  width: 3px !important;
+}
+
+/** Tippy.js **/
+.tippy-box[data-placement^="bottom"] > .tippy-arrow:before {
+  border-bottom-color: rgba(17, 24, 39) !important;
+}
+
+.tippy-box[data-placement^="right"] > .tippy-arrow:before {
+  border-right-color: rgba(17, 24, 39) !important;
+}

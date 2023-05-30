@@ -1,6 +1,15 @@
-import { NavigationService } from '../navigation.service';
+import { createServices } from '../';
+
+import type { NavigationService } from '../navigation.service';
 
 describe('NavigationService', () => {
+  let navigationSvc: NavigationService;
+
+  beforeAll(async () => {
+    const services = await createServices();
+    navigationSvc = services.navigationSvc;
+  });
+
   function updateLocation(search: string) {
     const location = {
       ...window.location,
@@ -12,53 +21,29 @@ describe('NavigationService', () => {
     });
   }
 
-  describe('.isReadOnly', () => {
+  describe('.getUrlParameters() - checking readOnly parameter', () => {
     test('should return false if reaOnly flag is not defined', () => {
       updateLocation('?url=some-url.json');
-      const result = NavigationService.isReadOnly();
-      expect(result).toEqual(false);
+      const result = navigationSvc.getUrlParameters();
+      expect(result.readOnly).toEqual(false);
     });
 
     test('should return true if reaOnly flag is defined - empty value case', () => {
       updateLocation('?readOnly');
-      const result = NavigationService.isReadOnly();
-      expect(result).toEqual(true);
+      const result = navigationSvc.getUrlParameters();
+      expect(result.readOnly).toEqual(true);
     });
 
     test('should return true if reaOnly flag is defined - true value case', () => {
       updateLocation('?readOnly=true');
-      const result = NavigationService.isReadOnly();
-      expect(result).toEqual(true);
+      const result = navigationSvc.getUrlParameters();
+      expect(result.readOnly).toEqual(true);
     });
 
     test('should return false if reaOnly flag is not defined - non empty/true value case', () => {
       updateLocation('?readOnly=false');
-      const result = NavigationService.isReadOnly();
-      expect(result).toEqual(false);
-    });
-
-    test('should return false if reaOnly flag is not defined - strict mode case without other parameters', () => {
-      updateLocation('?readOnly=true');
-      const result = NavigationService.isReadOnly(true);
-      expect(result).toEqual(false);
-    });
-
-    test('should return true if reaOnly flag is not defined - strict mode case with url parameter', () => {
-      updateLocation('?readOnly=true&url=some-url.json');
-      const result = NavigationService.isReadOnly(true);
-      expect(result).toEqual(true);
-    });
-
-    test('should return true if reaOnly flag is not defined - strict mode case with load parameter', () => {
-      updateLocation('?readOnly=true&load=some-url.json');
-      const result = NavigationService.isReadOnly(true);
-      expect(result).toEqual(true);
-    });
-
-    test('should return true if reaOnly flag is not defined - strict mode case with base64 parameter', () => {
-      updateLocation('?readOnly=true&base64=AsyncAPI');
-      const result = NavigationService.isReadOnly(true);
-      expect(result).toEqual(true);
+      const result = navigationSvc.getUrlParameters();
+      expect(result.readOnly).toEqual(false);
     });
   });
 });

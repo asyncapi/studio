@@ -1,33 +1,30 @@
-import React from 'react';
+import { useCallback } from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
+import { show } from '@ebay/nice-modal-react';
 
-import { SpecificationService } from '../../services';
-import state from '../../state';
+import { ConvertToLatestModal } from '../Modals';
+
+import { useServices } from '../../services';
+import { useAppState, useDocumentsState, useFilesState, useSettingsState } from '../../state';
+
+import type { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 
 interface TerminalInfoProps {}
 
-export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
-  const appState = state.useAppState();
-  const editorState = state.useEditorState();
-  const parserState = state.useParserState();
-  const settingsState = state.useSettingsState();
+export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
+  const { specificationSvc } = useServices();
+  const file = useFilesState(state => state.files['asyncapi']);
+  const document = useDocumentsState(state => state.documents['asyncapi']);
+  const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
-  const liveServer = appState.liveServer.get();
-  const actualVersion = parserState.parsedSpec.get()?.version() || '2.0.0';
-  const latestVersion = SpecificationService.getLastVersion();
-  const documentValid = parserState.valid.get();
-  const errors = parserState.errors.get();
-  const autoSaving = settingsState.editor.autoSaving.get();
-  const modified = editorState.modified.get();
+  const liveServer = useAppState(state => state.liveServer);
+  const actualVersion = document.document?.version() || '2.0.0';
+  const latestVersion = specificationSvc.latestVersion;
 
-  function onNonLatestClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  const onNonLatestClick = useCallback((e: ReactMouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    state.spec.set({
-      shouldOpenConvertModal: true,
-      convertOnlyToLatest: true,
-      forceConvert: false,
-    });
-  }
+    show(ConvertToLatestModal);
+  }, []);
 
   return (
     <div className="flex flex-row px-2">
@@ -39,7 +36,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Live server</span>
         </div>
       )}
-      {errors.length ? (
+      {document.diagnostics.errors.length > 0 ? (
         <div className="ml-3">
           <span className="text-red-500">
             <svg
@@ -76,7 +73,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
           <span>Valid</span>
         </div>
       )}
-      {!autoSaving && modified && (
+      {!autoSaving && file.modified && (
         <div className="ml-3">
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -94,7 +91,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
         </span>
         <span>{autoSaving ? 'Autosave: On' : 'Autosave: Off'}</span>
       </div>
-      {actualVersion !== latestVersion && documentValid === true && (
+      {actualVersion !== latestVersion && document.valid === true && (
         <div className="ml-3" onClick={onNonLatestClick}>
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -105,7 +102,7 @@ export const TerminalInfo: React.FunctionComponent<TerminalInfoProps> = () => {
         </div>
       )}
       <div className="ml-3">
-        <span>{editorState.language.get()}</span>
+        <span>{file.language}</span>
       </div>
     </div>
   );

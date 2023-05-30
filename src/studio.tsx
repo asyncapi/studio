@@ -2,17 +2,22 @@ import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Content, Sidebar, Template, Toolbar } from './components';
-import { ConvertToLatestModal } from './components/Modals';
-import { NavigationService } from './services';
+
+import { afterAppInit, useServices } from './services';
+import { appState } from './state';
 
 export interface AsyncAPIStudioProps {}
 
-const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
+export const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
+  const services = useServices();
+
   useEffect(() => {
-    NavigationService.onInitApp();
+    setTimeout(() => {
+      afterAppInit(services);
+    }, 250);
   }, []);
 
-  if (NavigationService.isReadOnly(true)) {
+  if (appState.getState().readOnly) {
     return (
       <div className="flex flex-row flex-1 overflow-hidden h-full w-full h-screen">
         <Template />
@@ -28,9 +33,6 @@ const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
         <Content />
       </div>
       <Toaster position="bottom-center" reverseOrder={false} />
-      <ConvertToLatestModal />
     </div>
   );
 };
-
-export default AsyncAPIStudio;

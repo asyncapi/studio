@@ -1,22 +1,19 @@
-import { createState, useState } from '@hookstate/core';
+import create from 'zustand';
 
 const schema =
-  localStorage.getItem('document') || `asyncapi: '2.4.0'
+  localStorage.getItem('document') || `asyncapi: '2.6.0'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'
   description: |
     The Smartylighting Streetlights API allows you to remotely manage the city lights.
-
     ### Check out its awesome features:
-
     * Turn a specific streetlight on/off 🌃
     * Dim a specific streetlight 😎
     * Receive real-time information about environmental lighting conditions 📈
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-
 servers:
   test:
     url: test.mykafkacluster.org:8092
@@ -24,9 +21,7 @@ servers:
     description: Test broker
     security:
       - saslScram: []
-
 defaultContentType: application/json
-
 channels:
   smartylighting.streetlights.1.0.event.{streetlightId}.lighting.measured:
     description: The topic on which measured values may be produced and consumed.
@@ -40,7 +35,6 @@ channels:
         - $ref: '#/components/operationTraits/kafka'
       message:
         $ref: '#/components/messages/lightMeasured'
-
   smartylighting.streetlights.1.0.action.{streetlightId}.turn.on:
     parameters:
       streetlightId:
@@ -51,7 +45,6 @@ channels:
         - $ref: '#/components/operationTraits/kafka'
       message:
         $ref: '#/components/messages/turnOnOff'
-
   smartylighting.streetlights.1.0.action.{streetlightId}.turn.off:
     parameters:
       streetlightId:
@@ -62,7 +55,6 @@ channels:
         - $ref: '#/components/operationTraits/kafka'
       message:
         $ref: '#/components/messages/turnOnOff'
-
   smartylighting.streetlights.1.0.action.{streetlightId}.dim:
     parameters:
       streetlightId:
@@ -73,7 +65,6 @@ channels:
         - $ref: '#/components/operationTraits/kafka'
       message:
         $ref: '#/components/messages/dimLight'
-
 components:
   messages:
     lightMeasured:
@@ -101,7 +92,6 @@ components:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
         $ref: "#/components/schemas/dimLightPayload"
-
   schemas:
     lightMeasuredPayload:
       type: object
@@ -137,18 +127,15 @@ components:
       type: string
       format: date-time
       description: Date and time when the message was sent.
-
   securitySchemes:
     saslScram:
       type: scramSha256
       description: Provide your username and password for SASL/SCRAM authentication
-
   parameters:
     streetlightId:
       description: The ID of the streetlight.
       schema:
         type: string
-
   messageTraits:
     commonHeaders:
       headers:
@@ -158,7 +145,6 @@ components:
             type: integer
             minimum: 0
             maximum: 100
-
   operationTraits:
     kafka:
       bindings:
@@ -166,32 +152,47 @@ components:
           clientId: my-app-id
 `;
 
-export type EditorStateDocumentFrom = 'localStorage' | `URL: ${string}` | 'Base64';
-
-export interface EditorState {
-  height: string;
-  fileName: string;
-  language: string;
-  editorValue: string;
-  monacoLoaded: boolean;
-  editorLoaded: boolean;
-  documentFrom: EditorStateDocumentFrom;
-  decorations: Array<any>;
-  modified: boolean,
+export interface FileStat {
+  mtime: number;
 }
 
-export const editorState = createState<EditorState>({
-  height: 'calc(100% - 36px)',
-  fileName: 'asyncapi',
-  language: schema.trim()[0] === '{' ? 'json' : 'yaml',
-  editorValue: schema,
-  monacoLoaded: false,
-  editorLoaded: false,
-  documentFrom: 'localStorage',
-  decorations: [],
-  modified: false,
-});
-
-export function useEditorState() {
-  return useState(editorState);
+export type File = {
+  uri: string;
+  name: string;
+  content: string;
+  from: 'storage' | 'url' | 'base64';
+  source?: string;
+  language: 'json' | 'yaml';
+  modified: boolean;
+  stat?: FileStat;
 }
+
+export type FilesState = {
+  files: Record<string, File>;
+}
+
+export type FilesActions = {
+  updateFile: (uri: string, file: Partial<File>) => void;
+}
+
+export const filesState = create<FilesState & FilesActions>(set => ({
+  files: {
+    asyncapi: {
+      uri: 'asyncapi',
+      name: 'asyncapi',
+      content: schema,
+      from: 'storage',
+      source: undefined,
+      language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
+      modified: false,
+      stat: {
+        mtime: (new Date()).getTime(),
+      }
+    }
+  },
+  updateFile(uri: string, file: Partial<File>) {
+    set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
+  }
+}));
+
+export const useFilesState = filesState;

@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
+import { useState, useCallback, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
 import { JSONSchema7 } from 'json-schema';
 
 import { Switch } from '../../common';
 
-import state from '../../../state';
+import { useDocumentsState } from '../../../state';
+
+import type { FunctionComponent, ForwardRefRenderFunction, PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
 interface TemplateParameterProps {
   propertyName: string;
@@ -12,7 +14,7 @@ interface TemplateParameterProps {
   setValue: (propertyName: string, value: any, isRequired: boolean) => void;
 }
 
-const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
+const StringParameter: FunctionComponent<TemplateParameterProps> = ({
   propertyName, 
   property,
   isRequired,
@@ -28,7 +30,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
         <option value="">Please select server</option>
         {property.enum.map(serverName => (
           <option key={serverName as string} value={serverName as string}>
-            {serverName}
+            {serverName as string}
           </option>
         ))}
       </select>
@@ -46,7 +48,7 @@ const StringParameter: React.FunctionComponent<TemplateParameterProps> = ({
 
 const NumberParameter = StringParameter;
 
-const BooleanParameter: React.FunctionComponent<TemplateParameterProps> = ({
+const BooleanParameter: FunctionComponent<TemplateParameterProps> = ({
   propertyName,
   property,
   isRequired,
@@ -60,7 +62,7 @@ const BooleanParameter: React.FunctionComponent<TemplateParameterProps> = ({
   );
 };
 
-const ParameterItem: React.FunctionComponent<TemplateParameterProps> = (props) => {
+const ParameterItem: FunctionComponent<TemplateParameterProps> = (props) => {
   switch (props.property.type) {
   case 'string': {
     return <StringParameter {...props} />;
@@ -83,10 +85,10 @@ interface TemplateParametersProps {
   templateName: string;
   template: JSONSchema7;
   supportedProtocols: string[];
-  setConfirmDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmDisabled: Dispatch<SetStateAction<boolean>>;
 }
 
-export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplateParametersHandle, React.PropsWithChildren<TemplateParametersProps>> = ({
+export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParametersHandle, PropsWithChildren<TemplateParametersProps>> = ({
   templateName,
   template: { properties = {}, required = [] },
   supportedProtocols = [],
@@ -94,15 +96,14 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
 }, templateParamsRef) => {
   const [values, setValues] = useState<Record<string, any>>({});
   const [showOptionals, setShowOptionals] = useState<boolean>(false);
-  const parserState = state.useParserState();
-  const parsedSpec = parserState.parsedSpec.get();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
 
   const { requiredProps, optionalProps, hasSupportedProtocols } = useMemo(() => {
     const requiredProperties: Record<string, JSONSchema7> = {};
     const optionalProperties: Record<string, JSONSchema7> = {};
     let hasSupportedProto = true;
 
-    const servers = parsedSpec?.servers();
+    const servers = document?.servers();
     const availableServers: string[] = [];
     Object.entries(servers || {}).forEach(([serverName, server]) => {
       if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
@@ -129,7 +130,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     }
 
     return { requiredProps: requiredProperties, optionalProps: optionalProperties, hasSupportedProtocols: hasSupportedProto };
-  }, [properties, required, parsedSpec]);
+  }, [properties, required, document]);
 
   useEffect(() => {
     setValues({});
@@ -174,7 +175,7 @@ export const TemplateParametersSans: React.ForwardRefRenderFunction<TemplatePara
     );
   }, [templateName]);
 
-  if (parsedSpec === null) {
+  if (document === null) {
     return null;
   }
 

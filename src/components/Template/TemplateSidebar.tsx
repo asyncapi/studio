@@ -1,14 +1,12 @@
 import React from 'react';
 import { VscRefresh } from 'react-icons/vsc';
 
-import state from '../../state';
+import { useSettingsState, otherState } from '../../state';
 
 interface TemplateSidebarProps {}
 
 export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = () => {
-  const templateState = state.useTemplateState();
-  const settingsState = state.useSettingsState();
-  const autoRendering = settingsState.templates.autoRendering.get();
+  const autoRendering = useSettingsState(state => state.templates.autoRendering);
 
   return (
     <div
@@ -19,7 +17,7 @@ export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = ()
         <div />
       ) : (
         <div className="ml-2 text-gray-500 text-xs flex" style={{ height: '30px', lineHeight: '30px' }}>
-          <button type="button" className="text-xs" onClick={() => templateState.rerender.set(true)}>
+          <button type="button" className="text-xs" onClick={() => otherState.setState({ templateRerender: true })}>
             <div className="inline-block">
               <VscRefresh className="w-4 h-4 mt-1" />
             </div>

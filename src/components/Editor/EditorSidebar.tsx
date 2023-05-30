@@ -2,22 +2,20 @@ import React from 'react';
 
 import { EditorDropdown } from './EditorDropdown';
 
-import state from '../../state';
+import { useFilesState } from '../../state';
 
 interface EditorSidebarProps {}
 
 export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => {
-  const editorState = state.useEditorState();
-  const documentFrom = editorState.documentFrom.get();
+  const { source, from } = useFilesState(state => state.files['asyncapi']);
 
   let documentFromText = '';
-  if (documentFrom === 'localStorage') {
+  if (from === 'storage') {
     documentFromText = 'From localStorage';
-  } else if (documentFrom === 'Base64') {
+  } else if (from === 'base64') {
     documentFromText = 'From Base64';
   } else {
-    const splittedText = documentFrom.split(' ');
-    documentFromText = `From ${splittedText[1]}`;
+    documentFromText = `From URL ${source}`;
   }
 
   return (
