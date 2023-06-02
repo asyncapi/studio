@@ -1,5 +1,5 @@
 [build]
-  base = "apps/studio/"
+  base = "apps/studio/build/"
   command = "npm run build"
   functions = "netlify/functions"
-  publish = "build"
+  publish = "apps/studio/build/"
