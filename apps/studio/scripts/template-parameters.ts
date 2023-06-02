@@ -95,7 +95,7 @@ async function main() {
 
     console.info(`[INFO]: Prepare parameters for ${templateName}.`);
 
-    const pathToPackageJSON = path.join(__dirname, `../node_modules/${templateName}/package.json`);
+    const pathToPackageJSON = path.join(__dirname, `../../../node_modules/${templateName}/package.json`);
     const packageJSONContent = await fs.promises.readFile(pathToPackageJSON, 'utf-8');
     const packageJSON = JSON.parse(packageJSONContent);
     const generatorConfig = packageJSON.generator;
