@@ -1,3 +1,8 @@
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
 # Use a UUID as placeholder value to have a unique string to replace. 
 ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 
