@@ -4,6 +4,7 @@ npm-debug.log
 .env
 .DS_Store# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .turbo
+storybook-static
 
 # dependencies
 /node_modules
