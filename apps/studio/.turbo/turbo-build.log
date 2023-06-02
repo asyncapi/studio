@@ -1,4 +1,0 @@
-
-> @asyncapi/studio@0.18.1 build
-> npm run generate:template-parameters && craco build
-
