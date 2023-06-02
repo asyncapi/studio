@@ -1,4 +1,0 @@
-[build]
-  command = "cd apps/studio && npm run build"
-  functions = "netlify/functions"
-  publish = "apps/studio/build/"
