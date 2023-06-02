@@ -3,9 +3,9 @@ import { AbstractService } from './abstract.service';
 import type React from 'react';
 
 export class NavigationService extends AbstractService {
-  override afterAppInit() {
+  override async afterAppInit() {
     try {
-      this.scrollToHash();
+      await this.scrollToHash();
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     } catch (err: any) {
       console.error(err);
@@ -30,10 +30,10 @@ export class NavigationService extends AbstractService {
     try {
       const range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
       if (range) {
-        this.scrollToEditorLine(range.start.line + 1);
+        await this.scrollToEditorLine(range.start.line + 1);
       }
 
-      this.scrollToHash(hash);
+      await this.scrollToHash(hash);
       this.emitHashChangeEvent(hash);
     } catch (e) {
       console.error(e);

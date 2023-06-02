@@ -29,7 +29,7 @@ export class ParserService extends AbstractService {
 
     this.subscribeToFiles();
     this.subscribeToSettings();
-    this.parseSavedDocuments();
+    await this.parseSavedDocuments();
   }
 
   async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
@@ -144,7 +144,7 @@ export class ParserService extends AbstractService {
       Object.entries(newFiles).forEach(([uri, file]) => {
         const oldFile = oldFiles[String(uri)];
         if (file === oldFile) return;
-        this.parse(uri, file.content, { source: file.source });
+        this.parse(uri, file.content, { source: file.source }).catch(console.error);
       });
     });
   }
@@ -155,7 +155,7 @@ export class ParserService extends AbstractService {
 
       const { files } = filesState.getState();
       Object.entries(files).forEach(([uri, file]) => {
-        this.parse(uri, file.content);
+        this.parse(uri, file.content).catch(console.error);
       });
     });
   }

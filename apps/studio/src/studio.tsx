@@ -13,7 +13,7 @@ export const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () =
 
   useEffect(() => {
     setTimeout(() => {
-      afterAppInit(services);
+      afterAppInit(services).catch(console.error);
     }, 250);
   }, []);
 
