@@ -1,8 +1,8 @@
 import { AbstractService } from './abstract.service';
 
 import { Parser, convertToOldAPI, DiagnosticSeverity } from '@asyncapi/parser/cjs';
-import { OpenAPISchemaParser } from '@asyncapi/parser/cjs/schema-parser/openapi-schema-parser';
-import { AvroSchemaParser } from '@asyncapi/parser/cjs/schema-parser/avro-schema-parser';
+import { OpenAPISchemaParser } from '@asyncapi/openapi-schema-parser';
+import { AvroSchemaParser } from '@asyncapi/avro-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { isDeepEqual } from '../helpers';

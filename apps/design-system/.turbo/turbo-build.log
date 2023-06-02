@@ -1,0 +1,10 @@
+npm WARN ignoring workspace config at /Users/fmvilas/www/studio/apps/design-system/.npmrc 
+
+> studio-ui@0.1.0 build
+> react-scripts build
+
+sh: react-scripts: command not found
+npm ERR! Lifecycle script `build` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: studio-ui@0.1.0 
+npm ERR!   at location: /Users/fmvilas/www/studio/apps/design-system 

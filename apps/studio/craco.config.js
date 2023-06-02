@@ -36,8 +36,8 @@ function configureWebpack(webpackConfig) {
   
   // aliases
   webpackConfig.resolve.alias = webpackConfig.resolve.alias || {};
-  webpackConfig.resolve.alias['nimma/fallbacks'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/fallbacks/index.js');
-  webpackConfig.resolve.alias['nimma/legacy'] = require.resolve('./node_modules/nimma/dist/legacy/cjs/index.js');
+  webpackConfig.resolve.alias['nimma/fallbacks'] = require.resolve('../../node_modules/nimma/dist/legacy/cjs/fallbacks/index.js');
+  webpackConfig.resolve.alias['nimma/legacy'] = require.resolve('../../node_modules/nimma/dist/legacy/cjs/index.js');
 
   // plugins
   webpackConfig.plugins = (webpackConfig.plugins || []).concat([
