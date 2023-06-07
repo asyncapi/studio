@@ -37,9 +37,7 @@ export class ApplicationService extends AbstractService {
 
     // show RedirectedModal modal if the redirectedFrom is set (only when readOnly state is set to false)
     if (!isStrictReadonly && redirectedFrom) {
-      setTimeout(() => {
-        show(RedirectedModal);
-      }, 500);
+      show(RedirectedModal);
     }
   }
 
