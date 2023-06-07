@@ -12,7 +12,6 @@ export class ApplicationService extends AbstractService {
     this.hidePreloader();
 
     const { readOnly, url, base64, redirectedFrom } = this.svcs.navigationSvc.getUrlParameters();
-
     // readOnly state should be only set to true when someone pass also url or base64 parameter
     const isStrictReadonly = Boolean(readOnly && (url || base64));
 
@@ -33,7 +32,9 @@ export class ApplicationService extends AbstractService {
 
     // show RedirectedModal modal if the redirectedFrom is set (only when readOnly state is set to false)
     if (!isStrictReadonly && redirectedFrom) {
-      show(RedirectedModal);
+      setTimeout(() => {
+        show(RedirectedModal);
+      }, 500);
     }
   }
 
