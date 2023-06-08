@@ -1,5 +1,5 @@
 {
-  "name": "studio-ui",
+  "name": "@khudadad414/studio-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,7 +21,8 @@
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
-    "build-storybook": "storybook build"
+    "build": "storybook build",
+    "release": "semantic-release -e semantic-release-monorepo"
   },
   "eslintConfig": {
     "extends": [

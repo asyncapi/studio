@@ -2,9 +2,12 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "release": "turbo run release"
   },
   "devDependencies": {
+    "semantic-release": "^21.0.3",
+    "semantic-release-monorepo": "^7.0.5",
     "turbo": "^1.10.1"
   },
   "workspaces": [
