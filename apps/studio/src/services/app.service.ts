@@ -31,7 +31,7 @@ export class ApplicationService extends AbstractService {
     }
   }
 
-  public afterAppInit() {
+  public async afterAppInit() {
     const { readOnly, url, base64, redirectedFrom } = this.svcs.navigationSvc.getUrlParameters();
     const isStrictReadonly = Boolean(readOnly && (url || base64));
 
