@@ -3,3 +3,4 @@
 .vscode/
 /lib
 /build
+.env
