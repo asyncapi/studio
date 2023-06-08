@@ -1,0 +1,4 @@
+[build]
+  command = "npm run build-storybook"
+  functions = "netlify/functions"
+  publish = "storybook-static"

@@ -1,0 +1,5 @@
+# Remove this file after https://github.com/asyncapi/studio/pull/638 is merged.
+# Make sure the base directory is properly configured on the UI.
+
+[build]
+  base = "apps/studio/"
