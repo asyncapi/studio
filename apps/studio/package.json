@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/asyncapi/studio.git"
+    "url": "git://github.com/khudadad414/studio.git"
   },
   "keywords": [
     "asyncapi",
@@ -63,7 +63,7 @@
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
     "generate:docker": "docker build --tag asyncapi/studio .",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
-    "release": "npm run generate:docker && semantic-release -e semantic-release-monorepo",
+    "release": "semantic-release -e semantic-release-monorepo",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
@@ -159,14 +159,7 @@
         }
       ],
       "@semantic-release/npm",
-      "@semantic-release/github",
-      [
-        "@semantic-release-plus/docker",
-        {
-          "name": "asyncapi/studio",
-          "publishChannelTag": true
-        }
-      ]
+      "@semantic-release/github"
     ]
   }
 }
