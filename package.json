@@ -6,7 +6,7 @@
     "ds": "turbo run design-system --filter apps/design-system"
   },
   "devDependencies": {
-    "turbo": "^1.10.1"
+    "turbo": "^1.10.2"
   },
   "workspaces": [
     "apps/*",
