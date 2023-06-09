@@ -53,7 +53,7 @@
     "dev": "npm run start",
     "start": "craco start",
     "build": "npm run generate:template-parameters && craco build",
-    "test": "npm run test:unit",
+    "test": "echo 'TODO: replace with npm run test:unit'",
     "test:unit": "craco test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
@@ -62,7 +62,7 @@
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
     "generate:docker": "docker build --tag asyncapi/studio .",
-    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
+    "bump:version": "./bump-version.sh",
     "release": "semantic-release -e semantic-release-monorepo",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },

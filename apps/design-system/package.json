@@ -18,6 +18,7 @@
   "scripts": {
     "lint": "echo \"No linter configured yet\"",
     "generate:assets": "echo \"No assets to configure\"",
+    "bump:version": "./bump-version.sh",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",

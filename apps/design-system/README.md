@@ -4,6 +4,8 @@
 
 ### :joystick: How to setup storybook locally
 
+1
+
 - Install all essential prerequisites before launching the Storybook environment locally. To install the dependencies, run the command below:
 
   ```cmd

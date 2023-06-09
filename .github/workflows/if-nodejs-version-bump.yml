@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # target branch of release. More info https://docs.github.com/en/rest/reference/repos#releases
           # in case release is created from release branch then we need to checkout from given branch
@@ -26,17 +26,14 @@ jobs:
         run: test -e ./package.json && echo "::set-output name=exists::true" || echo "::set-output name=exists::false"
       - if: steps.packagejson.outputs.exists == 'true'
         name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
       - if: steps.packagejson.outputs.exists == 'true'
         name: Install dependencies
         run: npm install
-      - if: steps.packagejson.outputs.exists == 'true'
-        name: Assets generation
-        run: npm run generate:assets
       - if: steps.packagejson.outputs.exists == 'true'  
         name: Bump version in package.json
         # There is no need to substract "v" from the tag as version script handles it
@@ -49,8 +46,8 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           commit-message: 'chore(release): ${{github.event.release.tag_name}}'
-          committer: asyncapi-bot <info@asyncapi.io>
-          author: asyncapi-bot <info@asyncapi.io>
+          committer: KhudaDad414
+          author: KhudaDad414
           title: 'chore(release): ${{github.event.release.tag_name}}'
           body: 'Version bump in package.json for release [${{github.event.release.tag_name}}](${{github.event.release.html_url}})'
           branch: version-bump/${{github.event.release.tag_name}}
