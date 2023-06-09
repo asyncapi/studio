@@ -3,7 +3,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "ds": "turbo run design-system --filter apps/design-system"
+    "ds": "turbo run dev --filter=...design-system"
   },
   "devDependencies": {
     "turbo": "^1.10.2"
