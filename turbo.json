@@ -4,7 +4,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["build", "storybook-static"]
+      "cache": true
     },
     "dev": {
       "dependsOn": ["^dev"],

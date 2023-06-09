@@ -8,7 +8,12 @@
   "devDependencies": {
     "semantic-release": "^21.0.3",
     "semantic-release-monorepo": "^7.0.5",
-    "turbo": "^1.10.1"
+    "turbo": "^1.10.1",
+    "@semantic-release-plus/docker": "^3.1.2",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/github": "^8.0.6",
+    "@semantic-release/npm": "^9.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3"
   },
   "workspaces": [
     "apps/*",

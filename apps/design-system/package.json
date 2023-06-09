@@ -73,5 +73,36 @@
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.2",
     "webpack": "^5.69.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      [
+        "@semantic-release-plus/docker",
+        {
+          "name": "asyncapi/studio",
+          "publishChannelTag": true
+        }
+      ]
+    ]
   }
 }
