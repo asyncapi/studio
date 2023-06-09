@@ -95,14 +95,7 @@
         }
       ],
       "@semantic-release/npm",
-      "@semantic-release/github",
-      [
-        "@semantic-release-plus/docker",
-        {
-          "name": "asyncapi/studio",
-          "publishChannelTag": true
-        }
-      ]
+      "@semantic-release/github"
     ]
   }
 }
