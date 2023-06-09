@@ -152,7 +152,7 @@ export const GeneratorModal = create(() => {
                 {problem.title}
               </div>
             </div>
-            {problem.validationErrors && 
+            {problem.validationErrors ?. 
               problem.validationErrors.length &&
               problem.validationErrors.filter(error => error.message).length 
               ? (

@@ -1,7 +1,7 @@
 # Use a UUID as placeholder value to have a unique string to replace. 
 ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 
-FROM docker.io/library/node:16.13.2 as build
+FROM docker.io/library/node:16.13.2 AS build
 
 ARG BASE_URL_PLACEHOLDER
 
@@ -14,7 +14,7 @@ COPY ./ ./
 # in the entrypoint script below.
 RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build
 
-FROM docker.io/library/nginx:1.21.5-alpine as runtime
+FROM docker.io/library/nginx:1.21.5-alpine AS runtime
 
 ARG BASE_URL_PLACEHOLDER
 # The base Nginx image automatically executes all shell scripts 

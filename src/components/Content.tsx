@@ -22,8 +22,8 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
 
-  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPosLeft) || '0', 10) || 220;
-  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPosRight) || '0', 10) || '55%';
+  const localStorageLeftPaneSize = parseInt(localStorage.getItem(splitPosLeft)|| '0', 10)|| 220;
+  const localStorageRightPaneSize = parseInt(localStorage.getItem(splitPosRight)|| '0', 10)|| '55%';
 
   const secondPaneSize = navigationEnabled && !editorEnabled ? localStorageLeftPaneSize : localStorageRightPaneSize;
   const secondPaneMaxSize = navigationEnabled && !editorEnabled ? 360 : '100%';

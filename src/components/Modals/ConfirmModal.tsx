@@ -36,7 +36,7 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
   const cancelButtonRef = useRef(null);
 
   const handleOnSubmit = () => {
-    onSubmit && onSubmit();
+    onSubmit?.onSubmit();
     if (closeAfterSumbit) {
       modal.hide();
     }
