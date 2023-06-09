@@ -3,15 +3,12 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"]
+      "outputs": [
+        "dist/**",
+        "storybook-static/**"
+      ]
     },
     "dev": {
-      "dependsOn": ["^dev"],
-      "cache": false,
-      "persistent": true
-    },
-    "design-system": {
-      "dependsOn": ["^storybook"],
       "cache": false,
       "persistent": true
     }

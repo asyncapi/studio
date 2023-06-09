@@ -15,12 +15,16 @@
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit"
   },
+  "dependencies": {
+    "@headlessui/react": "^1.7.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
     "@types/react": "^18.2.5",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "postcss": "^8.4.20",
-    "react": "^18.2.0",
     "tailwind-config": "*",
     "tsconfig": "*",
     "tsup": "^6.1.3",

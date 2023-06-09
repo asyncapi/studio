@@ -1,5 +1,5 @@
-import React from 'react';
-import type { FunctionComponent } from 'react';
+import React from 'react'
+import type { FunctionComponent } from 'react'
 
 interface LogoProps {
 }
@@ -14,8 +14,8 @@ export const Logo: FunctionComponent<LogoProps> = () => {
       beta
       </span>
     </div>
-  );
-};
+  )
+}
 
 function LogoImage({
   className = ''
