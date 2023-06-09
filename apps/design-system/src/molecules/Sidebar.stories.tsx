@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
 
-import { Sidebar } from './components/Sidebar';
+import { Sidebar } from 'ui';
 
 export default {
   component: Sidebar,

@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "ds": "turbo run design-system --filter apps/design-system"
   },
   "devDependencies": {
     "turbo": "^1.10.1"

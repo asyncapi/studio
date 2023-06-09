@@ -9,6 +9,11 @@
       "dependsOn": ["^dev"],
       "cache": false,
       "persistent": true
+    },
+    "design-system": {
+      "dependsOn": ["^storybook"],
+      "cache": false,
+      "persistent": true
     }
   }
 }
