@@ -22,7 +22,7 @@
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
-    "build-storybook": "storybook build"
+    "build": "storybook build"
   },
   "eslintConfig": {
     "extends": [
