@@ -11,13 +11,12 @@ export class ApplicationService extends AbstractService {
     // subscribe to state to hide preloader
     this.hidePreloader();
 
-    const { readOnly, url, base64, redirectedFrom } =
-      this.svcs.navigationSvc.getUrlParameters();
+    const { readOnly, url, base64, redirectedFrom } = this.svcs.navigationSvc.getUrlParameters();
 
     // readOnly state should be only set to true when someone pass also url or base64 parameter
     const isStrictReadonly = Boolean(readOnly && (url || base64));
 
-    let error: any;
+    let error: any; 
     try {
       await this.fetchResource(url, base64);
     } catch (err) {
@@ -42,11 +41,11 @@ export class ApplicationService extends AbstractService {
     if (!url && !base64) {
       return;
     }
-
+    
     const { updateFile } = filesState.getState();
     let content = '';
     if (url) {
-      content = await fetch(url).then((res) => res.text());
+      content = await fetch(url).then(res => res.text());
     } else if (base64) {
       content = this.svcs.formatSvc.decodeBase64(base64);
     }

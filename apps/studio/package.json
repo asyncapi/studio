@@ -1,5 +1,5 @@
 {
-  "name": "@khudadad414/studio",
+  "name": "@asyncapi/studio",
   "version": "0.18.1",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/khudadad414/studio.git"
+    "url": "git://github.com/asyncapi/studio.git"
   },
   "keywords": [
     "asyncapi",
@@ -53,7 +53,7 @@
     "dev": "npm run start",
     "start": "craco start",
     "build": "npm run generate:template-parameters && craco build",
-    "test": "echo 'TODO: replace with npm run test:unit'",
+    "test": "npm run test:unit",
     "test:unit": "craco test --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
@@ -62,8 +62,8 @@
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
     "generate:docker": "docker build --tag asyncapi/studio .",
-    "bump:version": "./bump-version.sh",
-    "release": "semantic-release -e semantic-release-monorepo",
+    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
+    "release": "npm run generate:docker && semantic-release",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
@@ -91,6 +91,11 @@
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.2",
     "@craco/craco": "^7.1.0",
+    "@semantic-release-plus/docker": "^3.1.2",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/github": "^8.0.6",
+    "@semantic-release/npm": "^9.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -119,6 +124,7 @@
     "process": "^0.11.10",
     "raw-loader": "^4.0.2",
     "react-scripts": "5.0.1",
+    "semantic-release": "^19.0.5",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tailwindcss": "^3.2.4",
@@ -159,7 +165,14 @@
         }
       ],
       "@semantic-release/npm",
-      "@semantic-release/github"
+      "@semantic-release/github",
+      [
+        "@semantic-release-plus/docker",
+        {
+          "name": "asyncapi/studio",
+          "publishChannelTag": true
+        }
+      ]
     ]
   }
 }

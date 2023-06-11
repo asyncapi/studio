@@ -3,10 +3,10 @@
 One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
-
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+---
 
 ## :loudspeaker: ATTENTION:
 
@@ -22,7 +22,7 @@ This project is still under development and has not reached version 1.0.0 yet. T
 - [Using it locally](#using-it-locally)
 - [Using it via Docker](#using-it-via-docker)
 - [Development](#development)
-  - [Spin up Gitpod](#spin-up-gitpod)
+  * [Spin up Gitpod](#spin-up-gitpod)
 - [Contribution](#contribution)
 - [Contributors ✨](#contributors-%E2%9C%A8)
 
@@ -71,8 +71,7 @@ Studio is also available as a Docker Desktop Extension. For more information, ch
 2. Write code and tests.
 3. Make sure all tests pass `npm test`
 
-### Spin up Gitpod
-
+### Spin up Gitpod 
 In order to prepare and spin up a Gitpod dev environment for our project, we configured our workspace through a [.gitpod.yml](/.gitpod.yml) file.
 
 To spin up a Gitpod, go to http://gitpod.io/#https://github.com/asyncapi/studio.
