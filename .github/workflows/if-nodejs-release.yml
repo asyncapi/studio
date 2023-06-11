@@ -65,6 +65,7 @@ jobs:
           text: 'Release workflow failed in testing job'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_CI_FAIL_NOTIFY }}
+
   release:
     needs: [test-nodejs]
     name: Publish to any of NPM, Github, and Docker Hub
@@ -87,14 +88,6 @@ jobs:
       - if: steps.packagejson.outputs.exists == 'true'
         name: Install dependencies
         run: npm install
-      - name: Check secrets
-        run: |
-          if [[ "${{ secrets.GH_TOKEN }}" == "" ]]; then
-            echo "Secret is not available. Skipping..."
-            exit 0
-          else
-            echo "Secret is available."
-          fi
       - if: steps.packagejson.outputs.exists == 'true'
         name: Publish to any of NPM, Github, and Docker Hub
         id: release
