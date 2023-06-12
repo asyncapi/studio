@@ -7,8 +7,8 @@ VERSION="$VERSION"
 PACKAGE_NAME="${VERSION%-v*}"
 PACKAGE_VERSION="${VERSION##*-}"
 
-# Step 3: Check if the package name matches '@khudadad414/studio' or '@khudadad414/studio-ui'
-if [ "$PACKAGE_NAME" = "@khudadad414/studio" ]; then
+# Step 3: Check if the package name matches '@asyncapi/studio''
+if [ "$PACKAGE_NAME" = "@asyncapi/studio" ]; then
   # Update the version of your npm package here
   npm --no-git-tag-version --allow-same-version version "$PACKAGE_VERSION"
 else
