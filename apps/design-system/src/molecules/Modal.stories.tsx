@@ -1,4 +1,5 @@
-import { Modal } from './components/Modal';
+/* eslint-disable import/no-anonymous-default-export */
+import { Modal } from 'ui';
 
 export default {
   component: Modal,
@@ -10,8 +11,8 @@ export default {
     cancelDisabled: false,
     cancelText: 'Cancel',
     containerClassName: '',
-    onCancel: () => alert('Cancel button clicked!'),
-    onSubmit: () => alert('Submit button clicked!'),
+    onCancel: () => console.log('Cancel button clicked!'),
+    onSubmit: () => console.log('Submit button clicked!'),
   }
 };
 
@@ -33,7 +34,7 @@ export const RichContent = {
     okDisabled: false,
     children: (
         <>
-          <p>This is a paragraph with a button: <button className="bg-gray-700 text-white px-2 rounded" onClick={() => alert('You clicked the button!')}>Click me!</button></p>
+          <p>This is a paragraph with a button: <button className="bg-gray-900 text-white px-4 rounded" onClick={() => alert('You clicked the button!')}>Click me!</button></p>
         </>
     )
   }

@@ -1,9 +1,9 @@
 import { create } from '@storybook/theming';
 
-import brandImage from './GradientLogo.svg';
+import brandImage from './logo.png';
 
 export default create({
-  brandTitle: 'AsyncAPI Design System',
-  brandUrl: 'https://asyncapi.com/',
+  brandTitle: 'AsyncAPI Studio Design System',
+  brandUrl: 'https://studio.asyncapi.com/',
   brandImage,
 });

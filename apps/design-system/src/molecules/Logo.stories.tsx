@@ -1,4 +1,5 @@
-import { Logo } from './components/Logo';
+/* eslint-disable import/no-anonymous-default-export */
+import { Logo } from 'ui';
 
 export default {
   component: Logo,
