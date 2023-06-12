@@ -1,5 +1,5 @@
 {
-  "name": "@asyncapi/studio-design-system",
+  "name": "design-system",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,7 +19,7 @@
   "scripts": {
     "lint": "echo \"No linter configured yet\"",
     "generate:assets": "echo \"No assets to configure\"",
-    "bump:version": "./bump-version.sh",
+    "bump:version": "../../bump-version.sh design-system",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
@@ -93,7 +93,6 @@
           "preset": "conventionalcommits"
         }
       ],
-      "@semantic-release/npm",
       "@semantic-release/github"
     ]
   }
