@@ -19,10 +19,12 @@
   "scripts": {
     "lint": "echo \"No linter configured yet\"",
     "generate:assets": "echo \"No assets to configure\"",
+    "bump:version": "../../bump-version.sh design-system",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
-    "build": "storybook build"
+    "build": "storybook build",
+    "release": "semantic-release -e semantic-release-monorepo"
   },
   "eslintConfig": {
     "extends": [
@@ -70,5 +72,28 @@
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.2",
     "webpack": "^5.69.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/github"
+    ]
   }
 }

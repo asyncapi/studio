@@ -62,8 +62,8 @@
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
     "generate:docker": "docker build --tag asyncapi/studio .",
-    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
-    "release": "npm run generate:docker && semantic-release",
+    "bump:version": "../../bump-version.sh @asyncapi/studio",
+    "release": "npm run generate:docker && semantic-release -e semantic-release-monorepo",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
@@ -91,11 +91,6 @@
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.2",
     "@craco/craco": "^7.1.0",
-    "@semantic-release-plus/docker": "^3.1.2",
-    "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/github": "^8.0.6",
-    "@semantic-release/npm": "^9.0.1",
-    "@semantic-release/release-notes-generator": "^10.0.3",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -124,7 +119,6 @@
     "process": "^0.11.10",
     "raw-loader": "^4.0.2",
     "react-scripts": "5.0.1",
-    "semantic-release": "^19.0.5",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tailwindcss": "^3.2.4",
@@ -164,7 +158,6 @@
           "preset": "conventionalcommits"
         }
       ],
-      "@semantic-release/npm",
       "@semantic-release/github",
       [
         "@semantic-release-plus/docker",
