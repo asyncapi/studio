@@ -152,9 +152,7 @@ export const GeneratorModal = create(() => {
                 {problem.title}
               </div>
             </div>
-            {problem?.validationErrors?.filter(error => error.message)?.length &&
-              problem.validationErrors.length &&
-              problem.validationErrors.filter(error => error.message).length 
+            {problem?.validationErrors?.filter(error => error.message)?.length
               ? (
                 <ul className='text-xs mt-2 list-disc pl-7'>
                   {problem.validationErrors.map(error => (
