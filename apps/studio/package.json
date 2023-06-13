@@ -134,8 +134,8 @@
       "node_modules/(?!monaco-editor|monaco-yaml|monaco-marker-data-provider|monaco-worker-manager)"
     ],
     "moduleNameMapper": {
-      "^nimma/legacy$": "<rootDir>/node_modules/nimma/dist/legacy/cjs/index.js",
-      "^nimma/(.*)": "<rootDir>/node_modules/nimma/dist/cjs/$1"
+      "^nimma/legacy$": "<rootDir>/../../node_modules/nimma/dist/legacy/cjs/index.js",
+      "^nimma/(.*)": "<rootDir>/../../node_modules/nimma/dist/cjs/$1"
     }
   },
   "publishConfig": {
