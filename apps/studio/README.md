@@ -1,4 +1,4 @@
-[![AsyncAPI Studio](./assets/logo.png)](https://studio.asyncapi.com)
+[![AsyncAPI Studio](../../assets/logo.png)](https://studio.asyncapi.com)
 
 One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.
 
