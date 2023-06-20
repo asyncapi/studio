@@ -4,7 +4,6 @@ export default {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    "@storybook/addon-docs",
     "@storybook/addon-mdx-gfm",
     "@storybook/preset-typescript"
   ],
@@ -16,6 +15,7 @@ export default {
     reactDocgen: "react-docgen-typescript-plugin"
   },
   docs: {
-    autodocs: true
-  }
+    autodocs: 'tag'
+  },
+  staticDirs: ['../public']
 };

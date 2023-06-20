@@ -1,0 +1,79 @@
+import { Meta, IconGallery, IconItem } from '@storybook/blocks'
+import {
+  AdjustmentsHorizontalIcon,
+  ArrowsRightLeftIcon,
+  ChevronLeftIcon,
+  CodeBracketIcon,
+  DocumentTextIcon,
+  EllipsisVerticalIcon,
+  EyeIcon,
+  ListBulletIcon,
+  MagnifyingGlassIcon,
+  MapIcon,
+  PlusIcon,
+  PlusCircleIcon,
+  QuestionMarkCircleIcon,
+  ScaleIcon,
+  SealIcon,
+  ServerStackIcon,
+  SquaresPlusIcon,
+  StethoscopeIcon,
+  TrashIcon,
+  UsersIcon,
+  XMarkIcon,
+} from 'ui/icons'
+
+<Meta 
+    title="Design Tokens/Icons"
+/>
+
+
+# Icons
+
+Most of the icons below are taken from https://heroicons.com. If you need to add another icon, please consider an existing one on Heroicons first.
+
+<IconGallery>
+  {
+    [
+      AdjustmentsHorizontalIcon,
+      ArrowsRightLeftIcon,
+      ChevronLeftIcon,
+      CodeBracketIcon,
+      DocumentTextIcon,
+      EllipsisVerticalIcon,
+      EyeIcon,
+      ListBulletIcon,
+      MagnifyingGlassIcon,
+      MapIcon,
+      PlusIcon,
+      PlusCircleIcon,
+      QuestionMarkCircleIcon,
+      ScaleIcon,
+      SealIcon,
+      ServerStackIcon,
+      SquaresPlusIcon,
+      StethoscopeIcon,
+      TrashIcon,
+      UsersIcon,
+      XMarkIcon,
+    ].map((Icon) => (
+      <IconItem name={Icon.displayName || Icon.render.name}>
+        <Icon />
+      </IconItem>
+    ))
+  }
+</IconGallery>
+
+### Example
+
+```jsx
+import { MapIcon } from 'ui/icons'
+
+...
+
+return (
+  <div>
+    <MapIcon className="text-black" />
+  </div>
+)
+```
