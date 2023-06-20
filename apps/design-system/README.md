@@ -1,4 +1,4 @@
-[![AsyncAPI Design System](./public/github-repobanner-atom.png)](https://www.asyncapi.com)
+[![Atoms](./public/github-repobanner-atom.png)](https://atoms.asyncapi.com)
 
 # :deciduous_tree: Environment Setup
 
