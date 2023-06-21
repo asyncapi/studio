@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "ds": "turbo run dev --filter=design-system...",
-    "studio": "turbo run dev --filter=design-system...",
+    "studio": "turbo run dev --filter=studio...",
     "build": "turbo run build",
     "release": "turbo run release",
     "test": "turbo run test",
