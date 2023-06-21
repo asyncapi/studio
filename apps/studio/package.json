@@ -54,7 +54,7 @@
     "start": "craco start",
     "build": "npm run generate:template-parameters && craco build",
     "test": "npm run test:unit",
-    "test:unit": "craco test --detectOpenHandles",
+    "test:unit": "craco test --watchAll=false --detectOpenHandles",
     "eject": "react-scripts eject",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
@@ -79,6 +79,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@asyncapi/dotnet-nats-template": "^0.11.0",
     "@asyncapi/go-watermill-template": "^0.2.34",
     "@asyncapi/html-template": "^0.28.3",
@@ -90,7 +91,6 @@
     "@asyncapi/nodejs-ws-template": "^0.9.33",
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.2",
-    "@craco/craco": "^7.1.0",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
