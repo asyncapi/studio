@@ -1,8 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React from 'react';
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
+import { Sidebar } from 'ui'
 
-import { Sidebar } from 'ui';
+import { ServerStackIcon, MapIcon, SquaresPlusIcon, ScaleIcon, UsersIcon, AdjustmentsHorizontalIcon, PlusIcon, MagnifyingGlassIcon } from 'ui/icons'
 
 export default {
   component: Sidebar,
@@ -11,124 +10,96 @@ export default {
   },
 }
 
+const topItems = [
+  {
+    name: 'primarySidebar',
+    title: 'Navigation',
+    isActive: true,
+    onClick: () => {},
+    icon: ServerStackIcon,
+    tooltip: 'Navigation',
+  },
+  {
+    name: 'primaryPanel',
+    title: 'Editor',
+    isActive: false,
+    onClick: () => {},
+    icon: MapIcon,
+    tooltip: 'Editor',
+  },
+  {
+    name: 'template',
+    title: 'Template',
+    isActive: false,
+    onClick: () => {},
+    icon: SquaresPlusIcon,
+    tooltip: 'HTML preview',
+  },
+  {
+    name: 'visualiser',
+    title: 'Visualiser',
+    isActive: false,
+    onClick: () => {},
+    icon: ScaleIcon,
+    tooltip: 'Blocks visualiser',
+  },
+  {
+    name: 'newFile',
+    title: 'New file',
+    isActive: false,
+    onClick: () => {},
+    icon: UsersIcon,
+    tooltip: 'New file',
+  },
+  {
+    name: 'newFile',
+    title: 'New file',
+    isActive: false,
+    onClick: () => {},
+    icon: AdjustmentsHorizontalIcon,
+    tooltip: 'New file',
+  }
+]
+
+const bottomItems = [
+  {
+    name: 'settings',
+    title: 'Settings',
+    isActive: false,
+    onClick: () => {},
+    icon: PlusIcon,
+    tooltip: 'Settings',
+    align: 'bottom'
+  },
+  {
+    name: 'settings',
+    title: 'Settings',
+    isActive: false,
+    onClick: () => {},
+    icon: MagnifyingGlassIcon,
+    tooltip: 'Settings',
+    align: 'bottom'
+  }
+]
+
 export const WithTopAndBottomItems = {
   args: {
     items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-      },
-      {
-        name: 'visualiser',
-        title: 'Visualiser',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscGraph className="w-5 h-5" />,
-        tooltip: 'Blocks visualiser',
-      },
-      {
-        name: 'newFile',
-        title: 'New file',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscNewFile className="w-5 h-5" />,
-        tooltip: 'New file',
-      },
-      {
-        name: 'settings',
-        title: 'Settings',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscSettingsGear className="w-5 h-5" />,
-        tooltip: 'Settings',
-        align: 'bottom'
-      }
-    ],
+      ...topItems,
+      ...bottomItems,
+    ]
   }
 };
 
 export const WithTopItemsOnly = {
   args: {
-    items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-      },
-    ],
+    items: topItems
   }
 };
 
 export const WithBottomItemsOnly = {
   args: {
-    items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-        align: 'bottom',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-        align: 'bottom',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-        align: 'bottom',
-      },
-    ],
+    items: bottomItems
   }
 };
 
