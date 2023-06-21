@@ -13,7 +13,6 @@
   },
   "devDependencies": {
     "turbo": "^1.10.2",
-    "@craco/craco": "^7.1.0",
     "semantic-release": "^21.0.3",
     "semantic-release-monorepo": "^7.0.5",
     "@semantic-release-plus/docker": "^3.1.2",
