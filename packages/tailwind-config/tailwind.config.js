@@ -9,6 +9,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: colors.pink['600'],
+        gray: colors.slate, // Use Slate gray as the default gray
+        zinc: null, // The following are a list of grays. We just default to slate above.
+        slate: null,
+        neutral: null,
+        stone: null,
+        amber: null, // Amber is quite similar to Yellow. We don't need the two.
+      }
     },
   },
   plugins: [],

@@ -1,0 +1,42 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/blocks'
+import { colors } from 'tailwind-config'
+
+<Meta 
+    title="Design Tokens/Colors" 
+/>
+
+# Colors
+
+|Token|Description|Example|
+|:--|:--|:--|
+|`bg-{name}-{swatch}`|Background color|`bg-red-500`|
+|`text-{name}-{swatch}`|Text color|`text-gray-900`|
+|`border-{name}-{swatch}`|Border color|`border-pink-600`|
+
+Along with these, you can also use special tokens like `{bg|text|border}-{transparent|white|black|primary}`. For instance, `bg-primary`, `text-white`, `border-black`, and so on.
+
+The following is a strict list of colors supported on Studio:
+
+<ColorPalette>
+  <ColorItem
+    title="primary"
+    colors={[colors.primary]}
+  />
+  <ColorItem
+    title="white"
+    colors={[colors.white]}
+  />
+  <ColorItem
+    title="black"
+    colors={[colors.black]}
+  />
+  {
+    ['gray', 'red', 'orange', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose'].map((color) => (
+      <ColorItem
+        key={color}
+        title={color}
+        colors={colors[color]}
+      />
+    ))
+  }
+</ColorPalette>
