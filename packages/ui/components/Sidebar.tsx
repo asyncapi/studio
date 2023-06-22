@@ -27,7 +27,7 @@ const SidebarButton: FunctionComponent<SidebarButtonProps> = ({ item }) => {
     <Tooltip content={item.tooltip} placement='right' hideOnClick={true}>
       <button
         onClick={item.onClick}
-        className={item.isActive ? `${commonButtonClassNames} text-white` : `${commonButtonClassNames} text-gray-500 hover:text-white`}
+        className={item.isActive ? `${commonButtonClassNames} text-white` : `${commonButtonClassNames} text-gray-500 hover:text-white focus:text-white`}
         aria-label={item.title}
         type="button"
       >
