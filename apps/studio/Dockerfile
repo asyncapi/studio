@@ -1,23 +1,35 @@
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
-
-USER nonroot
-
 # Use a UUID as placeholder value to have a unique string to replace. 
 ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 
-FROM docker.io/library/node:16.13.2 as build
 
-ARG BASE_URL_PLACEHOLDER
+FROM node:18-alpine AS base
+ 
+FROM base AS builder
+RUN apk add --no-cache libc6-compat
+RUN apk update
+# Set working directory
+WORKDIR /app
+RUN npm install --global turbo
+COPY . .
+RUN turbo prune --scope=@asyncapi/studio --docker
+ 
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+RUN apk add --no-cache libc6-compat
+RUN apk update
+WORKDIR /app
+ 
+# First install the dependencies (as they change less often)
 
-COPY package.json package-lock.json ./
-RUN npm install --frozen-lockfile
-
-COPY ./ ./
-# Set the React PUBLIC_URL to our placeholder value so that
-# that it can easily be replaced with the actual base URL
-# in the entrypoint script below.
-RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
+RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci
+ 
+# Build the project
+COPY --from=builder /app/out/full/ .
+RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build:studio
+ 
 
 FROM docker.io/library/nginx:1.21.5-alpine as runtime
 
@@ -28,7 +40,7 @@ ARG BASE_URL_PLACEHOLDER
 # https://github.com/nginxinc/docker-nginx/blob/master/entrypoint/docker-entrypoint.sh#L16.
 ARG ENTRYPOINT_SCRIPT=/docker-entrypoint.d/set-public-url.sh
 
-COPY --from=build /build /usr/share/nginx/html/
+COPY --from=installer /app/apps/studio/build /usr/share/nginx/html/
 # Add an entrypoint script that replaces all occurrences of the 
 # placeholder value by the configured base URL. If no base URL
 # is configured we assume the application is running at '/'.
