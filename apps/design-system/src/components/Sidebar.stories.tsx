@@ -7,77 +7,64 @@ export default {
   component: Sidebar,
   parameters: {
     layout: 'fullscreen',
+    backgrounds: {
+      default: 'dark'
+    }
   },
 }
 
 const topItems = [
   {
-    name: 'primarySidebar',
-    title: 'Navigation',
+    title: 'Services',
     isActive: true,
-    onClick: () => {},
+    onClick: () => alert('Services'),
     icon: ServerStackIcon,
-    tooltip: 'Navigation',
   },
   {
-    name: 'primaryPanel',
-    title: 'Editor',
+    title: 'Topology',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Topology'),
     icon: MapIcon,
-    tooltip: 'Editor',
   },
   {
-    name: 'template',
-    title: 'Template',
+    title: 'Registry',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Registry'),
     icon: SquaresPlusIcon,
-    tooltip: 'HTML preview',
   },
   {
-    name: 'visualiser',
-    title: 'Visualiser',
+    title: 'Governance',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Governance'),
     icon: ScaleIcon,
-    tooltip: 'Blocks visualiser',
   },
   {
-    name: 'newFile',
-    title: 'New file',
+    title: 'Users',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Users'),
     icon: UsersIcon,
-    tooltip: 'New file',
   },
   {
-    name: 'newFile',
-    title: 'New file',
+    title: 'Organization Settings',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Organization Settings'),
     icon: AdjustmentsHorizontalIcon,
-    tooltip: 'New file',
   }
 ]
 
 const bottomItems = [
   {
-    name: 'settings',
-    title: 'Settings',
+    title: 'Create new...',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Create new...'),
     icon: PlusIcon,
-    tooltip: 'Settings',
     align: 'bottom'
   },
   {
-    name: 'settings',
-    title: 'Settings',
+    title: 'Search',
     isActive: false,
-    onClick: () => {},
+    onClick: () => alert('Search'),
     icon: MagnifyingGlassIcon,
-    tooltip: 'Settings',
     align: 'bottom'
   }
 ]
