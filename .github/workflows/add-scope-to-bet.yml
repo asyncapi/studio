@@ -77,17 +77,20 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { issueNumber, repo, owner, repoUrl, betIssueDescription, issueNodeId, trackedTasks } = ${{ steps.parse.outputs.result }};
-            const regex = /###?\s+Scope([\s\S]*?)(?=\n###? \w|\n$)/;
+            const results = ${{ steps.parse.outputs.result }};
+            if (!results) {
+              console.log("Nothing to do in this issue - outputs results is null");
+              return;
+            }
+            const { issueNumber, repo, owner, repoUrl, betIssueDescription, issueNodeId, trackedTasks } = results;
+            const regex = /###?\sScope([^-]+)((-\s+\[[\sX|x]\]\s*#?.+\s*)+)/;
             const match = betIssueDescription.match(regex);
             const taskNumber = context.payload.issue.number;
             if (!match) {
               console.log("Nothing to do in this issue");
               return;
             }
-            const taskRegex = /- \[(x| )\] (.+)/gm
-            const tasksOnly = match[1].match(taskRegex);
-            const currentScope = tasksOnly.join('\n').trim();
+            const currentScope = match[2].trim();
             const newTask = `- [ ] #${taskNumber}`;
             if (trackedTasks.includes(Number(taskNumber))) {
               console.log("This issue already exists");
@@ -95,10 +98,6 @@ jobs:
             }
             const newScope = `${currentScope}\n${newTask}`;
             const newBetDescription = betIssueDescription.replace(currentScope, newScope);
-            if (!match) {
-              console.log("No Bet linked to this issue")
-              return
-            }
             const mutation = `mutation ($input: UpdateIssueInput!) {
                 updateIssue(input: $input) {
                     clientMutationId
