@@ -1,5 +1,9 @@
 {
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asyncapi/studio.git"
+  },
   "scripts": {
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
@@ -23,5 +27,6 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "packageManager": "npm@8.19.3"
 }
