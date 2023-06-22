@@ -8,7 +8,7 @@
     "release": "turbo run release",
     "test": "turbo run test",
     "bump:version": "turbo run bump:version",
-    "build:studio": "turbo run build --filter=studio...",
+    "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system..."
   },
   "devDependencies": {
