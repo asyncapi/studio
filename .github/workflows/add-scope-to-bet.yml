@@ -1,0 +1,116 @@
+name: Add related issues
+
+on:
+  issues:
+    types:
+      - edited
+      - opened
+
+jobs:
+  add_related_issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse Issue Description
+        id: parse
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: json
+          script: |
+            const regexSimple = /(Related\sto\s+(\S+)?#(\d+))/;
+            const description = context.payload.issue.body;
+            const match = regexSimple.exec(description);
+            if (!match) {
+              console.log("Nothing to do in this issue");
+              return null;
+            }
+            let result = null;
+            const repoFull = match[2] ? match[2] : context.payload.repository.full_name;
+            const owner = repoFull.split('/')[0];
+            const repo = repoFull.split('/')[1];
+            const issueNumber = Number(match[3]);
+            const repoUrl = `https://github.com/${repoFull}`;
+            const query = `
+                  query($owner: String!, $repo: String!, $issue: Int!) { 
+                    user(login: $owner) {
+                        repository(name: $repo) {
+                            issue(number: $issue) {
+                                id
+                                title
+                                body
+                                trackedIssues(first:100) {
+                                  nodes {
+                                    number
+                                  }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+            const variables = {
+              owner,
+              repo,
+              issue: issueNumber
+            }
+            try {
+              const data = await github.graphql(query, variables)
+              const {body, id, trackedIssues} = data.user.repository.issue
+              result = {
+                issueNumber,
+                owner,
+                repo,
+                repoUrl,
+                betIssueDescription: body,
+                issueNodeId: id,
+                trackedTasks : trackedIssues.nodes.map(issue => issue.number)
+              };
+            } catch (error) {
+              console.log(`Failed query for issue #${issueNumber}`, error);
+            }
+
+            return result;    
+      - name: Add The issue to the Bet
+        id: add-bet
+        uses: actions/github-script@v6
+        if: ${{ steps.parse.outputs.result }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const results = ${{ steps.parse.outputs.result }};
+            if (!results) {
+              console.log("Nothing to do in this issue - outputs results is null");
+              return;
+            }
+            const { issueNumber, repo, owner, repoUrl, betIssueDescription, issueNodeId, trackedTasks } = results;
+            const regex = /###?\sScope([^-]+)((-\s+\[[\sX|x]\]\s*#?.+\s*)+)/;
+            const match = betIssueDescription.match(regex);
+            const taskNumber = context.payload.issue.number;
+            if (!match) {
+              console.log("Nothing to do in this issue");
+              return;
+            }
+            const currentScope = match[2].trim();
+            const newTask = `- [ ] #${taskNumber}`;
+            if (trackedTasks.includes(Number(taskNumber))) {
+              console.log("This issue already exists");
+              return;
+            }
+            const newScope = `${currentScope}\n${newTask}`;
+            const newBetDescription = betIssueDescription.replace(currentScope, newScope);
+            const mutation = `mutation ($input: UpdateIssueInput!) {
+                updateIssue(input: $input) {
+                    clientMutationId
+                }
+              }`;
+            const variables = {
+                input : {
+                  id: issueNodeId,
+                  body: newBetDescription
+                }
+              };
+            try {
+              await github.graphql(mutation, variables);
+            } catch (error) {
+              console.log(`Failed mutation for issue #${issueNodeId}`, error);
+            }
