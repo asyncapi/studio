@@ -9,6 +9,8 @@ on:
 jobs:
   add_related_issues:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Parse Issue Description
         id: parse
@@ -30,9 +32,10 @@ jobs:
             const repo = repoFull.split('/')[1];
             const issueNumber = Number(match[3]);
             const repoUrl = `https://github.com/${repoFull}`;
+            const orgOrUser = context.payload.organization ? 'organization' : 'user';
             const query = `
                   query($owner: String!, $repo: String!, $issue: Int!) { 
-                    user(login: $owner) {
+                    ${orgOrUser}(login: $owner) {
                         repository(name: $repo) {
                             issue(number: $issue) {
                                 id
@@ -55,7 +58,7 @@ jobs:
             }
             try {
               const data = await github.graphql(query, variables)
-              const {body, id, trackedIssues} = data.user.repository.issue
+              const {body, id, trackedIssues} = data[orgOrUser].repository.issue
               result = {
                 issueNumber,
                 owner,
