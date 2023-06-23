@@ -5,6 +5,7 @@
     "url": "git://github.com/asyncapi/studio.git"
   },
   "scripts": {
+    "lint": "eslint",
     "dev": "turbo run dev",
     "ds": "turbo run dev --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
@@ -16,13 +17,14 @@
     "build:ds": "turbo run build --filter=design-system..."
   },
   "devDependencies": {
-    "turbo": "^1.10.2",
-    "semantic-release": "^21.0.3",
-    "semantic-release-monorepo": "^7.0.5",
     "@semantic-release-plus/docker": "^3.1.2",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/github": "^8.0.6",
-    "@semantic-release/release-notes-generator": "^10.0.3"
+    "@semantic-release/release-notes-generator": "^10.0.3",
+    "eslint": "^8.43.0",
+    "semantic-release": "^21.0.3",
+    "semantic-release-monorepo": "^7.0.5",
+    "turbo": "^1.10.2"
   },
   "workspaces": [
     "apps/*",
