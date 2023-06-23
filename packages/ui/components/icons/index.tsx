@@ -18,6 +18,7 @@ export {
   TrashIcon,
   UsersIcon,
   XMarkIcon,
+  CodeBracketSquareIcon,
 } from '@heroicons/react/24/outline'
 
 export { default as StethoscopeIcon } from './StethoscopeIcon'
