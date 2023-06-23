@@ -24,7 +24,7 @@
     "eslint": "^8.43.0",
     "semantic-release": "^21.0.3",
     "semantic-release-monorepo": "^7.0.5",
-    "turbo": "^1.10.2"
+    "turbo": "^1.10.5"
   },
   "workspaces": [
     "apps/*",
