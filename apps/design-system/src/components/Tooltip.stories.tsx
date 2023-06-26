@@ -5,7 +5,7 @@ import { Tooltip } from 'ui'
 export default {
   component: Tooltip.Content,
   decorators: [
-    (Story) => (
+    (Story: React.FC) => (
       <Tooltip.Provider>
         <Tooltip.Root>
           <Tooltip.Trigger>
