@@ -1,0 +1,55 @@
+name: Pitch
+description: 'Do you have an idea and a product enhancement? Time to pitch!'
+title: '[PITCH]:'
+labels: ['Pitch']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this pitch! If you need some inspiration, you can check out these pitch examples: [Example 1](https://github.com/orgs/asyncapi/projects/16?pane=issue&itemId=24119991) and [Example 2](https://github.com/orgs/asyncapi/projects/16?pane=issue&itemId=29776963).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: "Please provide a detailed description of the problem that users are facing. Share the story or context that exposes the problem."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: "Describe your proposed solution to address the problem. You can include examples, mockups, or views to illustrate your solution."
+    validations:
+      required: true
+  - type: textarea
+    id: rabbit_holes
+    attributes:
+      label: Rabbit holes
+      description: "Identify potential technical, design, or other challenges that might arise during the implementation of the solution. Discuss any anticipated obstacles or complexities."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: "Outline a list of tasks or issues that need to be completed to bring the proposed solution to life. You don't need to provide an exhaustive list upfront."
+      placeholder: | 
+        - [ ] Task 1
+        - [ ] Task 2
+        - [ ] Task 3
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-bounds
+    attributes:
+      label: Out of bounds
+      description: "Specify any elements or features that explicitly fall outside the scope of this pitch. Clarify what won't be included in the solution."
+    validations:
+      required: false
+  - type: textarea
+    id: success
+    attributes:
+      label: Success criteria
+      description: "Define the criteria that will determine the success of the proposed solution. Specify the specific outcomes or metrics that will indicate the effectiveness of the solution."
+    validations:
+      required: false
