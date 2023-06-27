@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this pitch! If you need some inspiration, you can check out these pitch examples: [Example 1](https://github.com/orgs/asyncapi/projects/16?pane=issue&itemId=24119991) and [Example 2](https://github.com/orgs/asyncapi/projects/16?pane=issue&itemId=29776963).
+        Thanks for taking the time to fill out this pitch! If you need some inspiration, you can check out these pitch examples: [Example 1](https://github.com/asyncapi/studio/issues/636) and [Example 2](https://github.com/asyncapi/studio/issues/703).
   - type: textarea
     id: problem
     attributes:
