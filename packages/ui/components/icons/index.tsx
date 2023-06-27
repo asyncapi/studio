@@ -3,6 +3,7 @@ export {
   ArrowsRightLeftIcon,
   ChevronLeftIcon,
   CodeBracketIcon,
+  CodeBracketSquareIcon,
   DocumentTextIcon,
   EllipsisVerticalIcon,
   EyeIcon,
@@ -20,5 +21,4 @@ export {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 
-export { default as StethoscopeIcon } from './StethoscopeIcon'
 export { default as SealIcon } from './SealIcon'
