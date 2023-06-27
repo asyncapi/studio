@@ -13,19 +13,23 @@ export default {
 
 const items = [
   {
-    title: 'Import from URL'
+    title: 'Import from URL',
+    onSelect: () => console.log('Import from URL')
   },
   {
-    title: 'Import from file'
+    title: 'Import from file',
+    onSelect: () => console.log('Import from file')
   },
   {
-    title: 'Import from Base64'
+    title: 'Import from Base64',
+    onSelect: () => console.log('Import from Base64')
   },
   {
     type: 'separator'
   },
   {
-    title: 'Generate code/docs'
+    title: 'Generate code/docs',
+    onSelect: () => console.log('Generate code/docs')
   },
 ]
 
