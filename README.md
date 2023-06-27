@@ -50,3 +50,14 @@ npm run build:ds
 npm run build
 ```
 
+## Architecture decision records
+
+### Create a new architecture decision record
+
+- Install [adr tools](https://github.com/adr/adr-tools/blob/patch-1/INSTALL.md)
+- `adr new Start using a React framework`
+- Open a new PR and discuss the decision with the community
+
+### List existing architecture decision records
+
+See [docs/adr](docs/adr)
