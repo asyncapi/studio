@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import MonacoEditor from '@monaco-editor/react';
 
 import { debounce } from '../../helpers';
 import { useServices } from '../../services';
@@ -7,6 +6,9 @@ import { useFilesState, useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
 import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
+import dynamic from 'next/dynamic';
+
+const MonacoEditor = dynamic(import('@monaco-editor/react'), { ssr: false })
 
 export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   ...props
