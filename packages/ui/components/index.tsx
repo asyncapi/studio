@@ -2,7 +2,9 @@
 import "./styles.css"
 
 // components
+export * from "./DropdownMenu"
 export * from "./Logo"
 export * from "./Modal"
 export * from "./Sidebar"
+export * from "./Toolbar"
 export { default as Tooltip } from "./Tooltip"
