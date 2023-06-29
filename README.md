@@ -54,8 +54,7 @@ npm run build
 
 ### Create a new architecture decision record
 
-- Install [adr tools](https://github.com/adr/adr-tools/blob/patch-1/INSTALL.md)
-- `adr new Start using a React framework`
+- Copy `doc/adr/0000-template.md` to a new file (e.g `doc/adr/0001-record-architecture-decisions.md`)
 - Open a new PR and discuss the decision with the community
 
 ### List existing architecture decision records
