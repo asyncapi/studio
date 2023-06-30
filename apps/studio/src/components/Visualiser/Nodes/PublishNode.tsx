@@ -5,7 +5,7 @@ import { useServices } from '../../../services';
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore
-import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
+// import { Markdown } from '@asyncapi/react-component/lib/esm/components/Markdown';
 
 import type React from 'react';
 
@@ -37,9 +37,9 @@ export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
           <h3 className="text-lg leading-6 font-medium text-gray-900">{channel}</h3>
           {description && (
             <div className="mt-1 max-w-2xl text-sm text-gray-500">
-              <Markdown>
+              {/* <Markdown>
                 {description}
-              </Markdown>
+              </Markdown> */}
             </div>
           )}
         </div>

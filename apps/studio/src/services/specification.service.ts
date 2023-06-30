@@ -1,3 +1,5 @@
+'use client'
+
 import { AbstractService } from './abstract.service';
 
 import specs from '@asyncapi/specs';

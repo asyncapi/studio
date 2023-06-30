@@ -1,3 +1,5 @@
+'use client'
+
 import { AbstractService } from './abstract.service';
 
 import { Parser, convertToOldAPI, DiagnosticSeverity } from '@asyncapi/parser/cjs';

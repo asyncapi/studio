@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncApiComponentWP } from '@asyncapi/react-component';
+// import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { useServices } from '../../services';
 import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
@@ -44,7 +44,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     parsedSpec && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="overflow-auto">
-          <AsyncApiComponentWP
+          {/* <AsyncApiComponentWP
             schema={parsedSpec}
             config={{ 
               show: { 
@@ -52,7 +52,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
                 sidebar: appState.getState().readOnly,
               },
             }}
-          />
+          /> */}
         </div>
       </div>
     )

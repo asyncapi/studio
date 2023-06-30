@@ -1,7 +1,11 @@
-import create from 'zustand';
+'use client'
+
+import { create } from 'zustand';
+
+// TODO: add localStorage again
 
 const schema =
-  localStorage.getItem('document') || `asyncapi: '2.6.0'
+ `asyncapi: '2.6.0'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'

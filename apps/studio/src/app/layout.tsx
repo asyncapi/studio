@@ -1,14 +1,13 @@
-import { ServicesProvider, createServices } from '../services';
-import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
-
-import './globals.css';
 import './main.css';
+import './globals.css';
+
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';
 import '@asyncapi/react-component/styles/default.min.css';
 import 'reactflow/dist/style.css';
 
 import { Metadata } from 'next';
+import Wrapper from './services';
 
 export const metadata : Metadata = {
   title: 'AsyncAPI Studio',
@@ -61,43 +60,17 @@ export const metadata : Metadata = {
   }
 };
 
-function configureMonacoEnvironment() {
-  window.MonacoEnvironment = {
-    getWorker(_, label) {
-      switch (label) {
-      case 'editorWorkerService':
-        return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url));
-      case 'json':
-        return new Worker(
-          new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url),
-        );
-      case 'yaml':
-      case 'yml':
-        return new Worker(new URL('monaco-yaml/yaml.worker', import.meta.url));
-      default:
-        throw new Error(`Unknown worker ${label}`);
-      }
-    },
-  };
-}
-
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const services = await createServices();
-  configureMonacoEnvironment();
-
   return (
     <html lang="en">
       <body>
-      <ServicesProvider value={services}>
-        <ModalsProvider>
+        <Wrapper>
           {children}
-        </ModalsProvider>
-      </ServicesProvider>
+        </Wrapper>
       </body>
     </html>
   )

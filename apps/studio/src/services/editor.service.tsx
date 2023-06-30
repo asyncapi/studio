@@ -1,9 +1,11 @@
+'use client'
+
 import { AbstractService } from './abstract.service';
 
-import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
+// import { KeyMod, KeyCode,  } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
-import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
-import toast from 'react-hot-toast';
+// import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
+// import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
 import { appState, documentsState, filesState, settingsState } from '../state';
@@ -12,6 +14,7 @@ import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { File } from '../state/files.state';
+import dynamic from 'next/dynamic';
 
 export interface UpdateState {
   content: string;
@@ -45,10 +48,10 @@ export class EditorService extends AbstractService {
     }
     
     // apply save command
-    editor.addCommand(
-      KeyMod.CtrlCmd | KeyCode.KeyS,
-      () => this.saveToLocalStorage(),
-    );
+    // editor.addCommand(
+    //   KeyMod.CtrlCmd | KeyCode.KeyS,
+    //   () => this.saveToLocalStorage(),
+    // );
     
     appState.setState({ initialized: true });
   }
@@ -228,25 +231,25 @@ export class EditorService extends AbstractService {
       modified: false,
     });
 
-    if (notify) {
-      if (settingsState.getState().editor.autoSaving) {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Studio is currently saving your work automatically 💪
-            </span>
-          </div>,
-        );
-      } else {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Document succesfully saved to the local storage!
-            </span>
-          </div>,
-        );
-      }
-    }
+    // if (notify) {
+    //   if (settingsState.getState().editor.autoSaving) {
+    //     toast.success(
+    //       <div>
+    //         <span className="block text-bold">
+    //           Studio is currently saving your work automatically 💪
+    //         </span>
+    //       </div>,
+    //     );
+    //   } else {
+    //     toast.success(
+    //       <div>
+    //         <span className="block text-bold">
+    //           Document succesfully saved to the local storage!
+    //         </span>
+    //       </div>,
+    //     );
+    //   }
+    // }
   }
 
   getFromLocalStorage() {
@@ -276,46 +279,46 @@ export class EditorService extends AbstractService {
     diagnostics.forEach(diagnostic => {
       const { message, range, severity } = diagnostic;
 
-      if (severity !== DiagnosticSeverity.Error) {
-        newDecorations.push({
-          id: 'asyncapi',
-          ownerId: 0,
-          range: new Range(
-            range.start.line + 1, 
-            range.start.character + 1,
-            range.end.line + 1,
-            range.end.character + 1
-          ),
-          options: {
-            glyphMarginClassName: this.getSeverityClassName(severity),
-            glyphMarginHoverMessage: { value: message },
-          },
-        });
-        return;
-      }
+      // if (severity !== DiagnosticSeverity.Error) {
+      //   newDecorations.push({
+      //     id: 'asyncapi',
+      //     ownerId: 0,
+      //     // range: new Range(
+      //     //   range.start.line + 1, 
+      //     //   range.start.character + 1,
+      //     //   range.end.line + 1,
+      //     //   range.end.character + 1
+      //     // ),
+      //     options: {
+      //       glyphMarginClassName: this.getSeverityClassName(severity),
+      //       glyphMarginHoverMessage: { value: message },
+      //     },
+      //   });
+      //   return;
+      // }
   
-      newMarkers.push({
-        startLineNumber: range.start.line + 1,
-        startColumn: range.start.character + 1,
-        endLineNumber: range.end.line + 1,
-        endColumn: range.end.character + 1,
-        severity: this.getSeverity(severity),
-        message,
-      });
+      // newMarkers.push({
+      //   startLineNumber: range.start.line + 1,
+      //   startColumn: range.start.character + 1,
+      //   endLineNumber: range.end.line + 1,
+      //   endColumn: range.end.character + 1,
+      //   severity: this.getSeverity(severity),
+      //   message,
+      // });
     });
 
     return { decorations: newDecorations, markers: newMarkers };
   }
 
-  private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
-    switch (severity) {
-    case DiagnosticSeverity.Error: return MarkerSeverity.Error;
-    case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
-    case DiagnosticSeverity.Information: return MarkerSeverity.Info;
-    case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
-    default: return MarkerSeverity.Error;
-    }
-  }
+  // private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
+  //   switch (severity) {
+  //   case DiagnosticSeverity.Error: return MarkerSeverity.Error;
+  //   case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
+  //   case DiagnosticSeverity.Information: return MarkerSeverity.Info;
+  //   case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
+  //   default: return MarkerSeverity.Error;
+  //   }
+  // }
 
   private getSeverityClassName(severity: DiagnosticSeverity): string {
     switch (severity) {

@@ -12,7 +12,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
             <div className="flex-shrink-0 ml-1.5">
               <img
                 className="inline-block h-16"
-                src={`${process.env.PUBLIC_URL}/img/logo-studio.svg`}
+                src={`/img/logo-studio.svg`}
                 alt="AsyncAPI Logo"
               />
               <span className="inline-block text-xs text-teal-500 font-normal ml-1 tracking-wider uppercase" style={{ transform: 'translateY(0.3125rem)' }}>

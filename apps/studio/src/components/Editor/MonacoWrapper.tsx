@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react';
 
 import { debounce } from '../../helpers';
@@ -5,10 +7,10 @@ import { useServices } from '../../services';
 import { useFilesState, useSettingsState } from '../../state';
 
 import type { FunctionComponent } from 'react';
-import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
+import type { MonacoEditorProps } from 'react-monaco-editor';
 import dynamic from 'next/dynamic';
 
-const MonacoEditor = dynamic(import('@monaco-editor/react'), { ssr: false })
+const MonacoEditor = dynamic(() => import('react-monaco-editor'), { ssr: false })
 
 export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   ...props
@@ -27,10 +29,30 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 
   return (
     <MonacoEditor
+      editorDidMount={() => {
+        window.MonacoEnvironment!.getWorkerUrl = (
+          _moduleId: string,
+          label: string
+        ) => {
+          if (label === "json")
+            return "_next/static/json.worker.js";
+          if (label === "css")
+            return "_next/static/css.worker.js";
+          if (label === "html")
+            return "_next/static/html.worker.js";
+          if (
+            label === "typescript" ||
+            label === "javascript"
+          )
+            return "_next/static/ts.worker.js";
+          return "_next/static/editor.worker.js";
+        };
+
+        editorSvc.onDidCreate.bind(editorSvc)
+      }}
       language={file.language}
       defaultValue={file.content}
       theme="asyncapi-theme"
-      onMount={editorSvc.onDidCreate.bind(editorSvc)}
       onChange={onChange}
       options={{
         wordWrap: 'on',
