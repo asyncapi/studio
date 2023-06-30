@@ -56,6 +56,8 @@ npm run build
 
 - Copy `doc/adr/0000-template.md` to a new file (e.g `doc/adr/0001-record-architecture-decisions.md`)
 - Open a new PR and discuss the decision with the community
+- The PR must have `kind/adr` label
+- The PR Title must starts with `chore: [ADR-nnnn] name of ADR` where `nnnn` is the adr number (e.g `chore: [ADR-0001] use architecture decision records`) same us commits.
 
 ### List existing architecture decision records
 
