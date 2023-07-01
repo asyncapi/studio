@@ -1,9 +1,14 @@
 'use client'
 
-import dynamic from 'next/dynamic';
-import { AsyncAPIStudio } from './studio';
+import '../components/styles/global.css';
+import '../components/styles/main.css';
 
-import { useState, type FunctionComponent } from 'react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
+import '@asyncapi/react-component/styles/default.min.css';
+import 'reactflow/dist/style.css';
+
+import { AsyncAPIStudio } from '../components/Studio';
 
 export default function App() {
   return (

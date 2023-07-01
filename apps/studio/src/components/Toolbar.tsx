@@ -3,7 +3,7 @@ import { IoGlobeOutline, IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
 
 interface ToolbarProps {}
 
-export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
+const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
   return (
     <div>
       <div className="px-2 border-b border-gray-700 bg-gray-800">
@@ -42,3 +42,6 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
     </div>
   );
 };
+
+
+export default Toolbar;

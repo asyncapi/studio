@@ -1,13 +1,4 @@
-import './main.css';
-import './globals.css';
-
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/animations/shift-away.css';
-import '@asyncapi/react-component/styles/default.min.css';
-import 'reactflow/dist/style.css';
-
 import { Metadata } from 'next';
-import Wrapper from './services';
 
 export const metadata : Metadata = {
   title: 'AsyncAPI Studio',
@@ -68,9 +59,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Wrapper>
-          {children}
-        </Wrapper>
+        {children}
       </body>
     </html>
   )

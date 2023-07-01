@@ -32,6 +32,7 @@
     "@headlessui/react": "^1.7.4",
     "@hookstate/core": "^4.0.0-rc21",
     "@monaco-editor/react": "^4.4.6",
+    "@netlify/plugin-nextjs": "^4.36.1",
     "@tippyjs/react": "^4.2.6",
     "css-loader": "^6.8.1",
     "js-base64": "^3.7.3",
