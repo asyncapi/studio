@@ -18,6 +18,8 @@ function setEnvironments() {
 }
 
 const nextConfig = withTM({
+  //This is temporary fix for netlify build
+  distDir: "build",
   // This has been added as some modules are not transpiled correctly
   experimental: {
     esmExternals: "loose",
