@@ -1,8 +1,8 @@
 import { OperationIcon } from 'ui';
 
 export default {
-  title: 'OperationIcon',
-  component: OperationIcon,
+    title: 'Components/OperationIcon',
+    component: OperationIcon,
 };
 
 export const WithReplyIcon = () => <OperationIcon operation="reply" className="w-7 h-7 fill-current text-gray-500" />;

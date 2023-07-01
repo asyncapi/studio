@@ -1,7 +1,7 @@
 import { FunctionComponent, SVGProps } from "react";
 
 interface IconProps extends SVGProps<SVGSVGElement> {
-  operation: string;
+  operation: 'send' | 'receive' | 'reply';
 }
 
 export const OperationIcon: FunctionComponent<IconProps> = ({ operation, className = "w-7 h-7", ...props }) => {
@@ -27,7 +27,5 @@ export const OperationIcon: FunctionComponent<IconProps> = ({ operation, classNa
           <path d="M11.75 11.75L7.25 16.25M7.25 16.25L11.75 20.75M7.25 16.25H16.25C18.7353 16.25 20.75 14.2353 20.75 11.75C20.75 9.26472 18.7353 7.25 16.25 7.25H14" stroke="#5B21B6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
-    default:
-      return null;
   }
 };
