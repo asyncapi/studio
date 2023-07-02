@@ -23,7 +23,7 @@ export const SlideOver: React.FC<SlideOverProps> = ({ isOpen, onClose, children 
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-end z-50 backdrop-blur-20 opacity-67">
+    <div className="fixed inset-0 flex items-center justify-end z-50 backdrop-blur-[20px] opacity-[.67]">
       <div className="w-full h-full max-w-lg bg-gray-950 text-gray-200 shadow-lg overflow-auto relative p-2.5 border-l-2 border-gray-700" tabIndex={0} onKeyDown={handleKeyDown}>
         <button className="absolute top-2 right-2 focus:outline-white" onClick={onClose} aria-label="Close">
           <CloseIcon />
