@@ -69,3 +69,15 @@ export const Redis = {
     protocol: 'redis'
   }
 }
+
+export const SNS = {
+  args: {
+    protocol: 'sns'
+  }
+}
+
+export const SQS = {
+  args: {
+    protocol: 'sqs'
+  }
+}
