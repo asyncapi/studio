@@ -39,3 +39,9 @@ export const MQTT = {
     protocol: 'mqtt'
   }
 }
+
+export const GooglePubSub = {
+  args: {
+    protocol: 'googlepubsub'
+  }
+}

@@ -22,6 +22,7 @@ export {
 } from '@heroicons/react/24/outline'
 
 export { default as AMQPIcon } from './AMQPIcon'
+export { default as GooglePubSubIcon } from './GooglePubSubIcon'
 export { default as KafkaIcon } from './KafkaIcon'
 export { default as MQTTIcon } from './MQTTIcon'
 export { default as SealIcon } from './SealIcon'
