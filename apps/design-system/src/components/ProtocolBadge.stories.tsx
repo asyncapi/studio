@@ -27,3 +27,9 @@ export const Websocket = {
     protocol: 'websocket'
   }
 }
+
+export const AMQP = {
+  args: {
+    protocol: 'amqp'
+  }
+}
