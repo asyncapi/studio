@@ -51,3 +51,9 @@ export const IBMMQ = {
     protocol: 'ibmmq'
   }
 }
+
+export const NATS = {
+  args: {
+    protocol: 'nats'
+  }
+}
