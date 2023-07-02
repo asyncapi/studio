@@ -33,3 +33,9 @@ export const AMQP = {
     protocol: 'amqp'
   }
 }
+
+export const MQTT = {
+  args: {
+    protocol: 'mqtt'
+  }
+}

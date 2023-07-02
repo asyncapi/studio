@@ -1,5 +1,5 @@
 import type { FunctionComponent } from 'react'
-import { AMQPIcon, KafkaIcon, WebSocketIcon } from './icons'
+import { AMQPIcon, KafkaIcon, MQTTIcon, WebSocketIcon } from './icons'
 
 interface ProtocolBadgeProps {
   className?: string
@@ -35,6 +35,11 @@ export const ProtocolBadge: FunctionComponent<ProtocolBadgeProps> = ({
       ariaLabel = 'AMQP'
       colorName = 'blue' // bg-blue-100 text-blue-900
       content = <AMQPIcon className="w-4 h-4" />
+    break;
+    case 'mqtt':
+      ariaLabel = 'MQTT'
+      colorName = 'purple' // bg-purple-100 text-purple-900
+      content = <MQTTIcon className="w-4 h-4" />
     break;
   }
   return (
