@@ -17,7 +17,6 @@ export const Example = () => {
 
       <SlideOver isOpen={isOpen} onClose={handleClose}>
         <h2>Content of the SlideOver</h2>
-        {/* Other contents... */}
       </SlideOver>
     </div>
   );

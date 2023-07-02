@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
 interface SlideOverProps {
   isOpen: boolean;
@@ -14,32 +13,24 @@ const CloseIcon: React.FC = () => (
 );
 
 export const SlideOver: React.FC<SlideOverProps> = ({ isOpen, onClose, children }) => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
 
   if (!isOpen) return null;
 
-  return ReactDOM.createPortal(
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  return (
     <div className="fixed inset-0 flex items-center justify-end z-50">
-      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose} />
-      <div className="w-full max-w-lg bg-gray-950 text-gray-200 rounded-md shadow-lg overflow-auto relative p-2.5">
-        <button className="absolute top-2 right-2" onClick={onClose}>
+      <div className="w-full h-full max-w-lg bg-gray-950 text-gray-200 rounded-md shadow-lg overflow-auto relative p-2.5" tabIndex={0} onKeyDown={handleKeyDown}>
+        <button className="absolute top-2 right-2 focus:outline-white" onClick={onClose} aria-label="Close">
           <CloseIcon />
         </button>
         {children}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
 
