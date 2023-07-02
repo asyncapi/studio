@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// SlideOver.tsx
+>>>>>>> 69b7ababfa7d1a6e5dc28e29eaa5d74276df448f
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
