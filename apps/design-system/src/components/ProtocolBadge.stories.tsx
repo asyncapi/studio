@@ -45,3 +45,9 @@ export const GooglePubSub = {
     protocol: 'googlepubsub'
   }
 }
+
+export const IBMMQ = {
+  args: {
+    protocol: 'ibmmq'
+  }
+}

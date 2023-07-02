@@ -23,6 +23,7 @@ export {
 
 export { default as AMQPIcon } from './AMQPIcon'
 export { default as GooglePubSubIcon } from './GooglePubSubIcon'
+export { default as IBMMQIcon } from './IBMMQIcon'
 export { default as KafkaIcon } from './KafkaIcon'
 export { default as MQTTIcon } from './MQTTIcon'
 export { default as SealIcon } from './SealIcon'
