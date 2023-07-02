@@ -1,4 +1,4 @@
-import { XMarkIcon } from 'ui/icons';
+import { XMarkIcon } from './icons';
 
 interface SlideOverProps {
   isOpen: boolean;
