@@ -21,4 +21,6 @@ export {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 
+export { default as KafkaIcon } from './KafkaIcon'
 export { default as SealIcon } from './SealIcon'
+export { default as WebSocketIcon } from './WebSocketIcon'

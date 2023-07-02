@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { ProtocolBadge } from 'ui';
+import { ProtocolBadge } from 'ui'
 
 export default {
   component: ProtocolBadge,
@@ -8,10 +8,22 @@ export default {
       default: 'dark'
     }
   }
-};
+}
 
-export const Default = {
+export const HTTP = {
   args: {
     protocol: 'http'
   }
-};
+}
+
+export const Kafka = {
+  args: {
+    protocol: 'kafka'
+  }
+}
+
+export const Websocket = {
+  args: {
+    protocol: 'websocket'
+  }
+}
