@@ -63,3 +63,9 @@ export const Pulsar = {
     protocol: 'pulsar'
   }
 }
+
+export const Redis = {
+  args: {
+    protocol: 'redis'
+  }
+}
