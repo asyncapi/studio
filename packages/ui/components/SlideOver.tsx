@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-
 interface SlideOverProps {
   isOpen: boolean;
   onClose: () => void;
