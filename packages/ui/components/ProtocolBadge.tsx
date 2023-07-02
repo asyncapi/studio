@@ -1,5 +1,5 @@
 import type { FunctionComponent } from 'react'
-import { AMQPIcon, GooglePubSubIcon, IBMMQIcon, KafkaIcon, MQTTIcon, NATSIcon, WebSocketIcon } from './icons'
+import { AMQPIcon, GooglePubSubIcon, IBMMQIcon, KafkaIcon, MQTTIcon, NATSIcon, PulsarIcon, WebSocketIcon } from './icons'
 
 interface ProtocolBadgeProps {
   className?: string
@@ -55,6 +55,11 @@ export const ProtocolBadge: FunctionComponent<ProtocolBadgeProps> = ({
       ariaLabel = 'NATS'
       colorName = 'green' // bg-green-100 text-green-900
       content = <NATSIcon className="w-4 h-4" />
+    break;
+    case 'pulsar':
+      ariaLabel = 'Pulsar'
+      colorName = 'cyan' // bg-cyan-100 text-cyan-900
+      content = <PulsarIcon className="w-4 h-4" />
     break;
   }
   return (

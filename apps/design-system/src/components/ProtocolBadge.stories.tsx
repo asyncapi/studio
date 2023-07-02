@@ -57,3 +57,9 @@ export const NATS = {
     protocol: 'nats'
   }
 }
+
+export const Pulsar = {
+  args: {
+    protocol: 'pulsar'
+  }
+}
