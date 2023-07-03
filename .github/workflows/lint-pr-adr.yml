@@ -1,0 +1,120 @@
+name: PR ADR Validation Workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - labeled
+      - unlabeled
+
+jobs:
+  validate_adr_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse PR label and title
+        uses: actions/github-script@v6
+        id: lint_title_adr
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = context.payload.pull_request.title;
+            const labels = context.payload.pull_request.labels;
+            const hasAdrLabel = labels.some(label => label.name === 'kind/adr');
+            const re = /^chore:\s*\[ADR-(\d{4})\]/;
+            const match = title.match(re)
+            const startsWithAdr = (match !== null);
+            if (hasAdrLabel && !startsWithAdr) {
+              return {
+                status: "ko",
+                expectedFileMatch: null,
+                message: "This PR Title must starts with `chore: [ADR-nnnn] name of ADR` where `nnnn` is the adr number (e.g `chore: [ADR-0001] use architecture decision records`) same us commits"
+              }
+            }
+            if (!hasAdrLabel && startsWithAdr) {
+              return {
+                status: "ko",
+                expectedFileMatch: null,
+                message: "This PR must be labled as kind/adr"
+              }
+            }
+            if (hasAdrLabel && startsWithAdr) {
+              return {
+                status: "ok",
+                expectedFileMatch: `doc/adr/${match[1]}-*.md`,
+                message: "This PR has correct title and label"
+              }
+            }
+            return ''
+      - name: Check PR label and title
+        if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ko')
+        run: |
+          echo ${{ fromJSON(steps.lint_title_adr.outputs.result).message }}
+          exit 1
+      - if: always() && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ko')
+        uses: marocchino/sticky-pull-request-comment@v2
+        # When the previous steps fails, the workflow would stop. By adding this
+        # condition you can continue the execution with the populated error message.
+        with:
+          header: pr-title-lint-adr-error
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          message: |
+            Hey there and thank you for opening this ADR pull request! 👋🏼
+            The ADR Pull request must follow this PR naming convention: 
+            ```
+            ${{ fromJSON(steps.lint_title_adr.outputs.result).message }}
+            ```
+      # Delete a previous comment when the issue has been resolved
+      - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          header: pr-title-lint-adr-error
+          delete: true
+      - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        name: Get all changed files
+        id: changed_files_all
+        uses: tj-actions/changed-files@v37
+      - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        name: Get files that should be changed
+        id: changed_files_only
+        uses: tj-actions/changed-files@v37
+        with:
+          files: |
+            ${{ fromJSON(steps.lint_title_adr.outputs.result).expectedFileMatch }}
+      - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        name: Check files that must be changed
+        id: changed_files_check
+        run: |
+          if [[ ${{ steps.changed_files_only.outputs.only_changed }} == 'true' ]]; then
+            echo "only_adr=1" >> $GITHUB_OUTPUT 
+            exit 0;
+          else
+            echo "only_adr=0" >> $GITHUB_OUTPUT 
+            exit 1;
+          fi
+      - if: always() && steps.changed_files_check.outputs.only_adr == 0 && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        name: Comment files changed
+        uses: marocchino/sticky-pull-request-comment@v2
+        # When the previous steps fails, the workflow would stop. By adding this
+        # condition you can continue the execution with the populated error message.
+        with:
+          header: pr-files-changed-adr-error
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          message: |
+            Hey there and thank you for opening this ADR pull request! 👋🏼
+            The ADR Pull request must change only the ADR file that match ${{ fromJSON(steps.lint_title_adr.outputs.result).expectedFileMatch }}
+            You have changed theses files: 
+            ```
+            ${{ steps.changed_files_all.outputs.all_changed_files }}
+            ```
+      # Delete a previous comment when the issue has been resolved
+      - if: steps.changed_files_check.outputs.only_adr == 1 && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
+        name: Delete comment fail changed
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          header: pr-files-changed-adr-error
+          delete: true
