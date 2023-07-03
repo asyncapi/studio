@@ -2,16 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 
+import { useServices } from '../services';
 import { useDocumentsState, useFilesState } from '../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
+import { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
 
 interface NavigationProps {
   className?: string;
 }
 
 interface NavigationSectionProps {
-  document: AsyncAPIDocument;
+  document: AsyncAPIDocumentInterface;
   rawSpec: string;
   hash: string;
 }
@@ -20,12 +21,17 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   return (
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
+        onClick={() =>
+          navigationSvc.scrollTo('/servers', 'servers')
+        }
       >
         Servers
       </div>
@@ -36,12 +42,12 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/servers/${serverName.replace(/\//g, '~1')}`,
-            //     `server-${serverName}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/servers/${serverName.replace(/\//g, '~1')}`,
+                `server-${serverName}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -64,23 +70,25 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
+
   const operations = Object.entries(document.channels() || {}).map(
     ([channelName, channel]) => {
       const channels: React.ReactNode[] = [];
 
-      if (channel.hasPublish()) {
+      if (channel.operations().filterByReceive().length > 0) {
         channels.push(
           <li
             key={`${channelName}-publish`}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/channels/${channelName.replace(/\//g, '~1')}`,
-            //     `operation-publish-${channelName}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/channels/${channelName.replace(/\//g, '~1')}`,
+                `operation-publish-${channelName}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -93,19 +101,19 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           </li>,
         );
       }
-      if (channel.hasSubscribe()) {
+      if (channel.operations().filterBySend().length > 0) {
         channels.push(
           <li
             key={`${channelName}-subscribe`}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/channels/${channelName.replace(/\//g, '~1')}`,
-            //     `operation-subscribe-${channelName}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/channels/${channelName.replace(/\//g, '~1')}`,
+                `operation-subscribe-${channelName}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -129,12 +137,12 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'operations' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/channels',
-        //     'operations',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/channels',
+            'operations',
+          )
+        }
       >
         Operations
       </div>
@@ -147,7 +155,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
 
   const messages = Object.keys(document.components()?.messages() || {}).map(
     messageName => (
@@ -156,12 +164,12 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
           hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     `/components/messages/${messageName.replace(/\//g, '~1')}`,
-        //     `message-${messageName}`,
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/components/messages/${messageName.replace(/\//g, '~1')}`,
+            `message-${messageName}`,
+          )
+        }
       >
         {messageName}
       </li>
@@ -174,12 +182,12 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'messages' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/components/messages',
-        //     'messages',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/components/messages',
+            'messages',
+          )
+        }
       >
         Messages
       </div>
@@ -192,7 +200,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
 
   const schemas = Object.keys(document.components()?.schemas() || {}).map(
     schemaName => (
@@ -201,12 +209,12 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
           hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
-        //     `schema-${schemaName}`,
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
+            `schema-${schemaName}`,
+          )
+        }
       >
         {schemaName}
       </li>
@@ -219,12 +227,12 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/components/schemas',
-        //     'schemas',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/components/schemas',
+            'schemas',
+          )
+        }
       >
         Schemas
       </div>
@@ -238,7 +246,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 }) => {
   const [hash, setHash] = useState('');
 
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
 
@@ -263,7 +271,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
     );
   }
 
-  const components = document.hasComponents() && document.components();
+  const components = document.components();
   return (
     <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
       <ul>
@@ -272,17 +280,17 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
               hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     '/info',
-            //     'introduction',
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                '/info',
+                'introduction',
+              )
+            }
           >
             Information
           </div>
         </li>
-        {document.hasServers() && (
+        {!!document.servers() && (
           <li className="mb-4">
             <ServersNavigation
               document={document}
@@ -298,7 +306,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             hash={hash}
           />
         </li>
-        {components && components.hasMessages() && (
+        {components &&!!components.messages() && (
           <li className="mb-4">
             <MessagesNavigation
               document={document}
@@ -307,7 +315,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             />
           </li>
         )}
-        {components && components.hasSchemas() && (
+        {components && !!components.schemas() && (
           <li className="mb-4">
             <SchemasNavigation
               document={document}

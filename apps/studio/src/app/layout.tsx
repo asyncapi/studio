@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Wrapper from '../components/Services';
 
 export const metadata : Metadata = {
   title: 'AsyncAPI Studio',
@@ -59,7 +60,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Wrapper>
+          {children}
+        </Wrapper>
       </body>
     </html>
   )
