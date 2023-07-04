@@ -21,7 +21,7 @@
     "@semantic-release/github": "^8.0.6",
     "semantic-release": "^21.0.6",
     "semantic-release-monorepo": "^7.0.5",
-    "turbo": "^1.10.2"
+    "turbo": "^1.10.7"
   },
   "workspaces": [
     "apps/*",
