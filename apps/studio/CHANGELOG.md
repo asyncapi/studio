@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.22.0
+
+### Minor Changes
+
+- 5435cb6: test: add correct tag to action
+
 ## 0.21.0
 
 ### Minor Changes
