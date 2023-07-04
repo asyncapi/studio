@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "private": true,
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
