@@ -134,20 +134,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      "@semantic-release/github",
-      [
-        "@semantic-release-plus/docker",
-        {
-          "name": "khudadad414/studio",
-          "publishChannelTag": true
-        }
-      ]
-    ]
   }
 }
