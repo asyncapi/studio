@@ -19,7 +19,7 @@ export const Example = () => {
 
   return (
     <div>
-      <button onClick={handleOpen}>Open SlideOver</button>
+      <button onClick={handleOpen} className="bg-white text-black rounded mx-3 my-3">Open SlideOver</button>
 
       <SlideOver isOpen={isOpen} onClose={handleClose}>
         <h2>Content of the SlideOver</h2>
