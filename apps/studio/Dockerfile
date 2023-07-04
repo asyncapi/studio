@@ -3,7 +3,7 @@ ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
 
 
 FROM node:18-alpine AS base
- 
+
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
 RUN apk update
@@ -15,6 +15,9 @@ RUN turbo prune --scope=@asyncapi/studio --docker
  
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
+
+ARG BASE_URL_PLACEHOLDER
+
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /app
