@@ -24,7 +24,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci
  
 # Build the project
 COPY --from=builder /app/out/full/ .
