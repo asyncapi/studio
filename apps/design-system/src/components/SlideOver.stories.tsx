@@ -3,6 +3,12 @@ import { SlideOver } from "ui";
 
 export default {
   component: SlideOver,
+  parameters: {
+    layout: 'fullscreen',
+    backgrounds: {
+      default: 'dark'
+    }
+  },
 };
 
 export const Example = () => {
