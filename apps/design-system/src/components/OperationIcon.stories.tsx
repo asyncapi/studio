@@ -2,6 +2,11 @@ import { OperationIcon } from 'ui';
 
 export default {
     component: OperationIcon,
+    parameters: {
+        backgrounds: {
+          default: 'dark'
+        }
+    }
 };
 
 export const WithReplyIcon = () => <OperationIcon operation="reply" className="w-7 h-7" />;
