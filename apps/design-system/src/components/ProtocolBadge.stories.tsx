@@ -81,3 +81,15 @@ export const SQS = {
     protocol: 'sqs'
   }
 }
+
+export const Solace = {
+  args: {
+    protocol: 'solace'
+  }
+}
+
+export const STOMP = {
+  args: {
+    protocol: 'stomp'
+  }
+}
