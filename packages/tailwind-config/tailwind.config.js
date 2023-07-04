@@ -21,7 +21,10 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans]
-      }
+      },
+      fontSize: {
+        '3xs': '8px',
+      },
     },
   },
   plugins: [],
