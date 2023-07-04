@@ -8,6 +8,8 @@ One place that allows you to develop an AsyncAPI document, validate it, convert 
 
 ---
 
+## :loudspeaker: ATTENTION:
+
 This project is still under development and has not reached version 1.0.0 yet. This means that its API/styling/features may contain breaking changes until we're able to deploy the first stable version and begin semantic versioning.
 
 ---
