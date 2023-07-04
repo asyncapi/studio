@@ -23,4 +23,4 @@ jobs:
           context: .
           file: ./apps/studio/Dockerfile
           push: true
-          tags: khudadad414/studio:latest
+          tags: asyncapi/studio:latest

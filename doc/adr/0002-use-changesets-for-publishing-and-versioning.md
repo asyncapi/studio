@@ -28,6 +28,8 @@ We choose [changesets](https://github.com/changesets/changesets) for the followi
 
 - **Separation of the publishing process**: Changesets allow us to decouple the process of releasing packages from the act of publishing them to platforms like docker.io and other locations.
 
+- **Auto versioning**: Changesets versioning by itself so we can drop the workflow that is responsible for versoning packages after release.
+
 ## Consequences
 
 As a result of this change, the following consequences should be considered:
@@ -35,3 +37,5 @@ As a result of this change, the following consequences should be considered:
 - **Move away from Conventional Commits**: The requirement to adhere to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for PRs will be lifted. Instead, contributors and maintainers must specify their changes using [changesets](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md).
 
 - **Integration of changesets bot**: To ensure consistent usage of changesets, the [changesets bot](https://github.com/apps/changeset-bot) will be added to the project. This bot will verify the presence of changesets within the repository.
+
+- **disable version bumping workflow**: we can disable the [verson bump workflow](https://github.com/asyncapi/studio/blob/master/.github/workflows/if-nodejs-version-bump.yml) since changesets handles it by itself.
