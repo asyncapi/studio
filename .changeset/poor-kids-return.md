@@ -1,5 +1,0 @@
----
-"@asyncapi/studio": minor
----
-
-testing

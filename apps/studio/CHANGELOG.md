@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.21.0
+
+### Minor Changes
+
+- 5304e4b: testing
+
 ## 0.20.0
 
 ### Minor Changes
