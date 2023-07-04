@@ -10,7 +10,6 @@ Clone this repo and run:
 npm install
 ```
 
-Test
 > **Note:** NPM v7+ is required.
 
 ## Development
