@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react'
-import { Switch } from '@headlessui/react'
+import React from 'react'
+import * as Switch from '@radix-ui/react-switch'
 import { EyeIcon, CodeBracketIcon } from '../components/icons'
 import classNames from 'classnames'
 
@@ -21,14 +21,14 @@ export const EditorSwitch: React.FC<EditorSwitchProps> = ({ isCodeEditor = true,
   const spanClass = classNames(switchSpanClass, isCodeEditor ? 'translate-x-7' : 'translate-x-0')
 
   return (
-    <Switch checked={isCodeEditor} onChange={onSwitchChange} className={switchClass}>
+    <Switch.Root checked={isCodeEditor} onCheckedChange={onSwitchChange} className={switchClass} id='editor-switch'>
       <div className='absolute inset-[5px] flex flex-grow'>
         <div className={switchIconsClass}>
           <EyeIcon className={visualIconStyle} />
           <CodeBracketIcon className={codeIconStyle} />
         </div>
-        <span aria-hidden='true' className={spanClass} />
+        <Switch.Thumb aria-hidden='true' className={spanClass} />
       </div>
-    </Switch>
+    </Switch.Root>
   )
 }
