@@ -1,3 +1,4 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
 
 module.exports = {
@@ -17,7 +18,13 @@ module.exports = {
         neutral: null,
         stone: null,
         amber: null, // Amber is quite similar to Yellow. We don't need the two.
-      }
+      },
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans]
+      },
+      fontSize: {
+        '3xs': '8px',
+      },
     },
   },
   plugins: [],

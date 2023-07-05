@@ -6,13 +6,13 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "ds": "turbo run dev --filter=design-system...",
+    "ds": "turbo run dev --no-cache --continue --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
     "build": "turbo run build",
     "release": "turbo run release",
     "test": "turbo run test",
     "bump:version": "turbo run bump:version",
-    "build:studio": "turbo run build --filter=studio...",
+    "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system..."
   },
   "devDependencies": {

@@ -1,18 +1,26 @@
 import React from 'react'
-import Tippy, { TippyProps } from '@tippyjs/react'
+import * as RadixTooltip from '@radix-ui/react-tooltip'
+import type { TooltipContentProps } from '@radix-ui/react-tooltip'
 
-export const Tooltip: React.FunctionComponent<TippyProps> = ({
-  placement = 'bottom',
-  arrow = true,
-  animation = 'shift-away',
-  className = 'text-xs text-white bg-gray-900 text-center',
-  hideOnClick = false,
+const TooltipContent: React.FunctionComponent<TooltipContentProps> = ({
+  side = 'right',
+  className = '',
+  sideOffset = 5,
   children,
-  ...rest
 }) => {
   return (
-    <Tippy placement={placement} arrow={arrow} animation={animation} className={className} hideOnClick={hideOnClick} {...rest}>
-      {children}
-    </Tippy>
+    <RadixTooltip.Portal>
+      <RadixTooltip.Content className={`text-xs text-gray-300 bg-gray-950 text-center p-2 rounded shadow ${className}`} side={side} sideOffset={sideOffset}>
+        {children}
+        <RadixTooltip.Arrow className="fill-gray-950 shadow" />
+      </RadixTooltip.Content>
+    </RadixTooltip.Portal>
   )
+}
+
+export default {
+  Content: TooltipContent,
+  Provider: RadixTooltip.Provider,
+  Root: RadixTooltip.Root,
+  Trigger: RadixTooltip.Trigger
 }
