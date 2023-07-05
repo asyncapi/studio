@@ -1,134 +1,92 @@
 /* eslint-disable import/no-anonymous-default-export */
-import React from 'react';
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
+import { Sidebar } from 'ui'
 
-import { Sidebar } from 'ui';
+import { ServerStackIcon, MapIcon, SquaresPlusIcon, ScaleIcon, UsersIcon, AdjustmentsHorizontalIcon, PlusIcon, MagnifyingGlassIcon } from 'ui/icons'
 
 export default {
   component: Sidebar,
   parameters: {
     layout: 'fullscreen',
+    backgrounds: {
+      default: 'dark'
+    }
   },
 }
+
+const topItems = [
+  {
+    title: 'Services',
+    isActive: true,
+    onClick: () => alert('Services'),
+    icon: ServerStackIcon,
+  },
+  {
+    title: 'Topology',
+    isActive: false,
+    onClick: () => alert('Topology'),
+    icon: MapIcon,
+  },
+  {
+    title: 'Registry',
+    isActive: false,
+    onClick: () => alert('Registry'),
+    icon: SquaresPlusIcon,
+  },
+  {
+    title: 'Governance',
+    isActive: false,
+    onClick: () => alert('Governance'),
+    icon: ScaleIcon,
+  },
+  {
+    title: 'Users',
+    isActive: false,
+    onClick: () => alert('Users'),
+    icon: UsersIcon,
+  },
+  {
+    title: 'Organization Settings',
+    isActive: false,
+    onClick: () => alert('Organization Settings'),
+    icon: AdjustmentsHorizontalIcon,
+  }
+]
+
+const bottomItems = [
+  {
+    title: 'Create new...',
+    isActive: false,
+    onClick: () => alert('Create new...'),
+    icon: PlusIcon,
+    align: 'bottom'
+  },
+  {
+    title: 'Search',
+    isActive: false,
+    onClick: () => alert('Search'),
+    icon: MagnifyingGlassIcon,
+    align: 'bottom'
+  }
+]
 
 export const WithTopAndBottomItems = {
   args: {
     items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-      },
-      {
-        name: 'visualiser',
-        title: 'Visualiser',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscGraph className="w-5 h-5" />,
-        tooltip: 'Blocks visualiser',
-      },
-      {
-        name: 'newFile',
-        title: 'New file',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscNewFile className="w-5 h-5" />,
-        tooltip: 'New file',
-      },
-      {
-        name: 'settings',
-        title: 'Settings',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscSettingsGear className="w-5 h-5" />,
-        tooltip: 'Settings',
-        align: 'bottom'
-      }
-    ],
+      ...topItems,
+      ...bottomItems,
+    ]
   }
 };
 
 export const WithTopItemsOnly = {
   args: {
-    items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-      },
-    ],
+    items: topItems
   }
 };
 
 export const WithBottomItemsOnly = {
   args: {
-    items: [
-      {
-        name: 'primarySidebar',
-        title: 'Navigation',
-        isActive: true,
-        onClick: () => {},
-        icon: <VscListSelection className="w-5 h-5" />,
-        tooltip: 'Navigation',
-        align: 'bottom',
-      },
-      {
-        name: 'primaryPanel',
-        title: 'Editor',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscCode className="w-5 h-5" />,
-        tooltip: 'Editor',
-        align: 'bottom',
-      },
-      {
-        name: 'template',
-        title: 'Template',
-        isActive: false,
-        onClick: () => {},
-        icon: <VscOpenPreview className="w-5 h-5" />,
-        tooltip: 'HTML preview',
-        align: 'bottom',
-      },
-    ],
+    items: bottomItems
   }
 };
 
