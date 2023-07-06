@@ -15,6 +15,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "bump:version": "../../bump-version.sh ui",
     "release": "semantic-release -e semantic-release-monorepo",
     "check-types": "tsc --noEmit"
