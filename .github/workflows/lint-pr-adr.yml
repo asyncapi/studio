@@ -30,7 +30,7 @@ jobs:
               return {
                 status: "ko",
                 expectedFileMatch: null,
-                message: "This PR Title must starts with `chore: [ADR-nnnn] name of ADR` where `nnnn` is the adr number (e.g `chore: [ADR-0001] use architecture decision records`) same us commits"
+                message: "This PR Title must starts with `chore: [ADR-nnnn] name of ADR` or `[ADR-nnnn] name of ADR` where `nnnn` is the adr number (e.g `chore: [ADR-0001] use architecture decision records`) same us commits"
               }
             }
             if (!hasAdrLabel && startsWithAdr) {
