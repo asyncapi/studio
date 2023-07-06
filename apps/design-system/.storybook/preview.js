@@ -1,4 +1,4 @@
-import 'ui/styles.css'
+import '@asyncapi/studio-ui/styles.css'
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
