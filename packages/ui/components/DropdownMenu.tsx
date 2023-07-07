@@ -4,7 +4,7 @@ import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
 interface DropdownMenuRegularItem {
   type?: 'regular'
   title: string
-  onSelect: () => {}
+  onSelect: () => void
 }
 
 interface DropdownMenuSeparatorItem {

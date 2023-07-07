@@ -4,16 +4,6 @@ interface LogoProps {
   className: string
 }
 
-export const Logo: FunctionComponent<LogoProps> = ({
-  className = ''
-}) => {
-  return (
-    <LogoImage
-      className={`inline-block ${className || 'h-16 w-32'}`}
-    />
-  )
-}
-
 function LogoImage({
   className = ''
 }) {
@@ -26,26 +16,36 @@ function LogoImage({
       <path d="M22.4456 21.2767C22.4456 23.4463 19.9094 25.2125 16.7945 25.2125C13.6795 25.2125 11.1456 23.4463 11.1456 21.2767V21.2144H9.53161V21.2767C9.53161 24.334 12.7872 26.8218 16.7898 26.8218C20.7925 26.8218 24.0481 24.334 24.0481 21.2767V21.2144H22.4341L22.4456 21.2767Z" fill="url(#paint4_linear_303_636)"/>
       <defs>
         <linearGradient id="paint0_linear_303_636" x1="34" y1="-1.19783e-08" x2="1.19784e-08" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F7A7DB"/>
-          <stop offset="1" stop-color="#DE1978"/>
+          <stop stopColor="#F7A7DB"/>
+          <stop offset="1" stopColor="#DE1978"/>
         </linearGradient>
         <linearGradient id="paint1_linear_303_636" x1="34" y1="-1.19783e-08" x2="1.19784e-08" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F7A7DB"/>
-          <stop offset="1" stop-color="#DE1978"/>
+          <stop stopColor="#F7A7DB"/>
+          <stop offset="1" stopColor="#DE1978"/>
         </linearGradient>
         <linearGradient id="paint2_linear_303_636" x1="34" y1="-1.19783e-08" x2="1.19784e-08" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F7A7DB"/>
-          <stop offset="1" stop-color="#DE1978"/>
+          <stop stopColor="#F7A7DB"/>
+          <stop offset="1" stopColor="#DE1978"/>
         </linearGradient>
         <linearGradient id="paint3_linear_303_636" x1="34" y1="-1.19783e-08" x2="1.19784e-08" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F7A7DB"/>
-          <stop offset="1" stop-color="#DE1978"/>
+          <stop stopColor="#F7A7DB"/>
+          <stop offset="1" stopColor="#DE1978"/>
         </linearGradient>
         <linearGradient id="paint4_linear_303_636" x1="34" y1="-1.19783e-08" x2="1.19784e-08" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#F7A7DB"/>
-          <stop offset="1" stop-color="#DE1978"/>
+          <stop stopColor="#F7A7DB"/>
+          <stop offset="1" stopColor="#DE1978"/>
         </linearGradient>
       </defs>
     </svg>
+  )
+}
+
+export const Logo: FunctionComponent<LogoProps> = ({
+  className = ''
+}) => {
+  return (
+    <LogoImage
+      className={`inline-block ${className || 'h-16 w-32'}`}
+    />
   )
 }

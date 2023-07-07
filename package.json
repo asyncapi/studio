@@ -5,7 +5,7 @@
     "url": "git://github.com/asyncapi/studio.git"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint --ext .tsx,.ts .",
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
