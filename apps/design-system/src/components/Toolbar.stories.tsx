@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Toolbar } from 'ui'
+import { Toolbar } from '@asyncapi/studio-ui'
 
-import { ListBulletIcon, CodeBracketSquareIcon, DocumentTextIcon, EllipsisVerticalIcon } from 'ui/icons'
+import { ListBulletIcon, CodeBracketSquareIcon, DocumentTextIcon, EllipsisVerticalIcon } from '@asyncapi/studio-ui/icons'
 
 export default {
   component: Toolbar,

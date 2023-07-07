@@ -1,6 +1,7 @@
 {
   "name": "@asyncapi/studio",
-  "version": "1.0.0",
+  "version": "0.18.0",
+  "private": true,
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -57,9 +58,6 @@
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
-    "generate:docker": "docker build -f Dockerfile --tag asyncapi/studio ../../",
-    "bump:version": "../../bump-version.sh @asyncapi/studio",
-    "release": "npm run generate:docker && semantic-release -e semantic-release-monorepo",
     "prepublishOnly": "npm run build && npm run generate:readme:toc"
   },
   "browserslist": {
@@ -136,32 +134,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      "@semantic-release/github",
-      [
-        "@semantic-release-plus/docker",
-        {
-          "name": "asyncapi/studio",
-          "publishChannelTag": true
-        }
-      ]
-    ]
   }
 }

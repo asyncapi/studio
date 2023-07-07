@@ -1,4 +1,4 @@
-import { OperationIcon } from 'ui';
+import { OperationIcon } from '@asyncapi/studio-ui';
 
 export default {
     component: OperationIcon,
