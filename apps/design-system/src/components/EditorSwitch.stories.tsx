@@ -1,6 +1,6 @@
 import { StoryObj, Meta } from '@storybook/react'
 
-import { EditorSwitch } from 'ui'
+import { EditorSwitch } from '@asyncapi/studio-ui'
 
 const meta: Meta<typeof EditorSwitch> = {
   component: EditorSwitch,
