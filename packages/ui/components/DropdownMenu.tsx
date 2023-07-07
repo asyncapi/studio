@@ -53,8 +53,8 @@ export const DropdownMenu: FunctionComponent<DropdownMenuProps> = ({
       <RadixDropdownMenu.Portal>
         <RadixDropdownMenu.Content className="min-w-[220px] bg-gray-950 rounded-md p-2.5 shadow" sideOffset={5} side={side} align={align}>
           {
-            items.map(item => (
-              <DropdownMenuItemComponent item={item} />
+            items.map((item, index) => (
+              <DropdownMenuItemComponent key={index} item={item} />
             ))
           }
           <RadixDropdownMenu.Arrow className="fill-gray-950" />
