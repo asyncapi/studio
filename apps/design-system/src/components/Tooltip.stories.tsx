@@ -1,6 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React from 'react'
-import { Tooltip } from 'ui'
+import { Tooltip } from '@asyncapi/studio-ui'
 
 export default {
   component: Tooltip.Content,

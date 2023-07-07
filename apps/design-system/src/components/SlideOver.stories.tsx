@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SlideOver } from "ui";
+import { SlideOver } from "@asyncapi/studio-ui";
 
 export default {
   component: SlideOver,

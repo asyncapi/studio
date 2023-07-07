@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { ProtocolBadge } from 'ui'
+import { ProtocolBadge } from '@asyncapi/studio-ui'
 
 export default {
   component: ProtocolBadge,

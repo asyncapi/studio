@@ -1,6 +1,6 @@
 {
   "name": "design-system",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
     "@headlessui/react": "^1.7.13",
@@ -12,19 +12,17 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
-    "ui": "*",
+    "@asyncapi/studio-ui": "*",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "lint": "echo \"No linter configured yet\"",
     "generate:assets": "echo \"No assets to configure\"",
-    "bump:version": "../../bump-version.sh design-system",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "build": "storybook build",
-    "release": "semantic-release -e semantic-release-monorepo"
+    "build": "storybook build"
   },
   "eslintConfig": {
     "extends": [
@@ -75,25 +73,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      "@semantic-release/github"
-    ]
   }
 }

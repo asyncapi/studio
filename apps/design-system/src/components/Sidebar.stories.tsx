@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Sidebar } from 'ui'
+import { Sidebar } from '@asyncapi/studio-ui'
 
-import { ServerStackIcon, MapIcon, SquaresPlusIcon, ScaleIcon, UsersIcon, AdjustmentsHorizontalIcon, PlusIcon, MagnifyingGlassIcon } from 'ui/icons'
+import { ServerStackIcon, MapIcon, SquaresPlusIcon, ScaleIcon, UsersIcon, AdjustmentsHorizontalIcon, PlusIcon, MagnifyingGlassIcon } from '@asyncapi/studio-ui/icons'
 
 export default {
   component: Sidebar,
