@@ -2,4 +2,4 @@
 "@asyncapi/studio-ui": minor
 ---
 
-Add EditorSwitch.
+Add EditorSwitch component.
