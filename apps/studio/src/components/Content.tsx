@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { usePanelsState } from "../states"
 import { Editor } from "./Editor";
 import SplitPane from "./SplitPane";
+import { Navigation } from "./Navigation";
 
 interface ContentProps {}
 
@@ -48,7 +49,7 @@ const Content : React.FC<ContentProps> = () => {
       //   localStorage.setItem(splitPosLeft, String(size));
       // }, 100)}
     >
-      <div >Navigation</div>
+      <Navigation />
       <Editor />
     </SplitPane>
   );

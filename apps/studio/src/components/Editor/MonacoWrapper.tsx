@@ -6,26 +6,19 @@ import { debounce } from "../../helpers";
 import { useFilesState } from "../../states";
 const MonacoEditor = dynamic(() => import("react-monaco-editor"), { ssr: false });
 
-import type { ParseOutput } from '@asyncapi/parser'
-import Parser from '@asyncapi/parser/browser'
 import { useEffect } from "react";
-import useParser from "../../hooks/useParser";
+import { useServices } from "../../hooks";
 
 const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {  
   const file = useFilesState(state => state.files['asyncapi']);
   const updateFile = useFilesState(state => state.updateFile);
 
-  const { document, parse } = useParser();
+  const { parserSvc } = useServices();
+  const { parse } = parserSvc;
 
   useEffect(() => {
     parse('asyncapi', file.content);
-  }, []);
-  
-  useEffect(() => {
-    if (document) {
-      console.log(document)
-    }
-  }, [document])
+  }, []);  
 
   const onChange = debounce((value: string) => {
     updateFile('asyncapi', {

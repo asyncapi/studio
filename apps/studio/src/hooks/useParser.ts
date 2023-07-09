@@ -5,7 +5,7 @@ import { DiagnosticSeverity } from "@asyncapi/parser";
 import { Diagnostic, ParseOptions, ParseOutput } from "@asyncapi/parser/cjs";
 import { useEffect, useState } from "react";
 
-const useParser = () => {
+export const useParser = () => {
   if (typeof window === 'undefined') return{
     parse: () => {},
     document: undefined,
@@ -13,13 +13,7 @@ const useParser = () => {
 
   let parser : typeof Parser = undefined;
   if (typeof window !== 'undefined') parser = new Parser();
-  // const updateDocument = documentsState.getState().updateDocument;
-
-  const [document, setDocument] = useState<any>();
-
-  const updateDocument = (uri: string, document: any) => {
-    setDocument(document);
-  }
+  const updateDocument = documentsState.getState().updateDocument;
 
   const createDiagnostics = (diagnostics: Diagnostic[]) => {
     // map messages of invalid ref to file
@@ -111,8 +105,5 @@ const useParser = () => {
 
   return {
     parse,
-    document,
   }
 }
-
-export default useParser;

@@ -1,10 +1,10 @@
 'use client';
 
-import { useAppState } from "../../states"
+interface LoaderProps {
+  initialized: boolean;
+}
 
-const Loader = () => {
-  const initialized = useAppState((state) => state.initialized);
-
+export const Loader = ({ initialized } : LoaderProps) => {
   return(
     initialized ? null : (
     <div id="preloader">
@@ -27,5 +27,3 @@ const Loader = () => {
     )
   )
 };
-
-export default Loader;
