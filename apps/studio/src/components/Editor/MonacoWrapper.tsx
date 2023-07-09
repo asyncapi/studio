@@ -1,20 +1,47 @@
 'use client';
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
 import { MonacoEditorProps } from "react-monaco-editor";
+import { debounce } from "../../helpers";
+import { useFilesState } from "../../states";
 const MonacoEditor = dynamic(() => import("react-monaco-editor"), { ssr: false });
 
-const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {
-  // Temporary state for the editor
-  // Todo - replace with a store / service and settings
+import type { ParseOutput } from '@asyncapi/parser'
+import Parser from '@asyncapi/parser/browser'
+import { useEffect } from "react";
+import useParser from "../../hooks/useParser";
 
-  const [content, setContent] = useState<string>("{}");
+const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {  
+  const file = useFilesState(state => state.files['asyncapi']);
+  const updateFile = useFilesState(state => state.updateFile);
 
-  const onChange = (newValue: string) => {
-    setContent(newValue);
-  };
+  const { document, parse } = useParser();
+
+  useEffect(() => {
+    parse('asyncapi', file.content);
+  }, []);
   
+  useEffect(() => {
+    if (document) {
+      console.log(document)
+    }
+  }, [document])
+
+  const onChange = debounce((value: string) => {
+    updateFile('asyncapi', {
+      uri: 'asyncapi',
+      name: 'asyncapi',
+      content: value,
+      from: 'storage',
+      source: undefined,
+      language: value.trimStart()[0] === '{' ? 'json' : 'yaml',
+      modified: false,
+      stat: {
+        mtime: (new Date()).getTime(),
+      }
+    });
+  }, 200);
+
   return (
     <MonacoEditor
       editorDidMount={() => {
@@ -35,13 +62,14 @@ const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {
             return "_next/static/ts.worker.js";
           return "_next/static/editor.worker.js";
         };
+
       }}
       width={'100%'}
       height={'100%'}
       language={"json"}
-      defaultValue={"{}"}
-      value={content}
-      theme="asyncapi-theme"
+      defaultValue={file.content}
+      value={file.content}
+      theme={"vs-dark"} // Work on defining a theme
       onChange={onChange}
       options={{
         wordWrap: 'on',

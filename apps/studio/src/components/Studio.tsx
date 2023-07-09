@@ -5,20 +5,18 @@ import Toolbar from './Toolbar';
 import Content from './Content';
 import { Sidebar } from './Sidebar';
 import { Toaster } from 'react-hot-toast';
-// import { Template } from './Template';
-import { appState } from '../state';
-import { afterAppInit, useServices } from '../services';
+// // import { Template } from './Template';
+import { appState } from '../states'
 
 export interface AsyncAPIStudioProps {}
 
 export const AsyncAPIStudio: React.FC<AsyncAPIStudioProps> = () => {
-  const services = useServices();
 
-  useEffect(() => {
-    setTimeout(() => {
-      afterAppInit(services).catch(console.error);
-    }, 250);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     afterAppInit(services).catch(console.error);
+  //   }, 250);
+  // }, []);
 
   // if (appState.getState().readOnly) {
   //   return (

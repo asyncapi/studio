@@ -4,14 +4,15 @@ import { show } from '@ebay/nice-modal-react';
 
 // import { RedirectedModal } from '../components/Modals';
 
-import { appState, filesState } from '../state';
+import { appState, filesState } from '../states';
 
 export class ApplicationService extends AbstractService {
   override async onInit() {
     // subscribe to state to hide preloader
     this.hidePreloader();
 
-    const { readOnly, url, base64 } = this.svcs.navigationSvc.getUrlParameters();
+    // const { readOnly, url, base64 } = this.svcs.navigationSvc.getUrlParameters();
+    const { readOnly, url, base64 } = { readOnly: false, url: null, base64: null };
     // readOnly state should be only set to true when someone pass also url or base64 parameter
     const isStrictReadonly = Boolean(readOnly && (url || base64));
 
@@ -32,7 +33,8 @@ export class ApplicationService extends AbstractService {
   }
 
   public async afterAppInit() {
-    const { readOnly, url, base64, redirectedFrom } = this.svcs.navigationSvc.getUrlParameters();
+    // const { readOnly, url, base64, redirectedFrom } = this.svcs.navigationSvc.getUrlParameters();
+    const { readOnly, url, base64, redirectedFrom } = { readOnly: false, url: null, base64: null, redirectedFrom: null };
     const isStrictReadonly = Boolean(readOnly && (url || base64));
 
     // show RedirectedModal modal if the redirectedFrom is set (only when readOnly state is set to false)
@@ -51,14 +53,14 @@ export class ApplicationService extends AbstractService {
     if (url) {
       content = await fetch(url).then(res => res.text());
     } else if (base64) {
-      content = this.svcs.formatSvc.decodeBase64(base64);
+      // content = this.svcs.formatSvc.decodeBase64(base64);
     }
 
-    const language = this.svcs.formatSvc.retrieveLangauge(content);
+    // const language = this.svcs.formatSvc.retrieveLangauge(content);
     const source = url || undefined;
     updateFile('asyncapi', {
       content,
-      language,
+      language: 'yaml',
       source,
       from: url ? 'url' : 'base64',
     });
@@ -66,17 +68,8 @@ export class ApplicationService extends AbstractService {
   }
 
   private hidePreloader() {
-    const unsunscribe = appState.subscribe((state, prevState) => {
-      if (!prevState.initialized && state.initialized) {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          preloader.classList.add('loaded');
-          setTimeout(() => {
-            preloader.remove();
-          }, 350);
-          unsunscribe();
-        }
-      }
+    appState.setState({
+      initialized: true,
     });
   }
 }

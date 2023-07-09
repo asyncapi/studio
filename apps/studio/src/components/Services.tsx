@@ -10,6 +10,7 @@ export default function Wrapper({
   children: React.ReactNode
 }) {
   const services = use(createServices());
+  console.log('Do we have services?');
 
   return (
       <ServicesProvider value={services}>

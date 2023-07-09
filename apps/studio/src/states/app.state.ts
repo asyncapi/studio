@@ -7,7 +7,7 @@ export type AppState = {
 }
 
 export const appState = create<AppState>(() => ({
-  initialized: false,
+  initialized: true,
   readOnly: false,
   liveServer: false,
 }));

@@ -4,10 +4,10 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 // import { SettingsModal, NewFileModal } from './Modals';
 
-import { usePanelsState, panelsState } from '../state';
+import { usePanelsState, panelsState } from '../states';
 
 import type { FunctionComponent, ReactNode } from 'react';
-import type { PanelsState } from '../state/panels.state';
+import type { PanelsState } from '../states/panels.state';
 
 function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
   const settingsState = panelsState.getState();
