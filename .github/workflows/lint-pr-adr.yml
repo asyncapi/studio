@@ -18,7 +18,7 @@ jobs:
         id: lint_title_adr
         with:
           result-encoding: json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const title = context.payload.pull_request.title;
             const labels = context.payload.pull_request.labels;
@@ -59,7 +59,7 @@ jobs:
         # condition you can continue the execution with the populated error message.
         with:
           header: pr-title-lint-adr-error
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           message: |
             Hey there and thank you for opening this ADR pull request! 👋🏼
             The ADR Pull request must follow this PR naming convention: 
@@ -70,7 +70,7 @@ jobs:
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           header: pr-title-lint-adr-error
           delete: true
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
@@ -102,7 +102,7 @@ jobs:
         # condition you can continue the execution with the populated error message.
         with:
           header: pr-files-changed-adr-error
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           message: |
             Hey there and thank you for opening this ADR pull request! 👋🏼
             The ADR Pull request must change only the ADR file that match ${{ fromJSON(steps.lint_title_adr.outputs.result).expectedFileMatch }}
@@ -115,6 +115,6 @@ jobs:
         name: Delete comment fail changed
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           header: pr-files-changed-adr-error
           delete: true
