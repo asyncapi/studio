@@ -9,6 +9,8 @@ const withTM = require("next-transpile-modules")([
   "monaco-editor",
 ]);
 
+const nodeExternals = require('webpack-node-externals');
+
 // Monaco Editor uses CSS imports internally,
 // so we need a separate css-loader for app and monaco-editor packages and other packages
 const MONACO_DIR = path.resolve(__dirname, "../../node_modules/");
@@ -45,19 +47,27 @@ const nextConfig = withTM({
     }
     // fix import of monaco-editor css files
     config.module.rules.push(
+      // For monaco-editor support
       {
         test: /\.css$/,
         include: MONACO_DIR,
         use: ["style-loader", "css-loader"],
       },
+      // For tailwindcss support
       {
         test: /\.css$/i,
         include: path.resolve(__dirname, "src"),
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
+      // For yaml support
       {
         test: /\.yml$/i,
         type: "asset/source",
+      },
+      // For canvas.node support
+      {
+        test: /\.node$/,
+        use: "node-loader",
       }
     );
 
@@ -134,6 +144,12 @@ const nextConfig = withTM({
       ...(config.ignoreWarnings || []),
       /Failed to parse source map/,
     ];
+
+    if(isServer) {
+      config.externals = [
+        nodeExternals()
+      ]
+    }
 
     return config;
   },

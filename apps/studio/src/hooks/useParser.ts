@@ -1,7 +1,7 @@
 import Parser from "@asyncapi/parser/browser";
 import { documentsState, filesState, settingsState, useFilesState } from "../states";
 import { DocumentDiagnostics } from "../states/documents.state";
-import { DiagnosticSeverity } from "@asyncapi/parser";
+import { DiagnosticSeverity } from "@asyncapi/parser/cjs";
 import { Diagnostic, ParseOptions, ParseOutput } from "@asyncapi/parser/cjs";
 import { useEffect, useState } from "react";
 
