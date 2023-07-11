@@ -1,12 +1,16 @@
-import { useParser } from "./useParser"
+import { useEditor, useFormat, useParser, useNavigation } from "./";
 
 export const useServices = () => {
-  const { parse } = useParser();
+  const parserSvc = useParser();
+  const editorSvc = useEditor();
+  const formatSvc = useFormat();
+  const navigationSvc = useNavigation();
 
   const services = {
-    parserSvc: {
-      parse,
-    },
+    parserSvc,
+    editorSvc,
+    formatSvc,
+    navigationSvc,
   };
 
   return services;

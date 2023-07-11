@@ -1,13 +1,17 @@
 import Parser from "@asyncapi/parser/browser";
 import { documentsState, filesState, settingsState, useFilesState } from "../states";
 import { DocumentDiagnostics } from "../states/documents.state";
-import { DiagnosticSeverity } from "@asyncapi/parser/cjs";
-import { Diagnostic, ParseOptions, ParseOutput, OldAsyncAPIDocument, convertToOldAPI } from "@asyncapi/parser/cjs";
+import { Diagnostic, ParseOptions, ParseOutput, OldAsyncAPIDocument, convertToOldAPI, DiagnosticSeverity } from "@asyncapi/parser/cjs";
+import { untilde } from '@asyncapi/parser/cjs/utils'
 import { useEffect, useState } from "react";
+import { isDeepEqual } from "../helpers";
 
 export const useParser = () => {
   if (typeof window === 'undefined') return{
     parse: () => {},
+    getRangeForJsonPath: () => {},
+    filterDiagnostics,
+    filterDiagnosticsBySeverity,
     document: undefined,
   }
 
@@ -88,6 +92,41 @@ export const useParser = () => {
     }
   }
 
+  // Helpers
+
+  const getRangeForJsonPath = (uri: string, jsonPath: string | Array<string | number>) => {
+    try {
+      const { documents } = documentsState.getState();
+      const extras = documents[String(uri)]?.extras;
+      if (extras) {
+        jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
+        if (jsonPath[0] === '') jsonPath.shift();
+        return extras.document.getRangeForJsonPath(jsonPath, true);
+      }
+    } catch (err: any) {
+      return;
+    }
+  }
+
+  function filterDiagnostics (diagnostics: Diagnostic[]) {
+    const { governance: { show } } = settingsState.getState();
+    return diagnostics.filter(({ severity }) => {
+      return (
+        severity === DiagnosticSeverity.Error ||
+        (severity === DiagnosticSeverity.Warning && show.warnings) ||
+        (severity === DiagnosticSeverity.Information && show.informations) ||
+        (severity === DiagnosticSeverity.Hint && show.hints)
+      );
+    });
+  }
+
+  function filterDiagnosticsBySeverity (diagnostics: Diagnostic[], severity: DiagnosticSeverity) {
+    return diagnostics.filter(diagnostic => diagnostic.severity === severity);
+  }
+
+
+  // Subscribe to states change
+
   filesState.subscribe((state, prevState) => {
     const newFiles = state.files;
     const oldFiles = prevState.files;
@@ -100,16 +139,19 @@ export const useParser = () => {
     });
   });
 
-  //Initial parse
-  // useEffect(() => {
-  //   const file = useFilesState(state => state.files['asyncapi']);
-  //   if (file) {
-  //     parse('asyncapi', file.content, { source: file.source }).catch(console.error);
-  //   }
-  // }, []);
+  settingsState.subscribe((state, prevState) => {
+    if (isDeepEqual(state.governance, prevState.governance)) return;
 
+    const { files } = filesState.getState();
+    Object.entries(files).forEach(([uri, file]) => {
+      parse(uri, file.content).catch(console.error);
+    });
+  });
 
   return {
     parse,
+    filterDiagnostics,
+    filterDiagnosticsBySeverity,
+    getRangeForJsonPath,
   }
 }

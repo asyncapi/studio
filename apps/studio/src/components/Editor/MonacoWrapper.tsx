@@ -13,7 +13,7 @@ const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {
   const file = useFilesState(state => state.files['asyncapi']);
   const updateFile = useFilesState(state => state.updateFile);
 
-  const { parserSvc } = useServices();
+  const { parserSvc, editorSvc } = useServices();
   const { parse } = parserSvc;
 
   useEffect(() => {
@@ -37,32 +37,13 @@ const MonacoWrapper : React.FC<MonacoEditorProps> = (props) => {
 
   return (
     <MonacoEditor
-      editorDidMount={() => {
-        window.MonacoEnvironment!.getWorkerUrl = (
-          _moduleId: string,
-          label: string
-        ) => {
-          if (label === "json")
-            return "_next/static/json.worker.js";
-          if (label === "css")
-            return "_next/static/css.worker.js";
-          if (label === "html")
-            return "_next/static/html.worker.js";
-          if (
-            label === "typescript" ||
-            label === "javascript"
-          )
-            return "_next/static/ts.worker.js";
-          return "_next/static/editor.worker.js";
-        };
-
-      }}
+      editorDidMount={editorSvc.onMount}
       width={'100%'}
       height={'100%'}
       language={"json"}
       defaultValue={file.content}
       value={file.content}
-      theme={"vs-dark"} // Work on defining a theme
+      theme={"asyncapi-theme"} // Work on defining a theme
       onChange={onChange}
       options={{
         wordWrap: 'on',

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { useServices } from '../services';
+import { useServices } from '../hooks';
 import { useDocumentsState, useFilesState } from '../states';
 
 import { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
@@ -21,15 +21,16 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
+  const { navigationSvc } = useServices();
   return (
     <>
       <div
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo('/servers', 'servers')
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo('/servers', 'servers')
+        }
       >
         Servers
       </div>
@@ -40,12 +41,12 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer text-  xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/servers/${serverName.replace(/\//g, '~1')}`,
-            //     `server-${serverName}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/servers/${serverName.replace(/\//g, '~1')}`,
+                `server-${serverName}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -68,7 +69,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
 
   const operations = Object.entries(document.channels().all() || {}).map(
     ([channelName, channel]) => {
@@ -81,12 +82,12 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `operation-publish-${channel.id()}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/channels/${channel.id().replace(/\//g, '~1')}`,
-            //     `operation-publish-${channel.id()}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/channels/${channel.id().replace(/\//g, '~1')}`,
+                `operation-publish-${channel.id()}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -244,7 +245,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 }) => {
   const [hash, setHash] = useState('');
 
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
   
