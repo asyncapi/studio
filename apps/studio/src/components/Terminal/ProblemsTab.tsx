@@ -5,7 +5,7 @@ import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 
 // import { SettingsModal } from '../Modals/Settings/SettingsModal';
 
-import { Tooltip } from '../common';
+import { Tooltip } from '../Common';
 import { useServices } from '../../services';
 import { debounce } from '../../helpers';
 import { useDocumentsState, useSettingsState } from '../../states';

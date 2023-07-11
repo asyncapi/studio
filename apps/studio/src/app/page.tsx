@@ -1,7 +1,7 @@
 'use client'
 
-import '../components/styles/global.css';
-import '../components/styles/main.css';
+import '../components/Styles/global.css';
+import '../components/Styles/main.css';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/shift-away.css';

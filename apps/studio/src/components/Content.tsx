@@ -3,7 +3,7 @@ import { usePanelsState } from "../states"
 import { Editor } from "./Editor";
 import SplitPane from "./SplitPane";
 import { Navigation } from "./Navigation";
-// import { Template } from "./Template";
+import { Template } from "./Template";
 import { VisualiserTemplate } from "./Visualiser";
 
 interface ContentProps {}
@@ -76,7 +76,7 @@ const Content : React.FC<ContentProps> = () => {
           // }, 100)}
         >
           {navigationAndEditor}
-          {/* {viewType === 'template' && <Template />} */}
+          {viewType === 'template' && <Template />}
           {viewType === 'visualiser' && <VisualiserTemplate />}
         </SplitPane> 
       </div>

@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { show } from '@ebay/nice-modal-react';
 import { FaEllipsisH } from 'react-icons/fa';
 
-import { Dropdown } from '../common';
+import { Dropdown } from '../Common';
 
 
 interface EditorDropdownProps {}

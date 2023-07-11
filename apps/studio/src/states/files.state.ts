@@ -5,7 +5,6 @@ import { create } from 'zustand';
 // TODO: add localStorage again
 
 const schema = `asyncapi: '2.6.0'
-id: 'https://google.com'
 info:
   title: Streetlights Kafka API
   version: '1.0.0'

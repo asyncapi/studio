@@ -5,14 +5,16 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 
 import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../states';
 
-import type { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
+import type { OldAsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 interface HTMLWrapperProps {}
 
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
-  const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocumentInterface | null>(null);
+  const [parsedSpec, setParsedSpec] = useState<OldAsyncAPIDocument | null>(null);
   // const { navigationSvc } = useServices();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  // Currently using the old Document API which is creating redundancy
+  // TODO : After @asyncAPI/react is migrated to the new API change it again.
+  const document = useDocumentsState(state => state.documents['asyncapi']?.oldDocument) || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 
@@ -24,14 +26,14 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     if (autoRendering || parsedSpec === null) {
       setParsedSpec(document);
     }
-  }, [document]); // eslint-disable-line
+  }, [document]);
 
   useEffect(() => {
     if (templateRerender) {
       setParsedSpec(document);
       otherState.setState({ templateRerender: false });
     }
-  }, [templateRerender]); // eslint-disable-line
+  }, [templateRerender]);
 
   if (!document) {
     return (
@@ -45,7 +47,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     parsedSpec && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="overflow-auto">
-          {/* <AsyncApiComponentWP
+          <AsyncApiComponentWP
             schema={parsedSpec}
             config={{ 
               show: { 
@@ -53,7 +55,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
                 sidebar: appState.getState().readOnly,
               },
             }}
-          /> */}
+          />
         </div>
       </div>
     )

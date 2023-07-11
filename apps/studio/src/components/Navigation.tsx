@@ -247,8 +247,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   // const { navigationSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
-  console.log('servers', document?.servers().all());
-
+  
   useEffect(() => {
     const fn = () => {
       // remove `#` char

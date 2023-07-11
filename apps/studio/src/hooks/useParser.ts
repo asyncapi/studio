@@ -2,7 +2,7 @@ import Parser from "@asyncapi/parser/browser";
 import { documentsState, filesState, settingsState, useFilesState } from "../states";
 import { DocumentDiagnostics } from "../states/documents.state";
 import { DiagnosticSeverity } from "@asyncapi/parser/cjs";
-import { Diagnostic, ParseOptions, ParseOutput } from "@asyncapi/parser/cjs";
+import { Diagnostic, ParseOptions, ParseOutput, OldAsyncAPIDocument, convertToOldAPI } from "@asyncapi/parser/cjs";
 import { useEffect, useState } from "react";
 
 export const useParser = () => {
@@ -59,17 +59,22 @@ export const useParser = () => {
     }
 
     let diagnostics: Diagnostic[] = [];
+    let oldDocument: OldAsyncAPIDocument;
     try {
       if(parser === undefined) return;
       const { document, diagnostics: _diagnostics, extras } : ParseOutput = await parser.parse(spec, options);
       diagnostics = _diagnostics;
-      updateDocument(uri, {
-        uri,
-        document,
-        diagnostics: createDiagnostics(diagnostics),
-        extras,
-        valid: true,
-      })
+      if(document) {
+        oldDocument = convertToOldAPI(document);
+        updateDocument(uri, {
+          uri,
+          document,
+          oldDocument,
+          diagnostics: createDiagnostics(diagnostics),
+          extras,
+          valid: true,
+        })
+      }
     } catch (e) {
       updateDocument(uri, {
         uri,
@@ -86,6 +91,7 @@ export const useParser = () => {
   filesState.subscribe((state, prevState) => {
     const newFiles = state.files;
     const oldFiles = prevState.files;
+    console.log(newFiles);
 
     Object.entries(newFiles).forEach(([uri, file]) => {
       const oldFile = oldFiles[String(uri)];

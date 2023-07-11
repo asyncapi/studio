@@ -5,7 +5,7 @@ import { Handle, Position } from 'reactflow';
 import { AsyncAPIDocumentInterface as AsyncAPIDocument } from '@asyncapi/parser/cjs';
 
 // import { useServices } from '../../../services';
-import { Markdown } from '../../common';
+import { Markdown } from '../../Common';
 
 import type { FunctionComponent } from 'react';
 
@@ -43,7 +43,7 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
       url: specInfo.license() && specInfo.license()?.url(),
     },
     // @ts-ignore
-    // externalDocs: spec.externalDocs() && spec.externalDocs().url(),
+    externalDocs: spec.info().externalDocs()?.url(),
     servers: mappedServers,
   };
 };
@@ -53,7 +53,8 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
 }) => {
   // const { navigationSvc } = useServices();
   const [highlight, setHighlight] = useState(false);
-  const { description, title, version, license, servers, defaultContentType } = buildNodeData(spec as AsyncAPIDocument);
+  const { description, title, version, license, servers, defaultContentType, externalDocs } = buildNodeData(spec as AsyncAPIDocument);
+  console.log(externalDocs);
 
   // useEffect(() => {
   //   return navigationSvc.highlightVisualiserNode('#server', setHighlight);
@@ -131,7 +132,7 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
         )}
 
         <div className="text-right text-xs mt-10 space-y-2 italic py-5 sm:px-6">
-          {/* {externalDocs && (
+          {externalDocs && (
             <a
               href={externalDocs}
               target="_blank"
@@ -140,7 +141,7 @@ export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
             >
               {externalDocs}
             </a>
-          )} */}
+          )}
           {license.name && (
             <a
               href={license.url as string}

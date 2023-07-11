@@ -1,7 +1,7 @@
 import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
 
-import { Tooltip } from './common';
+import { Tooltip } from './Common';
 // import { SettingsModal, NewFileModal } from './Modals';
 
 import { usePanelsState, panelsState } from '../states';

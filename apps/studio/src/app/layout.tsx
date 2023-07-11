@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Wrapper from '../components/Wrapper';
 
 export const metadata : Metadata = {
   title: 'AsyncAPI Studio',
@@ -56,12 +57,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // TODO : Decide if we want the wrapper on page-by-page basis or over the whole app.
+
   return (
     <html lang="en">
       <body>
-        {/* <Wrapper> */}
+        <Wrapper>
           {children}
-        {/* </Wrapper> */}
+        </Wrapper>
       </body>
     </html>
   )
