@@ -5,9 +5,11 @@
     "url": "git://github.com/asyncapi/studio.git"
   },
   "scripts": {
+    "lint": "eslint --ext .tsx,.ts .",
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
+    "clean": "turbo run clean && rm -rf node_modules",
     "build": "turbo run build",
     "test": "turbo run test",
     "changeset": "changeset",
@@ -17,7 +19,7 @@
     "build:ds": "turbo run build --filter=design-system..."
   },
   "devDependencies": {
-    "turbo": "^1.10.2"
+    "turbo": "^1.10.7"
   },
   "workspaces": [
     "apps/*",

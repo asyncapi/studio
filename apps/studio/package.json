@@ -50,6 +50,7 @@
     "dev": "npm run start",
     "start": "craco start",
     "build": "npm run generate:template-parameters && craco build",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build",
     "test": "npm run test:unit",
     "test:unit": "craco test --watchAll=false --detectOpenHandles",
     "eject": "react-scripts eject",
