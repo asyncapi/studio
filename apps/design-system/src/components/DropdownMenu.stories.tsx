@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { DropdownMenu } from 'ui'
+import { DropdownMenu } from '@asyncapi/studio-ui'
 
 export default {
   component: DropdownMenu,

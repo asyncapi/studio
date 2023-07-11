@@ -1,6 +1,7 @@
 {
-  "name": "ui",
-  "version": "1.2.1",
+  "name": "@asyncapi/studio-ui",
+  "version": "0.1.0",
+  "private": true,
   "types": "./components/index.tsx",
   "sideEffects": [
     "**/*.css"
@@ -15,8 +16,6 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "bump:version": "../../bump-version.sh ui",
-    "release": "semantic-release -e semantic-release-monorepo",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
@@ -40,25 +39,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      "@semantic-release/github"
-    ]
   }
 }

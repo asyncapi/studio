@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { Modal } from 'ui';
+import { Modal } from '@asyncapi/studio-ui';
 
 export default {
   component: Modal,
