@@ -16,7 +16,7 @@ jobs:
         id: parse
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           result-encoding: json
           script: |
             const regexSimple = /(Related\sto\s+(\S+)?#(\d+))/;
@@ -78,7 +78,7 @@ jobs:
         uses: actions/github-script@v6
         if: ${{ steps.parse.outputs.result }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const results = ${{ steps.parse.outputs.result }};
             if (!results) {
