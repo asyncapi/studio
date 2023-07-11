@@ -1,13 +1,15 @@
 name: PR ADR Validation Workflow
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
+      - reopened
       - edited
       - synchronize
       - labeled
       - unlabeled
+      - ready_for_review
 
 jobs:
   validate_adr_pr:
