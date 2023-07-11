@@ -1,13 +1,14 @@
 // styles
-import "./styles.css"
+import './styles.css'
 
 // components
-export * from "./DropdownMenu"
-export * from "./Logo"
-export * from "./Modal"
-export * from "./OperationIcon"
-export * from "./ProtocolBadge"
-export * from "./Sidebar"
-export * from "./SlideOver"
-export * from "./Toolbar"
-export { default as Tooltip } from "./Tooltip"
+export * from './EditorSwitch'
+export * from './DropdownMenu'
+export * from './Logo'
+export * from './Modal'
+export * from './OperationIcon'
+export * from './ProtocolBadge'
+export * from './Sidebar'
+export * from './SlideOver'
+export * from './Toolbar'
+export { default as Tooltip } from './Tooltip'

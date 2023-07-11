@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SlideOver } from "@asyncapi/studio-ui";
 
-export default {
+const meta = {
   component: SlideOver,
   parameters: {
     layout: 'fullscreen',
@@ -10,7 +10,7 @@ export default {
     }
   },
 };
-
+export default meta
 export const Example = () => {
   const [isOpen, setIsOpen] = useState(false);
 

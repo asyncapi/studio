@@ -16,14 +16,17 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
+    "classnames": "^2.3.2",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-toolbar": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.6",
+    "@radix-ui/react-switch": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

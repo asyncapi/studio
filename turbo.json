@@ -15,8 +15,6 @@
       "dependsOn": ["build"]
     },
     "test": {},
-    "bump:version": {
-      "cache": false
-    }
+    "clean": {}
   }
 }

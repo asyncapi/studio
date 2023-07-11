@@ -17,14 +17,14 @@ interface ToolbarToggleGroupSingleItem {
   type: 'toggleGroupSingle'
   value: string
   items: ToolbarToggleItem[]
-  onValueChange: (value: string) => {}
+  onValueChange: (value: string) => void
 }
 
 interface ToolbarToggleGroupMultipleItem {
   type: 'toggleGroupMultiple'
   value: string[]
   items: ToolbarToggleItem[]
-  onValueChange: (value: string[]) => {}
+  onValueChange: (value: string[]) => void
 }
 
 interface ToolbarSeparatorItem {
@@ -88,12 +88,12 @@ const ToolbarItem: FunctionComponent<ToolbarItemProps> = ({ item }) => {
       >
         {
           item.items.map((groupItem) => (
-            <ToolbarToggle item={groupItem} selected={item.value.includes(groupItem.value)} />
+            <ToolbarToggle key={groupItem.title.on} item={groupItem} selected={item.value.includes(groupItem.value)} />
           ))
         }
       </RadixToolbar.ToggleGroup>
     )
-   } else if (type === 'toggleGroupMultiple') {
+  } else if (type === 'toggleGroupMultiple') {
     return (
       <RadixToolbar.ToggleGroup
         type="multiple"
@@ -104,7 +104,7 @@ const ToolbarItem: FunctionComponent<ToolbarItemProps> = ({ item }) => {
       >
         {
           item.items.map((groupItem) => (
-            <ToolbarToggle item={groupItem} selected={item.value.includes(groupItem.value)} />
+            <ToolbarToggle key={groupItem.title.on} item={groupItem} selected={item.value.includes(groupItem.value)} />
           ))
         }
       </RadixToolbar.ToggleGroup>
@@ -129,9 +129,8 @@ const ToolbarItem: FunctionComponent<ToolbarItemProps> = ({ item }) => {
       />
       
     )
-  } else {
-    throw new Error(`Unsupported type of Toolbar item: ${type}`)
-  }
+  } 
+  throw new Error(`Unsupported type of Toolbar item: ${type}`)
 }
 
 export const Toolbar: FunctionComponent<ToolbarProps> = ({
