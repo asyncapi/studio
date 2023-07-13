@@ -13,7 +13,7 @@ import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
 import type { ConvertVersion } from '@asyncapi/converter';
 import type { File } from '../states/files.state';
-import { useParser, useFormat } from './';
+import { ServiceProps, useFormat, useParser } from './';
 
 export interface UpdateState {
   content: string;
@@ -22,18 +22,22 @@ export interface UpdateState {
   file?: Partial<File>;
 } 
 
-export const useEditor = () => {
-  let editor: monacoAPI.editor.IStandaloneCodeEditor | undefined;
+interface EditorProps extends ServiceProps {
+  setEditor: (editor: monacoAPI.editor.IStandaloneCodeEditor) => void;
+}
+
+export const useEditor = ({editor, setEditor} : EditorProps) => {
   let monaco: typeof Monaco | undefined;
   let created = false;  
 
   const currDecorations: Map<string, string[]> = new Map();
   const fileName = 'asyncapi';
 
-  const { parse } = useParser();
-  const { convertToJSON: _convertToJSON, convertToYaml: _convertToYaml, decodeBase64, encodeBase64, retrieveLangauge } = useFormat();
+  const parserSvc = useParser({ editor });
 
-  async function onMount(instance: monacoAPI.editor.IStandaloneCodeEditor, monacoInstance: typeof Monaco) {
+  const { convertToJSON: _convertToJSON, convertToYaml: _convertToYaml, decodeBase64, encodeBase64, retrieveLangauge } = useFormat({ editor });
+
+  async function onMount(editor: monacoAPI.editor.IStandaloneCodeEditor, monacoInstance: typeof Monaco) {
     window.MonacoEnvironment!.getWorkerUrl = (
       _moduleId: string,
       label: string
@@ -62,13 +66,13 @@ export const useEditor = () => {
       rules: [{ token: '', background: '#252f3f' }],
     });
 
-    editor = instance;
+    setEditor(editor);
     monaco = monacoInstance;
 
-    // parse on first run - only when document is undefined
+    // parserSvc.parse on first run - only when document is undefined
     const document = documentsState.getState().documents.asyncapi;
     if (!document && editor) {
-      await parse('asyncapi', editor?.getValue());
+      await parserSvc.parse('asyncapi', editor?.getValue());
     } else {
       applyMarkersAndDecorations(document.diagnostics.filtered);
     }
@@ -363,7 +367,6 @@ export const useEditor = () => {
 
   return {
     created,
-    editor,
     convertToJSON,
     convertToYaml,
     downloadFile,

@@ -39,12 +39,12 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={serverName}
             className={`p-2 pl-3 text-white cursor-pointer text-  xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `server-${serverName}` ? 'bg-gray-800' : ''
+              hash === `server-${server.id()}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
                 `/servers/${serverName.replace(/\//g, '~1')}`,
-                `server-${serverName}`,
+                `server-${server.id()}`,
               )
             }
           >
@@ -107,12 +107,12 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
               hash === `operation-subscribe-${channel.id()}` ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     `/channels/${channel.id().replace(/\//g, '~1')}`,
-            //     `operation-subscribe-${channel.id()}`,
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/channels/${channel.id().replace(/\//g, '~1')}`,
+                `operation-subscribe-${channel.id()}`,
+              )
+            }
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -136,12 +136,12 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'operations' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/channels',
-        //     'operations',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/channels',
+            'operations',
+          )
+        }
       >
         Operations
       </div>
@@ -154,7 +154,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
 
   const messages = Object.entries(document.components()?.messages().all() || {}).map(
     ([messageName, message]) => (
@@ -163,12 +163,12 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
           hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     `/components/messages/${messageName.replace(/\//g, '~1')}`,
-        //     `message-${messageName}`,
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/components/messages/${messageName.replace(/\//g, '~1')}`,
+            `message-${message.id()}`,
+          )
+        }
       >
         {message.id()}
       </li>
@@ -181,12 +181,12 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'messages' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/components/messages',
-        //     'messages',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/components/messages',
+            'messages',
+          )
+        }
       >
         Messages
       </div>
@@ -199,7 +199,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
 
   const schemas = Object.entries(document.components()?.schemas().all() || {}).map(
     ([schemaName, schema]) => (
@@ -208,12 +208,12 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
           hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
-        //     `schema-${schemaName}`,
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
+            `schema-${schema.id() || schemaName}`,
+          )
+        }
       >
         {schema.id()}
       </li>
@@ -226,12 +226,12 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
           hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
-        // onClick={() =>
-        //   navigationSvc.scrollTo(
-        //     '/components/schemas',
-        //     'schemas',
-        //   )
-        // }
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/components/schemas',
+            'schemas',
+          )
+        }
       >
         Schemas
       </div>
@@ -279,12 +279,12 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
               hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
-            // onClick={() =>
-            //   navigationSvc.scrollTo(
-            //     '/info',
-            //     'introduction',
-            //   )
-            // }
+            onClick={() =>
+              navigationSvc.scrollTo(
+                '/info',
+                'introduction',
+              )
+            }
           >
             Information
           </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 
-// import { useServices } from '../../../services';
+import { useServices } from '../../../hooks';
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore
@@ -24,12 +24,12 @@ interface PublishNodeProps {
 export const PublishNode: React.FunctionComponent<PublishNodeProps> = ({
   data: { messages = [], channel, description },
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   const [highlight, setHighlight] = useState(false);
 
-  // useEffect(() => {
-  //   return navigationSvc.highlightVisualiserNode(`#operation-publish-${channel}`, setHighlight);
-  // }, [navigationSvc, setHighlight]);
+  useEffect(() => {
+    return navigationSvc.highlightVisualiserNode(`#operation-publish-${channel}`, setHighlight);
+  }, [navigationSvc, setHighlight]);
 
   return (
     <div className={`flex transition duration-500 ease-out shadow sm:rounded-lg border-2 ${highlight ? 'bg-blue-100 border-blue-700' : 'bg-white border-blue-400'}`}>

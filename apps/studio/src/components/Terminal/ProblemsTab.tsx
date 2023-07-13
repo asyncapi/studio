@@ -6,7 +6,7 @@ import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
 // import { SettingsModal } from '../Modals/Settings/SettingsModal';
 
 import { Tooltip } from '../Common';
-import { useServices } from '../../services';
+import { useServices } from '../../hooks';
 import { debounce } from '../../helpers';
 import { useDocumentsState, useSettingsState } from '../../states';
 
@@ -203,7 +203,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
 };
 
 export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   const diagnostics = useDocumentsState(state => state.documents['asyncapi']?.diagnostics);
   // const modal = useModal(SettingsModal);
   
@@ -279,12 +279,12 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
                   <td className="px-2 py-1 text-right"><SeverityIcon severity={severity} /></td>
                   <td
                     className="px-2 py-1 cursor-pointer"
-                    // onClick={() =>
-                    //   navigationSvc.scrollToEditorLine(
-                    //     range.start.line + 1,
-                    //     range.start.character + 1,
-                    //   )
-                    // }
+                    onClick={() =>
+                      navigationSvc.scrollToEditorLine(
+                        range.start.line + 1,
+                        range.start.character + 1,
+                      )
+                    }
                   >
                     {range.start.line + 1}:{range.start.character + 1}
                   </td>

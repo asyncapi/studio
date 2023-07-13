@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect } from "react";
-import { useEditor } from "./useEditor";
+import { ServiceProps } from "./useServices";
 import { useParser } from "./useParser";
 
-export const useNavigation = () => {
-  const parserSvc = useParser();
-  const editorSvc = useEditor(); 
+export const useNavigation = (props: ServiceProps) => {
+  const { editor } = props;
+  const parserSvc = useParser({ editor });
 
   useEffect(() => {
     (async () => {
@@ -67,8 +67,6 @@ export const useNavigation = () => {
 
   async function scrollToEditorLine(line: number, character = 1) {
     try {
-      const editor = editorSvc.editor;
-      console.log(editor);
       if (editor) {
         editor.revealLineInCenter(line);
         editor.setPosition({ lineNumber: line, column: character });

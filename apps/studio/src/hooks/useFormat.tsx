@@ -1,7 +1,8 @@
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
+import { ServiceProps } from './useServices';
 
-export const useFormat = () => {
+export const useFormat = (props: ServiceProps) => {
   return {
     convertToJSON,
     convertToYaml,

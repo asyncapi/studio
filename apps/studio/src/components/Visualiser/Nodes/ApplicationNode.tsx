@@ -8,6 +8,7 @@ import { AsyncAPIDocumentInterface as AsyncAPIDocument } from '@asyncapi/parser/
 import { Markdown } from '../../Common';
 
 import type { FunctionComponent } from 'react';
+import { useServices } from '../../../hooks';
 
 interface IData {
   spec: AsyncAPIDocument
@@ -51,14 +52,14 @@ const buildNodeData = (spec: AsyncAPIDocument) => {
 export const ApplicationNode: FunctionComponent<ApplicationNodeProps> = ({
   data: { spec } = {},
 }) => {
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   const [highlight, setHighlight] = useState(false);
   const { description, title, version, license, servers, defaultContentType, externalDocs } = buildNodeData(spec as AsyncAPIDocument);
   console.log(externalDocs);
 
-  // useEffect(() => {
-  //   return navigationSvc.highlightVisualiserNode('#server', setHighlight);
-  // }, [navigationSvc, setHighlight]);
+  useEffect(() => {
+    return navigationSvc.highlightVisualiserNode('#server', setHighlight);
+  }, [navigationSvc, setHighlight]);
 
   return (
     <div className={`flex transition duration-500 ease-out shadow sm:rounded-lg border-2 ${highlight ? 'bg-gray-300 border-gray-600' : 'bg-white border-gray-300'}`}>

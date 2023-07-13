@@ -6,21 +6,22 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../states';
 
 import type { OldAsyncAPIDocument } from '@asyncapi/parser/cjs';
+import { useServices } from '../../hooks';
 
 interface HTMLWrapperProps {}
 
 export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<OldAsyncAPIDocument | null>(null);
-  // const { navigationSvc } = useServices();
+  const { navigationSvc } = useServices();
   // Currently using the old Document API which is creating redundancy
   // TODO : After @asyncAPI/react is migrated to the new API change it again.
   const document = useDocumentsState(state => state.documents['asyncapi']?.oldDocument) || null;
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 
-  // useEffect(() => {
-  //   navigationSvc.scrollToHash();
-  // }, []); // eslint-disable-line
+  useEffect(() => {
+    navigationSvc.scrollToHash();
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {

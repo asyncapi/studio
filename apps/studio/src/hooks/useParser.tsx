@@ -5,8 +5,9 @@ import { Diagnostic, ParseOptions, ParseOutput, OldAsyncAPIDocument, convertToOl
 import { untilde } from '@asyncapi/parser/cjs/utils'
 import { useEffect, useState } from "react";
 import { isDeepEqual } from "../helpers";
+import { ServiceProps } from "./useServices";
 
-export const useParser = () => {
+export const useParser = (props: ServiceProps) => {
   if (typeof window === 'undefined') return{
     parse: () => {},
     getRangeForJsonPath: () => {},
