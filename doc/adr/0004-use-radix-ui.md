@@ -11,7 +11,7 @@ Accepted
 
 In our project, we have identified the need for a set of UI components that only handle the logical part without imposing any design aspects. We have evaluated existing libraries such as Radix and Headless UI, which provide components without implicit designs. 
 
-We have concluded that using a ready-made library would restrict our freedom to customize the look and feel of the components. Additionally, these libraries integrate design elements into their components, making it challenging or impossible to modify them according to our specific requirements.
+We have concluded that using a ready-made library would restrict our freedom to customize the look and feel of the components. Additionally, this kind of libraries integrate design elements into their components, making it challenging or impossible to modify them according to our specific requirements.
 
 This is related to [ADR-003](./0003-use-design-system.md).
 
