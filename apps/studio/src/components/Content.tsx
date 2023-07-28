@@ -5,18 +5,18 @@ import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
-import { usePanelsState } from '../state';
+import { usePanelsState, useDocumentsState } from '../state';
 
-import type { FunctionComponent } from 'react';
+import { useEffect, type FunctionComponent } from 'react';
 
 interface ContentProps {}
 
 export const Content: FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
   const { show, secondaryPanelType } = usePanelsState();
-
-  const navigationEnabled = show.primarySidebar;
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const navigationEnabled = document?.version() === '3.0.0' ? false : show.primarySidebar;
   const editorEnabled = show.primaryPanel;
-  const viewEnabled = show.secondaryPanel;
+  const viewEnabled = document?.version() === '3.0.0' ? false : show.secondaryPanel;
   const viewType = secondaryPanelType;
 
   const splitPosLeft = 'splitPos:left';

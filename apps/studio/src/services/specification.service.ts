@@ -15,15 +15,15 @@ export class SpecificationService extends AbstractService {
   }
 
   get specs() {
-    return specs;
+    return specs.schemas;
   }
 
   get latestVersion(): SpecVersions {
-    return Object.keys(specs).pop() as SpecVersions;
+    return Object.keys(this.specs).pop() as SpecVersions;
   }
 
   getSpec(version: SpecVersions) {
-    return specs[String(version) as SpecVersions];
+    return this.specs[String(version) as SpecVersions];
   }
 
   private subcribeToDocuments() {

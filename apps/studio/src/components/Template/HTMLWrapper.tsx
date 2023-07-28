@@ -41,7 +41,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   }
 
   return (
-    parsedSpec && (
+    (parsedSpec && document?.version() !== '3.0.0') && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="overflow-auto">
           <AsyncApiComponentWP

@@ -41,8 +41,9 @@ export class ParserService extends AbstractService {
     try {
       const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
       diagnostics = _diagnostics;
-  
       if (document) {
+        // This is needed as we are still using the old Parser API
+        // @todo: migrate to Parser API v2
         const oldDocument = convertToOldAPI(document);
         this.updateDocument(uri, {
           uri,

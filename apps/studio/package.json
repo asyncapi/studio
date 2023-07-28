@@ -28,7 +28,7 @@
     "@asyncapi/openapi-schema-parser": "^3.0.4",
     "@asyncapi/parser": "^2.0.3",
     "@asyncapi/react-component": "^1.0.0-next.48",
-    "@asyncapi/specs": "^4.2.1",
+    "@asyncapi/specs": "^6.0.0-next-major-spec.2",
     "@ebay/nice-modal-react": "^1.2.10",
     "@headlessui/react": "^1.7.4",
     "@hookstate/core": "^4.0.0-rc21",
