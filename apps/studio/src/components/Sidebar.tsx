@@ -4,7 +4,7 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 import { SettingsModal, NewFileModal } from './Modals';
 
-import { usePanelsState, panelsState, useDocumentsState } from '../state';
+import { usePanelsState, panelsState, useDocumentsState, useSettingsState } from '../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';
@@ -52,7 +52,9 @@ interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
+  const isV3 = document?.version() === '3.0.0' && v3Enabled;
 
   if (show.activityBar === false) {
     return null;
@@ -67,7 +69,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
-      enabled: !(document?.version() === '3.0.0')
+      enabled: !isV3
     },
     // editor
     {
@@ -87,7 +89,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
-      enabled: !(document?.version() === '3.0.0')
+      enabled: !isV3
     },
     // visuliser
     {
@@ -97,7 +99,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
-      enabled: !(document?.version() === '3.0.0')
+      enabled: !isV3
     },
     // newFile
     {

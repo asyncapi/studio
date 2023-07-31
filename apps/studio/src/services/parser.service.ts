@@ -169,4 +169,10 @@ export class ParserService extends AbstractService {
       }),
     );
   }
+
+  isV3(): boolean {
+    const { editor: { v3support } } = settingsState.getState();
+    console.log(v3support)
+    return false;
+  }
 }
