@@ -11,6 +11,7 @@ import type { SpecVersions } from '../types';
 
 export class SpecificationService extends AbstractService {
   private betaVersion = false;
+  private keySessionStorage = 'informed-about-latest';
   override onInit() {
     this.subcribeToDocuments();
     this.subscribeToSettings();
@@ -55,6 +56,7 @@ export class SpecificationService extends AbstractService {
       if (state.editor.v3support === prevState.editor.v3support) return;
       const { editor: { v3support } } = settingsState.getState();
       this.updateBetaVersion(v3support);
+      sessionStorage.removeItem(this.keySessionStorage);
     });
   }
 
@@ -65,7 +67,7 @@ export class SpecificationService extends AbstractService {
 
     const nowDate = new Date();
     let dateOfLastQuestion = nowDate;
-    const localStorageItem = sessionStorage.getItem('informed-about-latest');
+    const localStorageItem = sessionStorage.getItem(this.keySessionStorage);
     if (localStorageItem) {
       dateOfLastQuestion = new Date(localStorageItem);
     }
@@ -74,7 +76,7 @@ export class SpecificationService extends AbstractService {
       nowDate === dateOfLastQuestion ||
       nowDate.getTime() - dateOfLastQuestion.getTime() > oneDay;
     if (isOvertime && version !== this.latestVersion) {
-      sessionStorage.setItem('informed-about-latest', nowDate.toString());
+      sessionStorage.setItem(this.keySessionStorage, nowDate.toString());
       return true;
     }
 
