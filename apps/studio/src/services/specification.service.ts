@@ -5,13 +5,15 @@ import { show } from '@ebay/nice-modal-react';
 
 import { ConvertToLatestModal } from '../components/Modals';
 
-import { documentsState } from '../state';
+import { documentsState, settingsState } from '../state';
 
 import type { SpecVersions } from '../types';
 
 export class SpecificationService extends AbstractService {
+  private betaVersion = false;
   override onInit() {
     this.subcribeToDocuments();
+    this.subscribeToSettings();
   }
 
   get specs() {
@@ -19,7 +21,13 @@ export class SpecificationService extends AbstractService {
   }
 
   get latestVersion(): SpecVersions {
-    return Object.keys(this.specs).pop() as SpecVersions;
+    return this.betaVersion ?
+      Object.keys(this.specs).pop() as SpecVersions :
+      Object.keys(this.specs).at(-2) as SpecVersions;
+  }
+
+  updateBetaVersion(enable: boolean): void {
+    this.betaVersion = enable;
   }
 
   getSpec(version: SpecVersions) {
@@ -39,6 +47,14 @@ export class SpecificationService extends AbstractService {
           show(ConvertToLatestModal);
         }
       });
+    });
+  }
+
+  private subscribeToSettings() {
+    settingsState.subscribe((state, prevState) => {
+      if (state.editor.v3support === prevState.editor.v3support) return;
+      const { editor: { v3support } } = settingsState.getState();
+      this.updateBetaVersion(v3support);
     });
   }
 
