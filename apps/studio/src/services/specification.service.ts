@@ -10,7 +10,6 @@ import { documentsState, settingsState } from '../state';
 import type { SpecVersions } from '../types';
 
 export class SpecificationService extends AbstractService {
-  private betaVersion = false;
   private keySessionStorage = 'informed-about-latest';
   override onInit() {
     this.subcribeToDocuments();
@@ -22,13 +21,10 @@ export class SpecificationService extends AbstractService {
   }
 
   get latestVersion(): SpecVersions {
-    return this.betaVersion ?
+    const { editor: { v3support } } = settingsState.getState();
+    return v3support ?
       Object.keys(this.specs).pop() as SpecVersions :
       Object.keys(this.specs).at(-2) as SpecVersions;
-  }
-
-  updateBetaVersion(enable: boolean): void {
-    this.betaVersion = enable;
   }
 
   getSpec(version: SpecVersions) {
@@ -54,8 +50,6 @@ export class SpecificationService extends AbstractService {
   private subscribeToSettings() {
     settingsState.subscribe((state, prevState) => {
       if (state.editor.v3support === prevState.editor.v3support) return;
-      const { editor: { v3support } } = settingsState.getState();
-      this.updateBetaVersion(v3support);
       sessionStorage.removeItem(this.keySessionStorage);
     });
   }
