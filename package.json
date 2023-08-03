@@ -9,6 +9,7 @@
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
+    "studio-next": "turbo run dev --no-cache --filter=studio-next...",
     "clean": "turbo run clean && rm -rf node_modules",
     "build": "turbo run build",
     "test": "turbo run test",
@@ -17,7 +18,7 @@
     "publish": "changeset publish",
     "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system...",
-    "build:next": "turbo run build --no-cache --filter=studio-next..."
+    "build:studio-next": "turbo run build --no-cache --filter=studio-next..."
   },
   "devDependencies": {
     "turbo": "^1.10.7"
