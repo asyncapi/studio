@@ -16,7 +16,8 @@
     "version-packages": "changeset version",
     "publish": "changeset publish",
     "build:studio": "turbo run build --no-cache --filter=studio...",
-    "build:ds": "turbo run build --filter=design-system..."
+    "build:ds": "turbo run build --filter=design-system...",
+    "build:next": "turbo run build --no-cache --filter=studio-next..."
   },
   "devDependencies": {
     "turbo": "^1.10.7"
