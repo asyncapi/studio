@@ -39,6 +39,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     >
       <input
         type="file"
+        accept='.yaml, .yml, .json'
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
           toast.promise(editorSvc.importFile(event.target.files), {
@@ -53,7 +54,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
             error: (
               <div>
                 <span className="block text-bold text-red-400">
-                Failed to import document.
+                Failed to import document. Maybe the file type is invalid.
                 </span>
               </div>
             ),
