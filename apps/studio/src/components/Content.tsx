@@ -18,7 +18,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
   const isV3 = document?.version() === '3.0.0' && v3Enabled;
   const navigationEnabled = isV3 ? false : show.primarySidebar;
   const editorEnabled = show.primaryPanel;
-  const viewEnabled = isV3 ? false : show.secondaryPanel;
+  const viewEnabled = show.secondaryPanel;
   const viewType = secondaryPanelType;
 
   const splitPosLeft = 'splitPos:left';
