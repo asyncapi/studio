@@ -19,7 +19,8 @@
     "build:ds": "turbo run build --filter=design-system..."
   },
   "devDependencies": {
-    "turbo": "^1.10.7"
+    "esbuild": "^0.19.0",
+    "turbo": "^1.10.12"
   },
   "workspaces": [
     "apps/*",

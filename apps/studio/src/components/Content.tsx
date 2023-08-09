@@ -5,7 +5,7 @@ import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '../helpers';
-import { usePanelsState } from '../state';
+import { usePanelsState, useDocumentsState, useSettingsState } from '../state';
 
 import type { FunctionComponent } from 'react';
 
@@ -13,8 +13,10 @@ interface ContentProps {}
 
 export const Content: FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
   const { show, secondaryPanelType } = usePanelsState();
-
-  const navigationEnabled = show.primarySidebar;
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
+  const isV3 = document?.version() === '3.0.0' && v3Enabled;
+  const navigationEnabled = isV3 ? false : show.primarySidebar;
   const editorEnabled = show.primaryPanel;
   const viewEnabled = show.secondaryPanel;
   const viewType = secondaryPanelType;
