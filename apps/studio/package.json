@@ -84,7 +84,7 @@
     "@asyncapi/nodejs-template": "^0.13.1",
     "@asyncapi/nodejs-ws-template": "^0.9.33",
     "@asyncapi/python-paho-template": "^0.2.13",
-    "@asyncapi/ts-nats-template": "^0.10.2",
+    "@asyncapi/ts-nats-template": "^0.10.3",
     "@craco/craco": "^7.1.0",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
