@@ -4,7 +4,7 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 import { SettingsModal, NewFileModal } from './Modals';
 
-import { usePanelsState, panelsState } from '../state';
+import { usePanelsState, panelsState, useDocumentsState, useSettingsState } from '../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';
@@ -45,17 +45,22 @@ interface NavItem {
   onClick: () => void;
   icon: ReactNode;
   tooltip: ReactNode;
+  enabled: boolean;
 }
 
 interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+  const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
+  const isV3 = document?.version() === '3.0.0' && v3Enabled;
+
   if (show.activityBar === false) {
     return null;
   }
 
-  const navigation: NavItem[] = [
+  let navigation: NavItem[] = [
     // navigation
     {
       name: 'primarySidebar',
@@ -64,6 +69,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
+      enabled: !isV3
     },
     // editor
     {
@@ -73,6 +79,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primaryPanel'),
       icon: <VscCode className="w-5 h-5" />,
       tooltip: 'Editor',
+      enabled: true
     },
     // template
     {
@@ -82,6 +89,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
+      enabled: !isV3
     },
     // visuliser
     {
@@ -91,6 +99,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
+      enabled: !isV3
     },
     // newFile
     {
@@ -100,8 +109,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => showModal(NewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
+      enabled: true
     },
   ];
+
+  navigation = navigation.filter(item => item.enabled);
 
   return (
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between">

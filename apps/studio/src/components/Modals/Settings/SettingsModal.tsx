@@ -62,12 +62,14 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
   const [governanceHints, setGovernanceHints] = useState(settings.governance.show.hints);
   const [autoRendering, setAutoRendering] = useState(settings.templates.autoRendering);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
+  const [v3support, setV3support] = useState(settings.editor.v3support);
 
   const createNewState = (): SettingsState => {
     return {
       editor: {
         autoSaving,
         savingDelay,
+        v3support
       },
       governance: {
         show: {
@@ -86,7 +88,7 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
     const newState = createNewState();
     const isThisSameObjects = settingsSvc.isEqual(newState);
     setConfirmDisabled(isThisSameObjects);
-  }, [autoSaving, savingDelay, autoRendering, governanceWarnings, governanceInformations, governanceHints]);
+  }, [autoSaving, savingDelay, autoRendering, governanceWarnings, governanceInformations, governanceHints, v3support]);
 
   const onCancel = useCallback(() => {
     modal.hide();
@@ -129,7 +131,21 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
               Save automatically after each change in the document or manually.
             </div>
           </div>
-          <div className={`flex flex-col mt-4 text-sm pl-8 ${autoSaving ? 'opacity-1' : 'opacity-25'}`}>
+          <div className="flex flex-col mt-4 text-sm">
+            <div className="flex flex-row content-center justify-between">
+              <label
+                htmlFor="settings-auto-saving"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+              >
+                Enable v3 support
+              </label>
+              <Switch
+                toggle={v3support}
+                onChange={(v) => setV3support(v)}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col mt-4 text-sm">
             <div className="flex flex-row content-center justify-between">
               <label
                 htmlFor="settings-template-delay"

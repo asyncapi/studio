@@ -40,6 +40,14 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     );
   }
 
+  if (document?.version() === '3.0.0') {
+    return (
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center">
+        <p>Documentation preview is not supported yet for v3.0.0 specifications.</p>
+      </div>
+    );
+  }
+
   return (
     parsedSpec && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">

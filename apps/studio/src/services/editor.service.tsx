@@ -131,6 +131,15 @@ export class EditorService extends AbstractService {
     if (!file) {
       return;
     }
+    
+    // Check if file is valid (only JSON and YAML are allowed currently) ----Change afterwards as per the requirement
+    if (
+      file.type !== 'application/json' &&
+      file.type !== 'application/x-yaml' &&
+      file.type !== 'application/yaml'
+    ) {
+      throw new Error('Invalid file type');
+    }
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
