@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
 /* eslint-disable import/no-anonymous-default-export */
-import { SingleSelect, SingleSelectItem } from "@asyncapi/studio-ui"
+import { SingleSelect, SingleSelectOption } from "@asyncapi/studio-ui"
 
 const meta: Meta<typeof SingleSelect> = {
   component: SingleSelect,
@@ -13,8 +13,9 @@ const meta: Meta<typeof SingleSelect> = {
 }
 export default meta
 
-const options: SingleSelectItem[] = [
+const options: SingleSelectOption[] = [
   {
+    type: "group",
     label: "MQTT",
     options: [
       {
@@ -26,6 +27,9 @@ const options: SingleSelectItem[] = [
         value: "mqtt5",
       },
     ],
+  },
+  {
+    type: "separator",
   },
   {
     label: "MQTT",
@@ -57,5 +61,6 @@ export const Default: Story = {
   args: {
     options,
     placeholder: "Select a prptocol...",
+    isDisabled: false,
   },
 }
