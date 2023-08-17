@@ -1,5 +1,5 @@
 // styles
-import './styles.css'
+import "./styles.css"
 
 // components
 export * from "./DropdownMenu"
@@ -12,5 +12,6 @@ export * from "./SlideOver"
 export * from "./Toolbar"
 export * from "./Form"
 export * from "./SingleSelect"
-export * from './EditorSwitch'
+export * from "./EditorSwitch"
+export * from "./TextInput"
 export { default as Tooltip } from "./Tooltip"
