@@ -4,7 +4,7 @@ import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
 interface DropdownMenuRegularItem {
   type?: 'regular'
   title: string
-  onSelect: () => {}
+  onSelect: () => void
 }
 
 interface DropdownMenuSeparatorItem {
@@ -42,16 +42,13 @@ export const DropdownMenu: FunctionComponent<DropdownMenuProps> = ({ trigger, it
     <RadixDropdownMenu.Root>
       <RadixDropdownMenu.Trigger asChild>{trigger}</RadixDropdownMenu.Trigger>
       <RadixDropdownMenu.Portal>
-        <RadixDropdownMenu.Content
-          className='min-w-[220px] bg-gray-950 rounded-md p-2.5 shadow'
-          sideOffset={5}
-          side={side}
-          align={align}
-        >
-          {items.map((item) => (
-            <DropdownMenuItemComponent item={item} />
-          ))}
-          <RadixDropdownMenu.Arrow className='fill-gray-950' />
+        <RadixDropdownMenu.Content className="min-w-[220px] bg-gray-950 rounded-md p-2.5 shadow" sideOffset={5} side={side} align={align}>
+          {
+            items.map((item, index) => (
+              <DropdownMenuItemComponent key={index} item={item} />
+            ))
+          }
+          <RadixDropdownMenu.Arrow className="fill-gray-950" />
         </RadixDropdownMenu.Content>
       </RadixDropdownMenu.Portal>
     </RadixDropdownMenu.Root>
