@@ -81,7 +81,7 @@
     "@asyncapi/java-spring-template": "^0.29.0",
     "@asyncapi/java-template": "^0.2.1",
     "@asyncapi/markdown-template": "^1.3.3",
-    "@asyncapi/nodejs-template": "^0.13.1",
+    "@asyncapi/nodejs-template": "^0.13.3",
     "@asyncapi/nodejs-ws-template": "^0.9.33",
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.3",
