@@ -1,9 +1,10 @@
+import { SelectDropdown, SelectDropdownOption } from '@asyncapi/studio-ui'
 import type { Meta, StoryObj } from "@storybook/react"
 /* eslint-disable import/no-anonymous-default-export */
-import { SingleSelect, SingleSelectOption } from "@asyncapi/studio-ui"
 
-const meta: Meta<typeof SingleSelect> = {
-  component: SingleSelect,
+
+const meta: Meta<typeof SelectDropdown> = {
+  component: SelectDropdown,
   parameters: {
     layout: "fullscreen",
     backgrounds: {
@@ -13,7 +14,7 @@ const meta: Meta<typeof SingleSelect> = {
 }
 export default meta
 
-const options: SingleSelectOption[] = [
+const options: SelectDropdownOption[] = [
   {
     type: "group",
     label: "MQTT",
@@ -56,7 +57,7 @@ const options: SingleSelectOption[] = [
     value: "socket.io",
   },
 ]
-type Story = StoryObj<typeof SingleSelect>
+type Story = StoryObj<typeof SelectDropdown>
 export const Default: Story = {
   args: {
     options,

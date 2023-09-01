@@ -57,7 +57,7 @@ const SelectDropdownSeparatorOption = () => {
   return <RadixSelect.Separator className="w-full h-px bg-gray-700 my-2" />
 }
 
-type SelectDropdownOption = SelectDropdownGroupOption | SelectDropdownRegularOption | SelectDropdownSeparatorOption
+export type SelectDropdownOption = SelectDropdownGroupOption | SelectDropdownRegularOption | SelectDropdownSeparatorOption
 
 type SelectDropdownOptionProps = {
   option: SelectDropdownOption

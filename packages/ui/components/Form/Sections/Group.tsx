@@ -1,6 +1,4 @@
 import { FunctionComponent } from "react"
-import { Label } from "../Labels"
-import { Separator } from "@radix-ui/themes"
 
 type FormGroupProps = {
   children: React.ReactNode
