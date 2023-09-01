@@ -1,19 +1,19 @@
 import React from "react"
 import * as RadixSelect from "@radix-ui/react-select"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "./icons"
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../../icons"
 import classnames from "classnames"
 
-type SingleSelectRegularOption = {
+type SelectDropdownRegularOption = {
   type?: "regular"
   value: string
   label: string
 }
 
-type SingleSelectRegularOptionProps = {
-  option: SingleSelectRegularOption
+type SelectDropdownRegularOptionProps = {
+  option: SelectDropdownRegularOption
 }
 
-const SingleSelectRegularOption = ({ option: { value, label } }: SingleSelectRegularOptionProps) => {
+const SelectDropdownRegularOption = ({ option: { value, label } }: SelectDropdownRegularOptionProps) => {
   return (
     <RadixSelect.Item
       className="flex items-center relative text-gray-200 text-sm leading-7 pl-6 pr-7 hover:bg-gray-700 focus:bg-gray-700 my-2 rounded outline-none"
@@ -27,55 +27,55 @@ const SingleSelectRegularOption = ({ option: { value, label } }: SingleSelectReg
   )
 }
 
-type SingleSelectGroupOption = {
+type SelectDropdownGroupOption = {
   type: "group"
   label: string
-  options: SingleSelectRegularOption[]
+  options: SelectDropdownRegularOption[]
 }
 
-type SingleSelectGroupOptionProps = {
-  option: SingleSelectGroupOption
+type SelectDropdownGroupOptionProps = {
+  option: SelectDropdownGroupOption
 }
 
-const SingleSelectGroupOption = ({ option: { label, options } }: SingleSelectGroupOptionProps) => {
+const SelectDropdownGroupOption = ({ option: { label, options } }: SelectDropdownGroupOptionProps) => {
   return (
     <>
       <RadixSelect.Group>
         <RadixSelect.Label className="text-xs text-gray-500 px-4 leading-6">{label}</RadixSelect.Label>
         {options.map((option) => (
-          <SingleSelectRegularOption option={option} key={option.value} />
+          <SelectDropdownRegularOption option={option} key={option.value} />
         ))}
       </RadixSelect.Group>
     </>
   )
 }
-type SingleSelectSeparatorOption = {
+type SelectDropdownSeparatorOption = {
   type: "separator"
 }
 
-const SingleSelectSeparatorOption = () => {
+const SelectDropdownSeparatorOption = () => {
   return <RadixSelect.Separator className="w-full h-px bg-gray-700 my-2" />
 }
 
-export type SingleSelectOption = SingleSelectGroupOption | SingleSelectRegularOption | SingleSelectSeparatorOption
+type SelectDropdownOption = SelectDropdownGroupOption | SelectDropdownRegularOption | SelectDropdownSeparatorOption
 
-type SingleSelectOptionProps = {
-  option: SingleSelectOption
+type SelectDropdownOptionProps = {
+  option: SelectDropdownOption
 }
 
-const SingleSelectOption = ({ option }: SingleSelectOptionProps) => {
+const SelectDropdownOption = ({ option }: SelectDropdownOptionProps) => {
   switch (option.type) {
     case "separator":
-      return <SingleSelectSeparatorOption />
+      return <SelectDropdownSeparatorOption />
     case "group":
-      return <SingleSelectGroupOption option={option} />
+      return <SelectDropdownGroupOption option={option} />
     default:
-      return <SingleSelectRegularOption option={option} />
+      return <SelectDropdownRegularOption option={option} />
   }
 }
 
-type SingleSelectProps = {
-  options: SingleSelectOption[]
+export type SelectDropdownProps = {
+  options: SelectDropdownOption[]
   value?: string
   onChange?: (selectedOption: string) => void
   placeholder?: string
@@ -85,7 +85,7 @@ type SingleSelectProps = {
   className?: string
 }
 
-export function SingleSelect({
+export function SelectDropdown({
   options,
   value,
   onChange,
@@ -93,7 +93,7 @@ export function SingleSelect({
   name,
   isDisabled,
   className,
-}: SingleSelectProps) {
+}: SelectDropdownProps) {
   return (
     <>
       <RadixSelect.Root value={value} onValueChange={onChange} name={name} disabled={isDisabled}>
@@ -101,7 +101,7 @@ export function SingleSelect({
           aria-label="Protocol"
           className={classnames(
             className,
-            "flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-10 gap-2 bg-gray-900 text-gray-100 min-w-[176px]",
+            "flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]",
             { "opacity-50": isDisabled }
           )}
         >
@@ -117,7 +117,7 @@ export function SingleSelect({
             </RadixSelect.ScrollUpButton>
             <RadixSelect.Viewport>
               {options.map((option, index) => (
-                <SingleSelectOption option={option} key={index} />
+                <SelectDropdownOption option={option} key={index} />
               ))}
             </RadixSelect.Viewport>
             <RadixSelect.ScrollDownButton className="flex justify-center items-center">
