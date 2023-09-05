@@ -1,6 +1,6 @@
-import { FunctionComponent } from "react"
-import Tooltip from "../../Tooltip"
-import { QuestionMarkCircleIcon } from "../../icons"
+import { FunctionComponent } from 'react'
+import Tooltip from '../../Tooltip'
+import { QuestionMarkCircleIcon } from '../../icons'
 export type LabelProps = {
   className?: string
   label: string

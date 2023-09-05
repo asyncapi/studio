@@ -1,6 +1,6 @@
-import React from "react"
-import { Label } from "../Labels/Label"
-import * as RadixForm from "@radix-ui/react-form"
+import React from 'react'
+import { Label } from '../Labels/Label'
+import * as RadixForm from '@radix-ui/react-form'
 
 type FieldProps = {
   name: string

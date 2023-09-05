@@ -1,10 +1,10 @@
-import React from "react"
-import * as RadixSelect from "@radix-ui/react-select"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../../icons"
-import classnames from "classnames"
+import React from 'react'
+import * as RadixSelect from '@radix-ui/react-select'
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '../../icons'
+import classnames from 'classnames'
 
 type SelectDropdownRegularOption = {
-  type?: "regular"
+  type?: 'regular'
   value: string
   label: string
 }
@@ -28,7 +28,7 @@ const SelectDropdownRegularOption = ({ option: { value, label } }: SelectDropdow
 }
 
 type SelectDropdownGroupOption = {
-  type: "group"
+  type: 'group'
   label: string
   options: SelectDropdownRegularOption[]
 }
@@ -50,7 +50,7 @@ const SelectDropdownGroupOption = ({ option: { label, options } }: SelectDropdow
   )
 }
 type SelectDropdownSeparatorOption = {
-  type: "separator"
+  type: 'separator'
 }
 
 const SelectDropdownSeparatorOption = () => {
@@ -65,12 +65,12 @@ type SelectDropdownOptionProps = {
 
 const SelectDropdownOption = ({ option }: SelectDropdownOptionProps) => {
   switch (option.type) {
-    case "separator":
-      return <SelectDropdownSeparatorOption />
-    case "group":
-      return <SelectDropdownGroupOption option={option} />
-    default:
-      return <SelectDropdownRegularOption option={option} />
+  case 'separator':
+    return <SelectDropdownSeparatorOption />
+  case 'group':
+    return <SelectDropdownGroupOption option={option} />
+  default:
+    return <SelectDropdownRegularOption option={option} />
   }
 }
 
@@ -101,8 +101,8 @@ export function SelectDropdown({
           aria-label="Protocol"
           className={classnames(
             className,
-            "flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]",
-            { "opacity-50": isDisabled }
+            'flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]',
+            { 'opacity-50': isDisabled }
           )}
         >
           <RadixSelect.Value placeholder={placeholder} />

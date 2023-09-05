@@ -1,3 +1,3 @@
-export * from "./Label"
-export * from "./Description"
-export * from "./DescriptionWithLabel"
+export * from './Label'
+export * from './Description'
+export * from './DescriptionWithLabel'

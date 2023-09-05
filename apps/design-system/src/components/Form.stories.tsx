@@ -1,3 +1,4 @@
+import type { Meta } from "@storybook/react"
 import {
   DescriptionWithLabel,
   Field,
@@ -11,7 +12,7 @@ import {
 } from "@asyncapi/studio-ui"
 import { AddIcon, TrashIcon } from "@asyncapi/studio-ui/icons"
 
-export default {
+const meta: Meta<typeof Form> = {
   component: Form,
   parameters: {
     layout: "fullscreen",
@@ -21,6 +22,8 @@ export default {
     },
   },
 }
+
+export default meta
 
 const singleSelectOptions = [
   { label: "HTTP", value: "http" },

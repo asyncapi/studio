@@ -1,5 +1,5 @@
-import { Description } from "./Description"
-import { Label } from "./Label"
+import { Description } from './Description'
+import { Label } from './Label'
 
 type DescriptionWithLabelProps = {
   className?: string
