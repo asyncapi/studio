@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { ProtocolBadge } from '@asyncapi/studio-ui'
+import { ServiceInfoBadge } from '@asyncapi/studio-ui'
 
 export default {
-  component: ProtocolBadge,
+  component: ServiceInfoBadge,
   parameters: {
     backgrounds: {
       default: 'dark'
@@ -13,6 +13,18 @@ export default {
 export const HTTP = {
   args: {
     protocol: 'http'
+  }
+}
+
+export const Server = {
+  args: {
+    protocol: 'server'
+  }
+}
+
+export const Client = {
+  args: {
+    protocol: 'client'
   }
 }
 
