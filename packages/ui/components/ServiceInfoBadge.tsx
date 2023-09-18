@@ -3,19 +3,19 @@ import { AMQPIcon, AWSSNSIcon, AWSSQSIcon, ClientIcon, GooglePubSubIcon, IBMMQIc
 
 interface ServiceInfoBadgeProps {
   className?: string
-  protocol: 'http' | 'client' | 'server' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp'
+  info: 'http' | 'client' | 'server' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp'
 }
 
 export const ServiceInfoBadge: FunctionComponent<ServiceInfoBadgeProps> = ({
   className = '',
-  protocol,
+  info,
   ...props
 }) => {
   let colorName
   let content
   let ariaLabel
 
-  switch (protocol) {
+  switch (info) {
   case 'http':
     ariaLabel = 'HTTP'
     colorName = 'cyan' // bg-cyan-100 text-cyan-900
