@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { ProtocolBadge } from '@asyncapi/studio-ui'
+import { ServiceInfoBadge } from '@asyncapi/studio-ui'
 
 export default {
-  component: ProtocolBadge,
+  component: ServiceInfoBadge,
   parameters: {
     backgrounds: {
       default: 'dark'
@@ -12,84 +12,96 @@ export default {
 
 export const HTTP = {
   args: {
-    protocol: 'http'
+    info: 'http'
+  }
+}
+
+export const Server = {
+  args: {
+    info: 'server'
+  }
+}
+
+export const Client = {
+  args: {
+    info: 'client'
   }
 }
 
 export const Kafka = {
   args: {
-    protocol: 'kafka'
+    info: 'kafka'
   }
 }
 
 export const Websocket = {
   args: {
-    protocol: 'websocket'
+    info: 'websocket'
   }
 }
 
 export const AMQP = {
   args: {
-    protocol: 'amqp'
+    info: 'amqp'
   }
 }
 
 export const MQTT = {
   args: {
-    protocol: 'mqtt'
+    info: 'mqtt'
   }
 }
 
 export const GooglePubSub = {
   args: {
-    protocol: 'googlepubsub'
+    info: 'googlepubsub'
   }
 }
 
 export const IBMMQ = {
   args: {
-    protocol: 'ibmmq'
+    info: 'ibmmq'
   }
 }
 
 export const NATS = {
   args: {
-    protocol: 'nats'
+    info: 'nats'
   }
 }
 
 export const Pulsar = {
   args: {
-    protocol: 'pulsar'
+    info: 'pulsar'
   }
 }
 
 export const Redis = {
   args: {
-    protocol: 'redis'
+    info: 'redis'
   }
 }
 
 export const SNS = {
   args: {
-    protocol: 'sns'
+    info: 'sns'
   }
 }
 
 export const SQS = {
   args: {
-    protocol: 'sqs'
+    info: 'sqs'
   }
 }
 
 export const Solace = {
   args: {
-    protocol: 'solace'
+    info: 'solace'
   }
 }
 
 export const STOMP = {
   args: {
-    protocol: 'stomp'
+    info: 'stomp'
   }
 }
