@@ -1,0 +1,103 @@
+import { Meta, IconGallery, IconItem } from '@storybook/blocks'
+import {
+  AMQPIcon,
+  AWSSNSIcon,
+  AWSSQSIcon,
+  AdjustmentsHorizontalIcon,
+  ArrowsRightLeftIcon,
+  ChevronLeftIcon,
+  CodeBracketIcon,
+  DocumentTextIcon,
+  EllipsisVerticalIcon,
+  EyeIcon,
+  GooglePubSubIcon,
+  IBMMQIcon,
+  KafkaIcon,
+  ListBulletIcon,
+  MagnifyingGlassIcon,
+  MapIcon,
+  MQTTIcon,
+  NATSIcon,
+  PlusIcon,
+  PlusCircleIcon,
+  PulsarIcon,
+  QuestionMarkCircleIcon,
+  RedisIcon,
+  ScaleIcon,
+  SealIcon,
+  ServerStackIcon,
+  SolaceIcon,
+  SquaresPlusIcon,
+  StompIcon,
+  TrashIcon,
+  UsersIcon,
+  WebSocketIcon,
+  XMarkIcon,
+} from '@asyncapi/studio-ui/icons'
+
+<Meta 
+    title="Design Tokens/Icons"
+/>
+
+
+# Icons
+
+Most of the icons below are taken from https://heroicons.com. If you need to add another icon, please consider an existing one on Heroicons first.
+
+<IconGallery>
+  {
+    [
+      AMQPIcon,
+      AWSSNSIcon,
+      AWSSQSIcon,
+      AdjustmentsHorizontalIcon,
+      ArrowsRightLeftIcon,
+      ChevronLeftIcon,
+      CodeBracketIcon,
+      DocumentTextIcon,
+      EllipsisVerticalIcon,
+      EyeIcon,
+      GooglePubSubIcon,
+      IBMMQIcon,
+      KafkaIcon,
+      ListBulletIcon,
+      MagnifyingGlassIcon,
+      MapIcon,
+      MQTTIcon,
+      NATSIcon,
+      PlusIcon,
+      PlusCircleIcon,
+      PulsarIcon,
+      QuestionMarkCircleIcon,
+      RedisIcon,
+      ScaleIcon,
+      SealIcon,
+      ServerStackIcon,
+      SolaceIcon,
+      SquaresPlusIcon,
+      StompIcon,
+      TrashIcon,
+      UsersIcon,
+      WebSocketIcon,
+      XMarkIcon,
+    ].map((Icon) => (
+      <IconItem name={Icon.displayName || Icon.render.name}>
+        <Icon />
+      </IconItem>
+    ))
+  }
+</IconGallery>
+
+### Example
+
+```jsx
+import { MapIcon } from '@asyncapi/studio-ui/icons'
+
+...
+
+return (
+  <div>
+    <MapIcon className="text-black" />
+  </div>
+)
+```

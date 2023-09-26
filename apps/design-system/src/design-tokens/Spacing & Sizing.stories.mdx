@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/blocks'
+import { spacing } from 'tailwind-config'
+
+<Meta 
+    title="Design Tokens/Spacing & Sizing" 
+/>
+
+# Spacing & Sizing
+
+By default the spacing scale is inherited by the `padding`, `margin`, `width`, `height`, `maxHeight`, `gap`, `inset`, `space`, and `translate` tokens.
+Please note that we're using a scale of 4. E.g., `1` is 1/4 (0.25), `8` is 8/4 (2), etc.
+
+> **Note:** If you ever need to create a new value, make sure you follow the scale.
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      Object.keys(spacing).sort((a, b) => Number(spacing[a].slice(0, -3)) - Number(spacing[b].slice(0, -3))).map((token) => (
+        <tr>
+          <td>{token}</td>
+          <td>{spacing[token]}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
