@@ -69,7 +69,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
-      enabled: !isV3
+      enabled: true
     },
     // editor
     {

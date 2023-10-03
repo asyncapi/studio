@@ -4,7 +4,7 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 import { useServices } from '../../services';
 import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
+import { OldAsyncAPIDocument as AsyncAPIDocument, convertToOldAPI } from '@asyncapi/parser/cjs';
 
 interface HTMLWrapperProps {}
 
@@ -12,6 +12,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocument | null>(null);
   const { navigationSvc } = useServices();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
+
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
 
@@ -21,13 +22,15 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
-      setParsedSpec(document);
+      const oldDocument = document !== null ? convertToOldAPI(document) : null;
+      setParsedSpec(oldDocument);
     }
   }, [document]); // eslint-disable-line
 
   useEffect(() => {
     if (templateRerender) {
-      setParsedSpec(document);
+      const oldDocument = document !== null ? convertToOldAPI(document) : null;
+      setParsedSpec(oldDocument);
       otherState.setState({ templateRerender: false });
     }
   }, [templateRerender]); // eslint-disable-line

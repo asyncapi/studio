@@ -1,6 +1,6 @@
 import { AbstractService } from './abstract.service';
 
-import { Parser, convertToOldAPI, DiagnosticSeverity } from '@asyncapi/parser/cjs';
+import { Parser, DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { OpenAPISchemaParser } from '@asyncapi/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/avro-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
@@ -17,8 +17,8 @@ export class ParserService extends AbstractService {
   override async onInit() {
     this.parser = new Parser({
       schemaParsers: [
-        OpenAPISchemaParser(),
-        AvroSchemaParser(),
+        OpenAPISchemaParser() as any,
+        AvroSchemaParser() as any,
       ],
       __unstable: {
         resolver: {
@@ -42,12 +42,9 @@ export class ParserService extends AbstractService {
       const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
       diagnostics = _diagnostics;
       if (document) {
-        // This is needed as we are still using the old Parser API
-        // @todo: migrate to Parser API v2
-        const oldDocument = convertToOldAPI(document);
         this.updateDocument(uri, {
           uri,
-          document: oldDocument,
+          document,
           diagnostics: this.createDiagnostics(diagnostics),
           extras,
           valid: true,
