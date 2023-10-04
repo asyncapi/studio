@@ -76,7 +76,11 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   const operations = document.operations().all().map(
     (operation) => {
       const channels: React.ReactNode[] = [];
-      const channelName = operation.channels().all()[0].address() || 'unknown';
+      // only has one channel per operation 
+      let channelName = 'Unknown';
+      if (!operation.channels().isEmpty()) {
+        channelName = operation.channels().all()[0].address() ?? 'Unknown';
+      }
       if (operation.isReceive()) {
         channels.push(
           <li
