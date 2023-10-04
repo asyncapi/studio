@@ -106,7 +106,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'newFile',
       title: 'New file',
       isActive: false,
-      onClick: async () => await showModal(NewFileModal),
+      onClick: () => showModal(NewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
       enabled: true
