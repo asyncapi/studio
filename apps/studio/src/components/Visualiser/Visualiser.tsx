@@ -4,7 +4,7 @@ import { FlowDiagram } from './FlowDiagram';
 
 import { useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
-import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser/cjs';
+import { OldAsyncAPIDocument as AsyncAPIDocument, convertToOldAPI } from '@asyncapi/parser/cjs';
 import type { FunctionComponent } from 'react';
 
 interface VisualiserProps {}
@@ -17,13 +17,15 @@ export const Visualiser: FunctionComponent<VisualiserProps> = () => {
 
   useEffect(() => {
     if (autoRendering || parsedSpec === null) {
-      setParsedSpec(document);
+      const oldDocument = document !== null ? convertToOldAPI(document) : null;
+      setParsedSpec(oldDocument);
     }
   }, [document]); // eslint-disable-line
 
   useEffect(() => {
     if (templateRerender) {
-      setParsedSpec(document);
+      const oldDocument = document !== null ? convertToOldAPI(document) : null;
+      setParsedSpec(oldDocument);
       otherState.setState({ templateRerender: false });
     }
   }, [templateRerender]); // eslint-disable-line
