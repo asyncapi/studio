@@ -9,6 +9,7 @@ import type { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
 
 interface NavigationProps {
   className?: string;
+  isV3?:boolean;
 }
 
 interface NavigationSectionProps {
@@ -63,6 +64,142 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           </li>
         })}
       </ul>
+    </>
+  );
+};
+
+const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
+  document,
+  hash,
+}) => {
+  const { navigationSvc } = useServices();
+
+  const channels = document.channels().all().map(
+    (channel) => {
+      return  <li
+        key={channel.id()}
+        className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+          hash === `channels-${channel.id()}` ? 'bg-gray-800' : ''
+        }`}
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/channels/${(channel.id() ?? '').replace(/\//g, '~1')}`,
+            `channels-${channel.id()}`,
+          )
+        }
+      >
+        <div className="flex flex-row">
+          <div className="flex-none">
+            <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
+              {channel.id()}
+            </span>
+          </div>
+          <span className="truncate">{channel.address()}</span>
+        </div>
+      </li>
+    },
+  );
+
+  return (
+    <>
+      <div
+        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+          hash === 'channels' ? 'bg-gray-800' : ''
+        }`}
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/channels',
+            'channels',
+          )
+        }
+      >
+        Channels
+      </div>
+      <ul>{channels}</ul>
+    </>
+  );
+};
+
+const V3OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
+  document,
+  hash,
+}) => {
+  const { navigationSvc } = useServices();
+
+  const operations = document.operations().all().map(
+    (operation) => {
+      const operations: React.ReactNode[] = [];
+      if (operation.isReceive()) {
+        operations.push(
+          <li
+            key={operation.id()}
+            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+              hash === `operation-receive-${operation.id()}` ? 'bg-gray-800' : ''
+            }`}
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-receive-${operation.id()}`,
+              )
+            }
+          >
+            <div className="flex flex-row">
+              <div className="flex-none">
+                <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
+                  Receive
+                </span>
+              </div>
+              <span className="truncate">{operation.id()}</span>
+            </div>
+          </li>
+        );
+      }
+      if (operation.isSend()) {
+        operations.push(
+          <li
+            key={`${operation.id()}-send`}
+            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+              hash === `operation-send-${operation.id()}` ? 'bg-gray-800' : ''
+            }`}
+            onClick={() =>
+              navigationSvc.scrollTo(
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-send-${operation.id()}`,
+              )
+            }
+          >
+            <div className="flex flex-row">
+              <div className="flex-none">
+                <span className="mr-3 text-xs uppercase text-green-600 font-bold">
+                  Send
+                </span>
+              </div>
+              <span className="truncate">{operation.id()}</span>
+            </div>
+          </li>,
+        );
+      }
+
+      return operations;
+    },
+  );
+
+  return (
+    <>
+      <div
+        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+          hash === 'operations' ? 'bg-gray-800' : ''
+        }`}
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/operations',
+            'operations',
+          )
+        }
+      >
+        Operations
+      </div>
+      <ul>{operations}</ul>
     </>
   );
 };
@@ -250,6 +387,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 
 export const Navigation: React.FunctionComponent<NavigationProps> = ({
   className = '',
+  isV3 = false
 }) => {
   const [hash, setHash] = useState(window.location.hash);
 
@@ -306,12 +444,27 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             />
           </li>
         )}
+        { isV3 &&
         <li className="mb-4">
-          <OperationsNavigation
+          <ChannelsNavigation
             document={document}
             rawSpec={rawSpec}
             hash={hash}
           />
+        </li>
+        }
+        <li className="mb-4">
+          { isV3 
+            ? <V3OperationsNavigation 
+              document={document}
+              rawSpec={rawSpec}
+              hash={hash} /> 
+            : <OperationsNavigation
+              document={document}
+              rawSpec={rawSpec}
+              hash={hash}
+            />
+          }
         </li>
         {!components.messages().isEmpty() && (
           <li className="mb-4">

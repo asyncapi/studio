@@ -1,7 +1,6 @@
 import SplitPane from './SplitPane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
-import { Navigationv3 } from './Navigationv3';
 import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
@@ -43,9 +42,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
         localStorage.setItem(splitPosLeft, String(size));
       }, 100)}
     >
-      {
-        isV3 ? <Navigationv3 /> : <Navigation />
-      }
+      <Navigation isV3={isV3}/>
       <Editor />
     </SplitPane>
   );
