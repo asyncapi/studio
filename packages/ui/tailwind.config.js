@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       boxShadow: {
-        'service-card': '0px 0px 29px 0px rgba(190, 24, 93, 0.50)',
+        active: '0px 0px 29px 0px rgba(190, 24, 93, 0.50)',
       },
     },
   }
