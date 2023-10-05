@@ -4,4 +4,4 @@
 
 - Added AppCard component.
 - change the dark background color of the design system.
-- Modified ProtocolBadge so it exports Protocol type.
+- Modified InfoBadges so it exports Info type.
