@@ -89,7 +89,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'HTML preview',
-      enabled: !isV3
+      enabled: true
     },
     // visuliser
     {
