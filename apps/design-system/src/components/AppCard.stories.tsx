@@ -20,6 +20,7 @@ export const CodeEditor: Story = {
     name: 'User Registration',
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur",
     badges: ['http', 'kafka', 'websocket'],
-    isServer: true
+    isServer: true,
+    isClient: false
   },
 }
