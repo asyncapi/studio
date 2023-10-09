@@ -1,4 +1,4 @@
-import { FunctionComponent, KeyboardEvent } from 'react';
+import { FunctionComponent, KeyboardEvent, useRef } from 'react';
 
 interface ChipInputProps {
   name: string;
@@ -21,10 +21,32 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   placeholder = 'Add Tags',
   defaultValue = ''
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.currentTarget.value.trim()) {
       onChange([...chips, event.currentTarget.value.trim()]);
       event.currentTarget.value = '';
+    } else if (event.key === 'Backspace' && !event.currentTarget.value) {
+      // Handle delete if input is empty
+      onChange(chips.slice(0, -1));
+    } else if (event.key === 'Tab') {
+      // Focus on the next chip
+      event.preventDefault();
+      if (inputRef.current) {
+        const nextChip = inputRef.current.previousSibling as HTMLElement;
+        nextChip?.focus();
+      }
+    }
+  };
+
+  const handleChipKeyDown = (index: number) => (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Backspace') {
+      const updatedChips = [...chips];
+      updatedChips.splice(index, 1);
+      onChange(updatedChips);
+    } else if (event.key === 'Tab' && index === chips.length - 1) {
+      inputRef.current?.focus();
     }
   };
 
@@ -35,13 +57,19 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
 
   return (
     <div className={`${className} flex flex-wrap items-center p-1 bg-gray-900 rounded border-2 border-gray-700`}>
-      {chips.map(chip => (
-        <div key={chip} className="m-1 bg-gray-800 text-white rounded px-2 py-1 flex items-center">
+      {chips.map((chip, index) => (
+        <div 
+          key={chip} 
+          className="m-1 bg-gray-800 text-white rounded px-2 py-1 flex items-center" 
+          tabIndex={0} 
+          onKeyDown={handleChipKeyDown(index)}
+        >
           <span>{chip}</span>
           <button onClick={handleDelete(chip)} className="ml-1 text-gray-400 focus:outline-none">×</button>
         </div>
       ))}
       <input
+        ref={inputRef}
         name={name}
         id={id}
         type="text"
