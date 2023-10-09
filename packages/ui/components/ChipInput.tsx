@@ -22,21 +22,17 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   defaultValue = ''
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const firstChipRef = useRef<HTMLDivElement>(null);
   
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.currentTarget.value.trim()) {
       onChange([...chips, event.currentTarget.value.trim()]);
       event.currentTarget.value = '';
     } else if (event.key === 'Backspace' && !event.currentTarget.value) {
-      // Handle delete if input is empty
       onChange(chips.slice(0, -1));
-    } else if (event.key === 'Tab') {
-      // Focus on the next chip
+    } else if (event.key === 'Tab' && !event.shiftKey) {
       event.preventDefault();
-      if (inputRef.current) {
-        const nextChip = inputRef.current.previousSibling as HTMLElement;
-        nextChip?.focus();
-      }
+      firstChipRef.current?.focus();
     }
   };
 
@@ -45,8 +41,6 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
       const updatedChips = [...chips];
       updatedChips.splice(index, 1);
       onChange(updatedChips);
-    } else if (event.key === 'Tab' && index === chips.length - 1) {
-      inputRef.current?.focus();
     }
   };
 
@@ -63,9 +57,10 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
           className="m-1 bg-gray-800 text-white rounded px-2 py-1 flex items-center" 
           tabIndex={0} 
           onKeyDown={handleChipKeyDown(index)}
+          ref={index === 0 ? firstChipRef : undefined}
         >
           <span>{chip}</span>
-          <button onClick={handleDelete(chip)} className="ml-1 text-gray-400 focus:outline-none">×</button>
+          <button onClick={handleDelete(chip)} tabIndex={-1} className="ml-1 text-gray-400 focus:outline-none">×</button>
         </div>
       ))}
       <input
