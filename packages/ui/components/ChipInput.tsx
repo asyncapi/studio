@@ -8,6 +8,7 @@ interface ChipInputProps {
   onChange: (chips: string[]) => void;
   isDisabled?: boolean;
   placeholder?: string;
+  defaultValue?: string;
 }
 
 export const ChipInput: FunctionComponent<ChipInputProps> = ({
@@ -17,7 +18,8 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   chips,
   onChange,
   isDisabled = false,
-  placeholder = 'Add a chip'
+  placeholder = 'Add Tags',
+  defaultValue = ''
 }) => {
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.currentTarget.value.trim()) {
@@ -47,7 +49,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
         className="p-1 bg-gray-900 text-white rounded outline-none"
         placeholder={placeholder}
         disabled={isDisabled}
-        defaultValue={'registr'}
+        defaultValue={defaultValue}
       />
     </div>
   );
