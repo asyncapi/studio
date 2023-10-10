@@ -17,7 +17,7 @@ export const TextArea = ({onChange, rows, name, value, isDisabled, isResizable, 
     disabled={isDisabled}
     placeholder={placeholder}
     rows={rows}
-    className={`bg-gray-900 rounded-md appearance-none placeholder-gray-500 placeholder:italic outline-none text-sm leading-5 text-gray-400 ${
+    className={`bg-gray-900 appearance-none placeholder-gray-500 placeholder:italic outline-none text-sm leading-5 text-gray-400 ${
       className
     } ${isDisabled && 'opacity-50'} ${!isResizable && 'resize-none'}`}
   />

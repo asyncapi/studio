@@ -1,15 +1,14 @@
 
-export type InputProps = {
+export type TextInputProps = {
   placeholder: string
-  type?: 'text' | 'url'
+  type?: 'text' | 'number' | 'email'
   value?: string
-  onClear?: () => void
   onChange?: () => void
   isDisabled?: boolean
   className?: string
 }
 
-export const Input = (props: InputProps) => {
+export const TextInput = (props: TextInputProps) => {
   return (
     <input
       {...props}
@@ -20,3 +19,4 @@ export const Input = (props: InputProps) => {
     />
   )
 }
+

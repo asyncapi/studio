@@ -23,3 +23,35 @@ export const Default: Story = {
     backgrounds: { default: 'light' },
   },
 }
+
+export const Resizable: Story = {
+  args: {
+    ...Default.args,
+    isResizable: true,
+  },
+  parameters: {
+    backgrounds: { default: 'light' },
+  },
+};
+
+
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    isDisabled: true,
+  },
+  parameters: {
+    backgrounds: { default: 'light' },
+  },
+};
+
+export const RowsLimit: Story = {
+  args: {
+    ...Default.args,
+    rows: 3,
+  },
+  parameters: {
+    backgrounds: { default: 'light' },
+  },
+};
+
