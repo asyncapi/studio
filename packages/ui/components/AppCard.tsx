@@ -21,8 +21,12 @@ export const AppCard = ({isActive = false, name, description, badges, className,
         <div className="flex flex-col gap-2 px-5 py-3">
           <h3 className="text-base font-medium text-gray-100">{name}</h3>
           <div className='flex gap-1'>
-            {isClient && <ServiceInfoBadge info='client' className='mr-2'/>}
-            {isServer && <ServiceInfoBadge info='server' className='mr-2'/>}
+            { (isClient || isServer) && 
+            <div className='mr-2 flex gap-1'>
+              {isClient && <ServiceInfoBadge info='client'/>}
+              {isServer && <ServiceInfoBadge info='server'/>}
+            </div>
+            }
             {badges.map((badge, index) => (<ServiceInfoBadge info={badge} key={index} />))}
           </div>
         </div>
