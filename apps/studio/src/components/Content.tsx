@@ -1,6 +1,7 @@
 import SplitPane from './SplitPane';
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
+import { Navigationv3 } from './Navigationv3';
 import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
@@ -16,7 +17,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
   const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
   const isV3 = document?.version() === '3.0.0' && v3Enabled;
-  const navigationEnabled = isV3 ? false : show.primarySidebar;
+  const navigationEnabled = show.primarySidebar;
   const editorEnabled = show.primaryPanel;
   const viewEnabled = show.secondaryPanel;
   const viewType = secondaryPanelType;
@@ -42,7 +43,9 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
         localStorage.setItem(splitPosLeft, String(size));
       }, 100)}
     >
-      <Navigation />
+      {
+        isV3 ? <Navigationv3 /> : <Navigation />
+      }
       <Editor />
     </SplitPane>
   );

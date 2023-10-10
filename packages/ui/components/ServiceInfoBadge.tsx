@@ -1,25 +1,35 @@
 import type { FunctionComponent } from 'react'
-import { AMQPIcon, AWSSNSIcon, AWSSQSIcon, GooglePubSubIcon, IBMMQIcon, KafkaIcon, MQTTIcon, NATSIcon, PulsarIcon, RedisIcon, SolaceIcon, StompIcon, WebSocketIcon } from './icons'
+import { AMQPIcon, AWSSNSIcon, AWSSQSIcon, ClientIcon, GooglePubSubIcon, IBMMQIcon, KafkaIcon, MQTTIcon, NATSIcon, PulsarIcon, RedisIcon, ServerIcon, SolaceIcon, StompIcon, WebSocketIcon } from './icons'
 
-interface ProtocolBadgeProps {
+interface ServiceInfoBadgeProps {
   className?: string
-  protocol: 'http' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp'
+  info: 'http' | 'client' | 'server' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp'
 }
 
-export const ProtocolBadge: FunctionComponent<ProtocolBadgeProps> = ({
+export const ServiceInfoBadge: FunctionComponent<ServiceInfoBadgeProps> = ({
   className = '',
-  protocol,
+  info,
   ...props
 }) => {
   let colorName
   let content
   let ariaLabel
 
-  switch (protocol) {
+  switch (info) {
   case 'http':
     ariaLabel = 'HTTP'
     colorName = 'cyan' // bg-cyan-100 text-cyan-900
     content = <span className="text-3xs font-bold">HTTP</span>
+    break;
+  case 'client':
+    ariaLabel = 'Client'
+    colorName = 'orange' // bg-orange-100 text-orange-900
+    content = <ClientIcon className="w-4 h-4" />
+    break;
+  case 'server':
+    ariaLabel = 'Server'
+    colorName = 'blue' // bg-blue-100 text-blue-900
+    content = <ServerIcon className="w-4 h-4" />
     break;
   case 'kafka':
     ariaLabel = 'Kafka'

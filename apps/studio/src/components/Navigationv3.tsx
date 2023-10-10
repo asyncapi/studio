@@ -67,6 +67,58 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   );
 };
 
+const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
+  document,
+  hash,
+}) => {
+  const { navigationSvc } = useServices();
+
+  const channels = document.channels().all().map(
+    (channel) => {
+      return  <li
+        key={channel.id()}
+        className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+          hash === `channels-${channel.id()}` ? 'bg-gray-800' : ''
+        }`}
+        onClick={() =>
+          navigationSvc.scrollTo(
+            `/channels/${(channel.id() ?? '').replace(/\//g, '~1')}`,
+            `channels-${channel.id()}`,
+          )
+        }
+      >
+        <div className="flex flex-row">
+          <div className="flex-none">
+            <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
+              {channel.id()}
+            </span>
+          </div>
+          <span className="truncate">{channel.address()}</span>
+        </div>
+      </li>
+    },
+  );
+
+  return (
+    <>
+      <div
+        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+          hash === 'channels' ? 'bg-gray-800' : ''
+        }`}
+        onClick={() =>
+          navigationSvc.scrollTo(
+            '/channels',
+            'channels',
+          )
+        }
+      >
+        Channels
+      </div>
+      <ul>{channels}</ul>
+    </>
+  );
+};
+
 const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
@@ -75,64 +127,59 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
 
   const operations = document.operations().all().map(
     (operation) => {
-      const channels: React.ReactNode[] = [];
-      // only has one channel per operation 
-      let channelName = 'Unknown';
-      if (!operation.channels().isEmpty()) {
-        channelName = operation.channels().all()[0].address() ?? 'Unknown';
-      }
+      const operations: React.ReactNode[] = [];
       if (operation.isReceive()) {
-        channels.push(
+        operations.push(
           <li
-            key={`${channelName}-publish`}
+            key={operation.id()}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-receive-${operation.id()}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-publish-${channelName}`,
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-receive-${operation.id()}`,
               )
             }
           >
             <div className="flex flex-row">
               <div className="flex-none">
                 <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
-                  Pub
+                  Receive
                 </span>
               </div>
-              <span className="truncate">{channelName}</span>
+              <span className="truncate">{operation.id()}</span>
             </div>
-          </li>,
+          </li>
         );
       }
       if (operation.isSend()) {
-        channels.push(
+        operations.push(
           <li
-            key={`${channelName}-subscribe`}
+            key={`${operation.id()}-send`}
             className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
-              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-send-${operation.id()}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-subscribe-${channelName}`,
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-send-${operation.id()}`,
               )
             }
           >
             <div className="flex flex-row">
               <div className="flex-none">
                 <span className="mr-3 text-xs uppercase text-green-600 font-bold">
-                  Sub
+                  Send
                 </span>
               </div>
-              <span className="truncate">{channelName}</span>
+              <span className="truncate">{operation.id()}</span>
             </div>
           </li>,
         );
       }
 
-      return channels;
+      return operations;
     },
   );
 
@@ -144,7 +191,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
-            '/channels',
+            '/operations',
             'operations',
           )
         }
@@ -248,7 +295,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   );
 };
 
-export const Navigation: React.FunctionComponent<NavigationProps> = ({
+export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
   className = '',
 }) => {
   const [hash, setHash] = useState(window.location.hash);
@@ -306,6 +353,13 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             />
           </li>
         )}
+        <li className="mb-4">
+          <ChannelsNavigation
+            document={document}
+            rawSpec={rawSpec}
+            hash={hash}
+          />
+        </li>
         <li className="mb-4">
           <OperationsNavigation
             document={document}
