@@ -54,8 +54,8 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
       {chips.map((chip, index) => (
         <div 
           key={chip} 
-          className="m-1 bg-gray-100 text-gray-900 rounded px-2 py-1 flex items-center border border-gray-400 focus:border-blue-500 focus:outline"
-          style={{ height: '28px', borderWidth: '0.5px', borderStyle: 'solid' }}
+          className="m-1 bg-gray-100 text-gray-900 rounded px-2 py-1 flex items-center border border-gray-400 focus:border-blue-500 focus:border-2 focus:outline-none"
+          style={{ height: '28px', borderStyle: 'solid' }}
           tabIndex={0} 
           onKeyDown={handleChipKeyDown(index)}
           ref={index === 0 ? firstChipRef : undefined}
