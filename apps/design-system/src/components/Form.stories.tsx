@@ -1,12 +1,12 @@
 import type { Meta } from "@storybook/react"
 import {
-  DescriptionWithLabel,
+  TextArea,
   Field,
   Form,
   FormGroup,
   FormSection,
   IconButton,
-  Input,
+  TextInput,
   Label,
   SelectDropdown,
 } from "@asyncapi/studio-ui"
@@ -15,11 +15,7 @@ import { AddIcon, TrashIcon } from "@asyncapi/studio-ui/icons"
 const meta: Meta<typeof Form> = {
   component: Form,
   parameters: {
-    layout: "fullscreen",
-    backgrounds: {
-      default: "dark",
-      values: [{ name: "dark", value: "#0F172A" }],
-    },
+    layout: "fullscreen"
   },
 }
 
@@ -42,21 +38,29 @@ export const Default = () => (
     summary="Type a short summary description..."
     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris"
   >
+  <div className="flex flex-col gap-4">
+    <Field name="summary">
+      <TextArea placeholder="Type a short summary description..." rows={1}/>
+    </Field>
+    <Field name="description">
+      <TextArea rows={5} value='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris' placeholder={'Type a description...'}/>
+    </Field>
+  </div>
     <FormSection title="Connection Details">
       <div className="flex gap-3">
         <Field name="protocol" label="Protocol">
           <SelectDropdown options={singleSelectOptions} placeholder="Select a protocol..." />
         </Field>
-        <Field name="Email" label="email" className="grow">
-          <Input placeholder="Enter your email" />
+        <Field name="host" label="Host" className="grow">
+          <TextInput value='kafka.in.mycompany.com:{port}/production' placeholder="" className='w-full' />
         </Field>
       </div>
       <div className="flex gap-3">
         <Field className="grow" label="Schema Registry URL" name={"schema"}>
-          <Input value="https://registry.mycompay.com" placeholder="" />
+          <TextInput value="https://registry.mycompay.com" placeholder="" />
         </Field>
         <Field className="grow" label="Schema Registry Vendor" name={"vendor"}>
-          <Input value="Confluent" placeholder="" />
+          <TextInput value="Confluent" placeholder="" />
         </Field>
       </div>
       <Label label={"Security"} />
@@ -64,20 +68,20 @@ export const Default = () => (
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <SelectDropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
-            <Input placeholder="Type something here..." className="grow" />
+            <TextInput placeholder="Type something here..." className="grow" />
             <TrashIcon className="w-6 h-6 text-gray-500" />
           </div>
-          <Input placeholder="Type something here..." />
+          <TextInput placeholder="Type something here..." />
         </div>
       </FormGroup>
       <FormGroup>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <SelectDropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
-            <Input placeholder="Type something here..." className="grow" />
+            <TextInput placeholder="Type something here..." className="grow" />
             <TrashIcon className="w-6 h-6 text-gray-500" />
           </div>
-          <Input placeholder="Type something here..." />
+          <TextInput placeholder="Type something here..." />
         </div>
       </FormGroup>
       <IconButton text="Add Security Requirements" icon={AddIcon} />
@@ -87,12 +91,11 @@ export const Default = () => (
     </FormSection>
     <FormSection title="External Documentation">
       <Field name="url" label="URL">
-        <Input placeholder="https://www.mycompany.com/private/docs/production-kafka-broker" />
+        <TextInput placeholder="https://www.mycompany.com/private/docs/production-kafka-broker" />
       </Field>
-      <DescriptionWithLabel
-        label="Description"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna,"
-      />
+      <Field name="description" label='Description'>
+        <TextArea value='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna,' placeholder='' />
+      </Field>
     </FormSection>
   </Form>
 )
