@@ -54,7 +54,7 @@ export const Default = () => (
         <Field name="protocol" label="Protocol">
           <SelectDropdown options={singleSelectOptions} placeholder="Select a protocol..." />
         </Field>
-        <Field name="host" label="Host" className="grow">
+        <Field name="host" label="Host" className="grow" tooltip='Server host url.'>
           <TextInput value='kafka.in.mycompany.com:{port}/production' placeholder="" className='w-full' />
         </Field>
       </div>
