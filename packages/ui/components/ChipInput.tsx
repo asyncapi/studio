@@ -23,7 +23,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const firstChipRef = useRef<HTMLDivElement>(null);
-  
+
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.currentTarget.value.trim()) {
       onChange([...chips, event.currentTarget.value.trim()]);
@@ -50,7 +50,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   };
 
   return (
-    <div className={`${className} flex flex-wrap items-center p-1 bg-gray-900 rounded border-2 border-gray-700`}>
+    <div className={`${className} flex flex-wrap items-center p-1 bg-gray-900 rounded border-2 border-gray-700 h-12`}>
       {chips.map((chip, index) => (
         <div 
           key={chip} 
