@@ -2,6 +2,7 @@
 import './styles.css'
 
 // components
+export * from './ChipInput'
 export * from './EditorSwitch'
 export * from './DropdownMenu'
 export * from './Logo'
