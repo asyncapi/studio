@@ -50,11 +50,12 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   };
 
   return (
-    <div className={`${className} flex flex-wrap items-center p-1 bg-gray-900 rounded border-2 border-gray-700 h-12`}>
+    <div className={`${className} flex flex-wrapitems-center p-1 bg-gray-900 rounded border border-gray-800`} style={{ width: '862px', height: '46px' }}>
       {chips.map((chip, index) => (
         <div 
           key={chip} 
-          className="m-1 bg-gray-800 text-white rounded px-2 py-1 flex items-center" 
+          className="m-1 bg-gray-100 text-gray-900 rounded px-2 py-1 flex items-center border border-gray-400 focus:border-blue-500 focus:outline"
+          style={{ height: '28px', borderWidth: '0.5px', borderStyle: 'solid' }}
           tabIndex={0} 
           onKeyDown={handleChipKeyDown(index)}
           ref={index === 0 ? firstChipRef : undefined}
