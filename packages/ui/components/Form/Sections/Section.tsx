@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 
 type FormSectionProps = {
   className?: string
@@ -6,7 +6,7 @@ type FormSectionProps = {
   children: React.ReactNode
 }
 
-export const FormSection: FunctionComponent<FormSectionProps> = ({ title, children, className }) => {
+export const FormSection = ({ title, children, className }: FormSectionProps) => {
   return (
     <div className={`flex flex-col gap-4 mt-8 ${className}`}>
       <h3 className="text-sm font-normal uppercase leading-6 text-gray-200">{title}</h3>

@@ -1,4 +1,3 @@
-import React from 'react'
 import * as RadixSelect from '@radix-ui/react-select'
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '../../icons'
 import classnames from 'classnames'

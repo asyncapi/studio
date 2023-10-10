@@ -10,7 +10,7 @@ type FieldProps = {
   children: React.ReactNode
 }
 
-export const Field: React.FunctionComponent<FieldProps> = ({ label, tooltip, children, className, name }) => {
+export const Field = ({ label, tooltip, children, className, name }: FieldProps) => {
   return (
     <RadixForm.Field name={name} className={`flex flex-col gap-2 ${className}`}>
       { label &&

@@ -1,3 +1,4 @@
+import React from 'react'
 import type { Meta } from "@storybook/react"
 import {
   TextArea,
@@ -9,6 +10,7 @@ import {
   TextInput,
   Label,
   SelectDropdown,
+  ChipInput,
 } from "@asyncapi/studio-ui"
 import { AddIcon, TrashIcon } from "@asyncapi/studio-ui/icons"
 
@@ -33,6 +35,7 @@ const singleSelectOptions = [
   { label: "Pulsar", value: "pulsar" },
 ]
 export const Default = () => (
+  <>
   <Form
     title="User Registration"
     summary="Type a short summary description..."
@@ -87,7 +90,9 @@ export const Default = () => (
       <IconButton text="Add Security Requirements" icon={AddIcon} />
     </FormSection>
     <FormSection title="Tags">
-      <div></div>
+      <div>
+        <ChipInput name={''} id={''} chips={["production", "platform"]} onChange={()=> {return}} />
+      </div>
     </FormSection>
     <FormSection title="External Documentation">
       <Field name="url" label="URL">
@@ -98,4 +103,5 @@ export const Default = () => (
       </Field>
     </FormSection>
   </Form>
+  </>
 )
