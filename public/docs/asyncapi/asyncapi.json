@@ -1,9 +1,9 @@
 {
-  "asyncapi": "2.4.0",
+  "asyncapi": "2.6.0",
   "info": {
     "title": "Streetlights Kafka API",
     "version": "1.0.0",
-    "description": "The Smartylighting Streetlights API allows you to remotely manage the city lights.\n\n### Check out its awesome features:\n\n* Turn a specific streetlight on/off 🌃\n* Dim a specific streetlight 😎\n* Receive real-time information about environmental lighting conditions 📈\n",
+    "description": "The Smartylighting Streetlights API allows you to remotely manage the city lights.\n### Check out its awesome features:\n* Turn a specific streetlight on/off 🌃\n* Dim a specific streetlight 😎\n* Receive real-time information about environmental lighting conditions 📈\n",
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0"
