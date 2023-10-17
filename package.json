@@ -1,177 +1,35 @@
 {
-  "name": "@asyncapi/studio",
-  "version": "0.18.1",
-  "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/asyncapi/studio/issues"
-  },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/asyncapi/studio.git"
   },
-  "keywords": [
-    "asyncapi",
-    "documentation",
-    "studio",
-    "playground"
-  ],
-  "author": {
-    "name": "The AsyncAPI maintainers"
-  },
-  "files": [
-    "/build",
-    "/assets/logo.png",
-    "./README.md",
-    "./LICENSE"
-  ],
-  "dependencies": {
-    "@asyncapi/avro-schema-parser": "^1.1.0",
-    "@asyncapi/converter": "^1.2.0",
-    "@asyncapi/openapi-schema-parser": "^2.0.3",
-    "@asyncapi/parser": "^2.0.0-next-major.14",
-    "@asyncapi/react-component": "^1.0.0-next.47",
-    "@asyncapi/specs": "^4.2.1",
-    "@ebay/nice-modal-react": "^1.2.8",
-    "@headlessui/react": "^1.7.4",
-    "@hookstate/core": "^4.0.0-rc21",
-    "@monaco-editor/react": "^4.4.6",
-    "@tippyjs/react": "^4.2.6",
-    "js-base64": "^3.7.3",
-    "js-file-download": "^0.4.12",
-    "js-yaml": "^4.1.0",
-    "monaco-editor": "0.34.1",
-    "monaco-yaml": "4.0.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hot-toast": "2.4.0",
-    "react-icons": "^4.6.0",
-    "reactflow": "^11.2.0",
-    "zustand": "^4.1.4"
-  },
   "scripts": {
-    "dev": "npm run start",
-    "start": "craco start",
-    "build": "npm run generate:template-parameters && craco build",
-    "test": "npm run test:unit",
-    "test:unit": "craco test --detectOpenHandles",
-    "eject": "react-scripts eject",
-    "lint": "eslint --max-warnings 0 --config .eslintrc .",
-    "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
-    "generate:readme:toc": "markdown-toc -i README.md",
-    "generate:assets": "npm run build && npm run generate:readme:toc",
-    "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
-    "generate:docker": "docker build --tag asyncapi/studio .",
-    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
-    "release": "npm run generate:docker && semantic-release",
-    "prepublishOnly": "npm run build && npm run generate:readme:toc"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "lint": "eslint --ext .tsx,.ts .",
+    "dev": "turbo run dev",
+    "ds": "turbo run dev --no-cache --continue --filter=design-system...",
+    "studio": "turbo run dev --filter=studio...",
+    "studio-next": "turbo run dev --no-cache --filter=studio-next...",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "publish": "changeset publish",
+    "build:studio": "turbo run build --no-cache --filter=studio...",
+    "build:ds": "turbo run build --filter=design-system...",
+    "build:studio-next": "turbo run build --no-cache --filter=studio-next..."
   },
   "devDependencies": {
-    "@asyncapi/dotnet-nats-template": "^0.11.0",
-    "@asyncapi/go-watermill-template": "^0.2.22",
-    "@asyncapi/html-template": "^0.28.3",
-    "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
-    "@asyncapi/java-spring-template": "^0.29.0",
-    "@asyncapi/java-template": "^0.2.1",
-    "@asyncapi/markdown-template": "^1.2.1",
-    "@asyncapi/nodejs-template": "^0.13.1",
-    "@asyncapi/nodejs-ws-template": "^0.9.33",
-    "@asyncapi/python-paho-template": "^0.2.13",
-    "@asyncapi/ts-nats-template": "^0.10.2",
-    "@craco/craco": "^7.0.0",
-    "@semantic-release-plus/docker": "^3.1.2",
-    "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/github": "^8.0.6",
-    "@semantic-release/npm": "^9.0.1",
-    "@semantic-release/release-notes-generator": "^10.0.3",
-    "@tailwindcss/typography": "^0.5.8",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^29.2.3",
-    "@types/js-yaml": "^4.0.5",
-    "@types/json-schema": "^7.0.11",
-    "@types/node": "^18.11.9",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.9",
-    "assert": "^2.0.0",
-    "autoprefixer": "^10.4.13",
-    "browserify-zlib": "^0.2.0",
-    "buffer": "^6.0.3",
-    "conventional-changelog-conventionalcommits": "^5.0.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.27.0",
-    "eslint-plugin-react": "7.31.10",
-    "eslint-plugin-security": "^1.5.0",
-    "eslint-plugin-sonarjs": "^0.16.0",
-    "https-browserify": "^1.0.0",
-    "markdown-toc": "^1.2.0",
-    "path-browserify": "^1.0.1",
-    "postcss": "^8.4.19",
-    "process": "^0.11.10",
-    "raw-loader": "^4.0.2",
-    "react-scripts": "5.0.1",
-    "semantic-release": "^19.0.5",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "tailwindcss": "^3.2.4",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.3",
-    "url": "^0.11.0",
-    "util": "^0.12.5",
-    "web-vitals": "^3.1.0",
-    "webpack": "^5.75.0"
+    "esbuild": "^0.19.0",
+    "turbo": "^1.10.12"
   },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!monaco-editor|monaco-yaml|monaco-marker-data-provider|monaco-worker-manager)"
-    ],
-    "moduleNameMapper": {
-      "^nimma/legacy$": "<rootDir>/node_modules/nimma/dist/legacy/cjs/index.js",
-      "^nimma/(.*)": "<rootDir>/node_modules/nimma/dist/cjs/$1"
-    }
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits"
-        }
-      ],
-      "@semantic-release/npm",
-      "@semantic-release/github",
-      [
-        "@semantic-release-plus/docker",
-        {
-          "name": "asyncapi/studio",
-          "publishChannelTag": true
-        }
-      ]
-    ]
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "npm@8.19.3",
+  "dependencies": {
+    "@changesets/cli": "^2.26.2"
   }
 }
