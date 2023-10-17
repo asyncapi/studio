@@ -5,6 +5,7 @@ import { show } from '@ebay/nice-modal-react';
 import { RedirectedModal } from '../components/Modals';
 
 import { appState, filesState } from '../state';
+import { File } from '../state/files.state';
 
 export class ApplicationService extends AbstractService {
   override async onInit() {
@@ -18,7 +19,10 @@ export class ApplicationService extends AbstractService {
 
     let error: any; 
     try {
-      await this.fetchResource(url, base64);
+      const file = await this.fetchFile(url, base64);
+      if (file) {
+        this.updateFile(file);
+      }
     } catch (err) {
       error = err;
       console.error(err);
@@ -37,27 +41,35 @@ export class ApplicationService extends AbstractService {
     }
   }
 
-  private async fetchResource(url: string | null, base64: string | null) {
-    if (!url && !base64) {
-      return;
-    }
-    
-    const { updateFile } = filesState.getState();
-    let content = '';
+  private async fetchFile(url: string | null, base64: string | null): Promise<Partial<File> | null> {
     if (url) {
-      content = await fetch(url).then(res => res.text());
-    } else if (base64) {
-      content = this.svcs.formatSvc.decodeBase64(base64);
+      return {
+        content: await fetch(url).then((res) => res.text()),
+        source: url,
+        from: 'url',
+      };
     }
+    if (base64) {
+      return {
+        content: this.svcs.formatSvc.decodeBase64(base64),
+        from: 'base64',
+      };
+    }
+    const res = await Promise.any([
+      fetch('/docs/asyncapi/asyncapi.yaml'),
+      fetch('/docs/asyncapi/asyncapi.json'),
+    ]);
+    if (res.status === 200) {
+      return res.text().then((content) => ({ content }));
+    }
+    return null;
+  }
 
+  private async updateFile(file: Partial<File>) {
+    const { updateFile } = filesState.getState();
+    const { source, content = '' } = file;
     const language = this.svcs.formatSvc.retrieveLangauge(content);
-    const source = url || undefined;
-    updateFile('asyncapi', {
-      content,
-      language,
-      source,
-      from: url ? 'url' : 'base64',
-    });
+    updateFile('asyncapi', { ...file, language });
     await this.svcs.parserSvc.parse('asyncapi', content, { source });
   }
 

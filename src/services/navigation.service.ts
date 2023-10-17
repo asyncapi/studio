@@ -80,19 +80,6 @@ export class NavigationService extends AbstractService {
       }
     }
 
-    if (liveServerPort && typeof Number(liveServerPort) === 'number') {
-      SocketClient.connect(window.location.hostname, liveServerPort);
-    } else if (documentUrl) {
-      await EditorService.importFromURL(documentUrl);
-    } else if (base64Document) {
-      await EditorService.importBase64(base64Document);
-    } else {
-      await Promise.any([
-        EditorService.importFromURL('/docs/asyncapi/asyncapi.yaml'),
-        EditorService.importFromURL('/docs/asyncapi/asyncapi.json'),
-      ]);
-    }
-
     window.addEventListener('hashchange', hashChanged);
     return () => {
       window.removeEventListener('hashchange', hashChanged);
