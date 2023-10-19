@@ -33,7 +33,7 @@ The Schemas displays the schemas stored in the `components.schemas` section. Thi
 
 # Editor
 
-The Editor section is where you edit the AsyncAPI code. As you edit, you will see the changes reflect dynamically in the HTML preview and Block Visualizer section.
+The Editor section is where you edit the AsyncAPI file. As you edit, you will see the changes reflect dynamically in the HTML preview and Block Visualizer section.
 
 Click on the individual elements of the Navigation button to jump to those sections in HTML preview and Block Visualizer section.
 
@@ -70,7 +70,7 @@ It starts with displaying the title, version, description of the API. It renders
 
 # Blocks visualizer
 
-Blocks visualizer is the USP of this product. It gives you a quick overview of your API. Unlike HTML preview, Blocks visualizer gives a diagrammatic visual of your API. 
+Blocks visualizer gives you a quick overview of your API. Unlike HTML preview, Blocks visualizer gives a diagrammatic visual of your API. 
 
 Title card is at the top-left corner of the Block visualizer window. Followed by the Operations card.  You can visualize channels, published messages, payload, type,  patterns, and relationship between the components.
 
@@ -101,7 +101,7 @@ There are 5 available to quick start Studio.
 
 ## Real World Examples
 
-Studio provides two real world examples templates to help you get started.
+Studio provides two templates to help you get started.
 
 - Slack Real Time Messaging API - Slack Real time messaging API. Using HTTP protocol.
 
