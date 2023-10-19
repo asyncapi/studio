@@ -106,7 +106,7 @@ export const TemplateParametersSans: ForwardRefRenderFunction<TemplateParameters
     const servers = document?.servers();
     const availableServers: string[] = [];
     Object.entries(servers || {}).forEach(([serverName, server]) => {
-      if (supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
+      if (server.protocol && supportedProtocols.includes(server.protocol())) availableServers.push(serverName);
     });
 
     if (supportedProtocols.length && availableServers.length === 0) {
