@@ -4,8 +4,6 @@ import * as RadixForm from '@radix-ui/react-form'
 export type FormProps = {
   className?: string
   title?: string
-  summary?: string
-  description?: string
   children?: React.ReactNode
 }
 export const Form = ({ className, title, children }: FormProps) => (

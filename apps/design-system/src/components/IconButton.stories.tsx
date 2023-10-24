@@ -1,4 +1,3 @@
-import { FunctionComponent } from 'react';
 import { Meta } from '@storybook/react';
 import { IconButton } from '@asyncapi/studio-ui'; 
 import { AddIcon } from '@asyncapi/studio-ui/icons'; 

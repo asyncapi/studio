@@ -38,14 +38,12 @@ type DropdownGroupOptionProps = {
 
 const DropdownGroupOption = ({ option: { label, options } }: DropdownGroupOptionProps) => {
   return (
-    <>
-      <RadixSelect.Group>
-        <RadixSelect.Label className="text-xs text-gray-500 px-4 leading-6">{label}</RadixSelect.Label>
-        {options.map((option) => (
-          <DropdownRegularOption option={option} key={option.value} />
-        ))}
-      </RadixSelect.Group>
-    </>
+    <RadixSelect.Group>
+      <RadixSelect.Label className="text-xs text-gray-500 px-4 leading-6">{label}</RadixSelect.Label>
+      {options.map((option) => (
+        <DropdownRegularOption option={option} key={option.value} />
+      ))}
+    </RadixSelect.Group>
   )
 }
 type DropdownSeparatorOption = {
@@ -80,7 +78,6 @@ export type DropdownProps = {
   placeholder?: string
   isDisabled?: boolean
   name?: string
-  label?: string
   className?: string
 }
 
@@ -94,37 +91,35 @@ export function Dropdown({
   className,
 }: DropdownProps) {
   return (
-    <>
-      <RadixSelect.Root value={value} onValueChange={onChange} name={name} disabled={isDisabled}>
-        <RadixSelect.Trigger
-          aria-label="Protocol"
-          className={classnames(
-            className,
-            'flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]',
-            { 'opacity-50': isDisabled }
-          )}
-        >
-          <RadixSelect.Value placeholder={placeholder} />
-          <RadixSelect.Icon className="text-gray-500">
-            <ChevronDownIcon className="w-5 h-5" />
-          </RadixSelect.Icon>
-        </RadixSelect.Trigger>
-        <RadixSelect.Portal>
-          <RadixSelect.Content className="overflow-hidden min-w-[176px] bg-gray-900 rounded-md px-2.5 shadow">
-            <RadixSelect.ScrollUpButton className="flex justify-center items-center">
-              <ChevronUpIcon className="w-4 h-4 text-gray-500" />
-            </RadixSelect.ScrollUpButton>
-            <RadixSelect.Viewport>
-              {options.map((option, index) => (
-                <DropdownOption option={option} key={index} />
-              ))}
-            </RadixSelect.Viewport>
-            <RadixSelect.ScrollDownButton className="flex justify-center items-center">
-              <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-            </RadixSelect.ScrollDownButton>
-          </RadixSelect.Content>
-        </RadixSelect.Portal>
-      </RadixSelect.Root>
-    </>
+    <RadixSelect.Root value={value} onValueChange={onChange} name={name} disabled={isDisabled}>
+      <RadixSelect.Trigger
+        aria-label={name}
+        className={classnames(
+          className,
+          'flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]',
+          { 'opacity-50': isDisabled }
+        )}
+      >
+        <RadixSelect.Value placeholder={placeholder} />
+        <RadixSelect.Icon className="text-gray-500">
+          <ChevronDownIcon className="w-5 h-5" />
+        </RadixSelect.Icon>
+      </RadixSelect.Trigger>
+      <RadixSelect.Portal>
+        <RadixSelect.Content className="overflow-hidden min-w-[176px] bg-gray-900 rounded-md px-2.5 shadow">
+          <RadixSelect.ScrollUpButton className="flex justify-center items-center">
+            <ChevronUpIcon className="w-4 h-4 text-gray-500" />
+          </RadixSelect.ScrollUpButton>
+          <RadixSelect.Viewport>
+            {options.map((option, index) => (
+              <DropdownOption option={option} key={index} />
+            ))}
+          </RadixSelect.Viewport>
+          <RadixSelect.ScrollDownButton className="flex justify-center items-center">
+            <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+          </RadixSelect.ScrollDownButton>
+        </RadixSelect.Content>
+      </RadixSelect.Portal>
+    </RadixSelect.Root>
   )
 }
