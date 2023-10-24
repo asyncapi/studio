@@ -27,3 +27,4 @@ storybook-static
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+styles/tailwind.output.css
