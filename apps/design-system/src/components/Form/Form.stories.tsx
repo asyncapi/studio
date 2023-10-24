@@ -4,8 +4,8 @@ import {
   TextArea,
   Field,
   Form,
-  FormGroup,
-  FormSection,
+  Group,
+  Fieldset,
   IconButton,
   TextInput,
   Label,
@@ -48,7 +48,7 @@ export const Default = () => (
       <TextArea rows={5} value='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna, eu condimentum mauris' placeholder={'Type a description...'}/>
     </Field>
   </div>
-    <FormSection title="Connection Details">
+    <Fieldset title="Connection Details">
       <div className="flex gap-3">
         <Field name="protocol" label="Protocol">
           <Dropdown options={singleSelectOptions} placeholder="Select a protocol..." />
@@ -66,7 +66,7 @@ export const Default = () => (
         </Field>
       </div>
       <Label label={"Security"} />
-      <FormGroup>
+      <Group>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <Dropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
@@ -75,8 +75,8 @@ export const Default = () => (
           </div>
           <TextInput placeholder="Type something here..." />
         </div>
-      </FormGroup>
-      <FormGroup>
+      </Group>
+      <Group>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <Dropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
@@ -85,21 +85,21 @@ export const Default = () => (
           </div>
           <TextInput placeholder="Type something here..." />
         </div>
-      </FormGroup>
+      </Group>
       <IconButton text="Add Security Requirements" icon={AddIcon} />
-    </FormSection>
-    <FormSection title="Tags">
+    </Fieldset>
+    <Fieldset title="Tags">
       <div>
         <ChipInput name={''} id={''} chips={["production", "platform"]} onChange={()=> {return}} />
       </div>
-    </FormSection>
-    <FormSection title="External Documentation">
+    </Fieldset>
+    <Fieldset title="External Documentation">
       <Field name="url" label="URL">
         <TextInput placeholder="https://www.mycompany.com/private/docs/production-kafka-broker" />
       </Field>
       <Field name="description" label='Description'>
         <TextArea value='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentum urna,' placeholder='' />
       </Field>
-    </FormSection>
+    </Fieldset>
   </Form>
 )

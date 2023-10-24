@@ -2,4 +2,4 @@
 "@asyncapi/studio-ui": minor
 ---
 
-Add SingleSelect component.
+Add Dropdown component.
