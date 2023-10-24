@@ -1,4 +1,4 @@
-# 001. Integrate Tailwind CSS into Design System for Styling
+# 5. Integrate Tailwind CSS into Design System for Styling
 
 Date: 2023-10-24
 
