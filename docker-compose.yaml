@@ -6,4 +6,4 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./public/docs/asyncapi:/usr/share/nginx/html/docs/asyncapi
+      - ./apps/studio/public/docs/asyncapi:/usr/share/nginx/html/docs/asyncapi
