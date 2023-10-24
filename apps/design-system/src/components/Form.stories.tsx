@@ -9,7 +9,7 @@ import {
   IconButton,
   TextInput,
   Label,
-  SelectDropdown,
+  Dropdown,
   ChipInput,
 } from "@asyncapi/studio-ui"
 import { AddIcon, TrashIcon } from "@asyncapi/studio-ui/icons"
@@ -35,7 +35,6 @@ const singleSelectOptions = [
   { label: "Pulsar", value: "pulsar" },
 ]
 export const Default = () => (
-  <>
   <Form
     title="User Registration"
     summary="Type a short summary description..."
@@ -52,7 +51,7 @@ export const Default = () => (
     <FormSection title="Connection Details">
       <div className="flex gap-3">
         <Field name="protocol" label="Protocol">
-          <SelectDropdown options={singleSelectOptions} placeholder="Select a protocol..." />
+          <Dropdown options={singleSelectOptions} placeholder="Select a protocol..." />
         </Field>
         <Field name="host" label="Host" className="grow" tooltip='Server host url.'>
           <TextInput value='kafka.in.mycompany.com:{port}/production' placeholder="" className='w-full' />
@@ -70,7 +69,7 @@ export const Default = () => (
       <FormGroup>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
-            <SelectDropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
+            <Dropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
             <TextInput placeholder="Type something here..." className="grow" />
             <TrashIcon className="w-6 h-6 text-gray-500" />
           </div>
@@ -80,7 +79,7 @@ export const Default = () => (
       <FormGroup>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
-            <SelectDropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
+            <Dropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
             <TextInput placeholder="Type something here..." className="grow" />
             <TrashIcon className="w-6 h-6 text-gray-500" />
           </div>
@@ -103,5 +102,4 @@ export const Default = () => (
       </Field>
     </FormSection>
   </Form>
-  </>
 )

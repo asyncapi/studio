@@ -2,17 +2,17 @@ import * as RadixSelect from '@radix-ui/react-select'
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '../../icons'
 import classnames from 'classnames'
 
-type SelectDropdownRegularOption = {
+type DropdownRegularOption = {
   type?: 'regular'
   value: string
   label: string
 }
 
-type SelectDropdownRegularOptionProps = {
-  option: SelectDropdownRegularOption
+type DropdownRegularOptionProps = {
+  option: DropdownRegularOption
 }
 
-const SelectDropdownRegularOption = ({ option: { value, label } }: SelectDropdownRegularOptionProps) => {
+const DropdownRegularOption = ({ option: { value, label } }: DropdownRegularOptionProps) => {
   return (
     <RadixSelect.Item
       className="flex items-center relative text-gray-200 text-sm leading-7 pl-6 pr-7 hover:bg-gray-700 focus:bg-gray-700 my-2 rounded outline-none"
@@ -26,55 +26,55 @@ const SelectDropdownRegularOption = ({ option: { value, label } }: SelectDropdow
   )
 }
 
-type SelectDropdownGroupOption = {
+type DropdownGroupOption = {
   type: 'group'
   label: string
-  options: SelectDropdownRegularOption[]
+  options: DropdownRegularOption[]
 }
 
-type SelectDropdownGroupOptionProps = {
-  option: SelectDropdownGroupOption
+type DropdownGroupOptionProps = {
+  option: DropdownGroupOption
 }
 
-const SelectDropdownGroupOption = ({ option: { label, options } }: SelectDropdownGroupOptionProps) => {
+const DropdownGroupOption = ({ option: { label, options } }: DropdownGroupOptionProps) => {
   return (
     <>
       <RadixSelect.Group>
         <RadixSelect.Label className="text-xs text-gray-500 px-4 leading-6">{label}</RadixSelect.Label>
         {options.map((option) => (
-          <SelectDropdownRegularOption option={option} key={option.value} />
+          <DropdownRegularOption option={option} key={option.value} />
         ))}
       </RadixSelect.Group>
     </>
   )
 }
-type SelectDropdownSeparatorOption = {
+type DropdownSeparatorOption = {
   type: 'separator'
 }
 
-const SelectDropdownSeparatorOption = () => {
+const DropdownSeparatorOption = () => {
   return <RadixSelect.Separator className="w-full h-px bg-gray-700 my-2" />
 }
 
-export type SelectDropdownOption = SelectDropdownGroupOption | SelectDropdownRegularOption | SelectDropdownSeparatorOption
+export type DropdownOption = DropdownGroupOption | DropdownRegularOption | DropdownSeparatorOption
 
-type SelectDropdownOptionProps = {
-  option: SelectDropdownOption
+type DropdownOptionProps = {
+  option: DropdownOption
 }
 
-const SelectDropdownOption = ({ option }: SelectDropdownOptionProps) => {
+const DropdownOption = ({ option }: DropdownOptionProps) => {
   switch (option.type) {
   case 'separator':
-    return <SelectDropdownSeparatorOption />
+    return <DropdownSeparatorOption />
   case 'group':
-    return <SelectDropdownGroupOption option={option} />
+    return <DropdownGroupOption option={option} />
   default:
-    return <SelectDropdownRegularOption option={option} />
+    return <DropdownRegularOption option={option} />
   }
 }
 
-export type SelectDropdownProps = {
-  options: SelectDropdownOption[]
+export type DropdownProps = {
+  options: DropdownOption[]
   value?: string
   onChange?: (selectedOption: string) => void
   placeholder?: string
@@ -84,7 +84,7 @@ export type SelectDropdownProps = {
   className?: string
 }
 
-export function SelectDropdown({
+export function Dropdown({
   options,
   value,
   onChange,
@@ -92,7 +92,7 @@ export function SelectDropdown({
   name,
   isDisabled,
   className,
-}: SelectDropdownProps) {
+}: DropdownProps) {
   return (
     <>
       <RadixSelect.Root value={value} onValueChange={onChange} name={name} disabled={isDisabled}>
@@ -116,7 +116,7 @@ export function SelectDropdown({
             </RadixSelect.ScrollUpButton>
             <RadixSelect.Viewport>
               {options.map((option, index) => (
-                <SelectDropdownOption option={option} key={index} />
+                <DropdownOption option={option} key={index} />
               ))}
             </RadixSelect.Viewport>
             <RadixSelect.ScrollDownButton className="flex justify-center items-center">
