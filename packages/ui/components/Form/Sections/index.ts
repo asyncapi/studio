@@ -1,2 +1,2 @@
 export * from './Group'
-export * from './FieldSet'
+export * from './Fieldset'
