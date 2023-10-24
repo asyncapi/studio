@@ -20,7 +20,7 @@ export class ApplicationService extends AbstractService {
     try {
       const file = await this.fetchFile(url, base64);
       if (file) {
-        this.updateFile(file);
+        await this.updateFile(file);
       }
     } catch (err) {
       error = err;
