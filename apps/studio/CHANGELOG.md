@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.19.1
+
+### Patch Changes
+
+- 9187c17: fix studio breaking when trying to generate code/document
+
 ## 0.19.0
 
 ### Minor Changes
