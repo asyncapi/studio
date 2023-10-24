@@ -1,9 +1,10 @@
 import React from 'react'
 
-type FormGroupProps = {
+type GroupProps = {
   children: React.ReactNode
+  className?: string
 }
 
-export const FormGroup = ({ children }: FormGroupProps) => {
-  return <div className="border-l p-2 border-gray-700">{children}</div>
+export const Group = ({ children, className }: GroupProps) => {
+  return <div className={`border-l p-2 border-gray-700 ${className}`}>{children}</div>
 }

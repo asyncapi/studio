@@ -65,3 +65,38 @@ export const Default: Story = {
     isDisabled: false,
   },
 }
+
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    isDisabled: true,
+  },
+}
+
+export const WithSelectedValue: Story = {
+  args: {
+    ...Default.args,
+    value: "mqtt",
+  },
+}
+
+export const EmptyOptions: Story = {
+  args: {
+    options: [],
+    placeholder: "No protocols available...",
+    isDisabled: false,
+  },
+}
+
+const longOptions: DropdownOption[] = [...Array(50)].map((_, i) => ({
+  label: `Option ${i + 1}`,
+  value: `option${i + 1}`,
+}))
+
+export const LongList: Story = {
+  args: {
+    options: longOptions,
+    placeholder: "Select an option...",
+    isDisabled: false,
+  },
+}
