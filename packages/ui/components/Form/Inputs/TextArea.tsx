@@ -12,6 +12,7 @@ export type TextAreaProps = {
 export const TextArea = ({onChange, rows, name, value, isDisabled, isResizable, placeholder, className} : TextAreaProps) => {
   return <textarea
     name={name}
+    aria-label={name}
     value={value}
     onChange={onChange}
     disabled={isDisabled}
