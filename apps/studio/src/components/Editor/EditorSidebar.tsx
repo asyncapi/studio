@@ -3,11 +3,14 @@ import React from 'react';
 import { EditorDropdown } from './EditorDropdown';
 
 import { useFilesState } from '../../state';
+import { ShareButton } from './ShareButton';
 
 interface EditorSidebarProps {}
 
-export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => {
-  const { source, from } = useFilesState(state => state.files['asyncapi']);
+export const EditorSidebar: React.FunctionComponent<
+  EditorSidebarProps
+> = () => {
+  const { source, from } = useFilesState((state) => state.files['asyncapi']);
 
   let documentFromText = '';
   if (from === 'storage') {
@@ -23,7 +26,10 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
       className="flex flex-row items justify-between bg-gray-800 border-b border-gray-700 text-sm"
       style={{ height: '30px', lineHeight: '30px' }}
     >
-      <div className="ml-2 text-gray-500 text-xs italic" style={{ height: '30px', lineHeight: '30px' }}>
+      <div
+        className="ml-2 text-gray-500 text-xs italic"
+        style={{ height: '30px', lineHeight: '30px' }}
+      >
         {documentFromText}
       </div>
       <div
@@ -32,6 +38,9 @@ export const EditorSidebar: React.FunctionComponent<EditorSidebarProps> = () => 
       >
         <div>
           <ul className="flex">
+            <li>
+              <ShareButton />
+            </li>
             <li>
               <EditorDropdown />
             </li>

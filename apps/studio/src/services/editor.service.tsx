@@ -166,6 +166,16 @@ export class EditorService extends AbstractService {
     }
   }
 
+  async exportAsBase64() {
+    try {
+      const file = filesState.getState().files['asyncapi'];
+      return this.svcs.formatSvc.encodeBase64(file.content);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   async convertToYaml() {
     try {
       const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
