@@ -10,6 +10,7 @@ import { filesState, documentsState, settingsState } from '../state';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { DocumentDiagnostics } from '../state/documents.state';
+import { SchemaParser } from '@asyncapi/parser';
 
 export class ParserService extends AbstractService {
   private parser!: Parser;
@@ -17,8 +18,9 @@ export class ParserService extends AbstractService {
   override async onInit() {
     this.parser = new Parser({
       schemaParsers: [
-        OpenAPISchemaParser() as any,
-        AvroSchemaParser() as any,
+        // Temporary fix for TS error
+        OpenAPISchemaParser() as SchemaParser<unknown, unknown>,
+        AvroSchemaParser() as SchemaParser<unknown, unknown>,
       ],
       __unstable: {
         resolver: {
