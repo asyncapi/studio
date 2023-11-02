@@ -1,4 +1,4 @@
-# This invalid file exists solely for educational purposes, and if you come across it, here is the tutorial: https://www.asyncapi.com/docs/tutorials/validate-documents
+# This invalid file exists solely for educational purposes, and if you come across it, here is the tutorial: https://www.asyncapi.com/docs/tutorials/studio-document-validation
 
 asyncapi: '1.0.0'
 info:
