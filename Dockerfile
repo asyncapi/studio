@@ -17,7 +17,6 @@ RUN turbo prune --scope=@asyncapi/studio --docker
 FROM base AS installer
 
 ARG BASE_URL_PLACEHOLDER
-ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 RUN apk add --no-cache libc6-compat
 RUN apk update
