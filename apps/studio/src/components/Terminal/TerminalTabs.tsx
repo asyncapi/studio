@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { TerminalInfo } from './TerminalInfo';
-import { otherState, useSettingsState, useDocumentsState } from '../../state';
+import { otherState, useDocumentsState } from '../../state';
 
 export interface TerminalTab {
   name: string;
@@ -20,8 +20,7 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState(active);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
-  const isV3 = document?.version() === '3.0.0' && v3Enabled;
+  const isV3 = document?.version() === '3.0.0';
   if (tabs.length === 0) {
     return null;
   }

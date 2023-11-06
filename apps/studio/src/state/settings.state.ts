@@ -5,7 +5,6 @@ export type SettingsState = {
   editor: {
     autoSaving: boolean;
     savingDelay: number;
-    v3support: boolean;
   };
   governance: {
     show: {
@@ -25,7 +24,6 @@ export const settingsState = create(
       editor: {
         autoSaving: true,
         savingDelay: 625,
-        v3support: true,
       },
       governance: {
         show: {
