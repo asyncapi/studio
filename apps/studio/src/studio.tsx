@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import React, { useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
-import { Content, Sidebar, Template, Toolbar } from "./components";
+import { Content, Sidebar, Template, Toolbar } from './components';
 
-import { afterAppInit, useServices } from "./services";
-import { appState } from "./state";
+import { afterAppInit, useServices } from './services';
+import { appState } from './state';
 
 export interface AsyncAPIStudioProps {}
 
