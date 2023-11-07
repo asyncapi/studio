@@ -1,5 +1,8 @@
 .DS_Store
-/node_modules
+node_modules
 .vscode/
 /lib
-/build
+build
+dist
+.turbo
+.env
