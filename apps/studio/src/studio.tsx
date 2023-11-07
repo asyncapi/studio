@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
-import { Content, Sidebar, Template, Toolbar } from './components';
+import { Content, Sidebar, Template, Toolbar } from "./components";
 
-import { afterAppInit, useServices } from './services';
-import { appState } from './state';
+import { afterAppInit, useServices } from "./services";
+import { appState } from "./state";
 
 export interface AsyncAPIStudioProps {}
 
-export const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () => {
+export const AsyncAPIStudio: React.FunctionComponent<
+  AsyncAPIStudioProps
+> = () => {
   const services = useServices();
 
   useEffect(() => {
@@ -25,11 +27,11 @@ export const AsyncAPIStudio: React.FunctionComponent<AsyncAPIStudioProps> = () =
     );
   }
   const unsubscribe = appState.subscribe((state) => {
-    state.initErrors.forEach(e => {
+    state.initErrors.forEach((e) => {
       toast.error(e.message);
     });
     unsubscribe();
-    appState.setState({initErrors: []});
+    appState.setState({ initErrors: [] });
   });
 
   return (
