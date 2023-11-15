@@ -174,8 +174,8 @@ components:
           payload:
             type: update
             eventId: 36902233362
-            timestamp: 1619769673
-            timestampms: 1619769673527
+            timestamp: '1619769673'
+            timestampms: '1619769673527'
             socket_sequence: 661
             events:
               - type: change
