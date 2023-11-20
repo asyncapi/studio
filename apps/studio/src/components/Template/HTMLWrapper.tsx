@@ -47,7 +47,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
         <div className="overflow-auto">
           <AsyncApiComponentWP
             schema={parsedSpec}
-            config={{ 
+            config={{
               show: { 
                 errors: false,
                 sidebar: appState.getState().readOnly,
