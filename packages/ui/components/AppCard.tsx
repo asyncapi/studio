@@ -28,7 +28,7 @@ export const AppCard = ({isActive = false, name, description, badges, className,
               {isServer && <ServiceInfoBadge info='server'/>}
             </div>
             }
-            {badges.map((badge, index) => (<ServiceInfoBadge info={badge} key={index} />))}
+            {Array.from(new Set(badges)).map((badge, index) => (<ServiceInfoBadge info={badge} key={badge + index} aria-label={`Badge for ${badge}`} />))}
           </div>
         </div>
         <div className="w-full h-px bg-gray-700"></div>
