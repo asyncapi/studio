@@ -15,7 +15,7 @@ export const AppCard = ({isActive = false, name, description, badges, className,
     <>
       <div
         aria-label={`${name} Application Card, ${isActive ? 'active' : 'inactive'}`}
-        className={`bg-gray-800 border-gray-800 rounded-lg w-[523px] border-2 ${className} ${
+        className={`bg-gray-800 border-gray-800 rounded-lg max-w-[523px] w-full border-2 ${className} ${
           isActive ? ' border-pink-800/30 shadow-active' : ''
         }`}
       >
