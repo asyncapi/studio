@@ -13,6 +13,7 @@ import invalid from './tutorials/invalid.yml';
 // real world examples
 import slack from './real-world/slack-rtm.yml';
 import gitterStreaming from './real-world/gitter-streaming.yml';
+import kraken from './real-world/kraken-api-request-reply-filter.yml';
 
 const templateTypes = {
   protocol: 'protocol-example',
@@ -73,6 +74,12 @@ export default [
     title: 'Gitter Streaming API',
     description: () => <>Gitter Streaming API from https://stream.gitter.im. Using HTTP protocol.</>,
     template: gitterStreaming,
+    type: templateTypes.realExample
+  },
+  {
+    title: 'Kraken Websockets API',
+    description: () => <>This Kraken Websocket specification. Using Websocket with request / reply</>,
+    template: kraken,
     type: templateTypes.realExample
   }
 ];
