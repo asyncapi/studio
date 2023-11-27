@@ -73,11 +73,7 @@ export const Default = () => (
       <Label label={"Security"} />
       <Group>
         <div className="flex flex-col gap-3">
-          <div className="flex gap-3">
-            <Dropdown options={[{ label: "User/Password", value: "user/password" }]} value="user/password" />
-            <TextInput placeholder="Type something here..." className="grow" />
-            <TrashIcon className="w-6 h-6 text-gray-500" />
-          </div>
+          {renderSecurityInput()}
           <TextInput placeholder="Type something here..." />
         </div>
       </Group>
