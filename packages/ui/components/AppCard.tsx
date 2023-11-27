@@ -11,10 +11,20 @@ interface AppCardProps {
 }
 
 export const AppCard = ({isActive = false, name, description, badges, className, isClient, isServer}:AppCardProps) => {
+  const dedupedListOfBadges = Array.from(new Set(badges)).map((badge, index) => (<ServiceInfoBadge info={badge} key={badge + index} aria-hidden={true} />))
+  
+  const ariaDescriptionParts = [];
+  if (isClient) ariaDescriptionParts.push('client');
+  if (isServer) ariaDescriptionParts.push('server');
+  const protocols = badges.map(badge => badge.toLowerCase()).join(', ');
+  if (protocols) ariaDescriptionParts.push(`uses the ${protocols} protocols`);
+
+  const ariaDescription = `This application, named ${name}, is ${ariaDescriptionParts.join(' and ')}.`;
+
   return (
     <>
       <div
-        aria-label={`${name} Application Card, ${isActive ? 'active' : 'inactive'}`}
+        aria-label={`${ariaDescription} ${isActive ? 'It is currently active.' : 'It is currently inactive.'}`}
         className={`bg-gray-800 border-gray-800 rounded-lg max-w-[523px] w-full border-2 ${className} ${
           isActive ? ' border-pink-800/30 shadow-active' : ''
         }`}
@@ -28,7 +38,7 @@ export const AppCard = ({isActive = false, name, description, badges, className,
               {isServer && <ServiceInfoBadge info='server'/>}
             </div>
             }
-            {Array.from(new Set(badges)).map((badge, index) => (<ServiceInfoBadge info={badge} key={badge + index} aria-label={`Badge for ${badge}`} />))}
+            {dedupedListOfBadges}
           </div>
         </div>
         <div className="w-full h-px bg-gray-700"></div>
