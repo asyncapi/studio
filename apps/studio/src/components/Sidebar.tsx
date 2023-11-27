@@ -4,7 +4,7 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 import { SettingsModal, NewFileModal } from './Modals';
 
-import { usePanelsState, panelsState, useDocumentsState, useSettingsState } from '../state';
+import { usePanelsState, panelsState, useDocumentsState } from '../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';
@@ -53,8 +53,7 @@ interface SidebarProps {}
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const v3Enabled = useSettingsState(state => state.editor.v3support) || false;
-  const isV3 = document?.version() === '3.0.0' && v3Enabled;
+  const isV3 = document?.version() === '3.0.0';
 
   if (show.activityBar === false) {
     return null;
