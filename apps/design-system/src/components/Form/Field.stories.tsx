@@ -16,7 +16,7 @@ export default meta
 
 export const Default = () => (
   <Form>
-    <Field className="grow" label="Schema Registry Vendor" name={"vendor"}>
+    <Field className="grow" label="Schema Registry Vendor" name="vendor">
       <TextInput value="Confluent" placeholder="" />
     </Field>
   </Form>

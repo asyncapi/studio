@@ -14,7 +14,7 @@ export const Field = ({ label, tooltip, children, className, name }: FieldProps)
   return (
     <RadixForm.Field name={name} className={`flex flex-col gap-2 ${className}`}>
       { label &&
-      <RadixForm.Label asChild>
+      <RadixForm.Label>
         <Label label={label} tooltip={tooltip} />
       </RadixForm.Label>
       }

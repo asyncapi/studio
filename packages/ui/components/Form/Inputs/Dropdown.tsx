@@ -85,7 +85,7 @@ export function Dropdown({
   options,
   value,
   onChange,
-  placeholder,
+  placeholder = 'Select an option...',
   name,
   isDisabled,
   className,
@@ -93,7 +93,7 @@ export function Dropdown({
   return (
     <RadixSelect.Root value={value} onValueChange={onChange} name={name} disabled={isDisabled}>
       <RadixSelect.Trigger
-        aria-label={name}
+        aria-label={placeholder}
         className={classnames(
           className,
           'flex items-center justify-between rounded-md border border-gray-700 px-3 text-sm leading-6 h-[46px] gap-2 bg-gray-900 text-gray-100 min-w-[176px]',

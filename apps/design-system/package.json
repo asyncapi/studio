@@ -70,7 +70,7 @@
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "react-docgen-typescript-plugin": "^1.0.5",
     "remark-gfm": "^3.0.1",
-    "storybook": "^7.0.20",
+    "storybook": "^7.5.3",
     "tailwindcss": "^3.3.3",
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.2",
