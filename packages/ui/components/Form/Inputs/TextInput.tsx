@@ -1,4 +1,3 @@
-
 export type TextInputProps = {
   placeholder: string
   type?: 'text' | 'number' | 'email'
