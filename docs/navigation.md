@@ -112,17 +112,3 @@ Studio provides two templates to help you get started.
 Studio also provides you with a template of an invalid AsyncAPI document. The purpose of this tutorial is to educate, and learn document validation.
 
 [You can request to add a template](https://github.com/asyncapi/studio/issues/new?assignees=&labels=enhancement&template=enhancement.md&title=Template%20Request:%20{%20template%20name%20and%20type%20}) to the list if you don't find what you are looking for.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
