@@ -15,7 +15,7 @@ Navigation button is divided into four parts. It provides the following informat
 
 ## Servers
 
-The Servers section displays the name and information of the server you are using to build your AsyncAPI.
+The Servers section displays the name and information of the [server]( https://www.asyncapi.com/docs/concepts/server) you are using to build your AsyncAPI.
 
 ## Operations
 
