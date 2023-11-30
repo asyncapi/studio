@@ -17,7 +17,7 @@ export const AppCard = ({isActive = false, name, description, badges, className,
   if (isClient) ariaDescriptionParts.push('client');
   if (isServer) ariaDescriptionParts.push('server');
   const protocols = badges.map(badge => badge.toLowerCase()).join(', ');
-  if (protocols) ariaDescriptionParts.push(`uses the ${protocols} protocols`);
+  if (protocols) ariaDescriptionParts.push(`uses the following protocols: ${protocols}`);
 
   const ariaDescription = `This application, named ${name}, is ${ariaDescriptionParts.join(' and ')}.`;
 
