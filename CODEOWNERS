@@ -7,3 +7,6 @@
 # The default owners are automatically added as reviewers when you open a pull request unless different owners are specified in the file.
 
 * @fmvilas @boyney123 @mcturco @magicmatatjahu @KhudaDad414 @Amzani @asyncapi-bot-eve
+
+apps/design-system/ @fmvilas @mcturco @KhudaDad414 @Amzani @princerajpoot20
+packages/ui/ @fmvilas @mcturco @KhudaDad414 @Amzani @princerajpoot20
