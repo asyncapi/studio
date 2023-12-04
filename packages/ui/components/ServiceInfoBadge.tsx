@@ -1,9 +1,10 @@
 import type { FunctionComponent } from 'react'
 import { AMQPIcon, AWSSNSIcon, AWSSQSIcon, ClientIcon, GooglePubSubIcon, IBMMQIcon, KafkaIcon, MQTTIcon, NATSIcon, PulsarIcon, RedisIcon, ServerIcon, SolaceIcon, StompIcon, WebSocketIcon } from './icons'
 
+export type Info = 'http' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp' | 'client' | 'server'
 interface ServiceInfoBadgeProps {
   className?: string
-  info: 'http' | 'client' | 'server' | 'kafka' | 'websocket' | 'amqp' | 'mqtt' | 'googlepubsub' | 'ibmmq' | 'nats' | 'pulsar' | 'redis' | 'sns' | 'sqs' | 'solace' | 'stomp'
+  info: Info
 }
 
 export const ServiceInfoBadge: FunctionComponent<ServiceInfoBadgeProps> = ({
