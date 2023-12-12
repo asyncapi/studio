@@ -27,13 +27,13 @@ operations:
     channel:
       $ref: '#/channels/songReleased'
     messages:
-      - $ref: '#/components/messages/Song'
+      - $ref: '#/channels/songReleased/messages/Song'
   sendSong:
     action: send
     channel:
       $ref: '#/channels/songReleased'
     messages:
-      - $ref: '#/components/messages/Song'
+      - $ref: '#/channels/songReleased/messages/Song'
 components:
   messages:
     Song:
