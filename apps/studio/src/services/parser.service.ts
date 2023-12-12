@@ -3,6 +3,7 @@ import { AbstractService } from './abstract.service';
 import { Parser, DiagnosticSeverity } from '@asyncapi/parser/cjs';
 import { OpenAPISchemaParser } from '@asyncapi/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/avro-schema-parser';
+import { ProtoBuffSchemaParser } from '@asyncapi/protobuf-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { isDeepEqual } from '../helpers';
@@ -21,6 +22,7 @@ export class ParserService extends AbstractService {
         // Temporary fix for TS error
         OpenAPISchemaParser() as SchemaParser<unknown, unknown>,
         AvroSchemaParser() as SchemaParser<unknown, unknown>,
+        ProtoBuffSchemaParser() as SchemaParser<unknown, unknown>,
       ],
       __unstable: {
         resolver: {
