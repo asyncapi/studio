@@ -50,6 +50,13 @@ const PropertyControls = ({ onAdd }) => {
 const SchemaProperty = ({ name, schema, onRemove, onToggleRequired, isRequired }) => {
     const typeDisplay = Array.isArray(schema.type) ? schema.type.join(', ') : schema.type;
   
+    const handleKeyPress = (event) => {
+        // Trigger the click event when Enter or Space key is pressed
+        if (event.key === 'Enter' || event.key === ' ') {
+            onToggleRequired(name);
+        }
+    };
+
     return (
       <div className="schema-property" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span>
@@ -59,6 +66,7 @@ const SchemaProperty = ({ name, schema, onRemove, onToggleRequired, isRequired }
           <button onClick={() => onRemove(name)}>Remove</button>
           <div
             onClick={() => onToggleRequired(name)}
+            onKeyDown={handleKeyPress}
             style={{
               width: '20px',
               height: '20px',
@@ -67,11 +75,13 @@ const SchemaProperty = ({ name, schema, onRemove, onToggleRequired, isRequired }
               cursor: 'pointer',
               marginLeft: '10px',
             }}
+            tabIndex={0} // Make the div focusable
           />
         </div>
       </div>
     );
-  };
+};
+
 
   const SchemaObject = ({ schema, path, onAdd, onRemove, onToggleRequired }) => {
     const properties = schema.properties || {};
