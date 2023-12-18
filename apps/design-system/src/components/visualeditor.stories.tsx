@@ -13,12 +13,12 @@ const meta = {
 
 export default meta;
 
-const EditorToggle = ({ schema, onSchemaChange }) => {
+const EditorToggle: React.FC<{ schema: string; onSchemaChange: (schema: string) => void }> = ({ schema, onSchemaChange }) => {
   const [activeSystem, setActiveSystem] = useState('vis');
 
-  const handleSystemClick = (systemKey) => {
+  const handleSystemClick = (systemKey: string) => {
     setActiveSystem(systemKey);
-  };
+  };  
 
   return (
     <div className="flex flex-col mx-auto p-4">
