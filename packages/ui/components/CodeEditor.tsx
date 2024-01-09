@@ -1,53 +1,37 @@
+// CodeEditor.tsx
 import React, { useState, useEffect } from 'react';
 import debounce from 'lodash/debounce';
 
+export const CodeEditor = ({ schema, onSchemaChange }) => {
+    const [value, setValue] = useState(schema);
+    const [error, setError] = useState('');
 
-interface CodeEditorProps {
-  schema: string;
-  onSchemaChange: (newSchema: string) => void;
-}
+    useEffect(() => {
+        setValue(schema);
+    }, [schema]);
 
-export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }) => {
-  const [value, setValue] = useState(schema);
-  const [error, setError] = useState('');
+    const handleChange = debounce((newValue) => {
+        try {
+            JSON.parse(newValue);
+            setError('');
+            onSchemaChange(newValue);
+        } catch (e) {
+            if (e instanceof Error) {
+                setError(e.message);
+            }
+        }
+    }, 250);
 
-  // Update local state when the incoming schema changes
-  useEffect(() => {
-    setValue(schema);
-  }, [schema]);
-
-  // Debounced change handler to limit the number of updates
-  const handleChange = debounce((newValue: string) => {
-    try {
-      JSON.parse(newValue); // Will throw an error if JSON is invalid
-      setError('');
-      onSchemaChange(newValue);
-    } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      }
-    }
-  }, 250);
-
-  // Handle text area change event
-  const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = event.target.value;
-    setValue(newValue);
-    handleChange(newValue);
-  };
-
-  return (
-    <div className="border border-gray-500 rounded p-4">
-      <h2>Code Editor</h2>
-      {error && <p className="text-red-500">Error: {error}</p>}
-      <textarea
-        className="w-full h-full rounded border border-gray-300"
-        placeholder="Enter your JSON schema here"
-        value={value}
-        onChange={handleTextAreaChange}
-      />
-    </div>
-  );
+    return (
+        <div className="code-editor">
+            <h2>Code Editor</h2>
+            {error && <p>Error: {error}</p>}
+            <textarea
+                value={value}
+                onChange={(e) => handleChange(e.target.value)}
+            />
+        </div>
+    );
 };
 
 export default CodeEditor;
