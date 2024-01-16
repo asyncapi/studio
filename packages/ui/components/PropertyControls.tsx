@@ -32,7 +32,19 @@ const PropertyControls = ({ onAdd, schemaPath, level }) => {
     setItemType('');
     setError('');
 
-    onAdd(schemaPath, newProperty);
+    
+    
+      // Construct the full path for the new property
+  let fullPath = schemaPath ? `${schemaPath}.${key}` : key;
+  
+  // Split the path and remove any duplicate segments
+  const pathSegments = fullPath.split('.');
+  fullPath = pathSegments.filter((value, index, self) => self.indexOf(value) === index).join('.');
+  console.log(`Adding new property. Full Path: ${fullPath}, New Property:`, JSON.stringify(newProperty, null, 2));
+    
+  // Pass the full path to the onAdd function
+  onAdd(fullPath, { name: key, schema: propertySchema });
+
   };
 
   return (

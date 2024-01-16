@@ -9,41 +9,48 @@ const SchemaObject = ({
   path,
   level
 }) => {
-  // Handler to add a new property to the schema
-  const updateNestedSchema = (currentSchema, pathParts, newProperty) => {
-    if (pathParts.length === 0) {
-        // Directly add the property if we're at the target location
-        currentSchema.properties = currentSchema.properties || {};
-        currentSchema.properties[newProperty.name] = newProperty.schema;
-        return currentSchema;
+  console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
+
+  const updateSchemaAtPath = (currentSchema, pathArray, newProperty) => {
+    let schemaPart = currentSchema;
+  
+    // Navigate to the correct location in the schema
+    for (let i = 0; i < pathArray.length - 1; i++) {
+      const part = pathArray[i];
+      if (!schemaPart.properties || !schemaPart.properties[part]) {
+        schemaPart.properties = { ...schemaPart.properties, [part]: { type: 'object', properties: {} } };
+      }
+      schemaPart = schemaPart.properties[part];
     }
-
-    const nextPathPart = pathParts.shift();
-    if (!currentSchema.properties[nextPathPart]) {
-        // Initialize a nested object if it doesn't exist
-        currentSchema.properties[nextPathPart] = { type: 'object', properties: {} };
-    }
-
-    // Recursively update the nested object
-    currentSchema.properties[nextPathPart] = updateNestedSchema(
-        currentSchema.properties[nextPathPart],
-        pathParts,
-        newProperty
-    );
-
+  
+    // Add the new property to the schema
+    const propertyName = pathArray[pathArray.length - 1];
+    schemaPart.properties = { ...schemaPart.properties, [propertyName]: newProperty.schema };
+  
     return currentSchema;
-};
+  };
 
-const handleAddProperty = (path, newProperty) => {
-    const pathParts = path.split('.').filter(Boolean);
-    let updatedSchema = JSON.parse(JSON.stringify(schema)); // Deep clone to prevent direct state mutation
+  const handleAddProperty = (fullPath, newProperty) => {
+    console.log(`handleAddProperty called. fullPath: ${fullPath}, newProperty:`, newProperty);
+    console.log(`New property to be added:`, newProperty);
+    // Log
+  console.log(`New property to be added:`, JSON.stringify(newProperty, null, 2));
 
-    updatedSchema = updateNestedSchema(updatedSchema, pathParts, newProperty);
+    // Correct the path if it has redundant segments
+    const pathSegments = fullPath.split('.');
+    const correctedPathSegments = pathSegments.filter((value, index, self) => self.indexOf(value) === index);
 
-    // Update the state and propagate the changes to the parent component
-    onSchemaChange(path, updatedSchema);
-};
+    console.log(`Corrected Path: ${correctedPathSegments.join('.')}`);
 
+    let updatedSchema = JSON.parse(JSON.stringify(schema));
+  const pathArray = fullPath.split('.').filter(Boolean);
+  updatedSchema = updateSchemaAtPath(updatedSchema, pathArray, newProperty);
+
+  onSchemaChange(path, updatedSchema);
+    console.log('Schema after handleAddProperty:', updatedSchema);
+  };
+  
+  
 
   // Handler to remove a property from the schema
   const handleRemoveProperty = (path, propertyName) => {
@@ -77,6 +84,7 @@ const handleAddProperty = (path, newProperty) => {
   return (
     <div style={{ margin: '10px 0' }}>
       {Object.keys(schema.properties || {}).map((propertyName) => (
+        
         <SchemaProperty
           key={propertyName}
           name={propertyName}

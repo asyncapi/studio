@@ -16,6 +16,7 @@ const SchemaProperty = ({
     path, 
     level 
 }) => {
+    console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Schema:`, JSON.stringify(schema, null, 2));
     const handleTypeChange = (event) => {
         const newType = event.target.value;
         const updatedSchema = { ...schema, type: newType };

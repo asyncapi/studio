@@ -19,8 +19,8 @@ export const CodeEditor = ({ schema, onSchemaChange }) => {
             if (e instanceof Error) {
                 setError(e.message);
             }
-        }
-    }, 250);
+        }  console.log('Schema updated from Code Editor:', newValue);
+      }, 250);
 
     return (
         <div className="code-editor">

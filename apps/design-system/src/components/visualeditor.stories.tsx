@@ -39,27 +39,6 @@ const Template = ({ initialSchema }) => {
 
 export const DefaultView = () => <Template initialSchema="{}" />;
 
-export const WithSampleSchema = () => (
-  <Template
-    initialSchema={JSON.stringify({
-      type: "object",
-      properties: {
-        firstName: { type: "string" },
-        lastName: { type: "string" },
-        age: { type: "integer" },
-        address: {
-          type: "object",
-          properties: {
-            street: { type: "string" },
-            city: { type: "string" }
-          },
-          required: ["street", "city"]
-        }
-      },
-      required: ["firstName", "lastName"]
-    }, null, 2)}
-  />
-);
 
 export const SingleProperty = () => (
   <Template
@@ -74,12 +53,7 @@ export const WithObject = () => (
     initialSchema={JSON.stringify({
       "type": "object",
       "properties": {
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
+     
         "age": {
           "type": "integer"
         },
@@ -91,22 +65,14 @@ export const WithObject = () => (
             },
             "city": {
               "type": "string"
-            },
-            "new": {
-              "type": "string"
             }
           },
-          
           "required": [
             "street",
             "city"
           ]
         }
-      },
-      "required": [
-        "firstName",
-        "lastName"
-      ]
+      }
     }, null, 2)}
   />
 );
@@ -214,35 +180,23 @@ export const property_having_more_than_one_datatype = () => (
 export const two_property_having_same_name = () => (
   <Template
     initialSchema={JSON.stringify({
+
       "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "child1": {
+        "address": {
           "type": "object",
           "properties": {
-            "name": { "type": "string" },
-            "grandchild1": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" }
-              }
+            "address": { "type": "object",
+            "properties": {
+              "street": { "type": "string" },
+              "city": { "type": "string" }
             }
           }
-        },
-        "child2": {
-          "type": "object",
-          "properties": {
-            "name": { "type": "string" },
-            "grandchild2": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" }
-              }
-            }
           }
         }
       }
     }
+    
     , null, 2)}
   />
 );

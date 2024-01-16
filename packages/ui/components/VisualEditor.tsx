@@ -33,6 +33,8 @@ export const VisualEditor = ({ schema, onSchemaChange }) => {
 
         setSchemaObject(updatedSchema);
         onSchemaChange(JSON.stringify(updatedSchema, null, 2));
+        console.log(`Schema updated. Path: ${path}, New Schema:`, JSON.stringify(newSchema, null, 2));
+        console.log('Updated Schema Object:', JSON.stringify(updatedSchema, null, 2));
     };
 
 
