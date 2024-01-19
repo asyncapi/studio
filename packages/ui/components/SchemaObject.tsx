@@ -12,44 +12,40 @@ const SchemaObject = ({
   console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
   const updateSchemaAtPath = (currentSchema, pathArray, newProperty) => {
+    console.log(`updateSchemaAtPath called. Path Array: ${pathArray.join('.')}, New Property:`, newProperty);
     let schemaPart = currentSchema;
   
-    // Navigate to the correct location in the schema
-    for (let i = 0; i < pathArray.length - 1; i++) {
-      const part = pathArray[i];
-      if (!schemaPart.properties || !schemaPart.properties[part]) {
-        schemaPart.properties = { ...schemaPart.properties, [part]: { type: 'object', properties: {} } };
-      }
-      schemaPart = schemaPart.properties[part];
-    }
+    pathArray.forEach((part, index) => {
+      console.log(`Navigating to: ${part}, at index: ${index}`);
   
-    // Add the new property to the schema
+      if (index < pathArray.length - 1) {
+        if (!schemaPart.properties || !schemaPart.properties[part]) {
+          console.error(`Property '${part}' not found at path: ${pathArray.slice(0, index).join('.')}`);
+          return;
+        }
+        schemaPart = schemaPart.properties[part];
+      }
+  
+      console.log(`Current schema part after navigation:`, schemaPart);
+    });
+  
     const propertyName = pathArray[pathArray.length - 1];
-    schemaPart.properties = { ...schemaPart.properties, [propertyName]: newProperty.schema };
+    schemaPart.properties[propertyName] = newProperty.schema;
+    console.log(`Schema part after property addition:`, currentSchema);
   
     return currentSchema;
   };
-
-  const handleAddProperty = (fullPath, newProperty) => {
-    console.log(`handleAddProperty called. fullPath: ${fullPath}, newProperty:`, newProperty);
-    console.log(`New property to be added:`, newProperty);
-    // Log
-  console.log(`New property to be added:`, JSON.stringify(newProperty, null, 2));
-
-    // Correct the path if it has redundant segments
-    const pathSegments = fullPath.split('.');
-    const correctedPathSegments = pathSegments.filter((value, index, self) => self.indexOf(value) === index);
-
-    console.log(`Corrected Path: ${correctedPathSegments.join('.')}`);
-
-    let updatedSchema = JSON.parse(JSON.stringify(schema));
-  const pathArray = fullPath.split('.').filter(Boolean);
-  updatedSchema = updateSchemaAtPath(updatedSchema, pathArray, newProperty);
-
-  onSchemaChange(path, updatedSchema);
-    console.log('Schema after handleAddProperty:', updatedSchema);
-  };
   
+  const handleAddProperty = (fullPath, newProperty) => {
+    console.log(`handleAddProperty called. Full Path: ${fullPath}, New Property:`, newProperty);
+  
+    let updatedSchema = JSON.parse(JSON.stringify(schema));
+    const pathArray = fullPath.split('.');
+    updatedSchema = updateSchemaAtPath(updatedSchema, pathArray, newProperty);
+  
+    console.log('Schema after handleAddProperty:', updatedSchema);
+    onSchemaChange(path, updatedSchema);
+  };
   
 
   // Handler to remove a property from the schema
