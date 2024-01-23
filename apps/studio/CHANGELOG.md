@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.20.0
+
+### Minor Changes
+
+- 5129432: start publishing studio.
+
 ## 0.19.1
 
 ### Patch Changes
