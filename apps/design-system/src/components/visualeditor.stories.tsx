@@ -33,9 +33,9 @@ const Template: React.FC<TemplateProps> = ({ initialSchema }) => {
         {editorType === 'code' && (
           <CodeEditor schema={schema} onSchemaChange={setSchema} />
         )}
-        {/* {editorType === 'examples' && (
-          <Examples schema={schema} onSchemaChange={setSchema} />
-        )} */}
+        {editorType === 'examples' && (
+          <Examples/>
+        )}
       </div>
     </div>
   );

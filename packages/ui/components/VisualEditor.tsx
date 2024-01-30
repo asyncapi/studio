@@ -3,8 +3,19 @@ import React, { useState, useEffect } from 'react';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
 
-export const VisualEditor = ({ schema, onSchemaChange }) => {
-    const [schemaObject, setSchemaObject] = useState({});
+interface VisualEditorProps {
+    schema: string;
+    onSchemaChange: (newSchema: string) => void;
+}
+
+interface SchemaObject {
+    type?: string;
+    items?: any;
+    [key: string]: any;
+}
+
+export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChange }) => {
+    const [schemaObject, setSchemaObject] = useState<SchemaObject>({});
 
     useEffect(() => {
         try {
@@ -15,7 +26,7 @@ export const VisualEditor = ({ schema, onSchemaChange }) => {
         }
     }, [schema]);
 
-    const handleSchemaChange = (path, newSchema) => {
+    const handleSchemaChange = (path: string, newSchema: SchemaObject) => {
         let updatedSchema = { ...schemaObject };
 
         if (path) {

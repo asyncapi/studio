@@ -1,7 +1,21 @@
 // PropertyControls.tsx
 import React, { useState } from 'react';
 
-const PropertyControls = ({ onAdd, schemaPath, level }) => {
+interface PropertyControlsProps {
+    onAdd: (path: string, property: { name: string; schema: any }) => void;
+    onRemove?: (path: string, propertyName: string) => void;
+    onToggleRequired?: (path: string, propertyName: string) => void;
+    requiredFields?: any;
+    schemaPath?: string;
+    level: number;
+}
+
+interface PropertySchema {
+    type: string;
+    items?: { type: string };
+    properties?: Record<string, any>;
+}
+const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, level }) => {
   const [key, setKey] = useState('');
   const [type, setType] = useState('');
   const [error, setError] = useState('');
@@ -17,11 +31,10 @@ const PropertyControls = ({ onAdd, schemaPath, level }) => {
       return;
     }
 
-    let propertySchema = { type };
+    let propertySchema: PropertySchema = { type };
     if (type === 'array') {
       propertySchema.items = { type: itemType || 'string' };
-    }else if (type === 'object') {
-      // Initialize an empty properties object for new object type
+    } else if (type === 'object') {
       propertySchema.properties = {};
     }
 

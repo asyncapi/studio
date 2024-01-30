@@ -3,7 +3,21 @@ import React from 'react';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
 
-const SchemaProperty = ({
+interface SchemaPropertyProps {
+    name: string;
+    schema: any;
+    onRemove: (path: string, propertyName: string) => void;
+    onToggleRequired: (path: string, propertyName: string) => void;
+    isRequired: boolean;
+    onTypeChange: (path: string, propertyName: string, newSchema: any) => void;
+    onAddNestedProperty: (fullPath: string, newProperty: any) => void;
+    onRemoveNestedProperty: (path: string, propertyName: string) => void;
+    onToggleNestedRequired: (path: string, propertyName: string) => void;
+    path: string;
+    level: number;
+}
+
+const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     name, 
     schema, 
     onRemove, 
@@ -17,7 +31,7 @@ const SchemaProperty = ({
     level 
 }) => {
     console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Schema:`, JSON.stringify(schema, null, 2));
-    const handleTypeChange = (event) => {
+    const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newType = event.target.value;
         const updatedSchema = { ...schema, type: newType };
 

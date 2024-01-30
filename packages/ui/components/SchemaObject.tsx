@@ -3,7 +3,18 @@ import React from 'react';
 import SchemaProperty from './SchemaProperty';
 import PropertyControls from './PropertyControls';
 
-const SchemaObject = ({
+interface SchemaProperty {
+  [key: string]: any;
+}
+
+interface SchemaObjectProps {
+  schema: SchemaProperty;
+  onSchemaChange: (path: string, newSchema: SchemaProperty) => void;
+  path: string;
+  level: number;
+}
+
+const SchemaObject: React.FC<SchemaObjectProps> = ({
   schema,
   onSchemaChange,
   path,
@@ -11,7 +22,11 @@ const SchemaObject = ({
 }) => {
   console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
-  const updateSchemaAtPath = (currentSchema, pathArray, newProperty) => {
+  const updateSchemaAtPath = (
+    currentSchema: SchemaProperty,
+    pathArray: string[],
+    newProperty: { name: string; schema: SchemaProperty }
+  ) => {
     console.log(`updateSchemaAtPath called. Path Array: ${pathArray.join('.')}, New Property:`, newProperty);
     let schemaPart = currentSchema;
   
@@ -36,7 +51,7 @@ const SchemaObject = ({
     return currentSchema;
   };
   
-  const handleAddProperty = (fullPath, newProperty) => {
+  const handleAddProperty = (fullPath: string, newProperty: { name: string; schema: SchemaProperty }) => {
     console.log(`handleAddProperty called. Full Path: ${fullPath}, New Property:`, newProperty);
   
     let updatedSchema = JSON.parse(JSON.stringify(schema));
@@ -49,18 +64,18 @@ const SchemaObject = ({
   
 
   // Handler to remove a property from the schema
-  const handleRemoveProperty = (path, propertyName) => {
+  const handleRemoveProperty = (path: string, propertyName: string) => {
     const newSchema = { ...schema };
     delete newSchema.properties[propertyName];
-    newSchema.required = newSchema.required?.filter(name => name !== propertyName);
+    newSchema.required = newSchema.required?.filter((name: string) => name !== propertyName);
     onSchemaChange(path, newSchema);
-  };
+  };  
 
   // Handler to toggle required status of a property
-  const handleToggleRequired = (path, propertyName) => {
+  const handleToggleRequired = (path: string, propertyName: string) => {
     const newSchema = { ...schema };
     if (newSchema.required?.includes(propertyName)) {
-      newSchema.required = newSchema.required.filter(name => name !== propertyName);
+      newSchema.required = newSchema.required.filter((name: string) => name !== propertyName);
     } else {
       if (!newSchema.required) {
         newSchema.required = [];
@@ -71,7 +86,11 @@ const SchemaObject = ({
   };
 
   // Handler to change the type of a property
-  const handleTypeChange = (path, propertyName, newSchemaForProperty) => {
+  const handleTypeChange = (
+    path: string,
+    propertyName: string,
+    newSchemaForProperty: SchemaProperty
+  ) => {
     const newSchema = { ...schema };
     newSchema.properties[propertyName] = newSchemaForProperty;
     onSchemaChange(path, newSchema);
