@@ -10,10 +10,14 @@ export default {
     layout: 'fullscreen',
   },
 };
+type TemplateProps = {
+  initialSchema: string;
+};
 
-const Template = ({ initialSchema }) => {
-  const [schema, setSchema] = useState(initialSchema);
-  const [editorType, setEditorType] = useState('visual');
+const Template: React.FC<TemplateProps> = ({ initialSchema }) => {
+  const [schema, setSchema] = useState<string>(initialSchema);
+  const [editorType, setEditorType] = useState<'visual' | 'code' | 'examples'>('visual');
+
 
   return (
     <div>
@@ -29,9 +33,9 @@ const Template = ({ initialSchema }) => {
         {editorType === 'code' && (
           <CodeEditor schema={schema} onSchemaChange={setSchema} />
         )}
-        {editorType === 'examples' && (
+        {/* {editorType === 'examples' && (
           <Examples schema={schema} onSchemaChange={setSchema} />
-        )}
+        )} */}
       </div>
     </div>
   );
