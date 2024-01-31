@@ -84,6 +84,29 @@ export const WithObject = () => (
 
 
 
+export const WithArray_obj = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "books": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }, null, 2)}
+  />
+);
 
 export const WithArray_obj_and_obj = () => (
   <Template

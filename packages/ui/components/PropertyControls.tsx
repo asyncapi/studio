@@ -58,14 +58,15 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   };
 
   return (
-    <div style={{ marginLeft: `${level * 20}px` }}>
-      <div>
-        <input
-          type="text"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder="Property name"
-        />
+    <div style={{ marginLeft: `${level * 20}px` }} className="border-l border-extendedblue-gray800 pl-[10px]">
+        <div className="flex gap-[6px] items-center mt-[6px] mb-[6px]">
+            <input
+                type="text"
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                placeholder="Property name"
+                className="[font-family:'Inter',Helvetica] text-extendedblue-gray300 bg-extendedblue-gray800 border border-extendedblue-gray700 rounded-[3px] p-[2px] text-[12px]"
+            />
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="">Select type</option>
           <option value="string">String</option>
@@ -84,9 +85,9 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
           </select>
         )}
         <button onClick={handleAddProperty}>Add Property</button>
-      </div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+        </div>
+            {error && <p className="text-extendedred-700">{error}</p>}
+        </div>
   );
 };
 
