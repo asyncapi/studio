@@ -91,13 +91,20 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     };
 
     return (
-        <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', paddingLeft: '10px' }}>
+        <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', paddingLeft: '10px', marginBottom: '-8px' }}>
             <div className="flex items-center gap-[6px]">
                 <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300">{name}</strong>
                 <select
                     value={schema.type}
                     onChange={handleTypeChange}
-                    className="[font-family:'Inter',Helvetica] text-extendedblue-gray300 bg-extendedblue-gray800 border border-extendedblue-gray700 rounded-[3px] p-[2px] text-[12px]"
+                    style={{
+                        backgroundColor: '#0F172A', // Parent background color
+                        color: 'white', // Text color
+                        borderRadius: '3px',
+                        padding: '2px',
+                        fontSize: '14px',
+                        fontFamily: 'Inter, Helvetica'
+                    }}
                 >
                     <option value="string">String</option>
                     <option value="number">Number</option>

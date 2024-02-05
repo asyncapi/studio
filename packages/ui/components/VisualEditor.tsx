@@ -15,6 +15,13 @@ interface SchemaObject {
 }
 
 export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChange }) => {
+    const selectStyle = {
+        backgroundColor: '#0F172A', // Parent background color
+        color: 'white', // Text color
+        borderRadius: '3px',
+        fontSize: '12px',
+        fontFamily: 'Inter, Helvetica'
+    };
     const [schemaObject, setSchemaObject] = useState<SchemaObject>({});
 
     useEffect(() => {
@@ -52,10 +59,10 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     const renderRootTypeSelector = () => {
         return (
             <div>
-                <strong>Root Type:</strong>
                 <select
                     value={schemaObject.type || ''}
                     onChange={(e) => handleSchemaChange('', { type: e.target.value, properties: {}, required: [] })}
+                    style={selectStyle}
                 >
                     <option value="">Select type</option>
                     <option value="object">Object</option>
@@ -91,7 +98,8 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     };
 
     return (
-        <div className="visual-editor border border-solid border-extendedblue-gray800 bg-extendedblue-gray900 text-defaultyellow-500 p-4 rounded-md">
+        <div className="visual-editor border border-solid border-extendedblue-gray800 bg-extendedblue-gray900 text-defaultyellow-500 p-4 rounded-md" style={{background: '#0F172A', border: '1px solid #1E293B', borderRadius: '5px',
+        color: '#CBD5E1', fontFamily: 'Inter, sans-serif'}}>
             <h2 className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 text-[16px] leading-[19px] mb-[10px]">Visual Editor</h2>
             {renderRootTypeSelector()}
             {renderArrayItemTypeSelector()}

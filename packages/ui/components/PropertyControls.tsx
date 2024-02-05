@@ -16,6 +16,14 @@ interface PropertySchema {
     properties?: Record<string, any>;
 }
 const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, level }) => {
+  const inputAndSelectStyle = {
+    backgroundColor: '#0F172A', // Parent background color
+    color: 'white', // Text color
+    borderRadius: '3px',
+    padding: '2px',
+    fontSize: '14px',
+    fontFamily: 'Inter, Helvetica'
+  };
   const [key, setKey] = useState('');
   const [type, setType] = useState('');
   const [error, setError] = useState('');
@@ -58,16 +66,23 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   };
 
   return (
-    <div style={{ marginLeft: `${level * 20}px` }} className="border-l border-extendedblue-gray800 pl-[10px]">
-        <div className="flex gap-[6px] items-center mt-[6px] mb-[6px]">
-            <input
-                type="text"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-                placeholder="Property name"
-                className="[font-family:'Inter',Helvetica] text-extendedblue-gray300 bg-extendedblue-gray800 border border-extendedblue-gray700 rounded-[3px] p-[2px] text-[12px]"
-            />
-        <select value={type} onChange={(e) => setType(e.target.value)}>
+    <div style={{
+      marginLeft: `${level * 20}px`,
+      color: '#CBD5E1',
+      fontFamily: 'Inter, sans-serif',
+      borderLeft: '1px solid grey',
+      paddingLeft: '10px',
+      marginTop: '-1px'
+    }}>
+      <div className="flex gap-[6px] items-center mt-[6px] mb-[6px]">
+        <input
+          type="text"
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+          placeholder="Property name"
+          style={inputAndSelectStyle}
+        />
+        <select value={type} onChange={(e) => setType(e.target.value)} style={inputAndSelectStyle}>
           <option value="">Select type</option>
           <option value="string">String</option>
           <option value="number">Number</option>
@@ -76,7 +91,7 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
           <option value="array">Array</option>
         </select>
         {type === 'array' && (
-          <select value={itemType} onChange={(e) => setItemType(e.target.value)}>
+          <select value={itemType} onChange={(e) => setItemType(e.target.value)} style={inputAndSelectStyle}>
             <option value="">Select item type</option>
             <option value="string">String</option>
             <option value="number">Number</option>
@@ -86,7 +101,7 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
         )}
         <button onClick={handleAddProperty}>Add Property</button>
         </div>
-            {error && <p className="text-extendedred-700">{error}</p>}
+          {error && <p style={{ color: '#DB2777' }}>{error}</p>}
         </div>
   );
 };
