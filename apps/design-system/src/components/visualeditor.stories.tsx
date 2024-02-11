@@ -21,10 +21,10 @@ const Template: React.FC<TemplateProps> = ({ initialSchema }) => {
 
   return (
     <div>
-      <div style={{ marginBottom: 10 }}>
-        <button onClick={() => setEditorType('visual')}>Visual Editor </button>
-        <button onClick={() => setEditorType('code')}>Code Editor </button>
-        <button onClick={() => setEditorType('examples')}>Examples </button>
+      <div style={{background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif'}}>
+        <button style={{padding: 5}} onClick={() => setEditorType('visual')}>Visual Editor </button>
+        <button style={{padding: 5}} onClick={() => setEditorType('code')}>Code Editor </button>
+        <button style={{padding: 5}} onClick={() => setEditorType('examples')}>Examples </button>
       </div>
       <div>
         {editorType === 'visual' && (

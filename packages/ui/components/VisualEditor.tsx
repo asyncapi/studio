@@ -96,9 +96,8 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   return (
-    <div className="visual-editor border border-solid border-extendedblue-gray800 bg-extendedblue-gray900 text-defaultyellow-500 p-4 rounded-md" style={{background: '#0F172A', border: '1px solid #1E293B', borderRadius: '5px',
+    <div className="visual-editor  bg-extendedblue-gray900 text-defaultyellow-500 p-4" style={{background: '#0F172A',
       color: '#CBD5E1', fontFamily: 'Inter, sans-serif'}}>
-      <h2 className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 text-[16px] leading-[19px] mb-[10px]">Visual Editor</h2>
       {renderRootTypeSelector()}
       {renderArrayItemTypeSelector()}
 
