@@ -17,8 +17,8 @@ interface PropertySchema {
 }
 const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, level }) => {
   const inputAndSelectStyle = {
-    backgroundColor: '#0F172A', // Parent background color
-    color: 'white', // Text color
+    backgroundColor: '#0F172A',
+    color: 'white',
     borderRadius: '3px',
     padding: '2px',
     fontSize: '14px',
@@ -39,7 +39,7 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
       return;
     }
 
-    let propertySchema: PropertySchema = { type };
+    const propertySchema: PropertySchema = { type };
     if (type === 'array') {
       propertySchema.items = { type: itemType || 'string' };
     } else if (type === 'object') {
@@ -55,14 +55,11 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     setType('');
     setItemType('');
     setError('');
-
-    
     
     const fullPath = schemaPath ? `${schemaPath}.${key}` : key;
     console.log(`Adding new property. Full Path: ${fullPath}, Property:`, newProperty);
   
     onAdd(fullPath, { name: key, schema: propertySchema });
-
   };
 
   return (
@@ -100,9 +97,9 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
           </select>
         )}
         <button onClick={handleAddProperty}>Add Property</button>
-        </div>
-          {error && <p style={{ color: '#DB2777' }}>{error}</p>}
-        </div>
+      </div>
+      {error && <p style={{ color: '#DB2777' }}>{error}</p>}
+    </div>
   );
 };
 

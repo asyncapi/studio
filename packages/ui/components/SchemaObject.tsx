@@ -41,12 +41,12 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
         schemaPart = schemaPart.properties[part];
       }
   
-      console.log(`Current schema part after navigation:`, schemaPart);
+      console.log('Current schema part after navigation:', schemaPart);
     });
   
     const propertyName = pathArray[pathArray.length - 1];
     schemaPart.properties[propertyName] = newProperty.schema;
-    console.log(`Schema part after property addition:`, currentSchema);
+    console.log('Schema part after property addition:', currentSchema);
   
     return currentSchema;
   };
@@ -61,7 +61,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     console.log('Schema after handleAddProperty:', updatedSchema);
     onSchemaChange(path, updatedSchema);
   };
-  
 
   // Handler to remove a property from the schema
   const handleRemoveProperty = (path: string, propertyName: string) => {
