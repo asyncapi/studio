@@ -2,6 +2,7 @@
 import React from 'react';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
+import { RequiredIcon, NotRequiredIcon } from './icons'
 
 interface SchemaPropertyProps {
     name: string;
@@ -114,7 +115,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
         </select>
         <button onClick={handleRemove}>Remove</button>
         <button onClick={handleToggleRequired}>
-          {isRequired ? 'Unmark as Required' : 'Mark as Required'}
+        {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
         </button>
       </div>
       {renderNestedProperties()}

@@ -52,6 +52,42 @@ export const SingleProperty = () => (
   />
 );
 
+export const SampleSchema = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "age": {
+          "type": "boolean"
+        },
+        "height": {
+          "type": ["integer", "null"]
+        },
+        "friends": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              }
+            },
+            "required": ["firstName"]
+          }
+        }
+      },
+      "required": ["firstName", "lastName"]
+    }
+    , null, 2)}
+  />
+);
+
 export const WithObject = () => (
   <Template
     initialSchema={JSON.stringify({
