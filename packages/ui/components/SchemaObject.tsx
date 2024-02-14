@@ -71,19 +71,36 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   };  
 
   // Handler to toggle required status of a property
-  const handleToggleRequired = (path: string, propertyName: string) => {
-    const newSchema = { ...schema };
-    if (newSchema.required?.includes(propertyName)) {
-      newSchema.required = newSchema.required.filter((name: string) => name !== propertyName);
-    } else {
-      if (!newSchema.required) {
-        newSchema.required = [];
+  const handleToggleRequired = (propertyPath: string, propertyName: string) => {
+    const pathArray = propertyPath.split('.');
+    let currentSchema = schema;
+    let currentPath = schema;
+  
+    // Navigate through the schema based on the pathArray
+    for (let i = 0; i < pathArray.length - 1; i++) {
+      currentPath = currentPath.properties[pathArray[i]];
+      if (!currentPath) {
+        console.error(`Path not found: ${pathArray.slice(0, i + 1).join('.')}`);
+        return;
       }
-      newSchema.required.push(propertyName);
     }
-    onSchemaChange(path, newSchema);
+  
+    // Toggle the required status of the property
+    if (currentPath.required && currentPath.required.includes(propertyName)) {
+      // Remove property name from required array
+      currentPath.required = currentPath.required.filter(name => name !== propertyName);
+      if (currentPath.required.length === 0) {
+        delete currentPath.required; // Remove the required field if empty
+      }
+    } else {
+      // Add property name to required array
+      if (!currentPath.required) currentPath.required = [];
+      currentPath.required.push(propertyName);
+    }
+  
+    // Trigger schema update with new required status
+    onSchemaChange(path, currentSchema);
   };
-
   // Handler to change the type of a property
   const handleTypeChange = (
     path: string,

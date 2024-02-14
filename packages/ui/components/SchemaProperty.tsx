@@ -52,7 +52,13 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   };
 
   const handleToggleRequired = () => {
-    onToggleRequired(path, name);
+    if (isRequired) {
+      // Call the parent handler to remove from required
+      onToggleRequired(path, name);
+    } else {
+      // Call the parent handler to add to required
+      onToggleRequired(path, name);
+    }
   };
 
   const renderArrayItemsProperties = () => {
