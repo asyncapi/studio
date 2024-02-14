@@ -115,7 +115,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
         </select>
         <button onClick={handleRemove}>Remove</button>
         <button onClick={handleToggleRequired}>
-        {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
+          {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
         </button>
       </div>
       {renderNestedProperties()}
