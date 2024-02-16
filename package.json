@@ -15,7 +15,7 @@
     "test": "turbo run test",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "publish": "changeset publish",
+    "publish-packages": "turbo run build && changeset publish",
     "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system...",
     "build:studio-next": "turbo run build --no-cache --filter=studio-next..."

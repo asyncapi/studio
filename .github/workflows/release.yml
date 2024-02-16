@@ -35,11 +35,12 @@ jobs:
       - name: Create Release Pull Request or Release
         uses: changesets/action@v1
         with:
-          publish: npm run publish
+          publish: npm run publish-packages
           version: npm run version-packages
           commit: "version packages"
           title: "chore: version packages"
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GIT_AUTHOR_NAME: asyncapi-bot
           GIT_AUTHOR_EMAIL: info@asyncapi.io

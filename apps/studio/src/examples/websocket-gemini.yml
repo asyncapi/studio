@@ -2,7 +2,7 @@ asyncapi: 3.0.0
 info:
   title: Gemini Market Data Websocket API
   version: 1.0.0
-  description: >
+  description: |-
     Market data is a public API that streams all the market data on a given
     symbol.
 
@@ -96,7 +96,7 @@ channels:
           - maticusd
           - injusd
           - sushiusd
-        description: >
+        description: |-
           Symbols are formatted as CCY1CCY2 where prices are in CCY2 and
           quantities are in CCY1. To read more click
           [here](https://docs.sandbox.gemini.com/websocket-api/#symbols-and-minimums).
@@ -105,7 +105,7 @@ channels:
         bindingVersion: 0.1.0
         query:
           type: object
-          description: >
+          description: |-
             The semantics of entry type filtering is:
 
 
@@ -122,13 +122,13 @@ channels:
             heartbeat:
               type: boolean
               default: false
-              description: >-
+              description: |-
                 Optionally add this parameter and set to true to receive a
                 heartbeat every 5 seconds
             top_of_book:
               type: boolean
               default: false
-              description: >-
+              description: |-
                 If absent or false, receive full order book depth; if present
                 and true, receive top of book only. Only applies to bids and
                 offers.
@@ -160,7 +160,7 @@ components:
   messages:
     marketData:
       summary: Message with marked data information.
-      description: >
+      description: |-
         The initial response message will show the existing state of the order
         book. Subsequent messages will show all executed trades, as well as all
         other changes to the order book from orders placed or canceled.
@@ -212,7 +212,7 @@ components:
               const: update
             eventId:
               type: integer
-              description: >-
+              description: |-
                 A monotonically increasing sequence number indicating when this
                 change occurred. These numbers are persistent and consistent
                 between market data connections.
@@ -221,7 +221,7 @@ components:
             timestamp:
               type: string
               format: date-time
-              description: >-
+              description: |-
                 The timestamp in seconds for this group of events (included for
                 compatibility reasons). We recommend using the timestampms field
                 instead.
@@ -238,7 +238,7 @@ components:
         - $ref: '#/components/schemas/default'
     default:
       type: object
-      description: >-
+      description: |-
         This object is always part of the payload. In case of type=heartbeat,
         these are the only fields.
       required:
@@ -247,7 +247,7 @@ components:
       properties:
         socket_sequence:
           type: integer
-          description: >-
+          description: |-
             zero-indexed monotonic increasing sequence number attached to each
             message sent - if there is a gap in this sequence, you have missed a
             message. If you choose to enable heartbeats, then heartbeat and
@@ -257,7 +257,7 @@ components:
             for more information.
     events:
       type: array
-      description: >-
+      description: |-
         Either a change to the order book, or the indication that a trade has
         occurred.
       items:
@@ -286,20 +286,20 @@ components:
               - trade
               - cancel
               - initial
-            description: >-
+            description: |-
               Indicates why the change has occurred. initial is for the initial
               response message, which will show the entire existing state of the
               order book.
           remaining:
             type: number
             multipleOf: 1
-            description: >-
+            description: |-
               The quantity remaining at that price level after this change
               occurred. May be zero if all orders at this price level have been
               filled or canceled.
           delta:
             type: number
             multipleOf: 1
-            description: >-
+            description: |-
               The quantity changed. May be negative, if an order is filled or
               canceled. For initial messages, delta will equal remaining.

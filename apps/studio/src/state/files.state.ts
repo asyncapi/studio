@@ -5,7 +5,7 @@ const schema =
 info:
   title: Streetlights Kafka API
   version: 1.0.0
-  description: >
+  description: |-
     The Smartylighting Streetlights API allows you to remotely manage the city
     lights.
     ### Check out its awesome features:
