@@ -1,7 +1,7 @@
 name: Pitch
 description: 'Do you have an idea and a product enhancement? Time to pitch!'
 title: '[PITCH]:'
-labels: ['Pitch']
+labels: ['pitch']
 body:
   - type: markdown
     attributes:

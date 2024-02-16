@@ -21,10 +21,7 @@ export class SpecificationService extends AbstractService {
   }
 
   get latestVersion(): SpecVersions {
-    const { editor: { v3support } } = settingsState.getState();
-    return v3support ?
-      Object.keys(this.specs).pop() as SpecVersions :
-      Object.keys(this.specs).at(-2) as SpecVersions;
+    return  Object.keys(this.specs).pop() as SpecVersions;
   }
 
   getSpec(version: SpecVersions) {
@@ -48,8 +45,7 @@ export class SpecificationService extends AbstractService {
   }
 
   private subscribeToSettings() {
-    settingsState.subscribe((state, prevState) => {
-      if (state.editor.v3support === prevState.editor.v3support) return;
+    settingsState.subscribe(() => {
       sessionStorage.removeItem(this.keySessionStorage);
     });
   }

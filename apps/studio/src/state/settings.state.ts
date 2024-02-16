@@ -1,11 +1,10 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type SettingsState = {
   editor: {
     autoSaving: boolean;
     savingDelay: number;
-    v3support: boolean;
   };
   governance: {
     show: {
@@ -25,7 +24,6 @@ export const settingsState = create(
       editor: {
         autoSaving: true,
         savingDelay: 625,
-        v3support: false,
       },
       governance: {
         show: {
