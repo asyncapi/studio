@@ -88,7 +88,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     // Toggle the required status of the property
     if (currentPath.required && currentPath.required.includes(propertyName)) {
       // Remove property name from required array
-      currentPath.required = currentPath.required.filter(name => name !== propertyName);
+      currentPath.required = currentPath.required.filter((name: string) => name !== propertyName);
       if (currentPath.required.length === 0) {
         delete currentPath.required; // Remove the required field if empty
       }
