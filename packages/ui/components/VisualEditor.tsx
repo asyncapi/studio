@@ -7,10 +7,11 @@ interface VisualEditorProps {
     onSchemaChange: (newSchema: string) => void;
 }
 
-interface SchemaObject {
+interface SchemaObjectInterface {
     type?: string;
     items?: any;
-    [key: string]: any;
+    properties?: { [key: string]: any };
+    required?: string[];
 }
 
 export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChange }) => {
@@ -19,9 +20,10 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     color: 'white',
     borderRadius: '3px',
     fontSize: '12px',
-    fontFamily: 'Inter, Helvetica'
+    fontFamily: 'Inter, sans-serif'
   };
-  const [schemaObject, setSchemaObject] = useState<SchemaObject>({});
+  
+  const [schemaObject, setSchemaObject] = useState<SchemaObjectInterface>({});
 
   useEffect(() => {
     try {
@@ -32,46 +34,56 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     }
   }, [schema]);
 
-  const handleSchemaChange = (path: string, newSchema: SchemaObject) => {
-    let updatedSchema = { ...schemaObject };
+const handleSchemaChange = (path, newSchemaPart) => {
+    let updatedSchema = JSON.parse(JSON.stringify(schemaObject)); // Deep clone for immutability
 
-    if (path) {
-      const pathParts = path.split('.');
-      let current = updatedSchema;
+    // Split the path, filtering out any empty segments to avoid issues with leading dots
+    const pathParts = path.split('.').filter(Boolean);
 
-      for (let i = 0; i < pathParts.length - 1; i++) {
-        current = current[pathParts[i]] || {};
-      }
+    // Initialize a variable to track the current position as we navigate the schema
+    let current = updatedSchema;
 
-      current[pathParts[pathParts.length - 1]] = newSchema;
-    } else {
-      updatedSchema = newSchema;
+    // Iterate over the path parts to navigate to the correct location in the schema
+    for (let i = 0; i < pathParts.length; i++) {
+        const part = pathParts[i];
+
+        // When we're not at the last part, navigate or initialize the path as needed
+        if (i < pathParts.length - 1) {
+            // If navigating into 'properties', ensure it exists
+            if (part === 'properties' && !current[part]) {
+                current[part] = {};
+            }
+            current = current[part];
+        } else {
+            // For the final part, update with the new schema part
+            // This assumes the last part of the path is always meant to be within 'properties'
+            if (!current.properties) current.properties = {};
+            current.properties[part] = newSchemaPart;
+        }
     }
 
+    // Update the state and trigger the change notification
     setSchemaObject(updatedSchema);
     onSchemaChange(JSON.stringify(updatedSchema, null, 2));
-    console.log(`Schema updated. Path: ${path}, New Schema:`, JSON.stringify(newSchema, null, 2));
-    console.log('Updated Schema Object:', JSON.stringify(updatedSchema, null, 2));
-  };
+};
 
-  const renderRootTypeSelector = () => {
-    return (
-      <div>
-        <select
-          value={schemaObject.type || ''}
-          onChange={(e) => handleSchemaChange('', { type: e.target.value, properties: {}, required: [] })}
-          style={selectStyle}
-        >
-          <option value="">Select type</option>
-          <option value="object">Object</option>
-          <option value="array">Array</option>
-          <option value="string">String</option>
-          <option value="number">Number</option>
-          <option value="boolean">Boolean</option>
-        </select>
-      </div>
-    );
-  };
+
+  const renderRootTypeSelector = () => (
+    <div>
+      <select
+        value={schemaObject.type || ''}
+        onChange={(e) => handleSchemaChange('', { type: e.target.value })}
+        style={selectStyle}
+      >
+        <option value="">Select root type</option>
+        <option value="object">Object</option>
+        <option value="array">Array</option>
+        <option value="string">String</option>
+        <option value="number">Number</option>
+        <option value="boolean">Boolean</option>
+      </select>
+    </div>
+  );
 
   const renderArrayItemTypeSelector = () => {
     if (schemaObject.type === 'array') {
@@ -80,7 +92,8 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
           <strong>Array Item Type:</strong>
           <select
             value={schemaObject.items?.type || ''}
-            onChange={(e) => handleSchemaChange('', { ...schemaObject, items: { type: e.target.value } })}
+            onChange={(e) => handleSchemaChange('items', { type: e.target.value })}
+            style={selectStyle}
           >
             <option value="">Select item type</option>
             <option value="string">String</option>
@@ -96,29 +109,17 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   return (
-    <div className="visual-editor  bg-extendedblue-gray900 text-defaultyellow-500 p-4" style={{background: '#0F172A',
-      color: '#CBD5E1', fontFamily: 'Inter, sans-serif'}}>
+    <div className="visual-editor" style={{background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
       {renderRootTypeSelector()}
       {renderArrayItemTypeSelector()}
 
-      {/* Render SchemaObject or PropertyControls based on root type */}
-      {schemaObject.type === 'object' && (
-        <SchemaObject
-          schema={schemaObject}
-          onSchemaChange={handleSchemaChange}
-          path=""
-          level={0}
-        />
-      )}
-
-      {schemaObject.type === 'array' && schemaObject.items?.type === 'object' && (
-        <SchemaObject
-          schema={schemaObject.items}
-          onSchemaChange={(newItemsSchema) => handleSchemaChange('', { ...schemaObject, items: newItemsSchema })}
-          path="items"
-          level={1}
-        />
-      )}
+      {/*  */}
+      <SchemaObject
+        schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
+        onSchemaChange={handleSchemaChange}
+        path={schemaObject.type === 'array' ? "items" : ""}
+        level={0}
+      />
     </div>
   );
 };

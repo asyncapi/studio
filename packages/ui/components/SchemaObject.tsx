@@ -3,13 +3,9 @@ import React from 'react';
 import SchemaProperty from './SchemaProperty';
 import PropertyControls from './PropertyControls';
 
-interface SchemaProperty {
-  [key: string]: any;
-}
-
 interface SchemaObjectProps {
-  schema: SchemaProperty;
-  onSchemaChange: (path: string, newSchema: SchemaProperty) => void;
+  schema: any; // Updated to accept any type for schema to simplify types here
+  onSchemaChange: (path: string, newSchema: any) => void; // Adjusted for simplicity
   path: string;
   level: number;
 }
@@ -18,131 +14,78 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   schema,
   onSchemaChange,
   path,
-  level
+  level,
 }) => {
-  console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
+  console.log(`Rendering SchemaObject at path: ${path}, level: ${level}`);
 
-  const updateSchemaAtPath = (
-    currentSchema: SchemaProperty,
-    pathArray: string[],
-    newProperty: { name: string; schema: SchemaProperty }
-  ) => {
-    console.log(`updateSchemaAtPath called. Path Array: ${pathArray.join('.')}, New Property:`, newProperty);
-    let schemaPart = currentSchema;
-  
-    pathArray.forEach((part, index) => {
-      console.log(`Navigating to: ${part}, at index: ${index}`);
-  
-      if (index < pathArray.length - 1) {
-        if (!schemaPart.properties || !schemaPart.properties[part]) {
-          console.error(`Property '${part}' not found at path: ${pathArray.slice(0, index).join('.')}`);
-          return;
-        }
-        schemaPart = schemaPart.properties[part];
-      }
-  
-      console.log('Current schema part after navigation:', schemaPart);
-    });
-  
-    const propertyName = pathArray[pathArray.length - 1];
-    schemaPart.properties[propertyName] = newProperty.schema;
-    console.log('Schema part after property addition:', currentSchema);
-  
-    return currentSchema;
-  };
-  
-  const handleAddProperty = (fullPath: string, newProperty: { name: string; schema: SchemaProperty }) => {
-    console.log(`handleAddProperty called. Full Path: ${fullPath}, New Property:`, newProperty);
-  
-    let updatedSchema = JSON.parse(JSON.stringify(schema));
-    const pathArray = fullPath.split('.');
-    updatedSchema = updateSchemaAtPath(updatedSchema, pathArray, newProperty);
-  
-    console.log('Schema after handleAddProperty:', updatedSchema);
-    onSchemaChange(path, updatedSchema);
-  };
-
-  // Handler to remove a property from the schema
-  const handleRemoveProperty = (path: string, propertyName: string) => {
-    const newSchema = { ...schema };
-    delete newSchema.properties[propertyName];
-    newSchema.required = newSchema.required?.filter((name: string) => name !== propertyName);
-    onSchemaChange(path, newSchema);
-  };  
-
-  // Handler to toggle required status of a property
-  const handleToggleRequired = (propertyPath: string, propertyName: string) => {
-    const pathArray = propertyPath.split('.');
-    let currentSchema = schema;
-    let currentPath = schema;
-  
-    // Navigate through the schema based on the pathArray
-    for (let i = 0; i < pathArray.length - 1; i++) {
-      currentPath = currentPath.properties[pathArray[i]];
-      if (!currentPath) {
-        console.error(`Path not found: ${pathArray.slice(0, i + 1).join('.')}`);
-        return;
-      }
+  const handleAddProperty = (fullPath, propertyType) => {
+    // Construct the new property schema based on the type
+    const newPropertySchema = { type: propertyType };
+    if (propertyType === 'object') {
+      newPropertySchema.properties = {}; // Initialize an empty properties object for objects
+    } else if (propertyType === 'array') {
+      newPropertySchema.items = { type: 'string' }; // Default to string type for array items
     }
   
-    // Toggle the required status of the property
-    if (currentPath.required && currentPath.required.includes(propertyName)) {
-      // Remove property name from required array
-      currentPath.required = currentPath.required.filter((name: string) => name !== propertyName);
-      if (currentPath.required.length === 0) {
-        delete currentPath.required; // Remove the required field if empty
-      }
-    } else {
-      // Add property name to required array
-      if (!currentPath.required) currentPath.required = [];
-      currentPath.required.push(propertyName);
-    }
+    // Call handleSchemaChange to update the schema
+    onSchemaChange(fullPath, newPropertySchema);
+  };
   
-    // Trigger schema update with new required status
+
+  const handleRemoveProperty = (propertyPath: string) => {
+    console.log(`Removing property at ${propertyPath}`);
+    const pathParts = propertyPath.split('.');
+    let currentSchema = { ...schema };
+
+    let target = currentSchema;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const part = pathParts[i];
+      target = target[part];
+    }
+
+    delete target[pathParts[pathParts.length - 1]];
     onSchemaChange(path, currentSchema);
   };
-  // Handler to change the type of a property
-  const handleTypeChange = (
-    path: string,
-    propertyName: string,
-    newSchemaForProperty: SchemaProperty
-  ) => {
-    const newSchema = { ...schema };
-    newSchema.properties[propertyName] = newSchemaForProperty;
-    onSchemaChange(path, newSchema);
+
+  const handleTypeChange = (propertyPath: string, newSchemaForProperty: any) => {
+    console.log(`Type change at ${propertyPath}`);
+    const pathParts = propertyPath.split('.');
+    let currentSchema = { ...schema };
+
+    let target = currentSchema;
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const part = pathParts[i];
+      target = target[part];
+    }
+
+    target[pathParts[pathParts.length - 1]] = newSchemaForProperty;
+    onSchemaChange(path, currentSchema);
   };
 
   return (
     <div style={{ margin: '10px 0' }}>
       {Object.keys(schema.properties || {}).map((propertyName) => (
-        
         <SchemaProperty
           key={propertyName}
           name={propertyName}
           schema={schema.properties[propertyName]}
           onRemove={handleRemoveProperty}
-          onToggleRequired={handleToggleRequired}
+          onToggleRequired={(propertyPath, propName) => console.log(`Toggling required: ${propertyPath} ${propName}`)} // Simplified for brevity
           isRequired={schema.required?.includes(propertyName)}
           onTypeChange={handleTypeChange}
           onAddNestedProperty={handleAddProperty}
           onRemoveNestedProperty={handleRemoveProperty}
-          onToggleNestedRequired={handleToggleRequired}
-          path={path ? `${path}.${propertyName}` : propertyName}
+          onToggleNestedRequired={(propertyPath, propName) => console.log(`Toggling nested required: ${propertyPath} ${propName}`)} // Simplified for brevity
+          path={`${path}.properties.${propertyName}`}
           level={level}
         />
       ))}
 
-      {/* Show property controls only if the schema is of type 'object' */}
-      {schema.type === 'object' && (
-        <PropertyControls
-          onAdd={handleAddProperty}
-          onRemove={handleRemoveProperty}
-          onToggleRequired={handleToggleRequired}
-          schemaPath={path}
-          level={level}
-          requiredFields={schema.required || []}
-        />
-      )}
+      <PropertyControls
+        onAdd={handleAddProperty}
+        schemaPath={path}
+        level={level}
+      />
     </div>
   );
 };

@@ -105,6 +105,9 @@ export const WithObject = () => (
             },
             "city": {
               "type": "string"
+            },
+            "pincode":{
+              "type": "number"
             }
           },
           "required": [

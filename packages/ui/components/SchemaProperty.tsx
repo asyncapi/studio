@@ -2,7 +2,7 @@
 import React from 'react';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
-import { RequiredIcon, NotRequiredIcon } from './icons'
+import { RequiredIcon, NotRequiredIcon } from './icons';
 
 interface SchemaPropertyProps {
     name: string;
@@ -32,36 +32,39 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   level 
 }) => {
   console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Schema:`, JSON.stringify(schema, null, 2));
+
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
     const updatedSchema = { ...schema, type: newType };
 
     if (newType === 'array') {
-      // Initialize as an array of strings if not already specified
       updatedSchema.items = schema.items || { type: 'string' };
     } else if (newType === 'object' && !updatedSchema.properties) {
-      // Initialize properties for new object type
       updatedSchema.properties = {};
     }
 
+    console.log(`Type change for ${name} at ${path} to ${newType}`);
     onTypeChange(path, name, updatedSchema);
   };
 
   const handleRemove = () => {
+    console.log(`Removing property ${name} at ${path}`);
     onRemove(path, name);
   };
 
   const handleToggleRequired = () => {
+    console.log(`Toggling required for ${name} at ${path}`);
     onToggleRequired(path, name);
   };
 
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
+      console.log(`Rendering items for array ${name} at ${path}`);
       return (
         <SchemaObject
           schema={schema.items}
-          onSchemaChange={(newItemsSchema) => onTypeChange(path, name, { ...schema, items: newItemsSchema })}
-          path={`${path}.${name}.items`}
+          onSchemaChange={(newItemsSchema) => onTypeChange(`${path}.items`, name, { ...schema, items: newItemsSchema })}
+          path={`${path}.items`}
           level={level + 1}
         />
       );
@@ -71,6 +74,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderNestedProperties = () => {
     if (schema.type === 'object') {
+      console.log(`Rendering nested properties for ${name} at ${path}`);
       return Object.keys(schema.properties || {}).map((nestedName) => (
         <SchemaProperty
           key={nestedName}
@@ -83,7 +87,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           onAddNestedProperty={onAddNestedProperty}
           onRemoveNestedProperty={onRemoveNestedProperty}
           onToggleNestedRequired={onToggleNestedRequired}
-          path={`${path}.${name}`}
+          path={`${path}.properties.${nestedName}`}
           level={level + 1}
         />
       ));
@@ -107,6 +111,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
             fontFamily: 'Inter, Helvetica'
           }}
         >
+          <option value="">Select type</option>
           <option value="string">String</option>
           <option value="number">Number</option>
           <option value="boolean">Boolean</option>
@@ -125,11 +130,10 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       {schema.type === 'object' && (
         <PropertyControls
           onAdd={onAddNestedProperty}
-          schemaPath={`${path}.${name}`}
+          schemaPath={`${path}`}
           level={level + 1}
         />
       )}
-
     </div>
   );
 };

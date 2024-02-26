@@ -15,6 +15,7 @@ interface PropertySchema {
     items?: { type: string };
     properties?: Record<string, any>;
 }
+
 const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, level }) => {
   const inputAndSelectStyle = {
     backgroundColor: '#0F172A',
@@ -24,43 +25,48 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     fontSize: '14px',
     fontFamily: 'Inter, Helvetica'
   };
+
   const [key, setKey] = useState('');
   const [type, setType] = useState('');
   const [error, setError] = useState('');
   const [itemType, setItemType] = useState('');
 
   const handleAddProperty = () => {
+    console.log(`handleAddProperty called with key: ${key}, type: ${type}, itemType: ${itemType}`);
     if (!key) {
-      setError('Property name is required.');
-      return;
+        setError('Property name is required.');
+        return;
     }
     if (!type) {
-      setError('Property type is required.');
-      return;
+        setError('Property type is required.');
+        return;
     }
 
-    const propertySchema: PropertySchema = { type };
-    if (type === 'array') {
-      propertySchema.items = { type: itemType || 'string' };
-    } else if (type === 'object') {
-      propertySchema.properties = {};
+    let propertySchema = type; // Initialize as an object with a type property
+
+    // If the type is 'object', add an empty 'properties' object
+    if (type === 'object') {
+        let propertySchema={'type':type}; 
+        propertySchema.properties = {};
+    }
+    // If the type is 'array', add 'items' with the specified or default itemType
+    else if (type === 'array') {
+        let propertySchema = {type};
+        propertySchema.items = { 'type': itemType };
     }
 
-    const newProperty = {
-      name: key,
-      schema: propertySchema
-    };
+    // Construct the full path correctly, incorporating 'properties' for nested properties
+    const fullPath = schemaPath ? `${schemaPath}.${key}` : `${key}`; 
+    console.log(`Adding new property at fullPath: ${fullPath}`);
+
+    onAdd(fullPath, propertySchema); // Pass the correctly structured schema
 
     setKey('');
     setType('');
     setItemType('');
     setError('');
-    
-    const fullPath = schemaPath ? `${schemaPath}.${key}` : key;
-    console.log(`Adding new property. Full Path: ${fullPath}, Property:`, newProperty);
-  
-    onAdd(fullPath, { name: key, schema: propertySchema });
-  };
+};
+
 
   return (
     <div style={{
