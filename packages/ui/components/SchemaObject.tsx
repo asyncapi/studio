@@ -78,12 +78,14 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
           onToggleNestedRequired={(propertyPath, propName) => console.log(`Toggling nested required: ${propertyPath} ${propName}`)} // Simplified for brevity
           path={`${path}.properties.${propertyName}`}
           level={level}
+          
         />
       ))}
 
       <PropertyControls
         onAdd={handleAddProperty}
         schemaPath={path}
+        
         level={level}
       />
     </div>
