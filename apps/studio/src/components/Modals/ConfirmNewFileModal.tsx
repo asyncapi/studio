@@ -19,7 +19,7 @@ export const ConfirmNewFileModal = create(() => {
       <div className="flex content-center justify-center flex-col">
         <div className="w-full  overflow-auto">
           <div>
-                        Do you want to create New File?
+                        Would you like to create a new file?
             <p>
               <b className='text-pink-500'>All the existing changes will be lost and overwritten.</b>
             </p>
