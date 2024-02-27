@@ -252,7 +252,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   className = '',
 }) => {
   const [hash, setHash] = useState(window.location.hash);
-  const [loading,setloading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const { navigationSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
