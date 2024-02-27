@@ -12,6 +12,19 @@ import { filesState } from '../../../state';
 
 import templates from './template-parameters.json';
 
+const unsupportedGenerators = [
+  '@asyncapi/dotnet-nats-template',
+  '@asyncapi/ts-nats-template',
+  '@asyncapi/python-paho-template',
+  '@asyncapi/nodejs-ws-template',
+  '@asyncapi/java-spring-cloud-stream-template',
+  '@asyncapi/go-watermill-template',
+  '@asyncapi/java-spring-template',
+  '@asyncapi/nodejs-template',
+  '@asyncapi/java-template',
+  '@asyncapi/php-template'
+];
+
 export const GeneratorModal = create(() => {
   const modal = useModal();
   const [template, setTemplate] = useState('');
@@ -76,6 +89,8 @@ export const GeneratorModal = create(() => {
   return (
     <ConfirmModal
       title="Generate code/docs based on your AsyncAPI Document"
+      warning="Not all generators currently offer support for AsyncAPI V3."
+      link='https://github.com/asyncapi/studio/issues/980'
       confirmText="Generate"
       confirmDisabled={confirmDisabled}
       onSubmit={onSubmit}
@@ -99,11 +114,21 @@ export const GeneratorModal = create(() => {
             value={template}
           >
             <option value="">Please Select</option>
-            {Object.keys(templates).map(templateItem => (
-              <option key={templateItem} value={templateItem}>
-                {(templates as Record<string, any>)[String(templateItem)]?.title}
-              </option>
-            ))}
+            {Object.keys(templates).map(templateItem => {
+              if (!unsupportedGenerators.includes(templateItem)) {
+                return (
+                  <option key={templateItem} value={templateItem}>
+                    {(templates as Record<string, any>)[String(templateItem)]?.title}
+                  </option>
+                );
+              } else {
+                return (
+                  <option key={templateItem} value={templateItem} disabled>
+                    {(templates as Record<string, any>)[String(templateItem)]?.title}
+                  </option>
+                );
+              }
+            })}
           </select>
         </div>
         {template && (
@@ -154,7 +179,7 @@ export const GeneratorModal = create(() => {
             </div>
             {problem.validationErrors && 
               problem.validationErrors.length &&
-              problem.validationErrors.filter(error => error.message).length 
+              problem.validationErrors.filter(error => error.message).length
               ? (
                 <ul className='text-xs mt-2 list-disc pl-7'>
                   {problem.validationErrors.map(error => (

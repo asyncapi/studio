@@ -7,11 +7,13 @@ import type { ReactNode, FunctionComponent, PropsWithChildren } from 'react';
 interface ConfirmModalProps {
   title: ReactNode;
   description?: ReactNode;
+  warning?: ReactNode;
+  link?: string;
   confirmText?: ReactNode;
   cancelText?: ReactNode;
   confirmDisabled?: boolean;
   cancelDisabled?: boolean;
-  containerClassName? : string;
+  containerClassName?: string;
   closeAfterSumbit?: boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
@@ -20,6 +22,8 @@ interface ConfirmModalProps {
 export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps>> = ({
   title,
   description,
+  warning,
+  link,
   confirmText = 'Save',
   cancelText = 'Cancel',
   confirmDisabled = true,
@@ -103,6 +107,17 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
                     {description && (
                       <p className="text-gray-500 text-xs">{description}</p>
                     )}
+                    {warning && (
+                      <p className="text-red-500 text-xs">{warning} {' '}
+                        <a
+                          href={link}
+                          className='hover:underline'
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          [TRACKING_LINK]
+                        </a></p>
+                    )}
                     <div className="my-8 space-y-4">{children}</div>
                   </div>
                 </div>
@@ -110,9 +125,8 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
                   {onSubmit && (
                     <button
                       type="button"
-                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2 sm:text-sm ${
-                        confirmDisabled ? 'opacity-10' : 'opacity-100'
-                      }`}
+                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2 sm:text-sm ${confirmDisabled ? 'opacity-10' : 'opacity-100'
+                        }`}
                       disabled={confirmDisabled}
                       onClick={handleOnSubmit}
                     >
