@@ -22,7 +22,7 @@
     "./LICENSE"
   ],
   "dependencies": {
-    "@asyncapi/avro-schema-parser": "^3.0.14",
+    "@asyncapi/avro-schema-parser": "^3.0.15",
     "@asyncapi/converter": "^1.4.12",
     "@asyncapi/openapi-schema-parser": "^3.0.15",
     "@asyncapi/parser": "^3.0.7",
@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@asyncapi/dotnet-nats-template": "^0.12.1",
-    "@asyncapi/go-watermill-template": "^0.2.66",
+    "@asyncapi/go-watermill-template": "^0.2.67",
     "@asyncapi/html-template": "^2.1.7",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^1.5.1",
