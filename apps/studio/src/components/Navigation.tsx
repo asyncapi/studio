@@ -271,8 +271,8 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
     };
   }, []);
   
-  useEffect(()=>{
-    if (!document){
+  useEffect(() => {
+    if (!document) {
       setloading(true);
       const timer = setTimeout(() => {
         setloading(false);
@@ -283,11 +283,11 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center" style={{ backgroundColor: "black" }}>
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center" style={{ backgroundColor: 'black' }}>
         {loading ?(
           <div className="rotating-wheel"></div>
         ) : (
-          <p style={{ color: "white" }}>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
+          <p style={{ color: 'white' }}>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
         )
         }
       </div>
