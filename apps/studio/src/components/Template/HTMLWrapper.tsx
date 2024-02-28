@@ -12,7 +12,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   const [parsedSpec, setParsedSpec] = useState<AsyncAPIDocumentInterface | null>(null);
   const { navigationSvc } = useServices();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const[loading, setloading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const autoRendering = useSettingsState(state => state.templates.autoRendering);
   const templateRerender = useOtherState(state => state.templateRerender);
@@ -34,8 +34,8 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
     }
   }, [templateRerender]); // eslint-disable-line
 
-  useEffect(()=>{
-    if (!document){
+  useEffect(() => {
+    if (!document) {
       setloading(true);
       const timer = setTimeout(() => {
         setloading(false);
