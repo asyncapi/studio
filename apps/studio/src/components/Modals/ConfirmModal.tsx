@@ -108,15 +108,14 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
                       <p className="text-gray-500 text-xs">{description}</p>
                     )}
                     {warning && (
-                      <p className="text-red-500 text-xs">{warning} {' '}
-                        <a
-                          href={link}
-                          className='hover:underline'
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          [TRACKING_LINK]
-                        </a></p>
+                      <a
+                        href={link}
+                        className='text-red-500 text-xs underline'
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {warning}
+                      </a>
                     )}
                     <div className="my-8 space-y-4">{children}</div>
                   </div>
