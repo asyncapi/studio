@@ -16,9 +16,21 @@ export const GeneratorModal = create(() => {
   const modal = useModal();
   const [template, setTemplate] = useState('');
   const { serverAPISvc } = useServices();
+  const [warning, setwarning] = useState(false);
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
+  const generatable = ['@asyncapi/dotnet-nats-template',
+  '@asyncapi/go-watermill-template',
+  '@asyncapi/html-template',
+  '@asyncapi/java-spring-cloud-stream-template',
+  '@asyncapi/java-spring-template',
+  '@asyncapi/java-template',
+  '@asyncapi/markdown-template',
+  '@asyncapi/nodejs-template',
+  '@asyncapi/nodejs-ws-template',
+  '@asyncapi/python-paho-template',
+  '@asyncapi/ts-nats-template']
 
   useEffect(() => {
     const required = template ? (templates as Record<string, any>)[String(template)].schema.required : [];
@@ -82,6 +94,9 @@ export const GeneratorModal = create(() => {
       onCancel={onCancel}
       closeAfterSumbit={false}
     >
+      {warning && (
+        <h3 className='block text-bold text-red-400'>Sorry! This project is under development</h3> 
+      )}
       <div>
         <div className="flex flex-row content-center justify-between text-sm">
           <label
@@ -94,7 +109,12 @@ export const GeneratorModal = create(() => {
             name="generate"
             className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/2 block sm:text-sm rounded-md py-1 text-gray-700 border-pink-300 border-2"
             onChange={e => {
-              setTemplate(e.target.value);
+              if (!generatable.includes(e.target.value)){
+                setTemplate(e.target.value);
+              }else{
+                setTemplate(e.target.value);
+                setwarning(true);
+              }
             }}
             value={template}
           >
