@@ -88,18 +88,26 @@ export const GeneratorModal = create(() => {
     }, 200);
   };
 
-  const renderTemplateOption = (templateItem: string, disable: boolean = false) => {
-    return (
-      <option key={templateItem} value={templateItem} disabled={disable}>
-        {(templates as Record<string, any>)[String(templateItem)]?.title}
-      </option>
-    );
+  const renderOptions = () => {
+    return Object.keys(templates).map(templateItem => {
+      const isSupported = actualVersion === '3.0.0' && !unsupportedGenerators.includes(templateItem);
+      const disableOption = actualVersion === '3.0.0' ? !isSupported : false;
+      return (
+        <option
+          key={templateItem}
+          value={templateItem}
+          disabled={disableOption}
+        >
+          {(templates as Record<string, any>)[String(templateItem)]?.title}
+        </option>
+      );
+    });
   };
 
   return (
     <ConfirmModal
       title="Generate code/docs based on your AsyncAPI Document"
-      warning={actualVersion === '3.0.0' && "Not all generators currently offer support for AsyncAPI V3."}
+      warning={actualVersion === '3.0.0' && 'Not all generators currently offer support for AsyncAPI V3.'}
       link='https://github.com/asyncapi/studio/issues/980'
       confirmText="Generate"
       confirmDisabled={confirmDisabled}
@@ -124,16 +132,7 @@ export const GeneratorModal = create(() => {
             value={template}
           >
             <option value="">Please Select</option>
-            {Object.keys(templates).map(templateItem => {
-              if (actualVersion === '3.0.0') {
-                if (!unsupportedGenerators.includes(templateItem)) {
-                  return renderTemplateOption(templateItem); // Render the option without disabling it if it's supported
-                }
-                else return renderTemplateOption(templateItem, true); // Disable it if it's unsupported
-              } else {
-                return renderTemplateOption(templateItem); // If it's not version 3.0.0 render the option.
-              }
-            })}
+            {renderOptions()}
           </select>
         </div>
         {template && (
