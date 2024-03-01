@@ -1,5 +1,7 @@
+// CodeEditor.tsx
 import React, { useState, useEffect } from 'react';
-import debounce from 'lodash/debounce';
+import _ from 'lodash'; // Import lodash for utility functions
+import debounce from 'lodash/debounce'; // Import debounce specifically from lodash
 
 interface CodeEditorProps {
   schema: string;
@@ -12,23 +14,24 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
 
   useEffect(() => {
     setValue(schema); // Update local state when schema prop updates
+    setError(''); // Clear any previous error messages when schema updates
   }, [schema]);
 
   // Debounced handleChange to optimize performance
   const handleChange = debounce((newValue: string) => {
     try {
       // Attempt to parse the new JSON value to validate it
-      JSON.parse(newValue);
+      const parsed = JSON.parse(newValue);
       setError(''); // Clear any existing error
       onSchemaChange(newValue); // Propagate valid schema changes
       console.log('Schema valid and updated from Code Editor:', newValue);
     } catch (e) {
-      if (e instanceof Error) {
+      if (_.isError(e)) {
         setError(`Invalid JSON: ${e.message}`); // Set error state to the message of the exception
         console.error('Error updating schema from Code Editor:', e.message);
       }
     }
-  }, 250);
+  }, 250); // Delay in ms
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;

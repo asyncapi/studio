@@ -1,6 +1,7 @@
-// VisualEditor.tsx 
+// VisualEditor.tsx
 import React, { useState, useEffect } from 'react';
 import SchemaObject from './SchemaObject';
+import _ from 'lodash'; // Import lodash
 
 interface VisualEditorProps {
     schema: string;
@@ -26,45 +27,20 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   const [schemaObject, setSchemaObject] = useState<SchemaObjectInterface>({});
 
   useEffect(() => {
-    try {
-      const parsedSchema = JSON.parse(schema);
-      setSchemaObject(parsedSchema);
-    } catch (e) {
-      console.error('Invalid JSON schema:', e);
+    const safeParse = _.attempt(JSON.parse, schema);
+    if (!_.isError(safeParse)) {
+      console.log('Successfully parsed schema.');
+      setSchemaObject(safeParse);
+    } else {
+      console.error('Invalid JSON schema:', safeParse.message);
     }
   }, [schema]);
 
-const handleSchemaChange = (path, newSchemaPart) => {
-    let updatedSchema = JSON.parse(JSON.stringify(schemaObject)); // Deep clone for immutability
-
-    // Split the path, filtering out any empty segments to avoid issues with leading dots
-    const pathParts = path.split('.').filter(Boolean);
-
-    // Initialize a variable to track the current position as we navigate the schema
-    let current = updatedSchema;
-
-    // Iterate over the path parts to navigate to the correct location in the schema
-    for (let i = 0; i < pathParts.length; i++) {
-        const part = pathParts[i];
-
-        // When we're not at the last part, navigate or initialize the path as needed
-        if (i < pathParts.length - 1) {
-            // If navigating into 'properties', ensure it exists
-            if (part === 'properties' && !current[part]) {
-                current[part] = {};
-            }
-            current = current[part];
-        } else {
-            // For the final part, update with the new schema part
-            // This assumes the last part of the path is always meant to be within 'properties'
-            if (!current.properties) current.properties = {};
-            current.properties[part] = newSchemaPart;
-        }
-    }
-
-    // Update the state and trigger the change notification
-    setSchemaObject(updatedSchema);
-    onSchemaChange(JSON.stringify(updatedSchema, null, 2));
+// Inside VisualEditor.tsx
+const handleSchemaChange = (newSchema) => {
+    console.log('Schema updated:', newSchema);
+    setSchemaObject(JSON.parse(newSchema)); // Assuming the new schema is provided as a string
+    onSchemaChange(newSchema); // Assuming there's further propagation needed, e.g., to a parent component or for persistence
 };
 
 

@@ -266,3 +266,59 @@ export const two_property_having_same_name = () => (
     , null, 2)}
   />
 );
+
+
+export const nestead_array = () => (
+  <Template
+    initialSchema={JSON.stringify(
+      {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "integer"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "pincode": {
+                "type": "number"
+              },
+              "contact_number": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "mobile":{
+                      "type": "stirng"
+                    },
+                    "address": {
+                      "type": "object",
+                      "properties":{
+                        "city":{
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "street",
+              "city"
+            ]
+          }
+        }
+      }, null, 2)}
+  />
+);
+

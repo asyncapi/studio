@@ -1,5 +1,6 @@
 // SchemaProperty.tsx
 import React from 'react';
+import _ from 'lodash'; // Import lodash
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon } from './icons';
@@ -31,19 +32,20 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   path, 
   level 
 }) => {
-  console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Schema:`, JSON.stringify(schema, null, 2));
+  console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
-    const updatedSchema = { ...schema, type: newType };
+    let updatedSchema = _.cloneDeep(schema); // Use lodash for deep cloning
+    updatedSchema.type = newType;
 
     if (newType === 'array') {
-      updatedSchema.items = schema.items || { type: 'string' };
-    } else if (newType === 'object' && !updatedSchema.properties) {
-      updatedSchema.properties = {};
+      updatedSchema.items = updatedSchema.items || { type: 'string' }; // Default to string type for array items
+    } else if (newType === 'object') {
+      updatedSchema.properties = updatedSchema.properties || {};
     }
 
-    console.log(`Type change for ${name} at ${path} to ${newType}`);
+    console.log(`Type changed for ${name} at ${path} to ${newType}`);
     onTypeChange(path, name, updatedSchema);
   };
 
@@ -59,11 +61,15 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
-      console.log(`Rendering items for array ${name} at ${path}`);
+      // No need to call onTypeChange here directly if you're just rendering. 
+      // Any changes to items should be handled by the onSchemaChange in the SchemaObject component itself.
       return (
         <SchemaObject
           schema={schema.items}
-          onSchemaChange={(newItemsSchema) => onTypeChange(`${path}.items`, name, { ...schema, items: newItemsSchema })}
+          onSchemaChange={(path, newItemsSchema) => {
+            const updatedSchema = { ...schema, items: newItemsSchema };
+            onTypeChange(path, name, updatedSchema);
+          }}
           path={`${path}.items`}
           level={level + 1}
         />
@@ -71,18 +77,17 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     }
     return null;
   };
-
+  
   const renderNestedProperties = () => {
     if (schema.type === 'object') {
-      console.log(`Rendering nested properties for ${name} at ${path}`);
-      return Object.keys(schema.properties || {}).map((nestedName) => (
+      return _.map(schema.properties, (nestedSchema, nestedName) => (
         <SchemaProperty
           key={nestedName}
           name={nestedName}
-          schema={schema.properties[nestedName]}
+          schema={nestedSchema}
           onRemove={onRemoveNestedProperty}
           onToggleRequired={onToggleNestedRequired}
-          isRequired={(schema.required || []).includes(nestedName)}
+          isRequired={_.includes(schema.required, nestedName)}
           onTypeChange={onTypeChange}
           onAddNestedProperty={onAddNestedProperty}
           onRemoveNestedProperty={onRemoveNestedProperty}
@@ -125,8 +130,6 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       </div>
       {renderNestedProperties()}
       {renderArrayItemsProperties()}
-
-      {/* Add PropertyControls for nested objects */}
       {schema.type === 'object' && (
         <PropertyControls
           onAdd={onAddNestedProperty}
