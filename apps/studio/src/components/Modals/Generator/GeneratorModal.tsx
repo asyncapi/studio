@@ -25,6 +25,22 @@ const unsupportedGenerators = [
   '@asyncapi/php-template'
 ];
 
+const renderOptions = (actualVersion: string) => {
+  return Object.keys(templates).map(templateItem => {
+    const isSupported = actualVersion === '3.0.0' && !unsupportedGenerators.includes(templateItem);
+    const disableOption = actualVersion === '3.0.0' ? !isSupported : false;
+    return (
+      <option
+        key={templateItem}
+        value={templateItem}
+        disabled={disableOption}
+      >
+        {(templates as Record<string, any>)[String(templateItem)]?.title}
+      </option>
+    );
+  });
+};
+
 export const GeneratorModal = create(() => {
   const modal = useModal();
   const [template, setTemplate] = useState('');
@@ -33,7 +49,7 @@ export const GeneratorModal = create(() => {
   const [confirmDisabled, setConfirmDisabled] = useState(true);
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
-  const actualVersion = document?.version();
+  const actualVersion = document?.version() || '';
 
   useEffect(() => {
     const required = template ? (templates as Record<string, any>)[String(template)].schema.required : [];
@@ -88,22 +104,6 @@ export const GeneratorModal = create(() => {
     }, 200);
   };
 
-  const renderOptions = () => {
-    return Object.keys(templates).map(templateItem => {
-      const isSupported = actualVersion === '3.0.0' && !unsupportedGenerators.includes(templateItem);
-      const disableOption = actualVersion === '3.0.0' ? !isSupported : false;
-      return (
-        <option
-          key={templateItem}
-          value={templateItem}
-          disabled={disableOption}
-        >
-          {(templates as Record<string, any>)[String(templateItem)]?.title}
-        </option>
-      );
-    });
-  };
-
   return (
     <ConfirmModal
       title="Generate code/docs based on your AsyncAPI Document"
@@ -132,7 +132,7 @@ export const GeneratorModal = create(() => {
             value={template}
           >
             <option value="">Please Select</option>
-            {renderOptions()}
+            {renderOptions(actualVersion)}
           </select>
         </div>
         {template && (
