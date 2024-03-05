@@ -78,11 +78,11 @@ jobs:
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Get all changed files
         id: changed_files_all
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Get files that should be changed
         id: changed_files_only
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41
         with:
           files: |
             ${{ fromJSON(steps.lint_title_adr.outputs.result).expectedFileMatch }}
