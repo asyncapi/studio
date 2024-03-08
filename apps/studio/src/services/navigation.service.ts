@@ -28,9 +28,18 @@ export class NavigationService extends AbstractService {
     hash: string,
   ) {
     try {
-      const range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
+      const doc = this.svcs.editorSvc;
+      const docType = doc.value.startsWith('asyncapi') ? 'yaml' : 'json';
+
+      let range;
+      if (docType === 'yaml') {
+        range = this.svcs.parserSvc.getRangeForYamlPath('asyncapi', jsonPointer);
+      } else {
+        range = this.svcs.parserSvc.getRangeForJsonPath('asyncapi', jsonPointer);
+      }
+      
       if (range) {
-        await this.scrollToEditorLine(range.start.line + 1);
+        await this.scrollToEditorLine(range.start.line+1);
       }
 
       await this.scrollToHash(hash);

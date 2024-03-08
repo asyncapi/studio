@@ -13,6 +13,8 @@ import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { DocumentDiagnostics } from '../state/documents.state';
 import { SchemaParser } from '@asyncapi/parser';
 
+import { getLocationForJsonPath, parseWithPointers } from '@stoplight/yaml';
+
 export class ParserService extends AbstractService {
   private parser!: Parser;
 
@@ -71,14 +73,38 @@ export class ParserService extends AbstractService {
   getRangeForJsonPath(uri: string, jsonPath: string | Array<string | number>) {
     try {
       const { documents } = documentsState.getState();
+
       const extras = documents[String(uri)]?.extras;
+
       if (extras) {
         jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
         if (jsonPath[0] === '') jsonPath.shift();
-        return extras.document.getRangeForJsonPath(jsonPath, true);
+
+        return extras.document.getRangeForJsonPath(jsonPath);
       }
-    } catch (err: any) {
-      return;
+    } catch (err) {
+        console.error(err);
+    }
+  }
+
+  getRangeForYamlPath(uri: string, jsonPath: string | Array<string | number>) {
+    try {
+      const { documents } = documentsState.getState();
+
+      const extras = documents[String(uri)]?.extras;
+
+      if (extras) {
+        jsonPath = Array.isArray(jsonPath) ? jsonPath : jsonPath.split('/').map(untilde);
+        if (jsonPath[0] === '') jsonPath.shift();
+        const yamlDoc = parseWithPointers(this.svcs.editorSvc.value);
+
+        const location = getLocationForJsonPath(yamlDoc, jsonPath, true);
+        const range = location?.range;
+
+        return range;
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 
