@@ -1,7 +1,7 @@
 // VisualEditor.tsx
 import React, { useState, useEffect } from 'react';
 import SchemaObject from './SchemaObject';
-import _ from 'lodash'; // Import lodash
+import _ from 'lodash';
 
 interface VisualEditorProps {
     schema: string;
@@ -36,11 +36,10 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     }
   }, [schema]);
 
-// Inside VisualEditor.tsx
 const handleSchemaChange = (newSchema) => {
     console.log('Schema updated:', newSchema);
-    setSchemaObject(JSON.parse(newSchema)); // Assuming the new schema is provided as a string
-    onSchemaChange(newSchema); // Assuming there's further propagation needed, e.g., to a parent component or for persistence
+    setSchemaObject(JSON.parse(newSchema));
+    onSchemaChange(newSchema);
 };
 
 
@@ -89,7 +88,6 @@ const handleSchemaChange = (newSchema) => {
       {renderRootTypeSelector()}
       {renderArrayItemTypeSelector()}
 
-      {/*  */}
       <SchemaObject
         schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
         onSchemaChange={handleSchemaChange}

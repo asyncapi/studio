@@ -23,8 +23,6 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   const [error, setError] = useState('');
   const [itemType, setItemType] = useState('');
 
-// Inside PropertyControls.tsx
-// Assuming this occurs in PropertyControls.tsx or similar context
 const handleAddProperty = () => {
   if (_.isEmpty(key) || _.isEmpty(type)) {
       setError("Both property name and type are required.");
@@ -33,9 +31,7 @@ const handleAddProperty = () => {
 
   let fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
 
-  // Example adjustment for a path involving an array, targeting the first item
-  // This is a simplified example; you'll need to adapt it based on your actual schema structure and requirements
-  fullPath = fullPath.replace('.items.properties', '.items[0].properties');
+  // fullPath = fullPath.replace('.items.properties', '.items[0].properties');
   console.log("Full Full Path :)", fullPath);
   console.log(`Adding new property at: ${fullPath}`);
   onAdd(fullPath, { type, ...(type === 'object' && { properties: {} }), ...(type === 'array' && { items: { type: itemType || 'string' } }) });

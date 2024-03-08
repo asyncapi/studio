@@ -1,7 +1,7 @@
 // CodeEditor.tsx
 import React, { useState, useEffect } from 'react';
-import _ from 'lodash'; // Import lodash for utility functions
-import debounce from 'lodash/debounce'; // Import debounce specifically from lodash
+import _ from 'lodash';
+import debounce from 'lodash/debounce';
 
 interface CodeEditorProps {
   schema: string;
@@ -13,30 +13,28 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    setValue(schema); // Update local state when schema prop updates
-    setError(''); // Clear any previous error messages when schema updates
+    setValue(schema);
+    setError('');
   }, [schema]);
 
-  // Debounced handleChange to optimize performance
   const handleChange = debounce((newValue: string) => {
     try {
-      // Attempt to parse the new JSON value to validate it
       const parsed = JSON.parse(newValue);
-      setError(''); // Clear any existing error
-      onSchemaChange(newValue); // Propagate valid schema changes
+      setError('');
+      onSchemaChange(newValue);
       console.log('Schema valid and updated from Code Editor:', newValue);
     } catch (e) {
       if (_.isError(e)) {
-        setError(`Invalid JSON: ${e.message}`); // Set error state to the message of the exception
+        setError(`Invalid JSON: ${e.message}`);
         console.error('Error updating schema from Code Editor:', e.message);
       }
     }
-  }, 250); // Delay in ms
+  }, 250);
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
-    setValue(newValue); // Update local state immediately for user feedback
-    handleChange(newValue); // Debounced call to handle actual schema validation and update
+    setValue(newValue);
+    handleChange(newValue);
   };
 
   return (
@@ -46,7 +44,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
       <textarea
         value={value}
         onChange={handleTextAreaChange}
-        style={{ width: '100%', height: '400px' }} // Adjusted for better usability
+        style={{ width: '100%', height: '400px' }}
       />
     </div>
   );

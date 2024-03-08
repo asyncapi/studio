@@ -152,31 +152,25 @@ export const WithArray_obj_and_obj = () => (
     initialSchema={JSON.stringify({
       "type": "object",
       "properties": {
-        "books": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "author": {
-                "type": "string"
+          "books": {
+              "type": "array",
+              "items": {
+                  "type": "object",
+                  "properties": {
+                      "title": {"type": "string"},
+                      "author": {"type": "string"}
+                  },
+                  "required": ["title"]
               }
-            },
-  
-            "required": [ "title"]
-          }
-        },
-        "list": {
+          },
+          "list": {
               "type": "object",
               "properties": {
-                  "hii": {
-                    "type": "string"
-                  }
+                  "hii": {"type": "string"}
               }
           }
-      }
+      },
+      "required": ["books", "list"]
     }, null, 2)}
   />
 );

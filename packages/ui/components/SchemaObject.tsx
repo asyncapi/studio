@@ -1,12 +1,12 @@
 // SchemaObject.tsx
 import React from 'react';
-import _ from 'lodash'; // Import lodash
+import _ from 'lodash';
 import SchemaProperty from './SchemaProperty';
 import PropertyControls from './PropertyControls';
 
 interface SchemaObjectProps {
-  schema: any; // Accept any type for schema to simplify types here
-  onSchemaChange: (path: string, newSchema: any) => void; // Adjusted for simplicity
+  schema: any;
+  onSchemaChange: (newSchema: any) => void;
   path: string;
   level: number;
 }
@@ -20,22 +20,21 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
   const handleAddProperty = (fullPath, propertySchema) => {
-    let updatedSchema = _.cloneDeep(schema); // Deep clone for immutability
+    let updatedSchema = _.cloneDeep(schema); // Deep clone
 
-    // Directly using fullPath to update the schema
-    // Ensure fullPath does not start with a '.' which could lead to an incorrect root key
+
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
     console.log("Normalised path",normalizedPath);
     _.set(updatedSchema, normalizedPath, propertySchema);
 
     console.log(`Property added at ${normalizedPath}`, updatedSchema);
 
-    onSchemaChange(JSON.stringify(updatedSchema)); // Update the state with the new schema
+    onSchemaChange(JSON.stringify(updatedSchema));
 };
 
   const handleRemoveProperty = (propertyPath) => {
-    let currentSchema = _.cloneDeep(schema); // Deep clone for immutability
-    _.unset(currentSchema, propertyPath); // Use lodash to remove the property
+    let currentSchema = _.cloneDeep(schema);
+    _.unset(currentSchema, propertyPath);
     console.log(`Removed property at ${propertyPath}`);
     onSchemaChange(path, currentSchema);
   };
@@ -43,8 +42,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   const handleTypeChange = (propertyPath, newSchema) => {
     console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newSchema}`);
     if (path.includes(".items") && newSchema === "object") {
-      // This might be an indication that we're dealing with an array of objects.
-      // Add your logic here to decide whether to proceed with the type change.
+      //
       return;
     }
     let currentSchema = _.cloneDeep(schema); // Deep clone for immutability

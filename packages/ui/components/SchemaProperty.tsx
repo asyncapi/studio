@@ -1,6 +1,6 @@
 // SchemaProperty.tsx
 import React from 'react';
-import _ from 'lodash'; // Import lodash
+import _ from 'lodash';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon } from './icons';
@@ -36,11 +36,11 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
-    let updatedSchema = _.cloneDeep(schema); // Use lodash for deep cloning
+    let updatedSchema = _.cloneDeep(schema);
     updatedSchema.type = newType;
 
     if (newType === 'array') {
-      updatedSchema.items = updatedSchema.items || { type: 'string' }; // Default to string type for array items
+      updatedSchema.items = updatedSchema.items || { type: 'string' };
     } else if (newType === 'object') {
       updatedSchema.properties = updatedSchema.properties || {};
     }
@@ -61,8 +61,6 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
-      // No need to call onTypeChange here directly if you're just rendering. 
-      // Any changes to items should be handled by the onSchemaChange in the SchemaObject component itself.
       return (
         <SchemaObject
           schema={schema.items}
