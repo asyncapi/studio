@@ -12,7 +12,6 @@ import { filesState, documentsState, settingsState } from '../state';
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser/cjs';
 import type { DocumentDiagnostics } from '../state/documents.state';
 import { SchemaParser } from '@asyncapi/parser';
-
 import { getLocationForJsonPath, parseWithPointers } from '@stoplight/yaml';
 
 export class ParserService extends AbstractService {
