@@ -31,7 +31,6 @@ export const CodeMirror = (props: ICodeMirrorProps) => {
   useEffect(() => {
     let currentValue;
     if (window) {
-      console.log('Getting asyncapi from local storage...');
       currentValue = localStorage.getItem('document') || value;
       onChange(currentValue);
     }
