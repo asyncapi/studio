@@ -82,7 +82,7 @@ export class ParserService extends AbstractService {
         return extras.document.getRangeForJsonPath(jsonPath);
       }
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   }
 
@@ -98,9 +98,7 @@ export class ParserService extends AbstractService {
         const yamlDoc = parseWithPointers(this.svcs.editorSvc.value);
 
         const location = getLocationForJsonPath(yamlDoc, jsonPath, true);
-        const range = location?.range || { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } };
-
-        return range;
+        return location?.range || { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } };
       }
     } catch (err) {
       console.error(err);
