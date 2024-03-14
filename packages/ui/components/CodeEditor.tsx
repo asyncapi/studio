@@ -42,7 +42,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
       <textarea
         value={value}
         onChange={handleTextAreaChange}
-        style={{ width: '45vw', minWidth:'550px', height: '400px' }}
+        style={{ width: '45vw', minWidth: '550px', height: '400px' }}
       />
     </div>
   );

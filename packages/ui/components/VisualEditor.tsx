@@ -84,14 +84,14 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   return (
-    <div className="visual-editor" style={{ width: '45vw', minWidth:'550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
+    <div className="visual-editor" style={{ width: '45vw', minWidth: '550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
       {renderRootTypeSelector()}
       {renderArrayItemTypeSelector()}
 
       <SchemaObject
         schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
         onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
-        path={schemaObject.type === 'array' ? "items" : ""}
+        path={schemaObject.type === 'array' ? 'items' : ''}
         level={0}
       />
     </div>

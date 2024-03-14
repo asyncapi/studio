@@ -36,7 +36,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
-    let updatedSchema = _.cloneDeep(schema);
+    const updatedSchema = _.cloneDeep(schema);
     updatedSchema.type = newType;
 
     if (newType === 'array') {
@@ -65,7 +65,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
         <SchemaObject
           schema={schema.items}
           onSchemaChange={(newItemsSchema) => {
-            // const updatedSchema = { ...schema, items: newItemsSchema };
+            const updatedSchema = { ...schema, items: newItemsSchema };
             //Need to updated schema from local schema
           }}
           path={''}
@@ -124,7 +124,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           </select>
         </div>
         <div style={{ marginLeft: 'auto' }}>
-          <button style={{ marginRight:'10px' }} onClick={handleRemove}>
+          <button style={{ marginRight: '10px' }} onClick={handleRemove}>
             <TrashIcon className="w-4 h-4" />
           </button>
           <button onClick={handleToggleRequired}>

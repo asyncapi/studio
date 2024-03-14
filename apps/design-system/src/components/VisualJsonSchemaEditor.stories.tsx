@@ -4,7 +4,6 @@ import { VisualEditor, CodeEditor} from '@asyncapi/studio-ui';
 import { Examples } from '@asyncapi/studio-ui';
 
 export default {
-  title: 'SchemaEditor/VisualEditor',
   component: VisualEditor,
   parameters: {
     layout: 'fullscreen',

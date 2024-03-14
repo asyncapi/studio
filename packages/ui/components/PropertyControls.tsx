@@ -22,27 +22,27 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   const [error, setError] = useState('');
   const [itemType, setItemType] = useState('');
 
-const handleAddProperty = () => {
-  if (_.isEmpty(key) || _.isEmpty(type)) {
-      setError("Both property name and type are required.");
+  const handleAddProperty = () => {
+    if (_.isEmpty(key) || _.isEmpty(type)) {
+      setError('Both property name and type are required.');
       return;
-  }
+    }
 
-  let fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
-  console.log("Full Full Path :)", fullPath);
-  console.log(`Adding new property at: ${fullPath}`);
+    const fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
+    console.log('Full Full Path :)', fullPath);
+    console.log(`Adding new property at: ${fullPath}`);
 
-  onAdd(fullPath, {
-    type, 
-    ...(type === 'object' && { properties: {} }), 
-    ...(type === 'array' && { items: { type: itemType } }) 
-  } as any); 
+    onAdd(fullPath, {
+      type, 
+      ...(type === 'object' && { properties: {} }), 
+      ...(type === 'array' && { items: { type: itemType } }) 
+    } as any); 
 
-  setKey('');
-  setType('');
-  setItemType('');
-  setError('');
-};
+    setKey('');
+    setType('');
+    setItemType('');
+    setError('');
+  };
 
   return (
     <div style={{

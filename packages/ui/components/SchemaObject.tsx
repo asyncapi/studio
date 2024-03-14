@@ -19,9 +19,9 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
   const handleAddProperty = (fullPath: string, propertySchema: any) => {
-    let updatedSchema = _.cloneDeep(schema);
+    const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
-    console.log("Normalised path",normalizedPath);
+    console.log('Normalised path',normalizedPath);
     _.set(updatedSchema, normalizedPath, propertySchema);
 
     console.log(`Property added at ${normalizedPath}`, updatedSchema);
@@ -29,7 +29,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   };
 
   const handleRemoveProperty = (propertyPath: string) => {
-    let currentSchema = _.cloneDeep(schema);
+    const currentSchema = _.cloneDeep(schema);
     _.unset(currentSchema, propertyPath);
     console.log(`Removed property at ${propertyPath}`);
     onSchemaChange(currentSchema);
@@ -37,7 +37,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
 
   const handleTypeChange = (propertyPath: string, newSchema: any) => { // Added types to resolve TS7006
     console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newSchema}`);
-    let currentSchema = _.cloneDeep(schema);
+    const currentSchema = _.cloneDeep(schema);
     _.set(currentSchema, propertyPath, newSchema);
     console.log(`Type changed at ${propertyPath}`, newSchema);
     onSchemaChange(currentSchema);
