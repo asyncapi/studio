@@ -2,8 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
-import { RequiredIcon, NotRequiredIcon } from '../icons';
-import { TrashIcon } from '../icons'
+import { RequiredIcon, NotRequiredIcon, TrashIcon } from '../icons';
 
 interface SchemaPropertyProps {
     name: string;
