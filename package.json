@@ -30,6 +30,11 @@
   ],
   "packageManager": "npm@8.19.3",
   "dependencies": {
-    "@changesets/cli": "^2.26.2"
+    "@changesets/cli": "^2.26.2",
+    "@codemirror/commands": "^6.3.3",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-yaml": "^6.0.0",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/theme-one-dark": "^6.1.2"
   }
 }
