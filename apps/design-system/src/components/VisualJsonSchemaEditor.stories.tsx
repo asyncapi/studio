@@ -1,7 +1,5 @@
-// visualeditor.stories.tsx
 import React, { useState } from 'react';
-import { VisualEditor, CodeEditor} from '@asyncapi/studio-ui';
-import { Examples } from '@asyncapi/studio-ui';
+import { VisualEditor, CodeEditor, Examples } from '@asyncapi/studio-ui';
 
 export default {
   component: VisualEditor,

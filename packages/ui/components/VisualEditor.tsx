@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SchemaObject from './SchemaObject';
+import SchemaObject from './VisualEditor/SchemaObject';
 import _ from 'lodash';
 
 interface VisualEditorProps {
