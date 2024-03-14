@@ -1,4 +1,3 @@
-// CodeEditor.tsx
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import debounce from 'lodash/debounce';
@@ -19,7 +18,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
 
   const handleChange = debounce((newValue: string) => {
     try {
-      const parsed = JSON.parse(newValue);
       setError('');
       onSchemaChange(newValue);
       console.log('Schema valid and updated from Code Editor:', newValue);

@@ -1,6 +1,5 @@
-// PropertyControls.tsx
 import React, { useState } from 'react';
-import _ from 'lodash'; // Import lodash
+import _ from 'lodash';
 
 interface PropertyControlsProps {
     onAdd: (path: string, property: { name: string; schema: any }) => void;
@@ -30,11 +29,14 @@ const handleAddProperty = () => {
   }
 
   let fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
-
-  // fullPath = fullPath.replace('.items.properties', '.items[0].properties');
   console.log("Full Full Path :)", fullPath);
   console.log(`Adding new property at: ${fullPath}`);
-  onAdd(fullPath, { type, ...(type === 'object' && { properties: {} }), ...(type === 'array' && { items: { type: itemType || 'string' } }) });
+
+  onAdd(fullPath, {
+    type, 
+    ...(type === 'object' && { properties: {} }), 
+    ...(type === 'array' && { items: { type: itemType } }) 
+  } as any); 
 
   setKey('');
   setType('');

@@ -1,4 +1,3 @@
-// SchemaObject.tsx
 import React from 'react';
 import _ from 'lodash';
 import SchemaProperty from './SchemaProperty';
@@ -19,36 +18,29 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
 }) => {
   console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
-  const handleAddProperty = (fullPath, propertySchema) => {
-    let updatedSchema = _.cloneDeep(schema); // Deep clone
-
-
+  const handleAddProperty = (fullPath: string, propertySchema: any) => {
+    let updatedSchema = _.cloneDeep(schema);
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
     console.log("Normalised path",normalizedPath);
     _.set(updatedSchema, normalizedPath, propertySchema);
 
     console.log(`Property added at ${normalizedPath}`, updatedSchema);
+    onSchemaChange(updatedSchema);
+  };
 
-    onSchemaChange(JSON.stringify(updatedSchema));
-};
-
-  const handleRemoveProperty = (propertyPath) => {
+  const handleRemoveProperty = (propertyPath: string) => {
     let currentSchema = _.cloneDeep(schema);
     _.unset(currentSchema, propertyPath);
     console.log(`Removed property at ${propertyPath}`);
-    onSchemaChange(path, currentSchema);
+    onSchemaChange(currentSchema);
   };
 
-  const handleTypeChange = (propertyPath, newSchema) => {
+  const handleTypeChange = (propertyPath: string, newSchema: any) => { // Added types to resolve TS7006
     console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newSchema}`);
-    if (path.includes(".items") && newSchema === "object") {
-      //
-      return;
-    }
-    let currentSchema = _.cloneDeep(schema); // Deep clone for immutability
-    _.set(currentSchema, propertyPath, newSchema); // Use lodash to update the property schema
+    let currentSchema = _.cloneDeep(schema);
+    _.set(currentSchema, propertyPath, newSchema);
     console.log(`Type changed at ${propertyPath}`, newSchema);
-    onSchemaChange(path, currentSchema);
+    onSchemaChange(currentSchema);
   };
 
   return (
@@ -59,12 +51,12 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
           name={propertyName}
           schema={propertySchema}
           onRemove={handleRemoveProperty}
-          onToggleRequired={() => console.log('Toggling required')} // Placeholder for required toggling
+          onToggleRequired={() => console.log('Toggling required')}
           isRequired={_.includes(schema.required, propertyName)}
           onTypeChange={handleTypeChange}
           onAddNestedProperty={handleAddProperty}
           onRemoveNestedProperty={handleRemoveProperty}
-          onToggleNestedRequired={() => console.log('Toggling nested required')} // Placeholder for nested required toggling
+          onToggleNestedRequired={() => console.log('Toggling nested required')}
           path={`${path}.properties.${propertyName}`}
           level={level + 1}
         />

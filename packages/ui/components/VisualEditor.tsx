@@ -1,4 +1,3 @@
-// VisualEditor.tsx
 import React, { useState, useEffect } from 'react';
 import SchemaObject from './SchemaObject';
 import _ from 'lodash';
@@ -36,18 +35,19 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     }
   }, [schema]);
 
-const handleSchemaChange = (newSchema) => {
-    console.log('Schema updated:', newSchema);
-    setSchemaObject(JSON.parse(newSchema));
-    onSchemaChange(newSchema);
-};
-
+  const handleSchemaChange = (updatedPart: any) => {
+    const updatedSchema = { ...schemaObject, ...updatedPart };
+    const newSchemaString = JSON.stringify(updatedSchema);
+    console.log('Schema updated:', newSchemaString);
+    setSchemaObject(updatedSchema);
+    onSchemaChange(newSchemaString);
+  };
 
   const renderRootTypeSelector = () => (
     <div>
       <select
         value={schemaObject.type || ''}
-        onChange={(e) => handleSchemaChange('', { type: e.target.value })}
+        onChange={(e) => handleSchemaChange({ type: e.target.value })}
         style={selectStyle}
       >
         <option value="">Select root type</option>
@@ -67,7 +67,7 @@ const handleSchemaChange = (newSchema) => {
           <strong>Array Item Type:</strong>
           <select
             value={schemaObject.items?.type || ''}
-            onChange={(e) => handleSchemaChange('items', { type: e.target.value })}
+            onChange={(e) => handleSchemaChange({ items: { ...schemaObject.items, type: e.target.value } })}
             style={selectStyle}
           >
             <option value="">Select item type</option>
@@ -90,7 +90,7 @@ const handleSchemaChange = (newSchema) => {
 
       <SchemaObject
         schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
-        onSchemaChange={handleSchemaChange}
+        onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
         path={schemaObject.type === 'array' ? "items" : ""}
         level={0}
       />

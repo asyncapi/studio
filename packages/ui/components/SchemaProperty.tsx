@@ -1,4 +1,3 @@
-// SchemaProperty.tsx
 import React from 'react';
 import _ from 'lodash';
 import SchemaObject from './SchemaObject';
@@ -64,11 +63,11 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       return (
         <SchemaObject
           schema={schema.items}
-          onSchemaChange={(path, newItemsSchema) => {
-            const updatedSchema = { ...schema, items: newItemsSchema };
-            onTypeChange(path, name, updatedSchema);
+          onSchemaChange={(newItemsSchema) => {
+            // const updatedSchema = { ...schema, items: newItemsSchema };
+            //Need to updated schema from local schema
           }}
-          path={`${path}.items`}
+          path={''}
           level={level + 1}
         />
       );
