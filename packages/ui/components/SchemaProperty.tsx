@@ -66,6 +66,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           schema={schema.items}
           onSchemaChange={(newItemsSchema) => {
             const updatedSchema = { ...schema, items: newItemsSchema };
+            onTypeChange(path, name, updatedSchema);
             //Need to updated schema from local schema
           }}
           path={''}
