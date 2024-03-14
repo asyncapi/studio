@@ -46,12 +46,12 @@ const handleAddProperty = () => {
 
   return (
     <div style={{
-      marginLeft: `${level * 20}px`,
+      marginLeft: `${level === 0 ? 20 : level * 20}px`,
       color: '#CBD5E1',
       fontFamily: 'Inter, sans-serif',
       borderLeft: '1px solid grey',
       paddingLeft: '10px',
-      marginTop: '-1px'
+      marginTop: '-1px',
     }}>
       <div className="flex gap-[6px] items-center mt-[6px] mb-[6px]">
         <input

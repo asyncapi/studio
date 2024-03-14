@@ -21,7 +21,7 @@ const Template: React.FC<TemplateProps> = ({ initialSchema }) => {
 
   return (
     <div>
-      <div style={{background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif'}}>
+      <div style={{ width: '45vw', minWidth:'550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif' }}>
         <button style={{padding: 5}} onClick={() => setEditorType('visual')}>Visual Editor </button>
         <button style={{padding: 5}} onClick={() => setEditorType('code')}>Code Editor </button>
         <button style={{padding: 5}} onClick={() => setEditorType('examples')}>Examples </button>
@@ -41,18 +41,39 @@ const Template: React.FC<TemplateProps> = ({ initialSchema }) => {
   );
 };
 
-export const DefaultView = () => <Template initialSchema="{}" />;
-
-
-export const SingleProperty = () => (
+export const Sample_Schema = () => (
   <Template
     initialSchema={JSON.stringify({
-      "type": "string"
-  }, null, 2)}
+      "type": "object",
+      "properties": {
+     
+        "age": {
+          "type": "integer"
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "street": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "pincode":{
+              "type": "number"
+            }
+          },
+          "required": [
+            "street",
+            "city"
+          ]
+        }
+      }
+    }, null, 2)}
   />
 );
 
-export const SampleSchema = () => (
+export const Schema_with_array_object = () => (
   <Template
     initialSchema={JSON.stringify({
       "type": "object",
@@ -87,41 +108,6 @@ export const SampleSchema = () => (
     , null, 2)}
   />
 );
-
-export const WithObject = () => (
-  <Template
-    initialSchema={JSON.stringify({
-      "type": "object",
-      "properties": {
-     
-        "age": {
-          "type": "integer"
-        },
-        "address": {
-          "type": "object",
-          "properties": {
-            "street": {
-              "type": "string"
-            },
-            "city": {
-              "type": "string"
-            },
-            "pincode":{
-              "type": "number"
-            }
-          },
-          "required": [
-            "street",
-            "city"
-          ]
-        }
-      }
-    }, null, 2)}
-  />
-);
-
-
-
 
 export const WithArray_obj = () => (
   <Template
@@ -175,8 +161,6 @@ export const WithArray_obj_and_obj = () => (
   />
 );
 
-
-
 export const Array_of_string = () => (
   <Template
     initialSchema={JSON.stringify({
@@ -223,20 +207,6 @@ export const Root_Array_of_Object = () => (
   />
 );
 
-export const property_having_more_than_one_datatype = () => (
-  <Template
-    initialSchema={JSON.stringify({
-      "type": "object",
-      "properties": {
-        "mixedTypeProperty": {
-          "type": ["boolean", "integer"]
-        }
-      },
-      "required": ["mixedTypeProperty"]
-    }, null, 2)}
-  />
-);
-
 export const two_property_having_same_name = () => (
   <Template
     initialSchema={JSON.stringify({
@@ -260,7 +230,6 @@ export const two_property_having_same_name = () => (
     , null, 2)}
   />
 );
-
 
 export const nestead_array = () => (
   <Template

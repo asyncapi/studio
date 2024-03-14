@@ -100,33 +100,37 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   return (
     <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', paddingLeft: '10px', marginBottom: '-8px' }}>
-      <div className="flex items-center gap-[6px]">
-        <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300">{name}</strong>
-        <select
-          value={schema.type}
-          onChange={handleTypeChange}
-          style={{
-            backgroundColor: '#0F172A',
-            color: 'white',
-            borderRadius: '3px',
-            padding: '2px',
-            fontSize: '14px',
-            fontFamily: 'Inter, Helvetica'
-          }}
-        >
-          <option value="">Select type</option>
-          <option value="string">String</option>
-          <option value="number">Number</option>
-          <option value="boolean">Boolean</option>
-          <option value="object">Object</option>
-          <option value="array">Array</option>
-        </select>
-        <button onClick={handleRemove}>
-          <TrashIcon className="w-4 h-4" />
-        </button>
-        <button onClick={handleToggleRequired}>
-          {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
-        </button>
+      <div className="flex items-center justify-between">
+        <div>
+          <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300">{name}</strong>
+          <select
+            value={schema.type}
+            onChange={handleTypeChange}
+            style={{
+              backgroundColor: '#0F172A',
+              color: 'white',
+              borderRadius: '3px',
+              padding: '2px',
+              fontSize: '14px',
+              fontFamily: 'Inter, Helvetica'
+            }}
+          >
+            <option value="">Select type</option>
+            <option value="string">String</option>
+            <option value="number">Number</option>
+            <option value="boolean">Boolean</option>
+            <option value="object">Object</option>
+            <option value="array">Array</option>
+          </select>
+        </div>
+        <div style={{ marginLeft: 'auto' }}>
+          <button style={{ marginRight:'10px' }} onClick={handleRemove}>
+            <TrashIcon className="w-4 h-4" />
+          </button>
+          <button onClick={handleToggleRequired}>
+            {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
       {renderNestedProperties()}
       {renderArrayItemsProperties()}
