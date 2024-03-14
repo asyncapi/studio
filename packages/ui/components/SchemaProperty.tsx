@@ -3,6 +3,7 @@ import _ from 'lodash';
 import SchemaObject from './SchemaObject';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon } from './icons';
+import { TrashIcon } from '../components/icons'
 
 interface SchemaPropertyProps {
     name: string;
@@ -120,7 +121,9 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           <option value="object">Object</option>
           <option value="array">Array</option>
         </select>
-        <button onClick={handleRemove}>Remove</button>
+        <button onClick={handleRemove}>
+          <TrashIcon className="w-4 h-4" />
+        </button>
         <button onClick={handleToggleRequired}>
           {isRequired ? <RequiredIcon className="w-4 h-4" /> : <NotRequiredIcon className="w-4 h-4" />}
         </button>
