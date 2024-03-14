@@ -25,7 +25,7 @@
     "@asyncapi/avro-schema-parser": "^3.0.15",
     "@asyncapi/converter": "^1.4.13",
     "@asyncapi/openapi-schema-parser": "^3.0.15",
-    "@asyncapi/parser": "^3.0.8",
+    "@asyncapi/parser": "^3.0.9",
     "@asyncapi/protobuf-schema-parser": "^3.2.5",
     "@asyncapi/react-component": "^1.2.2",
     "@asyncapi/specs": "^6.5.2",
