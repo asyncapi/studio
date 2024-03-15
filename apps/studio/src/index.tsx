@@ -1,6 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
+// // index.tsx
+// import { parseAsyncAPI } from '../scripts/parserDoc';
+
+// // index.tsx
+// import { updateUrl } from '../scripts/updateUrl';
+
 
 import { createServices, ServicesProvider } from './services';
 import { App } from './App';
@@ -32,9 +38,20 @@ function configureMonacoEnvironment() {
   };
 }
 
+// async function generateUrlWithQueryParam() {
+//   const asyncAPIDocument = await parseAsyncAPI();
+//   // Generate the URL with the query parameter using asyncAPIDocument
+//   // const urlWithQueryParam = '...'; // Generate the URL based on the asyncAPIDocument
+//   return asyncAPIDocument;
+// }
+
 async function bootstrap() {
   configureMonacoEnvironment();
   const services = await createServices();
+
+   // This is where you generate the URL with the query parameter
+  // updateUrl(urlWithQueryParam); // Update the URL in the browser
+
 
   const root = createRoot(
     document.getElementById('root') as HTMLElement,
@@ -49,6 +66,10 @@ async function bootstrap() {
       </ServicesProvider>
     </StrictMode>
   );
+  //  // Generate URL with query parameter
+  //  const urlWithQueryParam = await generateUrlWithQueryParam();
+  //  // Update the URL in the browser
+  //  updateUrl(generaterlWithQueryParam);
 }
 
 bootstrap().catch(console.error);

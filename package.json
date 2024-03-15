@@ -30,6 +30,8 @@
   ],
   "packageManager": "npm@8.19.3",
   "dependencies": {
+    "@asyncapi/openapi-schema-parser": "^3.0.18",
+    "@asyncapi/parser": "^3.0.10",
     "@changesets/cli": "^2.26.2",
     "@codemirror/commands": "^6.3.3",
     "@codemirror/lang-json": "^6.0.1",
