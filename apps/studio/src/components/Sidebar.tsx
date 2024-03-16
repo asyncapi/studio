@@ -2,7 +2,7 @@ import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSet
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
-import { SettingsModal, NewFileModal } from './Modals';
+import { SettingsModal, ConfirmNewFileModal } from './Modals';
 
 import { usePanelsState, panelsState, useDocumentsState } from '../state';
 
@@ -105,7 +105,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       name: 'newFile',
       title: 'New file',
       isActive: false,
-      onClick: () => showModal(NewFileModal),
+      onClick: () => showModal(ConfirmNewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
       enabled: true

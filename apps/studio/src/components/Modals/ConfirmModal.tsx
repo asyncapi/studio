@@ -7,11 +7,13 @@ import type { ReactNode, FunctionComponent, PropsWithChildren } from 'react';
 interface ConfirmModalProps {
   title: ReactNode;
   description?: ReactNode;
+  warning?: ReactNode;
+  link?: string;
   confirmText?: ReactNode;
   cancelText?: ReactNode;
   confirmDisabled?: boolean;
   cancelDisabled?: boolean;
-  containerClassName? : string;
+  containerClassName?: string;
   closeAfterSumbit?: boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
@@ -20,6 +22,8 @@ interface ConfirmModalProps {
 export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps>> = ({
   title,
   description,
+  warning,
+  link,
   confirmText = 'Save',
   cancelText = 'Cancel',
   confirmDisabled = true,
@@ -91,7 +95,7 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className={`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6 ${containerClassName}`}>
+              <div className={`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-2/5 sm:p-6 ${containerClassName}`}>
                 <div>
                   <div>
                     <Dialog.Title
@@ -103,16 +107,23 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
                     {description && (
                       <p className="text-gray-500 text-xs">{description}</p>
                     )}
+                    {warning && (
+                      <a
+                        href={link}
+                        className='text-red-500 text-xs underline'
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {warning}
+                      </a>
+                    )}
                     <div className="my-8 space-y-4">{children}</div>
                   </div>
                 </div>
                 <div className={`mt-5 sm:mt-6 sm:grid sm:gap-3 sm:grid-flow-row-dense ${onSubmit ? 'sm:grid-cols-2' : ''}`}>
                   {onSubmit && (
                     <button
-                      type="button"
-                      className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2 sm:text-sm ${
-                        confirmDisabled ? 'opacity-10' : 'opacity-100'
-                      }`}
+                      type="button" className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:col-start-2 sm:text-sm ${confirmDisabled ? 'opacity-10' : 'opacity-100'}`}
                       disabled={confirmDisabled}
                       onClick={handleOnSubmit}
                     >
