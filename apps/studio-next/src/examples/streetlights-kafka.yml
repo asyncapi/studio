@@ -1,7 +1,3 @@
-import { parse } from '@/utils/parser';
-import { create } from 'zustand';
-
-const schema =`
 asyncapi: 3.0.0
 info:
   title: Streetlights Kafka API
@@ -10,46 +6,46 @@ info:
     The Smartylighting Streetlights API allows you to remotely manage the city
     lights.
     ### Check out its awesome features:
-
+  
     * Turn a specific streetlight on/off 🌃  
     * Dim a specific streetlight 😎
     * Receive real-time information about environmental lighting conditions 📈
   license:
     name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
 defaultContentType: application/json
 servers:
   scram-connections:
-    host: test.mykafkacluster.org:18092
+    host: 'test.mykafkacluster.org:18092'
     protocol: kafka-secure
     description: Test broker secured with scramSha256
     security:
       - $ref: '#/components/securitySchemes/saslScram'
     tags:
-      - name: env:test-scram
+      - name: 'env:test-scram'
         description: >-
           This environment is meant for running internal tests through
           scramSha256
-      - name: kind:remote
+      - name: 'kind:remote'
         description: This server is a remote server. Not exposed by the application
-      - name: visibility:private
+      - name: 'visibility:private'
         description: This resource is private and only available to certain users
   mtls-connections:
-    host: test.mykafkacluster.org:28092
+    host: 'test.mykafkacluster.org:28092'
     protocol: kafka-secure
     description: Test broker secured with X509
     security:
       - $ref: '#/components/securitySchemes/certs'
     tags:
-      - name: env:test-mtls
+      - name: 'env:test-mtls'
         description: This environment is meant for running internal tests through mtls
-      - name: kind:remote
+      - name: 'kind:remote'
         description: This server is a remote server. Not exposed by the application
-      - name: visibility:private
+      - name: 'visibility:private'
         description: This resource is private and only available to certain users
 channels:
   lightingMeasured:
-    address: smartylighting.streetlights.1.0.event.{streetlightId}.lighting.measured
+    address: 'smartylighting.streetlights.1.0.event.{streetlightId}.lighting.measured'
     messages:
       lightMeasured:
         $ref: '#/components/messages/lightMeasured'
@@ -58,7 +54,7 @@ channels:
       streetlightId:
         $ref: '#/components/parameters/streetlightId'
   lightTurnOn:
-    address: smartylighting.streetlights.1.0.action.{streetlightId}.turn.on
+    address: 'smartylighting.streetlights.1.0.action.{streetlightId}.turn.on'
     messages:
       turnOn:
         $ref: '#/components/messages/turnOnOff'
@@ -66,7 +62,7 @@ channels:
       streetlightId:
         $ref: '#/components/parameters/streetlightId'
   lightTurnOff:
-    address: smartylighting.streetlights.1.0.action.{streetlightId}.turn.off
+    address: 'smartylighting.streetlights.1.0.action.{streetlightId}.turn.off'
     messages:
       turnOff:
         $ref: '#/components/messages/turnOnOff'
@@ -74,7 +70,7 @@ channels:
       streetlightId:
         $ref: '#/components/parameters/streetlightId'
   lightsDim:
-    address: smartylighting.streetlights.1.0.action.{streetlightId}.dim
+    address: 'smartylighting.streetlights.1.0.action.{streetlightId}.dim'
     messages:
       dimLight:
         $ref: '#/components/messages/dimLight'
@@ -208,60 +204,3 @@ components:
             type: string
             enum:
               - my-app-id
-`;
-
-export interface FileStat {
-  mtime: number;
-}
-
-export type File = {
-  uri: string;
-  name: string;
-  content: string;
-  from: 'storage' | 'url' | 'base64';
-  source?: string;
-  language: 'json' | 'yaml';
-  modified: boolean;
-  stat?: FileStat;
-}
-
-export type FilesState = {
-  files: Record<string, File>;
-}
-
-export type FilesActions = {
-  updateFile: (uri: string, file: Partial<File>) => void;
-}
-
-export const filesState = create<FilesState & FilesActions>(set => ({
-  files: {
-    asyncapi: {
-      uri: 'asyncapi',
-      name: 'asyncapi',
-      content: schema,
-      from: 'storage',
-      source: undefined,
-      language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
-      modified: false,
-      stat: {
-        mtime: (new Date()).getTime(),
-      }
-    }
-  },
-  updateFile(uri: string, file: Partial<File>) {
-    set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
-  }
-}));
-
-filesState.subscribe((state, prevState) => {
-  const newFiles = state.files;
-  const oldFiles = prevState.files;
-
-  Object.entries(newFiles).forEach(([uri, file]) => {
-    const oldFile = oldFiles[String(uri)];
-    if (file === oldFile) return;
-    parse(uri, file.content, { source: file.source }).catch(console.error);
-  });
-});
-
-export const useFilesState = filesState;
