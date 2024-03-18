@@ -252,6 +252,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   className = '',
 }) => {
   const [hash, setHash] = useState(window.location.hash);
+  const [loading, setloading] = useState(false);
 
   const { navigationSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
@@ -269,11 +270,26 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
       window.removeEventListener('hashchange', fn);
     };
   }, []);
+  
+  useEffect(() => {
+    if (!document) {
+      setloading(true);
+      const timer = setTimeout(() => {
+        setloading(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  },[document])
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        Empty or invalid document. Please fix errors/define AsyncAPI document.
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center" style={{ backgroundColor: 'black' }}>
+        {loading ?(
+          <div className="rotating-wheel"></div>
+        ) : (
+          <p style={{ color: 'white' }}>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
+        )
+        }
       </div>
     );
   }

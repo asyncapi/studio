@@ -8,9 +8,38 @@ import { TemplateParameters, TemplateParametersHandle } from './TemplateParamete
 import { useServices } from '../../../services';
 import { ServerAPIProblem } from '../../../services/server-api.service';
 
-import { filesState } from '../../../state';
+import { filesState, useDocumentsState } from '../../../state';
 
 import templates from './template-parameters.json';
+
+const unsupportedGenerators = [
+  '@asyncapi/dotnet-nats-template',
+  '@asyncapi/ts-nats-template',
+  '@asyncapi/python-paho-template',
+  '@asyncapi/nodejs-ws-template',
+  '@asyncapi/java-spring-cloud-stream-template',
+  '@asyncapi/go-watermill-template',
+  '@asyncapi/java-spring-template',
+  '@asyncapi/nodejs-template',
+  '@asyncapi/java-template',
+  '@asyncapi/php-template'
+];
+
+const renderOptions = (actualVersion: string) => {
+  return Object.keys(templates).map(templateItem => {
+    const isSupported = actualVersion === '3.0.0' && !unsupportedGenerators.includes(templateItem);
+    const disableOption = actualVersion === '3.0.0' ? !isSupported : false;
+    return (
+      <option
+        key={templateItem}
+        value={templateItem}
+        disabled={disableOption}
+      >
+        {(templates as Record<string, any>)[String(templateItem)]?.title}
+      </option>
+    );
+  });
+};
 
 export const GeneratorModal = create(() => {
   const modal = useModal();
@@ -19,6 +48,8 @@ export const GeneratorModal = create(() => {
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
   const templateParamsRef = useRef<TemplateParametersHandle>(null);
+  const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const actualVersion = document?.version() || '';
 
   useEffect(() => {
     const required = template ? (templates as Record<string, any>)[String(template)].schema.required : [];
@@ -76,6 +107,8 @@ export const GeneratorModal = create(() => {
   return (
     <ConfirmModal
       title="Generate code/docs based on your AsyncAPI Document"
+      warning={actualVersion === '3.0.0' && 'Not all generators currently offer support for AsyncAPI V3.'}
+      link='https://github.com/asyncapi/studio/issues/980'
       confirmText="Generate"
       confirmDisabled={confirmDisabled}
       onSubmit={onSubmit}
@@ -99,20 +132,16 @@ export const GeneratorModal = create(() => {
             value={template}
           >
             <option value="">Please Select</option>
-            {Object.keys(templates).map(templateItem => (
-              <option key={templateItem} value={templateItem}>
-                {(templates as Record<string, any>)[String(templateItem)]?.title}
-              </option>
-            ))}
+            {renderOptions(actualVersion)}
           </select>
         </div>
         {template && (
           <div className='text-gray-400 text-xs mt-2 text-right'>
             <p>
-              <a 
-                target="_blank" 
+              <a
+                target="_blank"
                 href={`https://github.com/asyncapi/${template.replace('@asyncapi/', '')}`}
-                className="underline text-pink-500" 
+                className="underline text-pink-500"
                 rel="noreferrer"
               >
                 Link to the Github Repository of selected generation &rarr;
@@ -121,11 +150,11 @@ export const GeneratorModal = create(() => {
           </div>
         )}
         <div className="flex content-center justify-center">
-          <TemplateParameters 
+          <TemplateParameters
             ref={templateParamsRef}
-            templateName={template} 
-            template={template ? (templates as Record<string, any>)[String(template)]?.schema : {}} 
-            supportedProtocols={template ? (templates as Record<string, any>)[String(template)]?.supportedProtocols : []} 
+            templateName={template}
+            template={template ? (templates as Record<string, any>)[String(template)]?.schema : {}}
+            supportedProtocols={template ? (templates as Record<string, any>)[String(template)]?.supportedProtocols : []}
             setConfirmDisabled={setConfirmDisabled}
           />
         </div>
@@ -152,9 +181,9 @@ export const GeneratorModal = create(() => {
                 {problem.title}
               </div>
             </div>
-            {problem.validationErrors && 
+            {problem.validationErrors &&
               problem.validationErrors.length &&
-              problem.validationErrors.filter(error => error.message).length 
+              problem.validationErrors.filter(error => error.message).length
               ? (
                 <ul className='text-xs mt-2 list-disc pl-7'>
                   {problem.validationErrors.map(error => (
