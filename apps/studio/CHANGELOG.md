@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.20.1
+
+### Patch Changes
+
+- 6995cdf: bump dependencies
+
 ## 0.20.0
 
 ### Minor Changes
