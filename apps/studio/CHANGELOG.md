@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.20.2
+
+### Patch Changes
+
+- 5c7b4c1: scrollTo navigation to right code block in yaml.
+
 ## 0.20.1
 
 ### Patch Changes
