@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.19.0",
-    "turbo": "^1.10.12"
+    "turbo": "^1.12.4"
   },
   "workspaces": [
     "apps/*",

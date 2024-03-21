@@ -24,6 +24,8 @@
     "@heroicons/react": "^2.0.18",
     "classnames": "^2.3.2",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
+    "@radix-ui/react-form": "^0.0.3",
+    "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-toolbar": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "@radix-ui/react-switch": "^1.0.3",

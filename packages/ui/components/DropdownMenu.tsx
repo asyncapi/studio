@@ -47,7 +47,7 @@ export const DropdownMenu: FunctionComponent<DropdownMenuProps> = ({
 }) => {
   return (
     <RadixDropdownMenu.Root>
-      <RadixDropdownMenu.Trigger asChild>
+      <RadixDropdownMenu.Trigger aria-label='Select an Option.' asChild>
         {trigger}
       </RadixDropdownMenu.Trigger>
       <RadixDropdownMenu.Portal>

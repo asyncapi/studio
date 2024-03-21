@@ -5,7 +5,8 @@ export default {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "@storybook/addon-mdx-gfm",
-    "@storybook/preset-typescript"
+    "@storybook/preset-typescript",
+    "@storybook/addon-a11y"
   ],
   "framework": {
     name: "@storybook/react-webpack5",
