@@ -39,7 +39,7 @@ Click on the individual elements of the Navigation button to jump to those secti
 
 ## Diagnostics Window
 
-The Editor also has resizeable Diagnostics window. It shows a quick count of number of 
+The Editor also has a resizeable Diagnostics window. It shows a quick count number of... 
 - errors (in red),
 - warnings (in yellow),
 - informations (in blue),
