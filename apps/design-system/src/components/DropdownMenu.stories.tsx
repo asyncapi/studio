@@ -35,7 +35,7 @@ const items = [
 
 export const Default = {
   args: {
-    trigger: <button className="bg-white text-black rounded mx-3 my-3">Click me!</button>,
+    trigger: <button className="text-black bg-white rounded mx-3 my-3 px-3">Click me!</button>,
     items,
     side: 'bottom',
     align: 'start'
