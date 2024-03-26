@@ -23,7 +23,7 @@ The Operations section lists all the operations that are a part of the AsyncAPI.
 
 ## Messages
 
-This Messages section displays the messages stored in `components.messages` section. This does not mean that every message in the component is used.  It can be defined but it may not used by references in the `operation` field.
+The Messages section displays the messages stored in the `components.messages` section. This does not mean that every message in the component is used.  It can be defined but it may not used by references in the `operation` field.
 
 
 ## Schemas
