@@ -42,7 +42,7 @@ Click on the individual elements of the Navigation button to jump to those secti
 The Editor also has a resizeable Diagnostics window. It shows a quick count number of... 
 - errors (in red),
 - warnings (in yellow),
-- informations (in blue),
+- information (in blue),
 - hints (in green)
 by its title. The description of the diagnostics with line number is displayed in a table.
 
