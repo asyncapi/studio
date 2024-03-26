@@ -78,7 +78,7 @@ The Blocks visualizer has two set of controls:
 
 - In the top right corner of the window you will find the play and reset button. Play to view live relationship between the components and its flow. Reset to get back to the default view.
 
-- To bottom left of the window there are four controls: zoom in, zoom out, full-screen, toogle interactivity. You zoom the cards in and out or view them in full-screen mode. To prevent the cards from shifting use the toggle interactivity control.
+- To the bottom left of the window there are four controls: zoom in, zoom out, full-screen, and toogle interactivity. You zoom the cards in and out or view them in full-screen mode. To prevent the cards from shifting use the toggle interactivity control.
 
 
 # New File
