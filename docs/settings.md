@@ -1,6 +1,6 @@
 # Settings
 
-You will find settings icon in the lower left corner of your screen.It helps you to customize the functioning of the tool to your liking.
+You will find the settings icon in the lower-left corner of your screen. It helps you to customize tool functioning to your liking.
 
 Settings has three tabs: 
 - Editor
