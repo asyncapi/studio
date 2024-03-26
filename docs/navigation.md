@@ -52,7 +52,7 @@ To the right side of the title bar there are three indicators of the Diagnostics
 - Autosave - It shows whether Autosave is on or off.
 - Type - Shows the language in which the API is written: `JSON` or `YAML`.
 
-Below the title bar there is a control panel. You can the buttons to:
+Below the title bar there is a control panel. You can use the buttons to:
 
 - Hide and show erros
 - Hide and show warnings
