@@ -3,9 +3,7 @@
 import { useFilesState } from '@/state/files.state';
 import { CodeMirror } from './CodeMirror';
 
-interface IEditorProps {}
-
-export const Editor = (props: IEditorProps) => {
+export const Editor = () => {
   const { language, content } = useFilesState(state => state.files['asyncapi']);
   const handleUpdateFile = useFilesState(state => state.updateFile);
 
