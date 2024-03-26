@@ -59,7 +59,7 @@ Below the title bar there is a control panel. You can use the buttons to:
 - Hide and show information messages
 - Hide and show hints
 
-There is also search bar to search that aids in finding issues by their names. You will see Settings icon to the right. It will take you to the governance of Diagnostic's settings window.
+There is also a search bar that aids in finding issues by their names. You will see the Settings icon to the right. It will take you to the governance of Diagnostic's settings window.
 
 # HTML Preview
 
