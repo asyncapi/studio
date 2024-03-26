@@ -65,7 +65,7 @@ There is also a search bar that aids in finding issues by their names. You will 
 
 This section displays the preview of everything you have written in the code editor. It uses different fonts, colors, and styles for readability. Each section has a different card. 
 
-It starts with displaying the title, version, description of the API. It renders the formatting too. You can expand each element too see the `key: value` pair of each element, type, payload, and message.
+It starts with displaying the title, version, and description of the API. It renders the formatting too. You can expand each element too via the `key: value` pair of each element, type, payload, and message.
 
 
 # Blocks visualizer
