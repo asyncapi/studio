@@ -72,7 +72,7 @@ It starts with displaying the title, version, and description of the API. It ren
 
 Blocks visualizer gives you a quick overview of your API. Unlike HTML preview, Blocks visualizer gives a diagrammatic visual of your API. 
 
-Title card is at the top-left corner of the Block visualizer window. Followed by the Operations card.  You can visualize channels, published messages, payload, type,  patterns, and relationship between the components.
+The title card is at the top-left corner of the Block visualizer window. Followed by the Operations card.  You can visualize channels, published messages, payload, type,  patterns, and relationships between the components.
 
 The Blocks visualizer has two set of controls:
 
