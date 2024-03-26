@@ -6,7 +6,7 @@ This document will walk you through the functions of each button in the navigati
 
 The first button in the navigation panel is the Navigation button. It is one of the default active buttons.
 
-Navigation button is divided into four parts. It provides the following information:
+The navigation button is divided into four parts. It provides the following information:
 
 - Servers
 - Operations
