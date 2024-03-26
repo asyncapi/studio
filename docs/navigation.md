@@ -1,6 +1,6 @@
 # Navigation panel
 
-This guide will walk you through the functions of each button in navigation panel. 
+This document will walk you through the functions of each button in the navigation panel. 
 
 # Navigation Button
 
