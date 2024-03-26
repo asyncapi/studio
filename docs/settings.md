@@ -9,7 +9,7 @@ Settings has three tabs:
 
 ## Editor
 
-Editor allows you to:
+The editor allows you to:
 
 1) Enable or disable the Auto saving mode.
 2) Decide the delay in seconds in saving the modified document.
