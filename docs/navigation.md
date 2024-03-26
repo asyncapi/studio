@@ -44,7 +44,7 @@ The Editor also has a resizeable Diagnostics window. It shows a quick count numb
 - warnings (in yellow),
 - information (in blue),
 - hints (in green)
-by its title. The description of the diagnostics with line number is displayed in a table.
+...by its title. The description of the diagnostics with line number is displayed in a table.
 
 To the right side of the title bar there are three indicators of the Diagnostics window: 
 
