@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.21.0
+
+### Minor Changes
+
+- 26dc05f: Fix side bar color and update @asyncapi/html-template.
+
 ## 0.20.2
 
 ### Patch Changes
