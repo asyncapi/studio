@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { VisualEditor, CodeEditor, Examples } from '@asyncapi/studio-ui';
 
-export default {
+const VisualEditorStory = {
   component: VisualEditor,
   parameters: {
     layout: 'fullscreen',
@@ -282,3 +282,4 @@ export const nestead_array = () => (
   />
 );
 
+export default VisualEditorStory
