@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 
-const schema =`
-asyncapi: 3.0.0
+
+const document = typeof window !== 'undefined' ? localStorage.getItem('document') : undefined
+const schema =
+  document || `asyncapi: 3.0.0
 info:
   title: Streetlights Kafka API
   version: 1.0.0

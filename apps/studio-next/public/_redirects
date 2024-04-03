@@ -1,0 +1,19 @@
+# Redirect editor.asyncapi.org to Studio
+
+http://editor.asyncapi.org/* https://studio.asyncapi.com 301!
+https://editor.asyncapi.org/* https://studio.asyncapi.com 301!
+
+# Redirect playground.asyncapi.io to Studio
+
+http://playground.asyncapi.io/* https://studio.asyncapi.com/?redirectedFrom=playground 301!
+https://playground.asyncapi.io/* https://studio.asyncapi.com/?redirectedFrom=playground 301!
+
+http://playground.asyncapi.io/* load=:load https://studio.asyncapi.com/?redirectedFrom=playground&load=:load 301!
+https://playground.asyncapi.io/* load=:load https://studio.asyncapi.com/?redirectedFrom=playground&load=:load 301!
+http://playground.asyncapi.io/* load=:load readOnly=:readOnly https://studio.asyncapi.com/?redirectedFrom=playground&load=:load&readOnly=true 301!
+https://playground.asyncapi.io/* load=:load readOnly=:readOnly https://studio.asyncapi.com/?redirectedFrom=playground&load=:load&readOnly=true 301!
+
+http://playground.asyncapi.io/* url=:url https://studio.asyncapi.com/?redirectedFrom=playground&url=:url 301!
+https://playground.asyncapi.io/* url=:url https://studio.asyncapi.com/?redirectedFrom=playground&url=:url 301!
+http://playground.asyncapi.io/* url=:url readOnly=:readOnly https://studio.asyncapi.com/?redirectedFrom=playground&url=:url&readOnly=true 301!
+https://playground.asyncapi.io/* url=:url readOnly=:readOnly https://studio.asyncapi.com/?redirectedFrom=playground&url=:url&readOnly=true 301!

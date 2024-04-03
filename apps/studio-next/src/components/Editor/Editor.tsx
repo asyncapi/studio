@@ -1,15 +1,32 @@
-'use client'
+import React from 'react';
 
-import { useFilesState } from '@/state/files.state';
-import { CodeMirror } from './CodeMirror';
+import SplitPane from '../SplitPane';
+import { EditorSidebar } from './EditorSidebar';
+import { MonacoWrapper } from './MonacoWrapper';
+import { Terminal } from '../Terminal/Terminal';
 
-export const Editor = () => {
-  const { language, content } = useFilesState(state => state.files['asyncapi']);
-  const handleUpdateFile = useFilesState(state => state.updateFile);
+import { useOtherState } from '@/state';
+
+export interface EditorProps {}
+
+export const Editor: React.FunctionComponent<EditorProps> = () => {
+  const editorHeight = useOtherState(state => state.editorHeight);
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <CodeMirror language={language} value={content} onChange={value => handleUpdateFile('asyncapi', { content: value })} />
+      <SplitPane
+        split="horizontal"
+        minSize={29}
+        maxSize={-36}
+        size={editorHeight}
+        defaultSize={editorHeight}
+      >
+        <div className="flex flex-1 flex-col h-full overflow-hidden">
+          <EditorSidebar />
+          <MonacoWrapper />
+        </div>
+        <Terminal />
+      </SplitPane>
     </div>
   );
-}
+};
