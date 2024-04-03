@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 
-
 const document = typeof window !== 'undefined' ? localStorage.getItem('document') : undefined
 const schema =
   document || `asyncapi: 3.0.0

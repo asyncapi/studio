@@ -1,16 +1,15 @@
-"use client"
+'use client'
 import { StrictMode, useEffect, useState } from 'react';
 import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
 
 import { createServices, Services, ServicesProvider } from '@/services';
 
- import 'tippy.js/dist/tippy.css';
- import 'tippy.js/animations/shift-away.css';
- import '@asyncapi/react-component/styles/default.min.css';
- import 'reactflow/dist/style.css';
- import { AsyncAPIStudio } from './CodeEditor';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
+import '@asyncapi/react-component/styles/default.min.css';
+import 'reactflow/dist/style.css';
+import { AsyncAPIStudio } from './CodeEditor';
 import Preloader from './Preloader';
-
 
 function configureMonacoEnvironment() {
   if (typeof window !== 'undefined') {
@@ -35,7 +34,6 @@ function configureMonacoEnvironment() {
 }
 
 export default function StudioWrapper() {
-
   const [services, setServices] = useState<Services>();
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +45,7 @@ export default function StudioWrapper() {
     fetchData();
   }, []);
 
-  if(!services) return <Preloader />
+  if (!services) return <Preloader />
   return (
     <StrictMode>
       <ServicesProvider value={services}>
