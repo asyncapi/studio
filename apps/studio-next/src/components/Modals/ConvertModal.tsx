@@ -4,10 +4,10 @@ import { create } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './index';
 
-import { useServices } from '../../services';
-import { useDocumentsState } from '../../state';
+import { useServices } from '@/services';
+import { useDocumentsState } from '@/state';
 
-import type { SpecVersions } from '../../types';
+import type { SpecVersions } from '@/types';
 
 export const ConvertModal = create(() => {
   const { editorSvc, specificationSvc } = useServices();
