@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '@/state';
-
+import { NAVIGATION_SECTION_STYLE, NAVIGATION_SUB_SECTION_STYLE } from './Navigationv3';
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
 
 interface NavigationProps {
@@ -26,12 +26,16 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo('/servers', 'servers')
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo('/servers', 'servers');
+        }}
       >
         Servers
       </div>
@@ -40,7 +44,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           const serverName = server.id();
           return <li
             key={serverName}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -49,6 +53,13 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `server-${serverName}`,
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                `/servers/${serverName.replace(/\//g, '~1')}`,
+                `server-${serverName}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -85,7 +96,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         channels.push(
           <li
             key={`${channelName}-publish`}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -94,6 +105,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `operation-publish-${channelName}`,
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                `/channels/${channelName.replace(/\//g, '~1')}`,
+                `operation-publish-${channelName}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -110,7 +128,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         channels.push(
           <li
             key={`${channelName}-subscribe`}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -119,6 +137,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `operation-subscribe-${channelName}`,
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ')  navigationSvc.scrollTo(
+                `/channels/${channelName.replace(/\//g, '~1')}`,
+                `operation-subscribe-${channelName}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -139,7 +164,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'operations' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -148,6 +173,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'operations',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ')  navigationSvc.scrollTo(
+            '/channels',
+            'operations',
+          );
+        }}
       >
         Operations
       </div>
@@ -167,7 +199,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       const messageName = message.id();
       return <li
         key={messageName}
-        className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
+        className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
           hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -176,6 +208,13 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             `message-${messageName}`,
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            `/components/messages/${messageName.replace(/\//g, '~1')}`,
+            `message-${messageName}`,
+          );
+        }}
       >
         {messageName}
       </li>
@@ -185,7 +224,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'messages' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -194,6 +233,13 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'messages',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/components/messages',
+            'messages',
+          );
+        }}
       >
         Messages
       </div>
@@ -213,7 +259,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       const schemaName = schema.id();
       return <li
         key={schemaName}
-        className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
+        className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
           hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -222,6 +268,13 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             `schema-${schemaName}`,
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
+            `schema-${schemaName}`,
+          );
+        }}
       >
         {schemaName}
       </li>
@@ -231,7 +284,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -240,6 +293,13 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'schemas',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/components/schemas',
+            'schemas',
+          );
+        }}
       >
         Schemas
       </div>
@@ -300,7 +360,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
       <ul>
         <li className="mb-4">
           <div
-            className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+            className={`${NAVIGATION_SECTION_STYLE} ${
               hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -309,6 +369,13 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
                 'introduction',
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                '/info',
+                'introduction',
+              );
+            }}
           >
             Information
           </div>
