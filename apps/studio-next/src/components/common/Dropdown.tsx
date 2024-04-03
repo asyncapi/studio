@@ -28,6 +28,8 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
     <div className={className}>
       <button
         onClick={() => setOpen(!open)}
+        tabIndex={0}
+        onKeyDown={() => setOpen(!open)}
         type="button"
         className={`flex p-2 text-sm rounded-md ${buttonHoverClassName} focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150`}
       >
@@ -36,6 +38,8 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
       <div
         ref={dropdownRef}
         onClick={() => setOpen(false)}
+        tabIndex={0}
+        onKeyDown={() => setOpen(false)}
         className={`${
           open ? 'visible' : 'invisible'
         } origin-top-right absolute ${align === 'right' &&

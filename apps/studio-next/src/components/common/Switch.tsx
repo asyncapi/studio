@@ -11,13 +11,17 @@ export const Switch: React.FunctionComponent<SwitchProps> = ({
 }) => {
   const [toggle, setToggle] = useState(initToggle);
 
+  const onClickHandler = (e: any) => {
+    const newValue = !toggle;
+    setToggle(newValue);
+    onChange(newValue);
+  }
+
   return (
     <div 
-      onClick={() => {
-        const newValue = !toggle;
-        setToggle(newValue);
-        onChange(newValue);
-      }}
+      onClick={onClickHandler}
+      tabIndex={0}
+      onKeyDown={onClickHandler}
     >
       <label 
         htmlFor="toggle"
