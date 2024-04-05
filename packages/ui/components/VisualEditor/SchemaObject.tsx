@@ -29,10 +29,25 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   };
 
   const handleRemoveProperty = (propertyPath: string) => {
-    const currentSchema = _.cloneDeep(schema);
-    _.unset(currentSchema, propertyPath);
-    console.log(`Removed property at ${propertyPath}`);
-    onSchemaChange(currentSchema);
+    const updatedSchema = _.cloneDeep(schema);
+    const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
+    console.log("fullPath: ",normalizedPath)
+    console.log("propertyPath: ",propertyPath)
+    const isRemoved = _.unset(updatedSchema, normalizedPath);
+
+    if (isRemoved) {
+      const propertyName = normalizedPath.split('.').pop();
+      if (updatedSchema.required) {
+        updatedSchema.required = updatedSchema.required.filter(
+          (requiredProp: any) => requiredProp !== propertyName
+      );
+    }
+      console.log(`Removed property at ${propertyPath}`);
+      console.log("removed schema",updatedSchema);
+      onSchemaChange(updatedSchema);
+    } else {
+      console.log(`Failed to remove property at ${propertyPath}`);
+    }
   };
 
   const handleTypeChange = (propertyPath: string, newSchema: any, newType: any) => { // Added types to resolve TS7006
@@ -48,6 +63,16 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newTypeValue}`);
   };
 
+  const handleToggleRequired = (path:string, name: string) => {
+    const normalizedPath = path.startsWith('.') ? path.slice(1) : path;
+    /** Todo */
+    // const updatedSchema = _.cloneDeep(schema);
+    // console.log("normalizedPath", normalizedPath)
+    // console.log("path",path)
+    // console.log("name",name)
+    // console.log("updatedSchema",JSON.stringify(updatedSchema))
+  }
+
   return (
     <div style={{ margin: '10px 0' }}>
       {_.map(schema.properties, (propertySchema, propertyName) => (
@@ -56,7 +81,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
           name={propertyName}
           schema={propertySchema}
           onRemove={handleRemoveProperty}
-          onToggleRequired={() => console.log('Toggling required')}
+          onToggleRequired={handleToggleRequired}
           isRequired={_.includes(schema.required, propertyName)}
           onTypeChange={handleTypeChange}
           onAddNestedProperty={handleAddProperty}

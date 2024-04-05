@@ -134,10 +134,10 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       </div>
       {renderNestedProperties()}
       {renderArrayItemsProperties()}
-      {schema.type === 'object' && (
+      {schema.type === 'array' && schema.items && schema.items.type === "object" && (
         <PropertyControls
           onAdd={onAddNestedProperty}
-          schemaPath={`${path}`}
+          schemaPath={`${path}.items.properties`}
           level={level + 1}
         />
       )}
