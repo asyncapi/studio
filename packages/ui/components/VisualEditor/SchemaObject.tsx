@@ -35,12 +35,17 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     onSchemaChange(currentSchema);
   };
 
-  const handleTypeChange = (propertyPath: string, newSchema: any) => { // Added types to resolve TS7006
-    console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newSchema}`);
+  const handleTypeChange = (propertyPath: string, newSchema: any, newType: any) => { // Added types to resolve TS7006
+    const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
+    const typePath = `${normalizedPath}.type`;
+    const newTypeValue = newType.type;
+    console.log("newTypeValue",newTypeValue);
+    console.log("normalizedPath",normalizedPath);
     const currentSchema = _.cloneDeep(schema);
-    _.set(currentSchema, propertyPath, newSchema);
+    _.set(currentSchema, typePath , newTypeValue);
     console.log(`Type changed at ${propertyPath}`, newSchema);
     onSchemaChange(currentSchema);
+    console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newTypeValue}`);
   };
 
   return (
