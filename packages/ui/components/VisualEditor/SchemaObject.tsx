@@ -51,27 +51,49 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   };
 
   const handleTypeChange = (propertyPath: string, newSchema: any, newType: any) => { // Added types to resolve TS7006
+    console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newType}`);
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
     const typePath = `${normalizedPath}.type`;
     const newTypeValue = newType.type;
-    console.log("newTypeValue",newTypeValue);
-    console.log("normalizedPath",normalizedPath);
     const currentSchema = _.cloneDeep(schema);
     _.set(currentSchema, typePath , newTypeValue);
     console.log(`Type changed at ${propertyPath}`, newSchema);
     onSchemaChange(currentSchema);
-    console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newTypeValue}`);
   };
 
   const handleToggleRequired = (path:string, name: string) => {
-    const normalizedPath = path.startsWith('.') ? path.slice(1) : path;
-    /** Todo */
-    // const updatedSchema = _.cloneDeep(schema);
-    // console.log("normalizedPath", normalizedPath)
-    // console.log("path",path)
-    // console.log("name",name)
-    // console.log("updatedSchema",JSON.stringify(updatedSchema))
+    const updatedSchema = _.cloneDeep(schema);
+    const existingRequired = _.get(updatedSchema, `required`, []);
+    const isRequirePresent = existingRequired.includes(name);
+    console.log("isRequired",isRequirePresent);
+    if(!isRequirePresent) {  
+      const newRequired = _.uniq([...existingRequired, name]);
+      _.set(updatedSchema, `required`, newRequired);
+    } else {
+      const newRequired = existingRequired.filter((item: string) => item !== name);
+      _.set(updatedSchema, `required`, newRequired);
+    }
+  
+    onSchemaChange(updatedSchema);
   }
+  
+  const handleToggleNestedRequired = (path: string, name: string) => {
+    const updatedSchema = _.cloneDeep(schema);
+    const normalizedPath = path.startsWith('.') ? path.slice(1) : path;
+    const reqPath = normalizedPath.split('.properties')[0]
+    const existingRequired = _.get(updatedSchema, `${reqPath}.required`, []);
+    const isRequirePresent = existingRequired.includes(name);
+  
+    if (!isRequirePresent ) {
+      const newRequired = _.uniq([...existingRequired, name]);
+      _.set(updatedSchema, `${reqPath}.required`, newRequired);
+    } else {
+      const newRequired = existingRequired.filter((item: string) => item !== name);
+      _.set(updatedSchema, `${reqPath}.required`, newRequired);
+    }
+  
+    onSchemaChange(updatedSchema);
+  };
 
   return (
     <div style={{ margin: '10px 0' }}>
@@ -86,7 +108,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
           onTypeChange={handleTypeChange}
           onAddNestedProperty={handleAddProperty}
           onRemoveNestedProperty={handleRemoveProperty}
-          onToggleNestedRequired={() => console.log('Toggling nested required')}
+          onToggleNestedRequired={handleToggleNestedRequired}
           path={`${path}.properties.${propertyName}`}
           level={level + 1}
         />
