@@ -99,13 +99,13 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   };
 
   return (
-    <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', marginBottom: '-8px' }}>
+    <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', marginBottom: '-8px', paddingTop: '4px' }}>
       <div className="flex items-center justify-between">
       <div style={{borderTop: '1px solid grey', width: `${level * 20}px`,
       }}>
       </div>
-        <div>
-          <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2 ">{name}</strong>
+        <div className='pt-1'>
+          <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
           <select
             value={schema.type}
             onChange={handleTypeChange}
@@ -150,6 +150,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       {schema.type === "object" && (
         <PropertyControls
           onAdd={onAddNestedProperty}
+          schemaPath={`${path}`}
           level={level + 1}
         />
       )}
