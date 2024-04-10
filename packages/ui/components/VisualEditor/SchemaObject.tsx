@@ -33,21 +33,8 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
     console.log("fullPath: ",normalizedPath)
     console.log("propertyPath: ",propertyPath)
-    const isRemoved = _.unset(updatedSchema, normalizedPath);
-
-    if (isRemoved) {
-      const propertyName = normalizedPath.split('.').pop();
-      if (updatedSchema.required) {
-        updatedSchema.required = updatedSchema.required.filter(
-          (requiredProp: any) => requiredProp !== propertyName
-      );
-    }
-      console.log(`Removed property at ${propertyPath}`);
-      console.log("removed schema",updatedSchema);
-      onSchemaChange(updatedSchema);
-    } else {
-      console.log(`Failed to remove property at ${propertyPath}`);
-    }
+    _.unset(updatedSchema, normalizedPath);
+    onSchemaChange(updatedSchema);
   };
 
   const handleTypeChange = (propertyPath: string, newSchema: any, newType: any) => { // Added types to resolve TS7006
@@ -80,16 +67,20 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   const handleToggleNestedRequired = (path: string, name: string) => {
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = path.startsWith('.') ? path.slice(1) : path;
-    const reqPath = normalizedPath.split('.properties')[0]
-    const existingRequired = _.get(updatedSchema, `${reqPath}.required`, []);
+    const schemaPath = normalizedPath.split('.properties');
+    console.log("schemaPath",schemaPath)
+    const requiredPath = schemaPath.slice(0, -1).join('.properties') + '.required';
+    console.log("requiredPath",requiredPath)
+  
+    const existingRequired = _.get(updatedSchema, requiredPath, []);
     const isRequirePresent = existingRequired.includes(name);
   
-    if (!isRequirePresent ) {
+    if (!isRequirePresent) {
       const newRequired = _.uniq([...existingRequired, name]);
-      _.set(updatedSchema, `${reqPath}.required`, newRequired);
+      _.set(updatedSchema, requiredPath, newRequired);
     } else {
       const newRequired = existingRequired.filter((item: string) => item !== name);
-      _.set(updatedSchema, `${reqPath}.required`, newRequired);
+      _.set(updatedSchema, requiredPath, newRequired);
     }
   
     onSchemaChange(updatedSchema);
