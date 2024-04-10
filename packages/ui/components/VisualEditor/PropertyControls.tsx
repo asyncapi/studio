@@ -10,17 +10,17 @@ interface PropertyControlsProps {
 const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, level }) => {
   const inputAndSelectStyle = {
     backgroundColor: '#0F172A',
-    color: 'white',
     borderRadius: '3px',
     padding: '2px',
     fontSize: '14px',
-    fontFamily: 'Inter, Helvetica'
+    fontFamily: 'Inter, Helvetica',
   };
 
   const [key, setKey] = useState('');
   const [type, setType] = useState('');
   const [error, setError] = useState('');
   const [itemType, setItemType] = useState('');
+  const [showInputs, setShowInputs] = useState(false);
 
   const handleAddProperty = () => {
     if (_.isEmpty(key) || _.isEmpty(type)) {
@@ -42,6 +42,15 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     setType('');
     setItemType('');
     setError('');
+    setShowInputs(false);
+  };
+
+  const handleCancel = () => {
+    setKey('');
+    setType('');
+    setItemType('');
+    setError('');
+    setShowInputs(false);
   };
 
   return (
@@ -53,8 +62,19 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
       paddingLeft: '10px',
       marginTop: '-1px',
     }}>
-      <div className="flex gap-[6px] items-center mt-[6px] mb-[6px]">
-        <input
+        {!showInputs && (
+          <div>
+            <button onClick={() => setShowInputs(true)} className='text-[#808080] px-3 py-2 rounded-md flex items-center gap-2 font-inter text-sm'>
+            <div className="text-[#808080] border-2 border-[#808080] h-5 w-5 rounded-full flex items-center justify-center">
+            <span>&#43;</span>
+            </div>
+            Add Property
+            </button>
+          </div>
+        )}
+        {showInputs && (
+          <div className='flex gap-[6px] items-center mt-[6px] mb-[6px]'>
+          <input
           type="text"
           value={key}
           onChange={(e) => setKey(e.target.value)}
@@ -78,8 +98,10 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
             <option value="object">Object</option>
           </select>
         )}
-        <button onClick={handleAddProperty}>Add Property</button>
+        <button onClick={handleAddProperty}>Add</button>
+        <button onClick={handleCancel}>Cancel</button>
       </div>
+        )}
       {error && <p style={{ color: '#DB2777' }}>{error}</p>}
     </div>
   );
