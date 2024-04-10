@@ -105,13 +105,23 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       }}>
       </div>
         <div>
-          <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2 ${">{name}</strong>
+          <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2 ">{name}</strong>
           <select
             value={schema.type}
             onChange={handleTypeChange}
             style={{
               backgroundColor: '#0F172A',
-              color: 'white',
+              color: schema.type === 'object'
+              ? 'blue'
+              : schema.type === 'string'
+              ? 'orange'
+              : schema.type === 'boolean'
+              ? 'green'
+              : schema.type === 'array' || schema.type === 'null'
+              ? 'red'
+              : schema.type === 'number'
+              ? 'yellow'
+              : 'white',
               borderRadius: '3px',
               padding: '2px',
               fontSize: '14px',
