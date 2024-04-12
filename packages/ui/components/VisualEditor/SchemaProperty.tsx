@@ -18,6 +18,32 @@ interface SchemaPropertyProps {
     level: number;
 }
 
+export const getColorForType = (type: string, itemType?: string) => {
+  if (type === 'object') {
+    return 'blue';
+  } else if (type === 'string') {
+    return 'orange';
+  } else if (type === 'boolean') {
+    return 'green';
+  } else if (type === 'number') {
+    return 'yellow';
+  } else if (type === 'array') {
+    if (itemType === 'string') {
+      return 'red';
+    } else if (itemType === 'number') {
+      return 'red';
+    } else if (itemType === 'boolean') {
+      return 'red';
+    } else if (itemType === 'object') {
+      return 'red';
+    } else {
+      return 'white'; 
+    }
+  } else {
+    return 'white'; 
+  }
+};
+
 const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   name, 
   schema, 
@@ -107,21 +133,11 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
         <div className='pt-1'>
           <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
           <select
-            value={schema.type}
+            value={schema.type === 'array' ? `array<${schema.items?.type || null }>` : schema.type}
             onChange={handleTypeChange}
             style={{
               backgroundColor: '#0F172A',
-              color: schema.type === 'object'
-              ? 'blue'
-              : schema.type === 'string'
-              ? 'orange'
-              : schema.type === 'boolean'
-              ? 'green'
-              : schema.type === 'array' || schema.type === 'null'
-              ? 'red'
-              : schema.type === 'number'
-              ? 'yellow'
-              : 'white',
+              color: getColorForType(schema.type, schema.items?.type),
               borderRadius: '3px',
               padding: '2px',
               fontSize: '14px',
@@ -133,7 +149,10 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
             <option value="number">Number</option>
             <option value="boolean">Boolean</option>
             <option value="object">Object</option>
-            <option value="array">Array</option>
+            <option value="array<string>">Array&lt;String&gt;</option>
+            <option value="array<number>">Array&lt;Number&gt;</option>
+            <option value="array<boolean>">Array&lt;Boolean&gt;</option>
+            <option value="array<object>">Array&lt;Object&gt;</option>
           </select>
         </div>
         <div style={{ marginLeft: 'auto' }}>

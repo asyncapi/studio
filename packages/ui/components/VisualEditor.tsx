@@ -17,7 +17,7 @@ interface SchemaObjectInterface {
 export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChange }) => {
   const selectStyle = {
     backgroundColor: '#0F172A',
-    color: 'white',
+    color: 'blue',
     borderRadius: '3px',
     fontSize: '12px',
     fontFamily: 'Inter, sans-serif'
