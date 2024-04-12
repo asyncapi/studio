@@ -23,7 +23,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
     console.log('Normalised path',normalizedPath);
     _.set(updatedSchema, normalizedPath, propertySchema);
-
     console.log(`Property added at ${normalizedPath}`, updatedSchema);
     onSchemaChange(updatedSchema);
   };
@@ -31,9 +30,9 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   const handleRemoveProperty = (propertyPath: string) => {
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
-    console.log("fullPath: ",normalizedPath)
+    console.log("normalizedPath: ",normalizedPath)
     console.log("propertyPath: ",propertyPath)
-    _.unset(updatedSchema, normalizedPath);
+      _.unset(updatedSchema, normalizedPath);
     onSchemaChange(updatedSchema);
   };
 

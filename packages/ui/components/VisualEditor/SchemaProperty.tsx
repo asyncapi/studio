@@ -87,16 +87,25 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
       return (
-        <SchemaObject
-          schema={schema.items}
-          onSchemaChange={(newItemsSchema) => {
-            const updatedSchema = { ...schema, items: newItemsSchema };
-            onTypeChange(path, name, updatedSchema);
-            //Need to updated schema from local schema
-          }}
-          path={''}
-          level={level + 1}
-        />
+        <div>
+        <strong style={{ marginLeft: `${level * 20 + 20}px` }} className='text-sm'>Array Items</strong>
+        {_.map(schema.items.properties, (nestedSchema, nestedName) => (
+          <SchemaProperty
+            key={nestedName}
+            name={nestedName}
+            schema={nestedSchema}
+            onRemove={onRemove}
+            onToggleRequired={onToggleNestedRequired}
+            isRequired={_.includes(schema.items.required, nestedName)}
+            onTypeChange={onTypeChange}
+            onAddNestedProperty={onAddNestedProperty}
+            onRemoveNestedProperty={onRemoveNestedProperty}
+            onToggleNestedRequired={onToggleNestedRequired}
+            path={`${path}.items.properties.${nestedName}`}
+            level={level + 1}            
+          />
+        ))}
+      </div>
       );
     }
     return null;

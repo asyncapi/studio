@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SchemaObject from './VisualEditor/SchemaObject';
 import _ from 'lodash';
+import { getColorForType } from './VisualEditor/SchemaProperty';
 
 interface VisualEditorProps {
     schema: string;
@@ -15,14 +16,7 @@ interface SchemaObjectInterface {
 }
 
 export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChange }) => {
-  const selectStyle = {
-    backgroundColor: '#0F172A',
-    color: 'blue',
-    borderRadius: '3px',
-    fontSize: '12px',
-    fontFamily: 'Inter, sans-serif'
-  };
-  
+
   const [schemaObject, setSchemaObject] = useState<SchemaObjectInterface>({});
 
   useEffect(() => {
@@ -41,6 +35,14 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     console.log('Schema updated:', newSchemaString);
     setSchemaObject(updatedSchema);
     onSchemaChange(newSchemaString);
+  };
+
+  const selectStyle = {
+    backgroundColor: '#0F172A',
+    color: getColorForType(schemaObject.type || 'white', schemaObject.items?.type || 'red'),
+    borderRadius: '3px',
+    fontSize: '12px',
+    fontFamily: 'Inter, sans-serif'
   };
 
   const renderRootTypeSelector = () => (
