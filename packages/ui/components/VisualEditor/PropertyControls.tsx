@@ -31,11 +31,18 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     const fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
     console.log('Full Full Path :)', fullPath);
     console.log(`Adding new property at: ${fullPath}`);
-
+    
     onAdd(fullPath, {
       type, 
       ...(type === 'object' && { properties: {} }), 
-      ...(type === 'array' && { items: { type: itemType } }) 
+      ...(type === 'array' && { 
+        items: (itemType !== 'object')
+          ? { type: itemType }
+          : { 
+            type: 'object',
+            properties: {},
+           }
+       }) 
     } as any); 
 
     setKey('');
