@@ -93,7 +93,6 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
-      const itemsProperties = schema.items.properties || {};
       return (
         <div>
         {_.map(schema.items.properties, (nestedSchema, nestedName) => (
