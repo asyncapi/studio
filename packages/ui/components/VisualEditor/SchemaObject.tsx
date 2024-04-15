@@ -22,7 +22,15 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
     console.log('Normalised path',normalizedPath);
-    _.set(updatedSchema, normalizedPath, propertySchema);
+
+    if (normalizedPath.startsWith('items.properties')) {
+      const itemsPath = normalizedPath.split('.properties')[0];
+      const propertyName = normalizedPath.split('.').pop();
+      _.set(updatedSchema, `${itemsPath}.properties.${propertyName}`, propertySchema);
+    } else {
+      _.set(updatedSchema, normalizedPath, propertySchema);
+    }
+    
     console.log(`Property added at ${normalizedPath}`, updatedSchema);
     onSchemaChange(updatedSchema);
   };
@@ -32,17 +40,28 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
     console.log("normalizedPath: ",normalizedPath)
     console.log("propertyPath: ",propertyPath)
-      _.unset(updatedSchema, normalizedPath);
+    _.unset(updatedSchema, normalizedPath);
     onSchemaChange(updatedSchema);
   };
 
   const handleTypeChange = (propertyPath: string, newSchema: any, newType: any) => { // Added types to resolve TS7006
     console.log(`handleTypeChange called with path: ${propertyPath}, newType: ${newType}`);
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
-    const typePath = `${normalizedPath}.type`;
-    const newTypeValue = newType.type;
     const currentSchema = _.cloneDeep(schema);
-    _.set(currentSchema, typePath , newTypeValue);
+    const typePath = `${normalizedPath}.type`;
+
+    if(newType.type == "array") {
+      const itemType = newType.items;
+      console.log("itemType",itemType)
+      _.set(currentSchema, typePath, 'array');
+      _.set(currentSchema, `${normalizedPath}.items`, itemType);
+    } else {
+      const newTypeValue = newType.type;
+      _.set(currentSchema, typePath , newTypeValue);
+      const itemsPath = `${normalizedPath}.items`;
+      _.unset(currentSchema, itemsPath);
+    }
+
     console.log(`Type changed at ${propertyPath}`, newSchema);
     onSchemaChange(currentSchema);
   };

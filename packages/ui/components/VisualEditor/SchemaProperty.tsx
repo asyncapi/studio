@@ -63,10 +63,18 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     updatedSchema.type = newType;
 
-    if (newType === 'array') {
-      updatedSchema.items = updatedSchema.items || { type: 'string' };
-    } else if (newType === 'object') {
-      updatedSchema.properties = updatedSchema.properties || {};
+    if (newType.startsWith('array<')) {
+      const itemType = newType.slice(6, -1);
+      console.log(`Array type detected: ${itemType}`);
+      updatedSchema.type = 'array';
+      updatedSchema.items = { type: itemType };
+      console.log("updatedSchema",updatedSchema)
+    } else {
+      updatedSchema.items = newType;
+
+      if (newType === 'object') {
+        updatedSchema.properties = updatedSchema.properties || {};
+      } 
     }
 
     console.log(`Type changed for ${name} at ${path} to ${newType}`);
@@ -85,9 +93,9 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderArrayItemsProperties = () => {
     if (schema.type === 'array' && schema.items && schema.items.type === 'object') {
+      const itemsProperties = schema.items.properties || {};
       return (
         <div>
-        <strong style={{ marginLeft: `${level * 20 + 20}px` }} className='text-sm'>Array Items</strong>
         {_.map(schema.items.properties, (nestedSchema, nestedName) => (
           <SchemaProperty
             key={nestedName}
@@ -104,6 +112,11 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
             level={level + 1}            
           />
         ))}
+        <PropertyControls
+          onAdd={onAddNestedProperty}
+          schemaPath={`${path}.items`}
+          level={level + 1}
+        />
       </div>
       );
     }

@@ -35,14 +35,7 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     onAdd(fullPath, {
       type, 
       ...(type === 'object' && { properties: {} }), 
-      ...(type === 'array' && { 
-        items: (itemType !== 'object')
-          ? { type: itemType }
-          : { 
-            type: 'object',
-            properties: {},
-           }
-       }) 
+      ...(type === 'array' && { items: { type: itemType }}),
     } as any); 
 
     setKey('');
