@@ -22,11 +22,11 @@
     "./LICENSE"
   ],
   "dependencies": {
-    "@asyncapi/avro-schema-parser": "^3.0.19",
-    "@asyncapi/converter": "^1.4.17",
+    "@asyncapi/avro-schema-parser": "^3.0.21",
+    "@asyncapi/converter": "^1.4.18",
     "@asyncapi/openapi-schema-parser": "^3.0.20",
-    "@asyncapi/parser": "^3.0.12",
-    "@asyncapi/protobuf-schema-parser": "^3.2.10",
+    "@asyncapi/parser": "^3.0.13",
+    "@asyncapi/protobuf-schema-parser": "^3.2.11",
     "@asyncapi/react-component": "^1.2.2",
     "@asyncapi/specs": "^6.5.6",
     "@ebay/nice-modal-react": "^1.2.10",
