@@ -80,7 +80,7 @@
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^1.5.1",
     "@asyncapi/java-template": "^0.2.1",
-    "@asyncapi/markdown-template": "^1.5.0",
+    "@asyncapi/markdown-template": "^1.6.0",
     "@asyncapi/nodejs-template": "^2.0.1",
     "@asyncapi/nodejs-ws-template": "^0.9.35",
     "@asyncapi/python-paho-template": "^0.2.13",
