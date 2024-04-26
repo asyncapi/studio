@@ -21,7 +21,7 @@ export default function RootLayout({
             <div>
               <img
                 className="inline-block h-20"
-                src="%PUBLIC_URL%/img/logo-studio.svg"
+                src={`${process.env.PUBLIC_URL || ''}/img/logo-studio.svg`}
                 alt="AsyncAPI Logo"
               />
               <span className="inline-block text-xs text-teal-500 font-normal tracking-wider ml-1 transform translate-y-1.5 -translate-x-1 uppercase">
