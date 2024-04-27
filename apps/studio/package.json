@@ -29,10 +29,12 @@
     "@asyncapi/protobuf-schema-parser": "^3.2.11",
     "@asyncapi/react-component": "^1.4.10",
     "@asyncapi/specs": "^6.7.0",
+    "@babel/preset-react": "^7.22.3",
     "@ebay/nice-modal-react": "^1.2.10",
     "@headlessui/react": "^1.7.4",
     "@hookstate/core": "^4.0.0-rc21",
     "@monaco-editor/react": "^4.4.6",
+    "@stoplight/yaml": "^4.3.0",
     "@tippyjs/react": "^4.2.6",
     "js-base64": "^3.7.3",
     "js-file-download": "^0.4.12",
@@ -44,6 +46,7 @@
     "react-hot-toast": "2.4.0",
     "react-icons": "^4.6.0",
     "reactflow": "^11.2.0",
+    "tippy.js": "^6.3.7",
     "zustand": "^4.1.4"
   },
   "scripts": {
@@ -85,7 +88,10 @@
     "@asyncapi/nodejs-ws-template": "^0.9.35",
     "@asyncapi/python-paho-template": "^0.2.13",
     "@asyncapi/ts-nats-template": "^0.10.3",
+    "@babel/preset-env": "^7.24.4",
+    "@babel/preset-typescript": "^7.24.1",
     "@craco/craco": "^7.1.0",
+    "@craco/types": "^7.1.0",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -93,7 +99,7 @@
     "@types/jest": "^29.2.3",
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.11",
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.19.31",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "assert": "^2.0.0",
@@ -102,6 +108,7 @@
     "buffer": "^6.0.3",
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "cross-env": "^7.0.3",
+    "esbuild": "0.18.20",
     "eslint": "^8.27.0",
     "eslint-plugin-react": "7.31.10",
     "eslint-plugin-security": "^1.5.0",
@@ -126,7 +133,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!monaco-editor|monaco-yaml|monaco-marker-data-provider|monaco-worker-manager)"
+      "node_modules/.pnpm/(?!monaco-editor|monaco-yaml|monaco-marker-data-provider|monaco-worker-manager)"
     ],
     "moduleNameMapper": {
       "^nimma/legacy$": "<rootDir>/../../node_modules/nimma/dist/legacy/cjs/index.js",
