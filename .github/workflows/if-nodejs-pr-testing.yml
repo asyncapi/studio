@@ -56,8 +56,4 @@ jobs:
         run: pnpm install
       - if: steps.should_run.outputs.shouldrun == 'true' 
         name: Test
-        run: pnpm test --if-present
-      - if: steps.should_run.outputs.shouldrun == 'true' 
-        name: Run release assets generation to make sure PR does not break it
-        shell: bash
-        run: pnpm run generate:assets --if-present
+        run: pnpm test

@@ -15,9 +15,10 @@
       "dependsOn": ["build"]
     },
     "test": {
-      "dependsOn": ["lint"]
+      "dependsOn": ["lint", "generate:assets"]
     },
     "clean": {},
-    "lint": {}
+    "lint": {},
+    "generate:assets":{}
   }
 }
