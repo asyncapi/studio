@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "eslint": "^9.1.1",
+    "eslint": "^8.27.0",
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-security": "^3.0.0",
     "eslint-plugin-sonarjs": "^0.25.1",
