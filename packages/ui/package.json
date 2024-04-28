@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/lodash": "^4.17.0",
     "@types/react": "^18.2.5",
-    "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
     "postcss": "^8.4.31",
     "tailwind-config": "workspace:*",

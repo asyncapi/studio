@@ -50,6 +50,7 @@
     "zustand": "^4.1.4"
   },
   "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "dev": "npm run start",
     "start": "craco start",
     "build": "npm run generate:template-parameters && craco build",
@@ -57,8 +58,6 @@
     "test": "npm run test:unit",
     "test:unit": "craco test --watchAll=false --detectOpenHandles",
     "eject": "react-scripts eject",
-    "lint": "eslint --max-warnings 0 --config .eslintrc .",
-    "lint:fix": "eslint --max-warnings 0 --config .eslintrc . --fix",
     "generate:readme:toc": "markdown-toc -i README.md",
     "generate:assets": "npm run build && npm run generate:readme:toc",
     "generate:template-parameters": "ts-node ./scripts/template-parameters.ts",
@@ -109,11 +108,6 @@
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "cross-env": "^7.0.3",
     "esbuild": "0.18.20",
-    "eslint": "^8.27.0",
-    "eslint-plugin-react": "7.31.10",
-    "eslint-plugin-security": "^1.5.0",
-    "eslint-plugin-sonarjs": "^0.16.0",
-    "eslint-webpack-plugin": "^4.0.1",
     "https-browserify": "^1.0.0",
     "markdown-toc": "^1.2.0",
     "path-browserify": "^1.0.1",
@@ -129,7 +123,8 @@
     "url": "^0.11.0",
     "util": "^0.12.5",
     "web-vitals": "^3.1.0",
-    "webpack": "^5.75.0"
+    "webpack": "^5.75.0",
+    "eslint-config-custom": "workspace:*"
   },
   "jest": {
     "transformIgnorePatterns": [

@@ -14,7 +14,10 @@
     "release": {
       "dependsOn": ["build"]
     },
-    "test": {},
-    "clean": {}
+    "test": {
+      "dependsOn": ["lint"]
+    },
+    "clean": {},
+    "lint": {}
   }
 }

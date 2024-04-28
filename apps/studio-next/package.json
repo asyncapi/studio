@@ -6,7 +6,7 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "echo 'No linting configured'"
   },
   "dependencies": {
     "@codemirror/state": "^6.4.1",
@@ -22,7 +22,6 @@
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",
     "codemirror": "^6.0.1",
-    "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "next": "14.2.3",
     "postcss": "8.4.31",

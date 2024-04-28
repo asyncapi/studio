@@ -16,19 +16,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "lint": "echo \"No linter configured yet\"",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "generate:assets": "echo \"No assets to configure\"",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
     "dev": "storybook dev -p 6006 --no-open",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "build": "storybook build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -46,30 +40,33 @@
     "@babel/core": "^7.17.4",
     "@babel/preset-env": "^7.22.4",
     "@babel/preset-react": "^7.22.3",
+    "@babel/preset-typescript": "^7.24.1",
     "@storybook/addon-actions": "^7.6.18",
+    "@storybook/addon-docs": "^7.6.18",
     "@storybook/addon-essentials": "^7.6.18",
     "@storybook/addon-interactions": "^7.6.18",
-    "@storybook/addon-docs": "^7.6.18",
     "@storybook/addon-links": "^7.6.18",
     "@storybook/addons": "^7.6.18",
     "@storybook/blocks": "^7.6.18",
     "@storybook/preset-create-react-app": "^7.6.18",
-    "@babel/preset-typescript": "^7.24.1",
     "@storybook/react": "^7.6.18",
     "@storybook/react-webpack5": "^7.6.18",
     "@storybook/test": "^7.6.18",
     "@storybook/theming": "^7.6.18",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^8.2.3",
+    "eslint-config-custom": "workspace:*",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-storybook": "^0.8.0",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "react-docgen-typescript": "^2.2.2",
     "react-docgen-typescript-plugin": "^1.0.5",
     "remark-gfm": "^3.0.1",
     "storybook": "^7.0.20",
+    "tailwind-config": "workspace:*",
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.2",
-    "webpack": "^5.69.0",
-    "tailwind-config": "workspace:*"
+    "webpack": "^5.69.0"
   },
   "publishConfig": {
     "access": "public"
