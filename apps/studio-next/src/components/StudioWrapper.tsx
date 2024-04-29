@@ -4,10 +4,6 @@ import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
 
 import { createServices, Services, ServicesProvider } from '@/services';
 
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/animations/shift-away.css';
-import '@asyncapi/react-component/styles/default.min.css';
-import 'reactflow/dist/style.css';
 import { AsyncAPIStudio } from './CodeEditor';
 import Preloader from './Preloader';
 

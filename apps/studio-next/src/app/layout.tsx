@@ -1,5 +1,10 @@
 /* eslint-disable no-undef */
 import { Toolbar } from '@/components/Toolbar'
+
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/shift-away.css';
+import '@asyncapi/react-component/styles/default.min.css';
+import 'reactflow/dist/style.css';
 import './globals.css'
 
 export default function RootLayout({
