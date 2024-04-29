@@ -1,5 +1,17 @@
 # @asyncapi/studio
 
+## 0.21.1
+
+### Patch Changes
+
+- 481b28c: fix: Incorrect rendering of security schemas: by reference and inline, #1066
+
+## 0.21.0
+
+### Minor Changes
+
+- 26dc05f: Fix side bar color and update @asyncapi/html-template.
+
 ## 0.20.2
 
 ### Patch Changes
