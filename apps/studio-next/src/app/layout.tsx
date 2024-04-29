@@ -1,9 +1,7 @@
 /* eslint-disable no-undef */
 import { Toolbar } from '@/components/Toolbar'
 import './globals.css'
-import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({
   children,
 }: {
@@ -11,9 +9,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Toolbar />
-        <main className="flex flex-col w-full h-screen">
+        <main className="flex flex-col w-full h-[calc(100vh-4rem)]">
           {children}
         </main> 
         <div id="preloader">

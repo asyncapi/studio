@@ -17,7 +17,7 @@ interface NavigationSectionProps {
   hash: string;
 }
 
-export const NAVIGATION_SUB_SECTION_STYLE = 'p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900';
+export const NAVIGATION_SUB_SECTION_STYLE = 'p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900';
 export const NAVIGATION_SECTION_STYLE = 'p-2 pl-3 text-white cursor-pointer hover:bg-gray-900'
 
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
