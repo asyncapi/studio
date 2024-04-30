@@ -61,7 +61,7 @@ type Story = StoryObj<typeof Dropdown>
 export const Default: Story = {
   args: {
     options,
-    placeholder: "Select a prptocol...",
+    placeholder: "Select a protocol...",
     isDisabled: false,
   },
 }
