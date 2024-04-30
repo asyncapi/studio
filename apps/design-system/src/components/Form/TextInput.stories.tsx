@@ -33,6 +33,7 @@ export const Numeric: Story = {
   args: {
     ...Default.args,
     type: 'number',
+    placeholder: 'Enter some numbers...',
   },
   parameters: {
     backgrounds: { default: 'light' },
