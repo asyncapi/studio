@@ -15,7 +15,7 @@ type DropdownRegularOptionProps = {
 const DropdownRegularOption = ({ option: { value, label } }: DropdownRegularOptionProps) => {
   return (
     <RadixSelect.Item
-      className="flex items-center relative text-gray-200 text-sm leading-7 pl-6 pr-7 hover:bg-gray-700 focus:bg-gray-700 my-2 rounded outline-none"
+      className="flex items-center cursor-default relative text-gray-200 text-sm leading-7 pl-6 pr-7 hover:bg-gray-700 focus:bg-gray-700 my-2 rounded outline-none"
       value={value}
     >
       <RadixSelect.ItemText>{label}</RadixSelect.ItemText>
