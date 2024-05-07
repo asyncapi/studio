@@ -10,7 +10,7 @@ Clone this repo and run:
 pnpm install
 ```
 
-> **Note:** PNPM v8+ and Node.js >=18.17 is required.
+> **Note:** PNPM v8+ and Node.js v18.17+ is required.
 
 ## Development
 
