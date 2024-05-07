@@ -34,7 +34,7 @@ COPY --from=builder /app/out/full/ .
 RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build:studio
  
 
-FROM docker.io/library/nginx:1.21.5-alpine as runtime
+FROM docker.io/library/nginx:1.25.5-alpine as runtime
 
 ARG BASE_URL_PLACEHOLDER
 # The base Nginx image automatically executes all shell scripts 
