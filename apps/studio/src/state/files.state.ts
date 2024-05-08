@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 const schema =
   localStorage.getItem('document') || `asyncapi: 3.0.0
