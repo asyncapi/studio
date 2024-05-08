@@ -66,7 +66,7 @@
     "tailwind-config": "workspace:*",
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.2",
-    "webpack": "^5.69.0"
+    "webpack": "^5.76.0"
   },
   "publishConfig": {
     "access": "public"
