@@ -1,32 +1,12 @@
-{
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
-  },
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "sonarjs", "security", "react"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:sonarjs/recommended",
-    "plugin:react/recommended",
-    "plugin:security/recommended"
-  ],
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
+module.exports = {
+  plugins: ["react"],
+  extends: ["./index", "plugin:react/recommended"],
+  settings: {
+    react: {
+      version: "detect"
     }
   },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "rules": {
+  rules: {
     "strict": 0,
     "no-underscore-dangle": 0,
     "no-mixed-requires": 0,

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { DropdownMenu } from '@asyncapi/studio-ui'
 
 export default {
