@@ -1,6 +1,6 @@
 import { Info, ServiceInfoBadge } from './ServiceInfoBadge';
 
-interface AppCardProps {
+interface ServiceProps {
   isActive?: boolean;
   name: string;
   description: string;
@@ -10,7 +10,7 @@ interface AppCardProps {
   className?: string;
 }
 
-export const AppCard = ({isActive = false, name, description, badges, className, isClient, isServer}:AppCardProps) => {
+export const Service = ({isActive = false, name, description, badges, className, isClient, isServer}:ServiceProps) => {
   const dedupedListOfBadges = Array.from(new Set(badges)).map((badge, index) => (<ServiceInfoBadge info={badge} key={badge + index} aria-hidden={true} />))
   
   const ariaDescriptionParts = [];
