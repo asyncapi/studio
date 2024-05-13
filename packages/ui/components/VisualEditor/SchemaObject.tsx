@@ -16,7 +16,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   path,
   level,
 }) => {
-  console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
+  // console.log(`Rendering SchemaObject. Path: ${path}, Level: ${level}`);
 
   const handleAddProperty = (fullPath: string, propertySchema: any) => {
     const updatedSchema = _.cloneDeep(schema);

@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon, TrashIcon } from '../icons';
+import { DropdownMenu, DropdownMenuItem } from '../DropdownMenu';
 
 interface SchemaPropertyProps {
     name: string;
@@ -50,7 +51,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   path, 
   level 
 }) => {
-  console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
+  // console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
@@ -71,19 +72,47 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     onTypeChange(path, name, updatedSchema);
   };
 
-  const handleItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newItemType = event.target.value;
+  const handleItemTypeChange = (selectedOption: any) => {
+    const newItemType = selectedOption[0]?.title?.toLowerCase();
     const updatedSchema = _.cloneDeep(schema);
     updatedSchema.items.type = newItemType;
-      if (newItemType === 'object') {
-        updatedSchema.properties = updatedSchema.properties || {};
-      } 
+
+    if (!newItemType) {
+      return;
+    }
+
+    if (newItemType === 'object') {
+      updatedSchema.properties = updatedSchema.properties || {};
+    } 
     console.log("newItemType",newItemType)
     console.log("newType",updatedSchema.items.type)
 
     console.log(`Item type changed for ${name} at ${path} to ${newItemType}`);
     onTypeChange(path, name, updatedSchema);
   };
+
+  const handleTypeDropdownSelect = (selectedOption: string) => {
+    handleTypeChange({ target: { value: selectedOption } } as React.ChangeEvent<HTMLSelectElement>);
+  };
+
+  const handleItemTypeDropdownSelect = (selectedOption: string) => {
+    handleItemTypeChange({ target: { value: selectedOption } } as React.ChangeEvent<HTMLSelectElement>);
+  };
+
+  const typeOptions: DropdownMenuItem[] = [
+    { type: 'regular', title: 'String', onSelect: () => handleTypeDropdownSelect('string') },
+    { type: 'regular', title: 'Number', onSelect: () => handleTypeDropdownSelect('number') },
+    { type: 'regular', title: 'Boolean', onSelect: () => handleTypeDropdownSelect('boolean') },
+    { type: 'regular', title: 'Object', onSelect: () => handleTypeDropdownSelect('object') },
+    { type: 'regular', title: 'Array', onSelect: () => handleTypeDropdownSelect('array') },
+  ];
+
+  const itemTypeOptions: DropdownMenuItem[] = [
+    { type: 'regular', title: 'String', onSelect: () => handleItemTypeDropdownSelect('string') },
+    { type: 'regular', title: 'Number', onSelect: () => handleItemTypeDropdownSelect('number') },
+    { type: 'regular', title: 'Boolean', onSelect: () => handleItemTypeDropdownSelect('boolean') },
+    { type: 'regular', title: 'Object', onSelect: () => handleItemTypeDropdownSelect('object') },
+  ];
 
   const handleRemove = () => {
     console.log(`Removing property ${name} at ${path}`);
@@ -148,6 +177,45 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     return null;
   };
 
+  const renderTypeDisplay = () => {
+    const types = Array.isArray(schema.type) ? schema.type : [schema.type];
+    return (
+      <span
+        style={{
+          marginLeft: '8px',
+          color: getColorForType(types),
+          borderRadius: '3px',
+          padding: '2px 4px',
+          fontSize: '14px',
+          fontFamily: 'Inter, Helvetica',
+        }}
+      >
+        {types.join(' | ')}
+      </span>
+    );
+  };
+
+  const renderItemTypeDisplay = () => {
+    if (Array.isArray(schema.type) && schema.items) {
+      const itemTypes = Array.isArray(schema.items.type) ? schema.items.type : [schema.items.type];
+      return (
+        <span
+          style={{
+            marginLeft: '8px',
+            color: getColorForType(`Array<${itemTypes.join(' | ')}>`),
+            borderRadius: '3px',
+            padding: '2px 4px',
+            fontSize: '14px',
+            fontFamily: 'Inter, Helvetica',
+          }}
+        >
+          {`Array<${itemTypes.join(' | ')}>`}
+        </span>
+      );
+    }
+    return null;
+  };
+  
   return (
     <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', marginBottom: '-8px', paddingTop: '4px' }}>
       <div className="flex items-center justify-between">
@@ -156,44 +224,17 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       </div>
         <div className='pt-1'>
           <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
-          <select
-            value={schema.type}
-            onChange={handleTypeChange}
-            style={{
-              backgroundColor: '#0F172A',
-              color: getColorForType(schema.type, schema.items?.type),
-              borderRadius: '3px',
-              padding: '2px',
-              fontSize: '14px',
-              fontFamily: 'Inter, Helvetica'
-            }}
-          >
-            <option value="">Select type</option>
-            <option value="string">String</option>
-            <option value="number">Number</option>
-            <option value="boolean">Boolean</option>
-            <option value="object">Object</option>
-            <option value="array">Array</option>
-          </select>
-          {schema.type === 'array' && (
-            <select
-              value={schema.items.type}
-              onChange={handleItemTypeChange}
-              style={{
-                backgroundColor: '#0F172A',
-                color: getColorForType(schema.items.type),
-                borderRadius: '3px',
-                padding: '2px',
-                fontSize: '14px',
-                fontFamily: 'Inter, Helvetica',
-              }}
-            >
-              <option value="">Select item type</option>
-              <option value="string">String</option>
-              <option value="number">Number</option>
-              <option value="boolean">Boolean</option>
-              <option value="object">Object</option>
-            </select>
+          {renderTypeDisplay()}
+          {renderItemTypeDisplay()}
+          <DropdownMenu
+            trigger={<button>&#9662;</button>}
+            items={typeOptions}
+          />
+          {schema.type.includes('array') && (
+            <DropdownMenu
+              trigger={<button>&#9662;</button>}
+              items={itemTypeOptions}
+            />
           )}
         </div>
         <div style={{ marginLeft: 'auto' }}>
