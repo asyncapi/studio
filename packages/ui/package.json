@@ -30,7 +30,8 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@asyncapi/studio-utils": "*"
+    "@asyncapi/studio-utils": "workspace:*",
+    "reactflow": "^11.2.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
