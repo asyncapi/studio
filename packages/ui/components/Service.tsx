@@ -1,6 +1,9 @@
+import { cn } from '@asyncapi/studio-utils';
 import { Info, ServiceInfoBadge } from './ServiceInfoBadge';
+import { Card } from './Card';
+import React from 'react';
 
-interface ServiceProps {
+interface AppCardProps {
   isActive?: boolean;
   name: string;
   description: string;
@@ -10,9 +13,11 @@ interface ServiceProps {
   className?: string;
 }
 
-export const Service = ({isActive = false, name, description, badges, className, isClient, isServer}:ServiceProps) => {
+const Service = React.forwardRef<
+HTMLDivElement,
+AppCardProps
+>(({isActive = false, name, description, badges, className, isClient, isServer}:AppCardProps, ref) => {
   const dedupedListOfBadges = Array.from(new Set(badges)).map((badge, index) => (<ServiceInfoBadge info={badge} key={badge + index} aria-hidden={true} />))
-  
   const ariaDescriptionParts = [];
   if (isClient) ariaDescriptionParts.push('client');
   if (isServer) ariaDescriptionParts.push('server');
@@ -22,13 +27,7 @@ export const Service = ({isActive = false, name, description, badges, className,
   const ariaDescription = `This application, named ${name}, is ${ariaDescriptionParts.join(' and ')}.`;
 
   return (
-    <>
-      <div
-        aria-label={`${ariaDescription} ${isActive ? 'It is currently active.' : 'It is currently inactive.'}`}
-        className={`bg-gray-800 border-gray-800 rounded-lg max-w-[523px] w-full border-2 ${className} ${
-          isActive ? ' border-pink-800/30 shadow-active' : ''
-        }`}
-      >
+      <Card className={cn('max-w-[523px] min-w-[523px] cursor-pointer', {"border-pink-800/30 shadow-active": isActive}, className)} aria-description={ariaDescription} ref={ref}>
         <div className="flex flex-col gap-2 px-5 py-3">
           <h3 className="text-base font-medium text-gray-100">{name}</h3>
           <div className='flex gap-1'>
@@ -46,7 +45,10 @@ export const Service = ({isActive = false, name, description, badges, className,
           <p className="text-sm text-gray-400 line-clamp-6">{description}
           </p>
         </div>
-      </div>
-    </>
+      </Card>
   )
-}
+})
+
+Service.displayName = "Service"
+
+export {Service}

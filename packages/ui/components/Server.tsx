@@ -8,7 +8,7 @@ interface ServerProps {
   isFaded?: boolean;
   name: string;
   icon: Info;
-  url: string;
+  url?: string;
   className?: string;
 }
 
@@ -17,7 +17,7 @@ HTMLDivElement,
 ServerProps
 >(({isActive = false, isFaded = false, name, className, icon, url}, ref) => {
   return (
-    <Card ref={ref} className={cn('w-[290px] border-dotted p-5', isActive && 'border-solid border-pink-800/30 drop-shadow-2xl shadow-active', isFaded && 'opacity-50', className)}>
+    <Card ref={ref} className={cn('max-w-[290px] min-w-[290px] border-dotted p-5 cursor-pointer', isActive && 'border-solid border-pink-800/30 drop-shadow-2xl shadow-active', isFaded && 'opacity-50', className)}>
       <div className='flex gap-2 align-middle'>
         <ServiceInfoBadge info={icon} aria-hidden={true} />
         <div className='flex flex-col justify-center'>
