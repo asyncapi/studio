@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SchemaObject from './VisualEditor/SchemaObject';
 import _ from 'lodash';
 import { getColorForType } from './VisualEditor/SchemaProperty';
+import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
 
 interface VisualEditorProps {
     schema: string;
@@ -37,48 +38,77 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     onSchemaChange(newSchemaString);
   };
 
-  const selectStyle = {
-    backgroundColor: '#0F172A',
-    color: getColorForType(schemaObject.type || 'white', schemaObject.items?.type || 'red'),
-    borderRadius: '3px',
-    fontSize: '12px',
-    fontFamily: 'Inter, sans-serif'
+  const handleRootTypeDropdownSelect = (selectedOption: string) => {
+    handleSchemaChange({ type: selectedOption });
+  };
+  
+  const handleArrayItemTypeDropdownSelect = (selectedOption: string) => {
+    handleSchemaChange({ items: { ...schemaObject.items, type: selectedOption } });
   };
 
-  const renderRootTypeSelector = () => (
-    <div>
-      <select
-        value={schemaObject.type || ''}
-        onChange={(e) => handleSchemaChange({ type: e.target.value })}
-        style={selectStyle}
-      >
-        <option value="">Select root type</option>
-        <option value="object">Object</option>
-        <option value="array">Array</option>
-        <option value="string">String</option>
-        <option value="number">Number</option>
-        <option value="boolean">Boolean</option>
-      </select>
-    </div>
-  );
+  const rootTypeOptions: DropdownMenuItem[] = [
+    { type: 'regular', title: 'Object', onSelect: () => handleRootTypeDropdownSelect('object') },
+    { type: 'regular', title: 'Array', onSelect: () => handleRootTypeDropdownSelect('array') },
+    { type: 'regular', title: 'String', onSelect: () => handleRootTypeDropdownSelect('string') },
+    { type: 'regular', title: 'Number', onSelect: () => handleRootTypeDropdownSelect('number') },
+    { type: 'regular', title: 'Boolean', onSelect: () => handleRootTypeDropdownSelect('boolean') },
+  ];
+  
+  const itemTypeOptions: DropdownMenuItem[] = [
+    { type: 'regular', title: 'String', onSelect: () => handleArrayItemTypeDropdownSelect('string') },
+    { type: 'regular', title: 'Number', onSelect: () => handleArrayItemTypeDropdownSelect('number') },
+    { type: 'regular', title: 'Boolean', onSelect: () => handleArrayItemTypeDropdownSelect('boolean') },
+    { type: 'regular', title: 'Object', onSelect: () => handleArrayItemTypeDropdownSelect('object') },
+    { type: 'regular', title: 'Array', onSelect: () => handleArrayItemTypeDropdownSelect('array') },
+  ];
 
-  const renderArrayItemTypeSelector = () => {
+  const renderRootTypeDisplay = () => {
+    const rootType = schemaObject.type || '';
+    return (
+      <div className="flex items-center">
+        <span
+          style={{
+            color: getColorForType(rootType),
+            borderRadius: '3px',
+            padding: '2px 4px',
+            fontSize: '14px',
+            fontFamily: 'Inter, Helvetica',
+          }}
+        >
+          {rootType}
+        </span>
+        <DropdownMenu
+          trigger={<button>&#9662;</button>}
+          items={rootTypeOptions}
+          side="bottom"
+          align="start"
+        />
+      </div>
+    );
+  };
+
+  const renderArrayItemTypeDisplay = () => {
     if (schemaObject.type === 'array') {
+      const itemType = schemaObject.items?.type || '';
       return (
-        <div>
-          <strong>Array Item Type:</strong>
-          <select
-            value={schemaObject.items?.type || ''}
-            onChange={(e) => handleSchemaChange({ items: { ...schemaObject.items, type: e.target.value } })}
-            style={selectStyle}
+        <div className="flex items-center">
+          <span
+            style={{
+              color: getColorForType(`Array<${itemType}>`),
+              borderRadius: '3px',
+              padding: '2px 4px',
+              fontSize: '14px',
+              fontFamily: 'Inter, Helvetica',
+            }}
           >
-            <option value="">Select item type</option>
-            <option value="string">String</option>
-            <option value="number">Number</option>
-            <option value="boolean">Boolean</option>
-            <option value="object">Object</option>
-            <option value="array">Array</option>
-          </select>
+            {`Array<${itemType}>`}
+          </span>
+          <DropdownMenu
+            trigger={<button>&#9662;</button>}
+            items={itemTypeOptions}
+            side="bottom"
+            align="start"
+          />
         </div>
       );
     }
@@ -87,9 +117,8 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
 
   return (
     <div className="visual-editor" style={{ width: '45vw', minWidth: '550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
-      {renderRootTypeSelector()}
-      {renderArrayItemTypeSelector()}
-
+      {renderRootTypeDisplay()}
+      {renderArrayItemTypeDisplay()}
       <SchemaObject
         schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
         onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
