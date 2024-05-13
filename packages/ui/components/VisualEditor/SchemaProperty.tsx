@@ -18,29 +18,23 @@ interface SchemaPropertyProps {
 }
 
 export const getColorForType = (type: string, itemType?: string) => {
-  if (type === 'object') {
-    return 'blue';
-  } else if (type === 'string') {
-    return 'orange';
-  } else if (type === 'boolean') {
-    return 'green';
-  } else if (type === 'number') {
-    return 'yellow';
-  } else if (type === 'array') {
-    if (itemType === 'string') {
-      return 'red';
-    } else if (itemType === 'number') {
-      return 'red';
-    } else if (itemType === 'boolean') {
-      return 'red';
-    } else if (itemType === 'object') {
-      return 'red';
-    } else {
-      return 'white'; 
-    }
-  } else {
-    return 'white'; 
+  const typeColors: Record<string, string> = {
+    object: 'blue',
+    string: 'orange',
+    boolean: 'green',
+    number: 'yellow',
+    array: 'red',
+  };
+
+  if (type === 'array') {
+    return 'red';
   }
+
+  if (itemType) {
+    return typeColors[itemType] || 'white';
+  }
+
+  return typeColors[type] || 'white';
 };
 
 const SchemaProperty: React.FC<SchemaPropertyProps> = ({
