@@ -12,7 +12,7 @@ export interface ServerAPIProblem {
 }
 
 export class ServerAPIService extends AbstractService {
-  private serverPath = 'https://api.asyncapi.com/v1';
+  private serverPath = 'http://localhost:3001/api/v1';
 
   async generate(data: {
     asyncapi: string | Record<string, any>,
