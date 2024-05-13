@@ -97,3 +97,28 @@ export const WithOperationSelected: Story = {
     servers: new Map(Array.from(servers.entries()).slice(0, 1))
   },
 }
+
+
+const operationsTooMany = new Array(20).fill("").reduce((acc, _, i) => {
+  console.log(i)
+  acc.set(`sendUserHasBeenRemoved${i}`, { type: 'send', source: 'Production Kafka Broker' });
+  return acc;
+}, new Map<string, FlowDiagramOperation>())
+
+console.log(operationsTooMany)
+export const WithTooManyOperations: Story = {
+  args: {
+    service: { position: { x: 300, y: 400 }, component: <Service
+    name={"User Registration"}
+    isActive={true}
+    description={
+      "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
+    }
+    badges={["http", "kafka", "websocket"]}
+    isClient={true}
+    isServer={false}
+  /> },
+    operations: operationsTooMany,
+    servers: new Map(Array.from(servers.entries()).slice(0, 1))
+  },
+}
