@@ -63,21 +63,31 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     updatedSchema.type = newType;
 
-    if (newType.startsWith('array<')) {
-      const itemType = newType.slice(6, -1);
-      console.log(`Array type detected: ${itemType}`);
+    if (newType === 'array') {
       updatedSchema.type = 'array';
-      updatedSchema.items = { type: itemType };
-      console.log("updatedSchema",updatedSchema)
+      updatedSchema.items = updatedSchema.items || { type: 'string' };
     } else {
-      updatedSchema.items = newType;
-
+      updatedSchema.type = newType;
       if (newType === 'object') {
-        updatedSchema.properties = updatedSchema.properties || {};
-      } 
+            updatedSchema.properties = updatedSchema.properties || {};
+        }
     }
 
     console.log(`Type changed for ${name} at ${path} to ${newType}`);
+    onTypeChange(path, name, updatedSchema);
+  };
+
+  const handleItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newItemType = event.target.value;
+    const updatedSchema = _.cloneDeep(schema);
+    updatedSchema.items.type = newItemType;
+      if (newItemType === 'object') {
+        updatedSchema.properties = updatedSchema.properties || {};
+      } 
+    console.log("newItemType",newItemType)
+    console.log("newType",updatedSchema.items.type)
+
+    console.log(`Item type changed for ${name} at ${path} to ${newItemType}`);
     onTypeChange(path, name, updatedSchema);
   };
 
@@ -153,7 +163,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
         <div className='pt-1'>
           <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
           <select
-            value={schema.type === 'array' ? `array<${schema.items?.type || null }>` : schema.type}
+            value={schema.type}
             onChange={handleTypeChange}
             style={{
               backgroundColor: '#0F172A',
@@ -169,11 +179,28 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
             <option value="number">Number</option>
             <option value="boolean">Boolean</option>
             <option value="object">Object</option>
-            <option value="array<string>">Array&lt;String&gt;</option>
-            <option value="array<number>">Array&lt;Number&gt;</option>
-            <option value="array<boolean>">Array&lt;Boolean&gt;</option>
-            <option value="array<object>">Array&lt;Object&gt;</option>
+            <option value="array">Array</option>
           </select>
+          {schema.type === 'array' && (
+            <select
+              value={schema.items.type}
+              onChange={handleItemTypeChange}
+              style={{
+                backgroundColor: '#0F172A',
+                color: getColorForType(schema.items.type),
+                borderRadius: '3px',
+                padding: '2px',
+                fontSize: '14px',
+                fontFamily: 'Inter, Helvetica',
+              }}
+            >
+              <option value="">Select item type</option>
+              <option value="string">String</option>
+              <option value="number">Number</option>
+              <option value="boolean">Boolean</option>
+              <option value="object">Object</option>
+            </select>
+          )}
         </div>
         <div style={{ marginLeft: 'auto' }}>
           <button style={{ marginRight: '10px' }} onClick={handleRemove}>
