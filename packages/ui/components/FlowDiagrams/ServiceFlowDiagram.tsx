@@ -142,6 +142,8 @@ export const ServiceFlowDiagram: React.FC<ServiceFlowDiagramProps> = ({ operatio
       },
       source,
       target,
+      sourceHandle,
+      targetHandle,
       animated: true,
       selected: operation.selected,
       label: id,
