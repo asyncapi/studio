@@ -7,14 +7,15 @@ interface EdgeLabelProps {
   labelX: number
   labelY: number
   className?: string
+  orientation?: "horizontal" | "vertical"
 }
 
-function EdgeTextLabel({ selected, label, labelX, labelY, className }: EdgeLabelProps) {
+function EdgeTextLabel({ selected, label, labelX, labelY, className, orientation = "horizontal" }: EdgeLabelProps) {
   return (
     <div
-    className={cn("text-gray-300 font-medium absolute pointer-events-auto cursor-pointer text-[10px] leading-[10px] bg-gray-900 px-1", selected && "text-pink-500", className)}
+    className={cn("text-gray-300 font-medium absolute pointer-events-auto text-[10px] leading-[10px] bg-gray-900 px-1", selected && "text-pink-500", className)}
     style={{
-      transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px) rotate(-90deg)`,
+      transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px) ${orientation === "vertical" ? `rotate(-90deg)` : ""}`,
     }}
   >
     {label}

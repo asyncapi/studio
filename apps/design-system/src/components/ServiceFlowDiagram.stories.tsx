@@ -1,124 +1,114 @@
-import { StoryObj, Meta } from '@storybook/react'
+import { StoryObj, Meta } from "@storybook/react"
 
-import { ServiceFlowDiagram, Server, Service } from '@asyncapi/studio-ui'
-import type { FlowDiagramServer, FlowDiagramOperation, ServerPlacement } from '@asyncapi/studio-ui'
+import { ServiceFlowDiagram, Server, Service, OperationAction } from "@asyncapi/studio-ui"
 
 const meta: Meta<typeof ServiceFlowDiagram> = {
   component: ServiceFlowDiagram,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     backgrounds: {
-      default: 'dark'
+      default: "dark",
     },
   },
   argTypes: {
-    onAddOperation: { action: 'onAddOperation' },
-    onAddServer: { action: 'onAddServer' },
-    onOperationClick: { action: 'onOperationClick' },
-    onServerClick: { action: 'onServerClick' },
-    onServiceClick: { action: 'onServiceClick' },
-  }
+    onAddOperation: { action: "onAddOperation" },
+    onAddServer: { action: "onAddServer" },
+    onOperationClick: { action: "onOperationClick" },
+    onServerClick: { action: "onServerClick" },
+    onServiceClick: { action: "onServiceClick" },
+  },
 }
-
 
 export default meta
 
 type Story = StoryObj<typeof ServiceFlowDiagram>
 
-const operations = new Map<string, FlowDiagramOperation>([
-  ['sendUserHasBeenRemoved', { type: 'send', source: 'Production Kafka Broker' }],
-  ['sendUserSignedUp', { type: 'send', source: 'Production Kafka Broker' }],
-  ['onUserSignedUp', { type: 'send', source: 'A WebSocket Client' }],
-  ['POST /users', { type: 'receive', source: 'An HTTP Client' }]
-]);
+const operations = [
+  { id: "sendUserHasBeenRemoved", action: OperationAction.SEND, source: "Production Kafka Broker" },
+  { id: "sendUserSignedUp", action: OperationAction.SEND, source: "Production Kafka Broker" },
+  { id: "onUserSignedUp", action: OperationAction.SEND, source: "A WebSocket Client" },
+  { id: "POST /users", action: OperationAction.RECEIVE, source: "An HTTP Client" },
+]
 
+const service = {
+  position: { x: 300, y: 400 },
+  component: (
+    <Service
+      name={"User Registration"}
+      isActive={true}
+      description={
+        "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
+      }
+      badges={["http", "kafka", "websocket"]}
+      isClient={true}
+      isServer={false}
+    />
+  ),
+}
 
-const servers = new Map<ServerPlacement, FlowDiagramServer>([
-  ["top-left", {  id: "Production Kafka Broker", component: <Server name={'Production Kafka Broker'} icon={'kafka'} url={'kafka.in.mycompany.com/production'} />}],
-  ["top-right", {  id: "A Yet Unused Server", component: <Server name={'A Yet Unused Server'} icon={'kafka'} url={'kafka.in.mycompany.com/unused'} />}],
-  ["bottom-left", {  id: "A WebSocket Client", component: <Server name={'A WebSocket Client'} icon={'websocket'} isFaded />}],
-  ["bottom-right", {  id: "An HTTP Client", component: <Server name={'An HTTP Client'} icon={'http'} isFaded />}]
-]);
+const servers = [
+  {
+    id: "Production Kafka Broker",
+    position: { x: service.position.x - 20, y: service.position.y - 300 },
+    component: <Server name={"Production Kafka Broker"} icon={"kafka"} url={"kafka.in.mycompany.com/production"} />,
+  },
+  {
+    id: "A Yet Unused Server",
+    position: { x: service.position.x + 300, y: service.position.y - 300 },
+    component: <Server name={"A Yet Unused Server"} icon={"kafka"} url={"kafka.in.mycompany.com/unused"} />,
+  },
+  {
+    id: "A WebSocket Client",
+    position: { x: service.position.x - 20, y: service.position.y + 500 },
+    component: <Server name={"A WebSocket Client"} icon={"websocket"} isFaded />,
+  },
+  {
+    id: "An HTTP Client",
+    position: { x: service.position.x + 300, y: service.position.y + 500 },
+    component: <Server name={"An HTTP Client"} icon={"http"} isFaded />,
+  },
+]
+
+const addServerButtonPosition =  { x: service.position.x + 500, y: service.position.y - 300 }
 
 export const Default: Story = {
   args: {
-    service: { position: { x: 300, y: 400 }, component: <Service
-    name={"User Registration"}
-    isActive={true}
-    description={
-      "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
-    }
-    badges={["http", "kafka", "websocket"]}
-    isClient={true}
-    isServer={false}
-  /> },
+    service,
     operations,
-    servers
+    addServerButtonPosition,
+    servers,
   },
 }
-
 
 export const WithOneServer: Story = {
   args: {
-    service: { position: { x: 300, y: 400 }, component: <Service
-    name={"User Registration"}
-    isActive={true}
-    description={
-      "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
-    }
-    badges={["http", "kafka", "websocket"]}
-    isClient={true}
-    isServer={false}
-  /> },
+    service,
+    addServerButtonPosition,
     operations,
-    servers: new Map(Array.from(servers.entries()).slice(0, 1))
+    servers: [servers[0]],
   },
 }
 
-
-const operationsSelected = new Map<string, FlowDiagramOperation>([
-  ['sendUserHasBeenRemoved', { type: 'send', source: 'Production Kafka Broker', selected: true }],
-  ['sendUserSignedUp', { type: 'send', source: 'Production Kafka Broker' }],
-]);
+const withOperationSelected = [
+  { id: "sendUserHasBeenRemoved", action: OperationAction.SEND, source: "Production Kafka Broker", selected: true },
+  { id: "sendUserSignedUp", action: OperationAction.SEND, source: "Production Kafka Broker" },
+]
 
 export const WithOperationSelected: Story = {
   args: {
-    service: { position: { x: 300, y: 400 }, component: <Service
-    name={"User Registration"}
-    isActive={true}
-    description={
-      "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
-    }
-    badges={["http", "kafka", "websocket"]}
-    isClient={true}
-    isServer={false}
-  /> },
-    operations: operationsSelected,
-    servers: new Map(Array.from(servers.entries()).slice(0, 1))
+    service,
+    addServerButtonPosition,
+    operations: withOperationSelected,
+    servers: [servers[0]],
   },
 }
 
-
-const operationsTooMany = new Array(20).fill("").reduce((acc, _, i) => {
-  console.log(i)
-  acc.set(`sendUserHasBeenRemoved${i}`, { type: 'send', source: 'Production Kafka Broker' });
-  return acc;
-}, new Map<string, FlowDiagramOperation>())
-
-console.log(operationsTooMany)
+const operationsTooMany = new Array(20).fill("").map((_, i) => ({ id: `sendUserHasBeenRemoved${i}`, action:  i% 3 === 0 ? OperationAction.RECEIVE : OperationAction.SEND, source: 'Production Kafka Broker' }));
 export const WithTooManyOperations: Story = {
   args: {
-    service: { position: { x: 300, y: 400 }, component: <Service
-    name={"User Registration"}
-    isActive={true}
-    description={
-      "ucondimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuere fermentumurna, eu condimentum mauris. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque posuerefermentum urna, eu condimentum maur"
-    }
-    badges={["http", "kafka", "websocket"]}
-    isClient={true}
-    isServer={false}
-  /> },
+    service,
     operations: operationsTooMany,
-    servers: new Map(Array.from(servers.entries()).slice(0, 1))
+    addServerButtonPosition,
+    servers: [servers[0]],
   },
 }
