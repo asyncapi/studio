@@ -69,7 +69,7 @@ const servers = [
   },
 ]
 
-const addServerButtonPosition =  { x: service.position.x + 500, y: service.position.y - 300 }
+const addServerButtonPosition =  { x: service.position.x + 600, y: service.position.y - 300 }
 
 export const Default: Story = {
   args: {
@@ -103,7 +103,7 @@ export const WithOperationSelected: Story = {
   },
 }
 
-const operationsTooMany = new Array(20).fill("").map((_, i) => ({ id: `sendUserHasBeenRemoved${i}`, action:  i% 3 === 0 ? OperationAction.RECEIVE : OperationAction.SEND, source: 'Production Kafka Broker' }));
+const operationsTooMany = new Array(20).fill("").map((_, i) => ({ id: `${i% 3 === 0 ? "receive": "send"}Operation${i}`, action:  i% 3 === 0 ? OperationAction.RECEIVE : OperationAction.SEND, source: 'Production Kafka Broker' }));
 export const WithTooManyOperations: Story = {
   args: {
     service,
