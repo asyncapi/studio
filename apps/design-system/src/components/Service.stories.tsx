@@ -1,9 +1,9 @@
 import { StoryObj, Meta } from '@storybook/react'
 
-import { AppCard } from '@asyncapi/studio-ui'
+import { Service } from '@asyncapi/studio-ui'
 
-const meta: Meta<typeof AppCard> = {
-  component: AppCard,
+const meta: Meta<typeof Service> = {
+  component: Service,
   parameters: {
     layout: 'centered',
     backgrounds: {
@@ -13,8 +13,8 @@ const meta: Meta<typeof AppCard> = {
 }
 
 export default meta
-type Story = StoryObj<typeof AppCard>
-export const CodeEditor: Story = {
+type Story = StoryObj<typeof Service>
+export const Default: Story = {
   args: {
     isActive: true,
     name: 'User Registration',
@@ -24,3 +24,5 @@ export const CodeEditor: Story = {
     isClient: false
   },
 }
+
+
