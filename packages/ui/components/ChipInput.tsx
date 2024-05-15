@@ -61,7 +61,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
           ref={index === 0 ? firstChipRef : undefined}
         >
           <span>{chip}</span>
-          <button onClick={handleDelete(chip)} tabIndex={-1} className="ml-1 text-gray-400 focus:outline-none">×</button>
+          <button onClick={handleDelete(chip)} tabIndex={-1} className="ml-1 text-gray-400 focus:outline-none" aria-label='Close'>×</button>
         </div>
       ))}
       <input
