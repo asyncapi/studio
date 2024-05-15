@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { Toolbar } from '@asyncapi/studio-ui'
 
 import { ListBulletIcon, CodeBracketSquareIcon, DocumentTextIcon, EllipsisVerticalIcon } from '@asyncapi/studio-ui/icons'

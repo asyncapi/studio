@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "lib": ["esNext", "DOM"]
   },
   "extends": "tsconfig/react-library.json",
   "include": ["."],
