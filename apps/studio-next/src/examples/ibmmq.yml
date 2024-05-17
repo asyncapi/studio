@@ -1,0 +1,57 @@
+asyncapi: 3.0.0
+info:
+  title: Record Label Service
+  version: 1.1.0
+  description: This service is in charge of processing music
+  license:
+    name: Apache License 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  production:
+    host: 'localhost:1414'
+    pathname: /QM1/DEV.APP.SVRCONN
+    protocol: ibmmq-secure
+    description: Production Instance 1
+    bindings:
+      ibmmq:
+        cipherSpec: ANY_TLS12
+channels:
+  songReleased:
+    address: song/released
+    messages:
+      Song:
+        $ref: '#/components/messages/Song'
+operations:
+  receiveSong:
+    action: receive
+    channel:
+      $ref: '#/channels/songReleased'
+    messages:
+      - $ref: '#/channels/songReleased/messages/Song'
+  sendSong:
+    action: send
+    channel:
+      $ref: '#/channels/songReleased'
+    messages:
+      - $ref: '#/channels/songReleased/messages/Song'
+components:
+  messages:
+    Song:
+      payload:
+        type: object
+        properties:
+          title:
+            type: string
+            description: Song title
+          artist:
+            type: string
+            description: Song artist
+          album:
+            type: string
+            description: Song album
+          genre:
+            type: string
+            description: Primary song genre
+          length:
+            type: integer
+            description: Track length in seconds
