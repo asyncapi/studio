@@ -1,0 +1,10 @@
+{
+  "extends": ["eslint-config-custom","plugin:storybook/recommended"],
+  "plugins": ["import", "sonarjs"],
+  "rules": {
+    "import/no-anonymous-default-export": ["error", {
+      "allowObject": true
+    }],
+    "sonarjs/no-duplicate-string": "off"
+    }
+}

@@ -7,47 +7,47 @@ This is a monorepo containing Studio source code, design system, and all their d
 Clone this repo and run:
 
 ```
-npm install
+pnpm install
 ```
 
-> **Note:** NPM v7+ is required.
+> **Note:** PNPM v8+ and Node.js v18.17+ is required.
 
 ## Development
 
 #### Run Studio locally
 
 ```
-npm run studio
+pnpm run studio
 ```
 
 #### Run the Design System locally
 
 ```
-npm run ds
+pnpm run ds
 ```
 
 #### Run Studio and the Design System locally at the same time
 
 ```
-npm run dev
+pnpm run dev
 ```
 
 #### Build Studio for production
 
 ```
-npm run build:studio
+pnpm run build:studio
 ```
 
 #### Build the Design System for production
 
 ```
-npm run build:ds
+pnpm run build:ds
 ```
 
 #### Build Studio and the Design System for production
 
 ```
-npm run build
+pnpm run build
 ```
 
 ## Architecture decision records
