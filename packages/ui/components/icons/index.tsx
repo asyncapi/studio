@@ -19,6 +19,9 @@ export {
   TrashIcon,
   UsersIcon,
   XMarkIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CheckIcon,
 } from '@heroicons/react/24/outline'
 
 export { default as AMQPIcon } from './AMQPIcon'
@@ -39,3 +42,4 @@ export { default as ServerIcon } from './ServerIcon'
 export { default as SolaceIcon } from './SolaceIcon'
 export { default as StompIcon } from './StompIcon'
 export { default as WebSocketIcon } from './WebSocketIcon'
+export { default as AddIcon } from './AddIcon'
