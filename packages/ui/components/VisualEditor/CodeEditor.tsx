@@ -19,7 +19,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
   const handleChange = debounce((newValue: string) => {
     try {
       setError('');
-      onSchemaChange(JSON.parse(newValue));
+      onSchemaChange(newValue);
       console.log('Schema valid and updated from Code Editor:', newValue);
     } catch (e) {
       if (_.isError(e)) {

@@ -20,11 +20,11 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
   const [showInputs, setShowInputs] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [selectedItemTypes, setSelectedItemTypes] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(['Select Type']);
+  const [selectedItemTypes, setSelectedItemTypes] = useState<string[]>(['Select Item Type']);
 
   const handleAddProperty = () => {
-    if (_.isEmpty(key) || selectedTypes.length === 0) {
+    if (_.isEmpty(key) || selectedTypes[0] === 'Select Type') {
       setError('Both property name and type are required.');
       return;
     }
@@ -43,24 +43,26 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
       }),
     };
 
-    onAdd(fullPath, newProperty as any)
+    onAdd(fullPath, newProperty as any);
 
     setKey('');
-    setSelectedTypes([]);
-    setSelectedItemTypes([]);
+    setSelectedTypes(['Select Type']);
+    setSelectedItemTypes(['Select Item Type']);
     setError('');
     setShowInputs(false);
   };
 
   const handleCancel = () => {
     setKey('');
-    setSelectedTypes([]);
-    setSelectedItemTypes([]);
+    setSelectedTypes(['Select Type']);
+    setSelectedItemTypes(['Select Item Type']);
     setError('');
     setShowInputs(false);
   };
 
   const typeOptions: DropdownMenuItem[] = [
+    { title: 'Select Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'String', onSelect: () => setSelectedTypes(['string']) },
     { type: 'regular', title: 'Number', onSelect: () => setSelectedTypes(['number']) },
     { type: 'regular', title: 'Boolean', onSelect: () => setSelectedTypes(['boolean']) },
@@ -69,6 +71,8 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
   ];
 
   const itemTypeOptions: DropdownMenuItem[] = [
+    { title: 'Select Item Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'String', onSelect: () => setSelectedItemTypes(['string']) },
     { type: 'regular', title: 'Number', onSelect: () => setSelectedItemTypes(['number']) },
     { type: 'regular', title: 'Boolean', onSelect: () => setSelectedItemTypes(['boolean']) },
@@ -107,19 +111,20 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
               value={key}
               onChange={(e) => setKey(e.target.value)}
               placeholder="Property name"
-              style={inputAndSelectStyle}
+              style={{...inputAndSelectStyle, width: '130px' }}
             />
 
             <DropdownMenu
-              trigger={<button>&#9662;</button>}
+              trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedTypes}</button>}
               items={typeOptions}
               multiple
               selectedOptions={selectedTypes}
               onSelect={(options) => setSelectedTypes(options)}
             />
+            
             {selectedTypes.includes('array') && (
               <DropdownMenu
-                trigger={<button>&#9662;</button>}
+                trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedItemTypes}</button>}
                 items={itemTypeOptions}
                 multiple
                 selectedOptions={selectedItemTypes}

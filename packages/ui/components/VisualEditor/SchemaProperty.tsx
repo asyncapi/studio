@@ -3,6 +3,7 @@ import _ from 'lodash';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon, TrashIcon } from '../icons';
 import { DropdownMenu, DropdownMenuItem } from '../DropdownMenu';
+import { IoIosArrowDropdown } from "react-icons/io"; 
 
 interface SchemaPropertyProps {
     name: string;
@@ -24,6 +25,7 @@ export const getColorForType = (type: string, itemType?: string) => {
     string: 'orange',
     boolean: 'green',
     number: 'yellow',
+    integer: 'yellow',
     array: 'red',
   };
 
@@ -51,7 +53,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   path, 
   level 
 }) => {
-  // console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
+  console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
@@ -72,20 +74,14 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     onTypeChange(path, name, updatedSchema);
   };
 
-  const handleItemTypeChange = (selectedOption: any) => {
-    const newItemType = selectedOption[0]?.title?.toLowerCase();
+  const handleItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newItemType = event.target.value;
     const updatedSchema = _.cloneDeep(schema);
     updatedSchema.items.type = newItemType;
-
-    if (!newItemType) {
-      return;
-    }
 
     if (newItemType === 'object') {
       updatedSchema.properties = updatedSchema.properties || {};
     } 
-    console.log("newItemType",newItemType)
-    console.log("newType",updatedSchema.items.type)
 
     console.log(`Item type changed for ${name} at ${path} to ${newItemType}`);
     onTypeChange(path, name, updatedSchema);
@@ -100,6 +96,8 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   };
 
   const typeOptions: DropdownMenuItem[] = [
+    { title: 'Select Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'String', onSelect: () => handleTypeDropdownSelect('string') },
     { type: 'regular', title: 'Number', onSelect: () => handleTypeDropdownSelect('number') },
     { type: 'regular', title: 'Boolean', onSelect: () => handleTypeDropdownSelect('boolean') },
@@ -108,6 +106,8 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   ];
 
   const itemTypeOptions: DropdownMenuItem[] = [
+    { title: 'Select Item Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'String', onSelect: () => handleItemTypeDropdownSelect('string') },
     { type: 'regular', title: 'Number', onSelect: () => handleItemTypeDropdownSelect('number') },
     { type: 'regular', title: 'Boolean', onSelect: () => handleItemTypeDropdownSelect('boolean') },
@@ -178,38 +178,44 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   };
 
   const renderTypeDisplay = () => {
+    if (schema.type === 'array') {
+      return;
+    }
     const types = Array.isArray(schema.type) ? schema.type : [schema.type];
+    const displayTypes = types.map((type: string) => type.charAt(0).toUpperCase() + type.slice(1));
     return (
       <span
         style={{
           marginLeft: '8px',
-          color: getColorForType(types),
+          color: getColorForType(schema.type),
           borderRadius: '3px',
           padding: '2px 4px',
           fontSize: '14px',
           fontFamily: 'Inter, Helvetica',
         }}
       >
-        {types.join(' | ')}
+        {displayTypes.join(' | ')}
       </span>
     );
   };
 
   const renderItemTypeDisplay = () => {
-    if (Array.isArray(schema.type) && schema.items) {
+  
+    if (schema.type === 'array' && schema.items && schema.items.type) {
       const itemTypes = Array.isArray(schema.items.type) ? schema.items.type : [schema.items.type];
+      const displayItemTypes = itemTypes.map((type: string) => type.charAt(0).toUpperCase() + type.slice(1));
       return (
         <span
           style={{
             marginLeft: '8px',
-            color: getColorForType(`Array<${itemTypes.join(' | ')}>`),
+            color: getColorForType('array', schema.items.type),
             borderRadius: '3px',
             padding: '2px 4px',
             fontSize: '14px',
             fontFamily: 'Inter, Helvetica',
           }}
         >
-          {`Array<${itemTypes.join(' | ')}>`}
+          {`Array<${displayItemTypes.join(' | ')}>`}
         </span>
       );
     }
@@ -227,12 +233,12 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           {renderTypeDisplay()}
           {renderItemTypeDisplay()}
           <DropdownMenu
-            trigger={<button>&#9662;</button>}
+            trigger={<button><IoIosArrowDropdown /></button>}
             items={typeOptions}
           />
           {schema.type.includes('array') && (
             <DropdownMenu
-              trigger={<button>&#9662;</button>}
+              trigger={<button><IoIosArrowDropdown /></button>}
               items={itemTypeOptions}
             />
           )}

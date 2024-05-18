@@ -3,6 +3,7 @@ import SchemaObject from './VisualEditor/SchemaObject';
 import _ from 'lodash';
 import { getColorForType } from './VisualEditor/SchemaProperty';
 import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
+import { IoIosArrowDropdown } from 'react-icons/io';
 
 interface VisualEditorProps {
     schema: string;
@@ -39,14 +40,20 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   const handleRootTypeDropdownSelect = (selectedOption: string) => {
-    handleSchemaChange({ type: selectedOption });
+    if (selectedOption === 'array') {
+      handleSchemaChange({ type: 'array', items: { type: 'string' } });
+    } else {
+      handleSchemaChange({ type: selectedOption });
+    }
   };
-  
+
   const handleArrayItemTypeDropdownSelect = (selectedOption: string) => {
-    handleSchemaChange({ items: { ...schemaObject.items, type: selectedOption } });
+    handleSchemaChange({ items: schemaObject.items ? { ...schemaObject.items, type: selectedOption } : { type: selectedOption } });
   };
 
   const rootTypeOptions: DropdownMenuItem[] = [
+    { title: 'Select Root Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'Object', onSelect: () => handleRootTypeDropdownSelect('object') },
     { type: 'regular', title: 'Array', onSelect: () => handleRootTypeDropdownSelect('array') },
     { type: 'regular', title: 'String', onSelect: () => handleRootTypeDropdownSelect('string') },
@@ -55,6 +62,8 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   ];
   
   const itemTypeOptions: DropdownMenuItem[] = [
+    { title: 'Select Items Type',onSelect: () => {}},
+    { type: 'separator'},
     { type: 'regular', title: 'String', onSelect: () => handleArrayItemTypeDropdownSelect('string') },
     { type: 'regular', title: 'Number', onSelect: () => handleArrayItemTypeDropdownSelect('number') },
     { type: 'regular', title: 'Boolean', onSelect: () => handleArrayItemTypeDropdownSelect('boolean') },
@@ -63,7 +72,11 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   ];
 
   const renderRootTypeDisplay = () => {
+    if(schemaObject.type === 'array') {
+      return null;
+    }
     const rootType = schemaObject.type || '';
+    const displayRootType = rootType.charAt(0).toUpperCase() + rootType.slice(1); 
     return (
       <div className="flex items-center">
         <span
@@ -75,10 +88,10 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
             fontFamily: 'Inter, Helvetica',
           }}
         >
-          {rootType}
+          {displayRootType}
         </span>
         <DropdownMenu
-          trigger={<button>&#9662;</button>}
+          trigger={<button><IoIosArrowDropdown /></button>}
           items={rootTypeOptions}
           side="bottom"
           align="start"
@@ -88,13 +101,13 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   const renderArrayItemTypeDisplay = () => {
-    if (schemaObject.type === 'array') {
+    if (schemaObject.type === 'array' && schemaObject.items) {
       const itemType = schemaObject.items?.type || '';
       return (
         <div className="flex items-center">
           <span
             style={{
-              color: getColorForType(`Array<${itemType}>`),
+              color: getColorForType('array', itemType),
               borderRadius: '3px',
               padding: '2px 4px',
               fontSize: '14px',
@@ -104,7 +117,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
             {`Array<${itemType}>`}
           </span>
           <DropdownMenu
-            trigger={<button>&#9662;</button>}
+            trigger={<button><IoIosArrowDropdown /></button>}
             items={itemTypeOptions}
             side="bottom"
             align="start"
@@ -117,8 +130,10 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
 
   return (
     <div className="visual-editor" style={{ width: '45vw', minWidth: '550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
-      {renderRootTypeDisplay()}
-      {renderArrayItemTypeDisplay()}
+      <div className="flex items-center gap-2">
+        {renderRootTypeDisplay()}
+        {renderArrayItemTypeDisplay()}
+      </div>
       <SchemaObject
         schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
         onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
