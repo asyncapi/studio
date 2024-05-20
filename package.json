@@ -5,7 +5,7 @@
     "url": "git://github.com/asyncapi/studio.git"
   },
   "scripts": {
-    "lint": "eslint --ext .tsx,.ts .",
+    "lint": "turbo run lint",
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
     "studio": "turbo run dev --filter=studio...",
@@ -18,19 +18,23 @@
     "publish-packages": "turbo run build && changeset publish",
     "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system...",
-    "build:studio-next": "turbo run build --no-cache --filter=studio-next..."
+    "build:studio-next": "turbo run build --no-cache --filter=studio-next...",
+    "generate:assets": "turbo run generate:assets"
   },
   "devDependencies": {
-    "esbuild": "^0.19.0",
-    "turbo": "^1.10.12"
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "eslint": "^8.27.0",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-security": "^3.0.0",
+    "eslint-plugin-sonarjs": "^0.25.1",
+    "turbo": "^1.12.4"
   },
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
-  "packageManager": "npm@8.19.3",
+  "packageManager": "pnpm@9.0.6",
   "dependencies": {
-    "@changesets/cli": "^2.26.2",
-    "lodash": "^4.17.21"
+    "@changesets/cli": "^2.26.2"
   }
 }

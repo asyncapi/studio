@@ -204,7 +204,7 @@ export const Root_Array_of_Object = () => (
   />
 );
 
-export const two_property_having_same_name = () => (
+export const TwoPropertyHavingSameName = () => (
   <Template
     initialSchema={JSON.stringify({
 
@@ -228,7 +228,7 @@ export const two_property_having_same_name = () => (
   />
 );
 
-export const nestead_array = () => (
+export const NesteadArray = () => (
   <Template
     initialSchema={JSON.stringify(
       {

@@ -44,36 +44,31 @@ jobs:
         name: Checkout repository
         uses: actions/checkout@v4
       - if: steps.should_run.outputs.shouldrun == 'true' 
-        name: Check if Node.js project and has package.json
-        id: packagejson
-        run: test -e ./package.json && echo "exists=true" >> $GITHUB_OUTPUT || echo "exists=false" >> $GITHUB_OUTPUT
-        shell: bash
-      - if: steps.packagejson.outputs.exists == 'true'
-        name: Check package-lock version
-        uses: asyncapi/.github/.github/actions/get-node-version-from-package-lock@master
-        id: lockversion
-      - if: steps.packagejson.outputs.exists == 'true'
         name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "${{ steps.lockversion.outputs.version }}"
-      - if: steps.lockversion.outputs.version == '18' && matrix.os == 'windows-latest'
-        #npm cli 10 is buggy because of some cache issue
-        name: Install npm cli 8
+          node-version: 20
+      - if: steps.should_run.outputs.shouldrun == 'true' 
+        uses: pnpm/action-setup@v3
+        with:
+          run_install: false
+      - if: steps.should_run.outputs.shouldrun == 'true' 
+        name: Get pnpm store directory
         shell: bash
-        run: npm install -g npm@8.19.4
-      - if: steps.packagejson.outputs.exists == 'true'
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - if: steps.should_run.outputs.shouldrun == 'true' 
+        uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - if: steps.should_run.outputs.shouldrun == 'true' 
         name: Install dependencies
         shell: bash
-        run: npm ci
-      - if: steps.packagejson.outputs.exists == 'true'
+        run: pnpm install
+      - if: steps.should_run.outputs.shouldrun == 'true' 
         name: Test
-        run: npm test --if-present
-      - if: steps.packagejson.outputs.exists == 'true' && matrix.os == 'ubuntu-latest'
-        #linting should run just one and not on all possible operating systems
-        name: Run linter
-        run: npm run lint --if-present
-      - if: steps.packagejson.outputs.exists == 'true'
-        name: Run release assets generation to make sure PR does not break it
-        shell: bash
-        run: npm run generate:assets --if-present
+        run: pnpm test

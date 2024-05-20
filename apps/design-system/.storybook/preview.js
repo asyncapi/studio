@@ -1,13 +1,21 @@
 import '@asyncapi/studio-ui/styles.css'
+import '../src/styles/tailwind.output.css'
 
 export const parameters = {
+  actions: { argTypesRegex: "^on[A-Z].*" },
   backgrounds: {
+    default: 'dark',
     values: [
-      { name: 'light', value: '#ffffff' },
-      { name: 'dark', value: '#0F172A' },
+      {
+        name: 'dark',
+        value: "#0F172A"
+      },
+      {
+        name: 'light',
+        value: "#e2e8f0"
+      },
     ],
   },
-  actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
     matchers: {
       color: /(background|color)$/i,

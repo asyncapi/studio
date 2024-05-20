@@ -1,11 +1,15 @@
 module.exports = {
-  extends: ["next", "turbo", "prettier"],
-  rules: {
-    "@next/next/no-html-link-for-pages": "off",
-  },
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    babelOptions: {
-      presets: [require.resolve("next/babel")],
-    },
+    ecmaFeatures: {
+      "jsx": true
+    }
   },
-};
+  plugins: ["@typescript-eslint", "sonarjs"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:sonarjs/recommended",
+  ],
+}

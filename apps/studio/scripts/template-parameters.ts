@@ -1,5 +1,4 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
-
 import fs from 'fs';
 import path from 'path';
 import { JSONSchema7 } from 'json-schema';

@@ -20,23 +20,36 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GH_TOKEN }}
+        uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          node-version: 20
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
-        run: npm install
+        shell: bash
+        run: pnpm install
       - name: Create Release Pull Request or Release
         uses: changesets/action@v1
         with:
-          publish: npm run publish-packages
-          version: npm run version-packages
+          publish: pnpm run publish-packages
+          version: pnpm run version-packages
           commit: "version packages"
           title: "chore: version packages"
         env:

@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 const crypto = require('crypto');
 const webpack = require('webpack');
 

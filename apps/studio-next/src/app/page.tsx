@@ -1,9 +1,7 @@
-import { Editor } from '@/components/Editor/Editor';
-
-export default function Home() {
+import dynamic from 'next/dynamic';
+const StudioWrapper = dynamic(() => import('@/components/StudioWrapper'), {ssr: false})
+export default async function Home() {
   return (
-    <main className="flex flex-col w-full h-screen">
-      <Editor />
-    </main>
+    <StudioWrapper />
   )
 }
