@@ -6,7 +6,13 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "echo 'No linting configured'"
+    "lint": "next lint",
+    "cy:e2e:chrome": "cypress run --e2e --browser chrome",
+    "cy:e2e:chromium": "cypress run --e2e --browser chromium",
+    "cy:e2e:edge": "cypress run --e2e --browser edge",
+    "cy:e2e:electron": "cypress run --e2e --browser electron",
+    "cy:e2e:firefox": "cypress run --e2e --browser firefox",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^3.0.19",
@@ -72,6 +78,7 @@
     "autoprefixer": "^10.4.13",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "cypress": "^13.8.1",
     "eslint-config-next": "14.1.4",
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sonarjs": "^0.16.0",

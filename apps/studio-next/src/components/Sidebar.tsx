@@ -46,6 +46,7 @@ interface NavItem {
   icon: ReactNode;
   tooltip: ReactNode;
   enabled: boolean;
+  dataTest: string;
 }
 
 interface SidebarProps {}
@@ -53,8 +54,8 @@ interface SidebarProps {}
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const isV3 = document?.version() === '3.0.0';
-
+  const isV3 = document?.version().startsWith('3.');
+  
   if (show.activityBar === false) {
     return null;
   }
@@ -68,7 +69,8 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primarySidebar'),
       icon: <VscListSelection className="w-5 h-5" />,
       tooltip: 'Navigation',
-      enabled: true
+      enabled: true,
+      dataTest: 'button-navigation',
     },
     // editor
     {
@@ -78,27 +80,30 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('primaryPanel'),
       icon: <VscCode className="w-5 h-5" />,
       tooltip: 'Editor',
-      enabled: true
+      enabled: true,
+      dataTest: 'button-editor',
     },
     // template
     {
       name: 'template',
-      title: 'Template',
+      title: 'Template preview',
       isActive: show.secondaryPanel && secondaryPanelType === 'template',
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
-      tooltip: 'HTML preview',
-      enabled: true
+      tooltip: 'Template preview',
+      enabled: true,
+      dataTest: 'button-template-preview',
     },
     // visuliser
     {
       name: 'visualiser',
-      title: 'Visualiser',
+      title: 'Blocks visualiser',
       isActive: show.secondaryPanel && secondaryPanelType === 'visualiser',
       onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
-      enabled: !isV3
+      enabled: !isV3,
+      dataTest: 'button-blocks-visualiser',
     },
     // newFile
     {
@@ -108,7 +113,8 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => showModal(ConfirmNewFileModal),
       icon: <VscNewFile className="w-5 h-5" />,
       tooltip: 'New file',
-      enabled: true
+      enabled: true,
+      dataTest: 'button-new-file',
     },
   ];
 
@@ -120,10 +126,10 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
             <button
-              title={item.title}
               onClick={() => item.onClick()}
               className={'flex text-sm focus:outline-none border-box p-2'}
               type="button"
+              data-test={item.dataTest}
             >
               <div className={item.isActive ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
                 {item.icon}
@@ -135,10 +141,10 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       <div className="flex flex-col">
         <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
           <button
-            title="Studio settings"  
             className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
             type="button"  
             onClick={() => showModal(SettingsModal)}
+            data-test="button-studio-settings"
           >
             <VscSettingsGear className="w-5 h-5" />
           </button>
