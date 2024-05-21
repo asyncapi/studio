@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
 import { DropdownMenu, DropdownMenuItem } from '../DropdownMenu';
+import { AddIcon } from '../icons';
 
 interface PropertyControlsProps {
     onAdd: (path: string, property: { name: string; schema: any }) => void;
@@ -30,7 +31,6 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     }
 
     const fullPath = schemaPath ? `${schemaPath}.properties.${key}` : `properties.${key}`;
-    console.log('Full Full Path :)', fullPath);
     console.log(`Adding new property at: ${fullPath}`);
 
     const newProperty = {
@@ -98,8 +98,8 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
         />
           {!showInputs && (
               <button onClick={() => setShowInputs(true)} className='text-[#808080] px-2 py-2 rounded-md flex items-center gap-2 font-inter text-sm'>
-              <div className="text-[#808080] border-2 border-[#808080] h-5 w-5 rounded-full flex items-center justify-center">
-              <span>&#43;</span>
+              <div className="text-[#808080] h-5 w-5 rounded-full flex items-center justify-center font-bold">
+                <AddIcon className='font-bold' />
               </div>
               Add Property
               </button>

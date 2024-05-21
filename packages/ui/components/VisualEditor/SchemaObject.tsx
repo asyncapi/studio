@@ -21,7 +21,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   const handleAddProperty = (fullPath: string, propertySchema: any) => {
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
-    console.log('Normalised path',normalizedPath);
 
     if (normalizedPath.startsWith('items.properties')) {
       const itemsPath = normalizedPath.split('.properties')[0];
@@ -38,8 +37,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   const handleRemoveProperty = (propertyPath: string) => {
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
-    console.log("normalizedPath: ",normalizedPath)
-    console.log("propertyPath: ",propertyPath)
     _.unset(updatedSchema, normalizedPath);
     onSchemaChange(updatedSchema);
   };
@@ -52,7 +49,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
 
     if(newType.type == "array") {
       const itemType = newType.items;
-      console.log("itemType",itemType)
       _.set(currentSchema, typePath, 'array');
       _.set(currentSchema, `${normalizedPath}.items`, itemType);
     } else {
@@ -70,7 +66,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     const existingRequired = _.get(updatedSchema, `required`, []);
     const isRequirePresent = existingRequired.includes(name);
-    console.log("isRequired",isRequirePresent);
     if(!isRequirePresent) {  
       const newRequired = _.uniq([...existingRequired, name]);
       _.set(updatedSchema, `required`, newRequired);
@@ -86,9 +81,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = path.startsWith('.') ? path.slice(1) : path;
     const schemaPath = normalizedPath.split('.properties');
-    console.log("schemaPath",schemaPath)
     const requiredPath = schemaPath.slice(0, -1).join('.properties') + '.required';
-    console.log("requiredPath",requiredPath)
   
     const existingRequired = _.get(updatedSchema, requiredPath, []);
     const isRequirePresent = existingRequired.includes(name);
