@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon, TrashIcon } from '../icons';
@@ -54,6 +54,12 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
   level 
 }) => {
   console.log(`Rendering SchemaProperty. Name: ${name}, Path: ${path}, Level: ${level}`);
+
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = event.target.value;
@@ -221,6 +227,21 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     }
     return null;
   };
+
+  const renderCollapseIcon = () => {
+    if (schema.type === 'object' || schema.type === 'array') {
+      return (
+        <button onClick={toggleCollapse} className="focus:outline-none">
+          <IoIosArrowDropdown
+            className={`w-4 h-4 transition-transform ${
+              isCollapsed ? 'transform -rotate-90' : ''
+            }`}
+          />
+        </button>
+      );
+    }
+    return null;
+  };
   
   return (
     <div style={{ marginLeft: `${level * 20}px`, borderLeft: '1px solid grey', marginBottom: '-8px', paddingTop: '4px' }}>
@@ -228,7 +249,8 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
       <div style={{borderTop: '1px solid grey', width: `${level * 20}px`,
       }}>
       </div>
-        <div className='pt-1'>
+        <div className='pt-1 flex items-center pl-2'>
+          {renderCollapseIcon()}
           <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
           {renderTypeDisplay()}
           {renderItemTypeDisplay()}
@@ -252,14 +274,18 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           </button>
         </div>
       </div>
-      {renderNestedProperties()}
-      {renderArrayItemsProperties()}
-      {schema.type === "object" && (
-        <PropertyControls
-          onAdd={onAddNestedProperty}
-          schemaPath={`${path}`}
-          level={level + 1}
-        />
+      {!isCollapsed && (
+        <>
+          {renderNestedProperties()}
+          {renderArrayItemsProperties()}
+          {schema.type === "object" && (
+            <PropertyControls
+              onAdd={onAddNestedProperty}
+              schemaPath={`${path}`}
+              level={level + 1}
+            />
+          )}
+        </>
       )}
     </div>
   );
