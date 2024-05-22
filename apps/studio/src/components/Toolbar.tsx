@@ -27,7 +27,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               </a>
             </li>
             <li className="text-xl ml-2 opacity-75 hover:opacity-100">
-              <a href='https://github.com/asyncapi' title='AsyncAPI Github Organization' target='_blank' rel="noreferrer">
+              <a href='https://github.com/asyncapi/studio' title='AsyncAPI Studio Github Repository' target='_blank' rel="noreferrer">
                 <IoLogoGithub />
               </a>
             </li>
