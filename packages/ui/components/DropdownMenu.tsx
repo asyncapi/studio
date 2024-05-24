@@ -18,6 +18,7 @@ interface DropdownMenuProps {
   items: DropdownMenuItem[]
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
+  onSelect?: (options: string[]) => void
 }
 
 interface DropdownMenuItemComponentProps {
@@ -44,6 +45,7 @@ export const DropdownMenu: FunctionComponent<DropdownMenuProps> = ({
   items,
   side,
   align,
+  onSelect
 }) => {
   return (
     <RadixDropdownMenu.Root>

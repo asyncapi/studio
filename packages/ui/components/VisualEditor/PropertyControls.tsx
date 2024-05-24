@@ -117,8 +117,6 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
             <DropdownMenu
               trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedTypes}</button>}
               items={typeOptions}
-              multiple
-              selectedOptions={selectedTypes}
               onSelect={(options) => setSelectedTypes(options)}
             />
             
@@ -126,8 +124,6 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
               <DropdownMenu
                 trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedItemTypes}</button>}
                 items={itemTypeOptions}
-                multiple
-                selectedOptions={selectedItemTypes}
                 onSelect={(options) => setSelectedItemTypes(options)}
               />
             )}
