@@ -207,7 +207,7 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
 
   const renderItemTypeDisplay = () => {
   
-    if (schema.type === 'array' && schema.items && schema.items.type) {
+    if (schema.type === 'array' && schema?.items && schema?.items?.type) {
       const itemTypes = Array.isArray(schema.items.type) ? schema.items.type : [schema.items.type];
       const displayItemTypes = itemTypes.map((type: string) => type.charAt(0).toUpperCase() + type.slice(1));
       return (
