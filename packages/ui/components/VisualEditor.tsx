@@ -68,7 +68,6 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     { type: 'regular', title: 'Number', onSelect: () => handleArrayItemTypeDropdownSelect('number') },
     { type: 'regular', title: 'Boolean', onSelect: () => handleArrayItemTypeDropdownSelect('boolean') },
     { type: 'regular', title: 'Object', onSelect: () => handleArrayItemTypeDropdownSelect('object') },
-    { type: 'regular', title: 'Array', onSelect: () => handleArrayItemTypeDropdownSelect('array') },
   ];
 
   const renderRootTypeDisplay = () => {
@@ -90,12 +89,6 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
         >
           {displayRootType}
         </span>
-        <DropdownMenu
-          trigger={<button><IoIosArrowDropdown /></button>}
-          items={rootTypeOptions}
-          side="bottom"
-          align="start"
-        />
       </div>
     );
   };
@@ -116,12 +109,6 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
           >
             {`Array<${itemType}>`}
           </span>
-          <DropdownMenu
-            trigger={<button><IoIosArrowDropdown /></button>}
-            items={itemTypeOptions}
-            side="bottom"
-            align="start"
-          />
         </div>
       );
     }
@@ -129,17 +116,49 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   };
 
   return (
-    <div className="visual-editor" style={{ width: '45vw', minWidth: '550px', background: '#0F172A', color: '#CBD5E1', fontFamily: 'Inter, sans-serif', padding: '20px'}}>
+    <div
+      className="visual-editor"
+      style={{
+        width: "45vw",
+        minWidth: "550px",
+        background: "#0F172A",
+        color: "#CBD5E1",
+        fontFamily: "Inter, sans-serif",
+        padding: "20px",
+      }}
+    >
       <div className="flex items-center gap-2">
         {renderRootTypeDisplay()}
         {renderArrayItemTypeDisplay()}
+        <DropdownMenu
+          trigger={
+            <button>
+              <IoIosArrowDropdown />
+            </button>
+          }
+          items={rootTypeOptions}
+        />
+        {schemaObject.type === "array" && (
+          <DropdownMenu
+            trigger={
+              <button>
+                <IoIosArrowDropdown />
+              </button>
+            }
+            items={itemTypeOptions}
+          />
+        )}
       </div>
-      <SchemaObject
-        schema={schemaObject.type === 'array' ? schemaObject.items : schemaObject}
-        onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
-        path={schemaObject.type === 'array' ? 'items' : ''}
-        level={0}
-      />
+      {(schemaObject.type === "object" || schemaObject.type === "array") && (
+        <SchemaObject
+          schema={
+            schemaObject.type === "array" ? schemaObject.items : schemaObject
+          }
+          onSchemaChange={(newSchema: any) => handleSchemaChange(newSchema)}
+          path={schemaObject.type === "array" ? "items" : ""}
+          level={0}
+        />
+      )}
     </div>
   );
 };
