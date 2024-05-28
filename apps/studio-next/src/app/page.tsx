@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 const StudioWrapper = dynamic(() => import('@/components/StudioWrapper'), {ssr: false})
 import { Metadata } from 'next';
-import ogImage from '@/app/meta-studio-og-image.jpeg';
+import ogImage from '@/img/meta-studio-og-image.jpeg';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://studio-helios2003.netlify.app/'),
