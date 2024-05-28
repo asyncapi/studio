@@ -18,6 +18,9 @@ export const metadata: Metadata = {
         alt: 'AsyncAPI default image',
       },
     ]
+  },
+  twitter: {
+    site: '@AsyncAPISpec',
   }
 }
 export default async function Home() {
