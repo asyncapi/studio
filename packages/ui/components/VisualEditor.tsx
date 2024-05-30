@@ -32,7 +32,15 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   }, [schema]);
 
   const handleSchemaChange = (updatedPart: any) => {
-    const updatedSchema = { ...schemaObject, ...updatedPart };
+    let updatedSchema
+    if(schemaObject.type == "array" && schemaObject.items.type === "object") {
+      updatedSchema = {...schemaObject, items: {...schemaObject.items, ...updatedPart} }
+      updatedSchema.items.properties = {...updatedSchema.items.properties, ...updatedPart.items.properties }
+      console.log("updatedSchemaaa",updatedSchema)
+      console.log("updatedPartss",updatedPart)
+    } else {
+      updatedSchema = { ...schemaObject, ...updatedPart };
+    }
     const newSchemaString = JSON.stringify(updatedSchema);
     console.log('Schema updated:', newSchemaString);
     setSchemaObject(updatedSchema);
@@ -149,7 +157,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
           />
         )}
       </div>
-      {(schemaObject.type === "object" || schemaObject.type === "array") && (
+      {(schemaObject.type === "object" || (schemaObject.type === "array" && schemaObject.items.type === "object")) && (
         <SchemaObject
           schema={
             schemaObject.type === "array" ? schemaObject.items : schemaObject

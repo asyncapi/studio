@@ -22,9 +22,10 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const updatedSchema = _.cloneDeep(schema);
     const normalizedPath = fullPath.startsWith('.') ? fullPath.slice(1) : fullPath;
 
-    if (normalizedPath.startsWith('items.properties')) {
-      const itemsPath = normalizedPath.split('.properties')[0];
-      const propertyName = normalizedPath.split('.').pop();
+    if (normalizedPath === 'items' || normalizedPath.startsWith('items.properties')) {
+      console.log("normalized path", normalizedPath)
+      const itemsPath = normalizedPath === 'items' ? normalizedPath : normalizedPath.split('.properties')[0];
+      const propertyName = normalizedPath === 'items' ? '' : normalizedPath.split('.').pop();
       _.set(updatedSchema, `${itemsPath}.properties.${propertyName}`, propertySchema);
     } else {
       _.set(updatedSchema, normalizedPath, propertySchema);
@@ -57,6 +58,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
       const itemsPath = `${normalizedPath}.items`;
       _.unset(currentSchema, itemsPath);
     }
+    _.unset(currentSchema, `${normalizedPath}.properties`)
 
     console.log(`Type changed at ${propertyPath}`, newSchema);
     onSchemaChange(currentSchema);
