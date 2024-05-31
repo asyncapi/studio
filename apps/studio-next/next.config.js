@@ -7,9 +7,9 @@ const nextConfig = {
     config.module.rules.push({
       test: /\.yml$/i,
       type: 'asset/source',
-    })
+    });
 
-    if (isServer) return config
+    if (isServer) return config;
     // Important: return the modified config
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -25,7 +25,7 @@ const nextConfig = {
       debug: false,
       canvas: false,
       fs: false,
-    }
+    };
 
     config.plugins.push(
       new webpack.ProvidePlugin({
@@ -34,8 +34,9 @@ const nextConfig = {
       })
     );
 
-    return config
+    return config;
   },
-}
+  output: 'export',
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
