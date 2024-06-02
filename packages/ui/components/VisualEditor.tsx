@@ -32,15 +32,31 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
   }, [schema]);
 
   const handleSchemaChange = (updatedPart: any) => {
-    let updatedSchema
-    if(schemaObject.type == "array" && schemaObject.items.type === "object") {
-      updatedSchema = {...schemaObject, items: {...schemaObject.items, ...updatedPart} }
-      updatedSchema.items.properties = {...updatedSchema.items.properties, ...updatedPart.items.properties }
-      console.log("updatedSchemaaa",updatedSchema)
-      console.log("updatedPartss",updatedPart)
+    let updatedSchema = _.cloneDeep(schemaObject);
+    console.log("updatedPart.type", updatedPart.type)
+
+    if (updatedSchema.type === 'array') {
+        if (updatedPart.items && updatedPart.items.type === 'object') {
+          updatedSchema.items = updatedPart.items;
+        } else if (updatedPart?.items?.properties) {
+          updatedSchema.items = {
+            ...updatedSchema.items,
+            properties: {
+              ...updatedSchema.items.properties,
+              ...updatedPart.items.properties,
+            },
+          };
+        } else if (updatedPart.type !== 'object' ) {
+          updatedSchema = { ...schemaObject, ...updatedPart };
+        } else if (Object.keys(updatedPart.properties).length === 0  && updatedPart?.required === undefined){
+          updatedSchema = { ...schemaObject, ...updatedPart };
+        } else {
+          updatedSchema.items = { ...updatedSchema.items, ...updatedPart };
+        }
     } else {
       updatedSchema = { ...schemaObject, ...updatedPart };
     }
+
     const newSchemaString = JSON.stringify(updatedSchema);
     console.log('Schema updated:', newSchemaString);
     setSchemaObject(updatedSchema);

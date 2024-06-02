@@ -37,8 +37,19 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
 
   const handleRemoveProperty = (propertyPath: string) => {
     const updatedSchema = _.cloneDeep(schema);
-    const normalizedPath = propertyPath.startsWith('.') ? propertyPath.slice(1) : propertyPath;
-    _.unset(updatedSchema, normalizedPath);
+    const normalizedPath = propertyPath.startsWith(".")
+      ? propertyPath.slice(1)
+      : propertyPath;
+      console.log("normalized path", normalizedPath)
+
+      if (normalizedPath.startsWith('items.properties')) {
+        const path = normalizedPath.split(".").slice(1).join(".");
+        console.log("path", path)
+        _.unset(updatedSchema, path);
+      } else {
+        _.unset(updatedSchema, normalizedPath);
+      }
+    console.log("updatedSchema", JSON.stringify(updatedSchema))
     onSchemaChange(updatedSchema);
   };
 
