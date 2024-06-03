@@ -1,65 +1,80 @@
-import type { FunctionComponent, ReactNode } from 'react'
-import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
+"use client"
 
-interface DropdownMenuRegularItem {
-  type?: 'regular'
-  title: string
-  onSelect: () => void
-}
+import * as React from "react"
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 
-interface DropdownMenuSeparatorItem {
-  type: 'separator'
-}
+import { cn } from "@asyncapi/studio-utils"
 
-export type DropdownMenuItem = DropdownMenuRegularItem | DropdownMenuSeparatorItem
+const DropdownMenu = DropdownMenuPrimitive.Root
 
-interface DropdownMenuProps {
-  trigger: ReactNode
-  items: DropdownMenuItem[]
-  side?: 'top' | 'right' | 'bottom' | 'left'
-  align?: 'start' | 'center' | 'end'
-}
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 
-interface DropdownMenuItemComponentProps {
-  item: DropdownMenuItem
-}
+const DropdownMenuGroup = DropdownMenuPrimitive.Group
 
-const DropdownMenuItemComponent: FunctionComponent<DropdownMenuItemComponentProps> = ({ item }) => {
-  return (
-    item.type === 'separator' ? (
-      <RadixDropdownMenu.Separator className="w-full h-px bg-gray-700 my-2" />
-    ) : (
-      <RadixDropdownMenu.Item
-        className="text-gray-200 text-sm leading-7 px-2.5 cursor-pointer rounded outline-none select-none hover:bg-gray-700 focus:bg-gray-700"
-        onSelect={item.onSelect}
-      >
-        {item.title}
-      </RadixDropdownMenu.Item>
-    )
-  )
-}
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal
 
-export const DropdownMenu: FunctionComponent<DropdownMenuProps> = ({
-  trigger,
-  items,
-  side,
-  align,
-}) => {
-  return (
-    <RadixDropdownMenu.Root>
-      <RadixDropdownMenu.Trigger aria-label='Select an Option.' asChild>
-        {trigger}
-      </RadixDropdownMenu.Trigger>
-      <RadixDropdownMenu.Portal>
-        <RadixDropdownMenu.Content className="min-w-[220px] bg-gray-950 rounded-md p-2.5 shadow" sideOffset={5} side={side} align={align}>
-          {
-            items.map((item, index) => (
-              <DropdownMenuItemComponent key={index} item={item} />
-            ))
-          }
-          <RadixDropdownMenu.Arrow className="fill-gray-950" />
-        </RadixDropdownMenu.Content>
-      </RadixDropdownMenu.Portal>
-    </RadixDropdownMenu.Root>
-  )
+const DropdownMenuSub = DropdownMenuPrimitive.Sub
+
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+
+
+const DropdownMenuContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+>(({ className, sideOffset = 5, ...props }, ref) => (
+  <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(
+        "min-w-[220px] bg-gray-950 rounded-md p-2.5 shadow",
+        className
+      )}
+      {...props}
+    />
+  </DropdownMenuPrimitive.Portal>
+))
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
+
+const DropdownMenuItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+    inset?: boolean
+  }
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Item
+    ref={ref}
+    className={cn(
+      "text-gray-200 text-sm leading-7 px-2.5 cursor-pointer rounded outline-none select-none hover:bg-gray-700 focus:bg-gray-700",
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+
+
+const DropdownMenuSeparator = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Separator
+    ref={ref}
+    className={cn("w-full h-px bg-gray-700 my-2", className)}
+    {...props}
+  />
+))
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
+
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuRadioGroup,
 }
