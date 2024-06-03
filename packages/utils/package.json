@@ -1,0 +1,21 @@
+{
+  "name": "@asyncapi/studio-utils",
+  "version": "0.0.0",
+  "description": "Shared utilities for studio.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.2"
+  }
+}
