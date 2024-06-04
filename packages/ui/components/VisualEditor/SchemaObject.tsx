@@ -49,6 +49,26 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
       } else {
         _.unset(updatedSchema, normalizedPath);
       }
+
+      const propertyName = normalizedPath.split(".").pop();
+      console.log("propertyName", propertyName)
+      console.log("updatedSchema.properties.required", updatedSchema)
+      console.log("normalizedPath", normalizedPath)
+      const parentPath = normalizedPath.slice(
+        0,
+        normalizedPath.lastIndexOf(".")
+      );
+      const schemaPath = parentPath.split('.properties');
+      const requiredPath = schemaPath.slice(0, -1).join('.properties') + '.required';
+      const nestedRequired = _.get(updatedSchema, requiredPath, []);
+
+      if (nestedRequired.includes(propertyName)) {
+        _.set(
+          updatedSchema,
+          requiredPath,
+          nestedRequired.filter((requiredProp: string) => requiredProp !== propertyName)
+        );
+      }
     console.log("updatedSchema", JSON.stringify(updatedSchema))
     onSchemaChange(updatedSchema);
   };
@@ -68,6 +88,15 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
       _.set(currentSchema, typePath , newTypeValue);
       const itemsPath = `${normalizedPath}.items`;
       _.unset(currentSchema, itemsPath);
+
+      const propertyName = normalizedPath.split(".").slice(-1)[0];
+      const parentPath = normalizedPath.slice(0, normalizedPath.lastIndexOf('.'));
+      const requiredPath = `${parentPath}.${propertyName}.required`;
+      const nestedRequired = _.get(currentSchema, requiredPath, []);
+
+      if (nestedRequired?.length > 0 ) {
+        _.unset(currentSchema, requiredPath);
+      }
     }
     _.unset(currentSchema, `${normalizedPath}.properties`)
 
