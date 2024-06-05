@@ -79,6 +79,15 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
     const currentSchema = _.cloneDeep(schema);
     const typePath = `${normalizedPath}.type`;
 
+    const propertyName = normalizedPath.split(".").slice(-1)[0];
+      const parentPath = normalizedPath.slice(0, normalizedPath.lastIndexOf('.'));
+      const requiredPath = `${parentPath}.${propertyName}.required`;
+      const nestedRequired = _.get(currentSchema, requiredPath, []);
+
+      if (nestedRequired?.length > 0 ) {
+        _.unset(currentSchema, requiredPath);
+      }
+
     if(newType.type == "array") {
       const itemType = newType.items;
       _.set(currentSchema, typePath, 'array');
@@ -88,15 +97,6 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
       _.set(currentSchema, typePath , newTypeValue);
       const itemsPath = `${normalizedPath}.items`;
       _.unset(currentSchema, itemsPath);
-
-      const propertyName = normalizedPath.split(".").slice(-1)[0];
-      const parentPath = normalizedPath.slice(0, normalizedPath.lastIndexOf('.'));
-      const requiredPath = `${parentPath}.${propertyName}.required`;
-      const nestedRequired = _.get(currentSchema, requiredPath, []);
-
-      if (nestedRequired?.length > 0 ) {
-        _.unset(currentSchema, requiredPath);
-      }
     }
     _.unset(currentSchema, `${normalizedPath}.properties`)
 
