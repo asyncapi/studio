@@ -65,9 +65,9 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
 
   const handleRootTypeDropdownSelect = (selectedOption: string) => {
     if (selectedOption === 'array') {
-      handleSchemaChange({ type: 'array', items: { type: 'string' } });
+      handleSchemaChange({ type: 'array', items: { type: 'string' }, properties: undefined, required: undefined});
     } else {
-      handleSchemaChange({ type: selectedOption });
+      handleSchemaChange({ type: selectedOption, properties: undefined, required: undefined});
     }
   };
 
