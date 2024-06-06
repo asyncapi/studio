@@ -1,5 +1,5 @@
-const isV2 = false;
-const isV3 = true;
+// import { isV3 } from "../../src/components/Sidebar";
+const isV3Test = true;
 
 /* Testing commented hovers is impossible even with `cypress-real-events` so
 testing of these hovers is postponed until either Cypress has better support for
@@ -74,7 +74,7 @@ describe('Studio UI spec', () => {
     cy.contains('Template preview').should('be.visible');
   });
 
-  if (isV2) {
+  if (!isV3Test) { // review the need of v2 testing in general
     it('Button "Blocks visualiser" should be visible in the UI', () => {
       cy.get('[data-test="button-blocks-visualiser"]').should('be.visible');
     });
