@@ -144,7 +144,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
             className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
             type="button"  
             onClick={() => showModal(SettingsModal)}
-            data-test="button-studio-settings"
+            data-test="button-settings"
           >
             <VscSettingsGear className="w-5 h-5" />
           </button>
