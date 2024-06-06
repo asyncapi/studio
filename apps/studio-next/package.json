@@ -1,5 +1,5 @@
 {
-  "name": "@asyncapi/studio",
+  "name": "studio-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
