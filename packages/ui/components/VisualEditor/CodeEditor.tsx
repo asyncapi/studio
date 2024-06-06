@@ -8,7 +8,7 @@ interface CodeEditorProps {
 }
 
 export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }) => {
-  const [value, setValue] = useState<string>(schema);
+  const [value, setValue] = useState(schema);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ schema, onSchemaChange }
 
   return (
     <div className="code-editor">
-      <h2>Code Editor</h2>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <textarea
         value={value}
