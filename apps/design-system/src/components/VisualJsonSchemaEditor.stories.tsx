@@ -282,4 +282,39 @@ export const NesteadArray = () => (
   />
 );
 
+export const Blank_schema = () => (
+  <Template
+    initialSchema={JSON.stringify(
+      {}, null, 2)}
+  />
+);
+
+export const Root_string = () => (
+  <Template
+    initialSchema={JSON.stringify(
+      {
+        "type": "string"
+      }, null, 2)}
+  />
+);
+
+export const Multiple_data_types = () => (
+  <Template
+    initialSchema={JSON.stringify(
+      {
+        type: "object",
+        properties: {
+          mixedTypeProperty: {
+            type: ["boolean", "integer"],
+          },
+        },
+        required: ["mixedTypeProperty"],
+      },
+      null,
+      2
+    )}
+  />
+);
+
+
 export default VisualEditorStory
