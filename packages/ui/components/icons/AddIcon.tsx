@@ -5,7 +5,7 @@ const AddIcon = (props: any) => (
         id="Vector"
         d="M19.5 14.625V24.375M24.375 19.5H14.625M34.125 19.5C34.125 27.5772 27.5772 34.125 19.5 34.125C11.4228 34.125 4.875 27.5772 4.875 19.5C4.875 11.4228 11.4228 4.875 19.5 4.875C27.5772 4.875 34.125 11.4228 34.125 19.5Z"
         stroke="#64748B"
-        strokeWidth="1.5"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

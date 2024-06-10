@@ -1,5 +1,14 @@
 # @asyncapi/studio-ui
 
+## 0.4.0
+
+### Minor Changes
+
+- 2c0ab6c: Add Form component.
+- 2c0ab6c: Added TextArea component.
+- 2c0ab6c: Add Dropdown component.
+- 2c0ab6c: Add TextInput component.
+
 ## 0.3.0
 
 ### Minor Changes
