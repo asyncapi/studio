@@ -1,4 +1,3 @@
-"use client"
 
 import { FunctionComponent, KeyboardEvent, useRef } from 'react';
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
