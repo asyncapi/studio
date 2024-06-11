@@ -563,6 +563,10 @@ video {
   margin-bottom: 0.75rem;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
 .flex {
   display: flex;
 }
@@ -577,6 +581,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-\[360px\] {
+  width: 360px;
 }
 
 .grow {
@@ -601,6 +609,14 @@ video {
 
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.border {
+  border-width: 1px;
 }
 
 .bg-gray-100 {
