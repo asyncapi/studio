@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SchemaObject from './VisualEditor/SchemaObject';
 import _ from 'lodash';
 import { getColorForType } from './VisualEditor/SchemaProperty';
-import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './DropdownMenu';
 import { IoIosArrowDropdown } from 'react-icons/io';
 
 interface VisualEditorProps {
@@ -75,23 +75,19 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
     handleSchemaChange({ items: schemaObject.items ? { ...schemaObject.items, type: selectedOption } : { type: selectedOption } });
   };
 
-  const rootTypeOptions: DropdownMenuItem[] = [
-    { title: 'Select Root Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'Object', onSelect: () => handleRootTypeDropdownSelect('object') },
-    { type: 'regular', title: 'Array', onSelect: () => handleRootTypeDropdownSelect('array') },
-    { type: 'regular', title: 'String', onSelect: () => handleRootTypeDropdownSelect('string') },
-    { type: 'regular', title: 'Number', onSelect: () => handleRootTypeDropdownSelect('number') },
-    { type: 'regular', title: 'Boolean', onSelect: () => handleRootTypeDropdownSelect('boolean') },
+  const rootTypeOptions = [
+    { title: 'Object', onSelect: () => handleRootTypeDropdownSelect('object') },
+    { title: 'Array', onSelect: () => handleRootTypeDropdownSelect('array') },
+    { title: 'String', onSelect: () => handleRootTypeDropdownSelect('string') },
+    { title: 'Number', onSelect: () => handleRootTypeDropdownSelect('number') },
+    { title: 'Boolean', onSelect: () => handleRootTypeDropdownSelect('boolean') },
   ];
   
-  const itemTypeOptions: DropdownMenuItem[] = [
-    { title: 'Select Items Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'String', onSelect: () => handleArrayItemTypeDropdownSelect('string') },
-    { type: 'regular', title: 'Number', onSelect: () => handleArrayItemTypeDropdownSelect('number') },
-    { type: 'regular', title: 'Boolean', onSelect: () => handleArrayItemTypeDropdownSelect('boolean') },
-    { type: 'regular', title: 'Object', onSelect: () => handleArrayItemTypeDropdownSelect('object') },
+  const itemTypeOptions = [
+    { title: 'String', onSelect: () => handleArrayItemTypeDropdownSelect('string') },
+    { title: 'Number', onSelect: () => handleArrayItemTypeDropdownSelect('number') },
+    { title: 'Boolean', onSelect: () => handleArrayItemTypeDropdownSelect('boolean') },
+    { title: 'Object', onSelect: () => handleArrayItemTypeDropdownSelect('object') },
   ];
 
   const renderRootTypeDisplay = () => {
@@ -154,23 +150,27 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ schema, onSchemaChan
       <div className="flex items-center gap-2">
         {renderRootTypeDisplay()}
         {renderArrayItemTypeDisplay()}
-        <DropdownMenu
-          trigger={
-            <button>
-              <IoIosArrowDropdown />
-            </button>
-          }
-          items={rootTypeOptions}
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button><IoIosArrowDropdown /></button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>Select Root Type</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {rootTypeOptions.map((menuItem) => (<DropdownMenuItem key={menuItem.title} onSelect={menuItem.onSelect}>{menuItem.title}</DropdownMenuItem>))}
+          </DropdownMenuContent>
+        </DropdownMenu>
         {schemaObject.type === "array" && (
-          <DropdownMenu
-            trigger={
-              <button>
-                <IoIosArrowDropdown />
-              </button>
-            }
-            items={itemTypeOptions}
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button><IoIosArrowDropdown /> </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Select Items Type</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {itemTypeOptions.map((menuItem) => (<DropdownMenuItem key={menuItem.title} onSelect={menuItem.onSelect}>{menuItem.title}</DropdownMenuItem>))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
       {(schemaObject.type === "object" || (schemaObject.type === "array" && schemaObject.items.type === "object")) && (

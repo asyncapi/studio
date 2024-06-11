@@ -1,7 +1,7 @@
 import Tooltip from './Tooltip'
 import * as RadixToolbar from '@radix-ui/react-toolbar'
 import { FunctionComponent } from 'react'
-import { DropdownMenu, DropdownMenuItem } from './DropdownMenu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './DropdownMenu'
 
 interface ToolbarToggleItem {
   type: 'toggle'
@@ -31,10 +31,21 @@ interface ToolbarSeparatorItem {
   type: 'separator'
 }
 
+interface DropdownMenuRegularItem {
+  type?: 'regular'
+  title: string
+  onSelect: () => void
+}
+
+interface DropdownMenuSeparatorItem {
+  type: 'separator'
+}
+
+type DropdownMenuItemInterface = DropdownMenuRegularItem | DropdownMenuSeparatorItem
 interface ToolbarDropdownMenuItem {
   type: 'dropdownMenu',
   icon: FunctionComponent<any>
-  items: DropdownMenuItem[]
+  items: DropdownMenuItemInterface[]
 }
 
 type ToolbarItem = ToolbarToggleItem | ToolbarToggleGroupSingleItem | ToolbarToggleGroupMultipleItem | ToolbarSeparatorItem | ToolbarDropdownMenuItem
@@ -117,17 +128,19 @@ const ToolbarItem: FunctionComponent<ToolbarItemProps> = ({ item }) => {
     )
   } else if (type === 'dropdownMenu') {
     return (
-      <DropdownMenu
-        trigger={
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <button className="flex text-sm focus:outline-none border-box py-2 my-3.5 text-gray-500 hover:text-white focus:text-white rounded">
             <item.icon className="w-6 h-6"/>
           </button>
-        }
-        items={item.items}
-        side="bottom"
-        align="end"
-      />
-      
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {item.items.map((menuItem) => (
+            menuItem.type === 'separator' ? <DropdownMenuSeparator key={menuItem.type} /> :
+            <DropdownMenuItem key={menuItem.title} onSelect={menuItem.onSelect}>{menuItem.title}</DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   } 
   throw new Error(`Unsupported type of Toolbar item: ${type}`)

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import PropertyControls from './PropertyControls';
 import { RequiredIcon, NotRequiredIcon, TrashIcon } from '../icons';
-import { DropdownMenu, DropdownMenuItem } from '../DropdownMenu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../DropdownMenu';
 import { IoIosArrowDropdown } from "react-icons/io"; 
 
 interface SchemaPropertyProps {
@@ -101,23 +101,19 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
     handleItemTypeChange({ target: { value: selectedOption } } as React.ChangeEvent<HTMLSelectElement>);
   };
 
-  const typeOptions: DropdownMenuItem[] = [
-    { title: 'Select Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'String', onSelect: () => handleTypeDropdownSelect('string') },
-    { type: 'regular', title: 'Number', onSelect: () => handleTypeDropdownSelect('number') },
-    { type: 'regular', title: 'Boolean', onSelect: () => handleTypeDropdownSelect('boolean') },
-    { type: 'regular', title: 'Object', onSelect: () => handleTypeDropdownSelect('object') },
-    { type: 'regular', title: 'Array', onSelect: () => handleTypeDropdownSelect('array') },
+  const typeOptions = [
+    { title: 'String', onSelect: () => handleTypeDropdownSelect('string') },
+    { title: 'Number', onSelect: () => handleTypeDropdownSelect('number') },
+    { title: 'Boolean', onSelect: () => handleTypeDropdownSelect('boolean') },
+    { title: 'Object', onSelect: () => handleTypeDropdownSelect('object') },
+    { title: 'Array', onSelect: () => handleTypeDropdownSelect('array') },
   ];
 
-  const itemTypeOptions: DropdownMenuItem[] = [
-    { title: 'Select Item Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'String', onSelect: () => handleItemTypeDropdownSelect('string') },
-    { type: 'regular', title: 'Number', onSelect: () => handleItemTypeDropdownSelect('number') },
-    { type: 'regular', title: 'Boolean', onSelect: () => handleItemTypeDropdownSelect('boolean') },
-    { type: 'regular', title: 'Object', onSelect: () => handleItemTypeDropdownSelect('object') },
+  const itemTypeOptions = [
+    { title: 'String', onSelect: () => handleItemTypeDropdownSelect('string') },
+    { title: 'Number', onSelect: () => handleItemTypeDropdownSelect('number') },
+    { title: 'Boolean', onSelect: () => handleItemTypeDropdownSelect('boolean') },
+    { title: 'Object', onSelect: () => handleItemTypeDropdownSelect('object') },
   ];
 
   const handleRemove = () => {
@@ -254,15 +250,28 @@ const SchemaProperty: React.FC<SchemaPropertyProps> = ({
           <strong className="[font-family:'Inter',Helvetica] font-medium text-extendedblue-gray300 pl-2">{name}</strong>
           {renderTypeDisplay()}
           {renderItemTypeDisplay()}
-          <DropdownMenu
-            trigger={<button><IoIosArrowDropdown /></button>}
-            items={typeOptions}
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+               <button><IoIosArrowDropdown /></button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Select Type</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              { typeOptions.map((option) => (<DropdownMenuItem key={option.title} onSelect={option.onSelect}>{option.title}</DropdownMenuItem>))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+           
           {schema.type.includes('array') && (
-            <DropdownMenu
-              trigger={<button><IoIosArrowDropdown /></button>}
-              items={itemTypeOptions}
-            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button><IoIosArrowDropdown /></button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+              <DropdownMenuItem>Select Item Type</DropdownMenuItem>
+              <DropdownMenuSeparator />
+                {itemTypeOptions.map((option) => (<DropdownMenuItem key={option.title} onSelect={option.onSelect}>{option.title}</DropdownMenuItem>))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
         <div style={{ marginLeft: 'auto' }}>
