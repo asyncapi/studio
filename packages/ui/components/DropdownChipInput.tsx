@@ -15,7 +15,6 @@ import { cn } from '@asyncapi/studio-utils';
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 interface DropdownChipInputProps {
-  id: string;
   className?: string;
   chips: string[];
   chipsOptions: string[];
@@ -70,7 +69,7 @@ export const DropdownChipInput: FunctionComponent<DropdownChipInputProps> = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {chipsOptions.map((chipOption) => (
-          <DropdownMenuCheckboxItem checked={chips.includes(chipOption)} onCheckedChange={() => onChipCheckedChange(chipOption)}>
+          <DropdownMenuCheckboxItem key={chipOption} checked={chips.includes(chipOption)} onCheckedChange={() => onChipCheckedChange(chipOption)}>
             {chipOption}
           </DropdownMenuCheckboxItem>
         ))}

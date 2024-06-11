@@ -24,7 +24,6 @@ export const Default: Story = {
     return (
         <DropdownChipInput 
         className='w-96'
-        id="chip-input-id-chip-text"
         chips={currentChips}
         onChange={setCurrentChips} 
         chipsOptions={OPTIONS}/>
@@ -39,7 +38,6 @@ export const Disabled: Story = {
     return (
         <DropdownChipInput 
         className='w-96'
-        id="chip-input-id-chip-text"
         chips={currentChips}
         onChange={setCurrentChips} 
         isDisabled={true}
@@ -55,7 +53,6 @@ export const WithPlaceholder: Story = {
         <DropdownChipInput 
         className='w-96'
         placeholder='Add a chip'
-        id="chip-input-id-chip-text"
         chips={currentChips}
         onChange={setCurrentChips} 
         chipsOptions={OPTIONS}/>
