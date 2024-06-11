@@ -19,7 +19,7 @@ type Story = StoryObj<typeof DropdownChipInput>
 const OPTIONS = ["string", "number", "boolean", "object", "array", "null"];
 
 export const Default: Story = {
-  render: () =>  {
+  render: function Render() {
     const [currentChips, setCurrentChips] = useState<string[]>(["boolean"]);
     return (
         <DropdownChipInput 
@@ -34,7 +34,7 @@ export const Default: Story = {
 
 
 export const Disabled: Story = {
-  render: () =>  {
+  render: function Render() {
     const [currentChips, setCurrentChips] = useState<string[]>(["string"]);
     return (
         <DropdownChipInput 
@@ -49,7 +49,7 @@ export const Disabled: Story = {
 }
 
 export const WithPlaceholder: Story = {
-  render: () =>  {
+  render: function Render() {
     const [currentChips, setCurrentChips] = useState<string[]>([]);
     return (
         <DropdownChipInput 
