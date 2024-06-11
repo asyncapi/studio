@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
-import { DropdownMenu, DropdownMenuItem } from '../DropdownMenu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../DropdownMenu';
 import { AddIcon } from '../icons';
 
 interface PropertyControlsProps {
@@ -60,23 +60,19 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
     setShowInputs(false);
   };
 
-  const typeOptions: DropdownMenuItem[] = [
-    { title: 'Select Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'String', onSelect: () => setSelectedTypes(['string']) },
-    { type: 'regular', title: 'Number', onSelect: () => setSelectedTypes(['number']) },
-    { type: 'regular', title: 'Boolean', onSelect: () => setSelectedTypes(['boolean']) },
-    { type: 'regular', title: 'Object', onSelect: () => setSelectedTypes(['object']) },
-    { type: 'regular', title: 'Array', onSelect: () => setSelectedTypes(['array']) },
+  const typeOptions = [
+    { title: 'String', onSelect: () => setSelectedTypes(['string']) },
+    { title: 'Number', onSelect: () => setSelectedTypes(['number']) },
+    { title: 'Boolean', onSelect: () => setSelectedTypes(['boolean']) },
+    { title: 'Object', onSelect: () => setSelectedTypes(['object']) },
+    { title: 'Array', onSelect: () => setSelectedTypes(['array']) },
   ];
 
-  const itemTypeOptions: DropdownMenuItem[] = [
-    { title: 'Select Item Type',onSelect: () => {}},
-    { type: 'separator'},
-    { type: 'regular', title: 'String', onSelect: () => setSelectedItemTypes(['string']) },
-    { type: 'regular', title: 'Number', onSelect: () => setSelectedItemTypes(['number']) },
-    { type: 'regular', title: 'Boolean', onSelect: () => setSelectedItemTypes(['boolean']) },
-    { type: 'regular', title: 'Object', onSelect: () => setSelectedItemTypes(['object']) },
+  const itemTypeOptions = [
+    { title: 'String', onSelect: () => setSelectedItemTypes(['string']) },
+    { title: 'Number', onSelect: () => setSelectedItemTypes(['number']) },
+    { title: 'Boolean', onSelect: () => setSelectedItemTypes(['boolean']) },
+    { title: 'Object', onSelect: () => setSelectedItemTypes(['object']) },
   ];
 
   return (
@@ -114,18 +110,27 @@ const PropertyControls: React.FC<PropertyControlsProps> = ({ onAdd, schemaPath, 
               style={{...inputAndSelectStyle, width: '130px' }}
             />
 
-            <DropdownMenu
-              trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedTypes}</button>}
-              items={typeOptions}
-              onSelect={(options) => setSelectedTypes(options)}
-            />
-            
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedTypes}</button>
+              </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Select Type</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {typeOptions.map((menuItem) => (<DropdownMenuItem key={menuItem.title} onSelect={menuItem.onSelect}>{menuItem.title}</DropdownMenuItem>))}
+                </DropdownMenuContent>
+            </DropdownMenu>
             {selectedTypes.includes('array') && (
-              <DropdownMenu
-                trigger={<button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedItemTypes}</button>}
-                items={itemTypeOptions}
-                onSelect={(options) => setSelectedItemTypes(options)}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <button style={{ ...inputAndSelectStyle, whiteSpace: 'nowrap'}}>{selectedItemTypes}</button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Select Item Type</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {itemTypeOptions.map((menuItem) => (<DropdownMenuItem key={menuItem.title} onSelect={menuItem.onSelect}>{menuItem.title}</DropdownMenuItem>))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           <button onClick={handleAddProperty} className='inline-flex items-center justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'>Add</button>
           <button onClick={handleCancel} className="inline-flex items-center justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">Cancel</button>
