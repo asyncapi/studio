@@ -12,9 +12,6 @@ export const Chip = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
         className={cn("m-1 w-fit bg-gray-100 text-gray-900 rounded px-2 py-1 flex items-center border border-gray-400 focus:border-blue-500 focus:border-2 focus:outline-none", className)}
         style={{ height: "28px", borderStyle: "solid" }}
         ref={ref}
-        onClick={(e) => {
-          console.log("Chip clicked")
-        }}
         {...props}
       >
         <span>{chip}</span>
