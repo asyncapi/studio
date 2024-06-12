@@ -6,4 +6,3 @@ build
 dist
 .turbo
 .env
-apps/design-system/src/styles/tailwind.output.css
