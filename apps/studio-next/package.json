@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:studio-next:docker": "next build && cp -r public .next/standalone/apps/studio-next/public && cp -r .next/static .next/standalone/apps/studio-next/.next && cp ../../StudioNextDockerfile .next/standalone/Dockerfile && cp ../../.dockerignore .next/standalone/.dockerignore && cd .next/standalone && docker build -t asyncapi/studio:latest .",
-    "docker:build": "docker build -t asyncapi/studio:latest .",
     "cy:e2e:chrome": "cypress run --e2e --browser chrome",
     "cy:e2e:chromium": "cypress run --e2e --browser chromium",
     "cy:e2e:edge": "cypress run --e2e --browser edge",
