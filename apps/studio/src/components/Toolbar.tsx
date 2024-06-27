@@ -9,7 +9,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
       <div className="px-2 border-b border-gray-700 bg-gray-800">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <div className="flex-shrink-0 ml-1.5">
+            <div className="flex-shrink-0 ml-1.5" id="tour-example">
               <img
                 className="inline-block h-16"
                 src={`${process.env.PUBLIC_URL}/img/logo-studio.svg`}
@@ -20,6 +20,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               </span>
             </div>
           </div>
+          <div id='communicate'>
           <ul className="flex items-center text-pink-500 mr-2">
             <li className="text-xl opacity-75 hover:opacity-100">
               <a href='https://asyncapi.com' title='AsyncAPI Website' target='_blank' rel="noreferrer">
@@ -37,6 +38,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
               </a>
             </li>
           </ul>
+          </div>
         </div>
       </div>
     </div>
