@@ -1,0 +1,9 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "plugins": ["security"],
+  "extends":["eslint-config-custom", "eslint-config-custom/react"]
+}

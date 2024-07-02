@@ -19,6 +19,9 @@
     },
     "clean": {},
     "lint": {},
-    "generate:assets":{}
+    "generate:assets":{},
+    "build:studio-next:docker": {
+      "dependsOn": ["^build:studio-next:docker"]
+    }
   }
 }
