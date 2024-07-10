@@ -6,7 +6,8 @@ import { JSONSchema7 } from 'json-schema';
 
 const DESTINATION_JSON = path.join(__dirname, '../src/components/Modals/Generator/template-parameters.json');
 const TEMPLATES: Record<string, string> = {
-  '@asyncapi/dotnet-nats-template': '.NET Nats Project',
+  '@asyncapi/dotnet-nats-template': '.NET NATS Project',
+  '@asyncapi/dotnet-rabbitmq-template':	'.NET C# RabbitMQ Project',
   '@asyncapi/go-watermill-template': 'GO Lang Watermill Project',
   '@asyncapi/html-template': 'HTML website',
   '@asyncapi/java-spring-cloud-stream-template': 'Java Spring Cloud Stream Project',
@@ -14,9 +15,10 @@ const TEMPLATES: Record<string, string> = {
   '@asyncapi/java-template': 'Java Project',
   '@asyncapi/markdown-template': 'Markdown Documentation',
   '@asyncapi/nodejs-template': 'NodeJS Project',
-  '@asyncapi/nodejs-ws-template': 'NodeJS WebSocket Project',
+  '@asyncapi/nodejs-ws-template': 'NodeJS WebSocket Projects',
+  '@asyncapi/php-template':	'PHP RabbitMQ Project',
   '@asyncapi/python-paho-template': 'Python Paho Project',
-  '@asyncapi/ts-nats-template': 'Typescript Nats Project',
+  '@asyncapi/ts-nats-template': 'Typescript NATS Project',
 };
 const SUPPORTED_TEMPLATES = Object.keys(TEMPLATES);
 

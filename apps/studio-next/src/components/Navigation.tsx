@@ -83,7 +83,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   hash,
 }) => {
   const { navigationSvc } = useServices();
-
+  /* eslint-disable sonarjs/cognitive-complexity */
   const operations = document.operations().all().map(
     (operation) => {
       const channels: React.ReactNode[] = [];
@@ -160,7 +160,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return channels;
     },
   );
-
+  /* eslint-enable sonarjs/cognitive-complexity */
   return (
     <>
       <div

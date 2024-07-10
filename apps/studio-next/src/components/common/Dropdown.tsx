@@ -32,6 +32,7 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
         onKeyDown={() => setOpen(!open)}
         type="button"
         className={`flex p-2 text-sm rounded-md ${buttonHoverClassName} focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150`}
+        data-test="button-dropdown"
       >
         {opener}
       </button>
