@@ -6,6 +6,7 @@ import { createServices, Services, ServicesProvider } from '@/services';
 
 import { AsyncAPIStudio } from './CodeEditor';
 import Preloader from './Preloader';
+import { driverObj } from '@/helpers/driver';
 
 function configureMonacoEnvironment() {
   if (typeof window !== 'undefined') {
@@ -34,8 +35,15 @@ export default function StudioWrapper() {
   useEffect(() => {
     const fetchData = async () => {
       const servicess = await createServices();
-      setServices(servicess)
+      setServices(servicess);
       configureMonacoEnvironment();
+      const alreadyVisitedSession = sessionStorage.getItem("alreadyVisited");
+      const alreadyVisitedLocal = localStorage.getItem("alreadyVisited");
+      if (!alreadyVisitedSession && !alreadyVisitedLocal) {
+        sessionStorage.setItem("alreadyVisited", "true");
+        localStorage.setItem("alreadyVisited", "true");
+        driverObj.drive();
+      }
     };
 
     fetchData();
