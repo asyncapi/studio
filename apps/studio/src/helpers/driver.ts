@@ -1,112 +1,112 @@
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 export const driverObj = driver({
-  popoverClass: "driverjs-theme",
+  popoverClass: 'driverjs-theme',
   showProgress: true,
-  showButtons: ["next", "previous", "close"],
-  nextBtnText: "Next",
-  prevBtnText: "Back",
+  showButtons: ['next', 'previous', 'close'],
+  nextBtnText: 'Next',
+  prevBtnText: 'Back',
 
   steps: [
     {
-      element: "#tour-example",
+      element: '#tour-example',
       popover: {
-        title: "Welcome to AsyncAPI Studio",
+        title: 'Welcome to AsyncAPI Studio',
         description:
-          "Discover a powerful tool for designing, documenting, and managing AsyncAPI-based applications. This tour will guide you through key features to enhance your API development workflow.",
-        side: "left",
-        align: "start",
+          'Discover a powerful tool for designing, documenting, and managing AsyncAPI-based applications. This tour will guide you through key features to enhance your API development workflow.',
+        side: 'left',
+        align: 'start',
       },
     },
     {
-      element: "#navbar",
+      element: '#navbar',
       popover: {
-        title: "Control Center",
+        title: 'Control Center',
         description:
-          "This controle center allows you to toggle the editor, information panel, and HTML preview on or off. It's also your gateway to creating new API templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your API design process from here.",
-        side: "left",
-        align: "start",
+          'This controle center allows you to toggle the editor, information panel, and HTML preview on or off. It\'s also your gateway to creating new API templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your API design process from here.',
+        side: 'left',
+        align: 'start',
       },
     },
     {
-      element: "#information",
+      element: '#information',
       popover: {
-        title: "Information Panel",
+        title: 'Information Panel',
         description:
-          "Explore your API structure using this information panel. Quickly access Servers, Channels, Operations, Messages, and Schemas - the building blocks of your AsyncAPI specification.",
-        side: "left",
-        align: "start",
+          'Explore your API structure using this information panel. Quickly access Servers, Channels, Operations, Messages, and Schemas - the building blocks of your AsyncAPI specification.',
+        side: 'left',
+        align: 'start',
       },
     },
     {
-      element: "#editor",
+      element: '#editor',
       popover: {
-        title: "The Powerful Editor",
+        title: 'The Powerful Editor',
         description:
-          "Create and edit your AsyncAPI documents with ease. Enjoy features like syntax highlighting, auto-completion, and real-time validation to streamline your API design process.",
-        side: "bottom",
-        align: "start",
+          'Create and edit your AsyncAPI documents with ease. Enjoy features like syntax highlighting, auto-completion, and real-time validation to streamline your API design process.',
+        side: 'bottom',
+        align: 'start',
       },
     },
     {
-      element: "#editor-dropdown",
+      element: '#editor-dropdown',
       popover: {
-        title: "Share and Editor Options",
+        title: 'Share and Editor Options',
         description:
-          "Collaborate on your work and access document management tools. Import, export, and convert your API specifications with just a few clicks.",
-        side: "top",
-        align: "start",
+          'Collaborate on your work and access document management tools. Import, export, and convert your API specifications with just a few clicks.',
+        side: 'top',
+        align: 'start',
       },
     },
     {
-      element: "#terminal",
+      element: '#terminal',
       popover: {
-        title: "Terminal",
+        title: 'Terminal',
         description:
-          "Quickly identify and resolve issues in your specification. View errors, warnings, and helpful messages to ensure your API documentation is error-free.",
-        side: "bottom",
-        align: "start",
+          'Quickly identify and resolve issues in your specification. View errors, warnings, and helpful messages to ensure your API documentation is error-free.',
+        side: 'bottom',
+        align: 'start',
       },
     },
     {
-      element: "#html-preview",
+      element: '#html-preview',
       popover: {
-        title: "Instant HTML Preview",
+        title: 'Instant HTML Preview',
         description:
-          "See your API documentation come to life in real-time. This panel renders a human-readable version of your specification as you make changes.",
-        side: "top",
-        align: "start",
+          'See your API documentation come to life in real-time. This panel renders a human-readable version of your specification as you make changes.',
+        side: 'top',
+        align: 'start',
       },
     },
     {
-      element: "#studio-setting",
+      element: '#studio-setting',
       popover: {
-        title: "Studio Settings",
+        title: 'Studio Settings',
         description:
-          "Customize your AsyncAPI Studio experience. Adjust preferences and settings to tailor the tool to your workflow.",
-        side: "top",
-        align: "start",
+          'Customize your AsyncAPI Studio experience. Adjust preferences and settings to tailor the tool to your workflow.',
+        side: 'top',
+        align: 'start',
       },
     },
     {
-      element: "#communicate",
+      element: '#communicate',
       popover: {
-        title: "Join AsyncAPI Community",
+        title: 'Join AsyncAPI Community',
         description:
-          "Connect with fellow AsyncAPI developers. Join our Slack community to share ideas, get help, and stay updated on AsyncAPI news and events.",
-        side: "top",
-        align: "start",
+          'Connect with fellow AsyncAPI developers. Join our Slack community to share ideas, get help, and stay updated on AsyncAPI news and events.',
+        side: 'top',
+        align: 'start',
       },
     },
     {
-      element: "#Thank-you",
+      element: '#Thank-you',
       popover: {
-        title: "Thank You",
+        title: 'Thank You',
         description:
-          "Thanks for exploring AsyncAPI Studio. We hope you find it valuable for your API projects. Feel free to reach out with any questions or feedback. Happy coding!",
-        side: "top",
-        align: "start",
+          'Thanks for exploring AsyncAPI Studio. We hope you find it valuable for your API projects. Feel free to reach out with any questions or feedback. Happy coding!',
+        side: 'top',
+        align: 'start',
       },
     },
   ],

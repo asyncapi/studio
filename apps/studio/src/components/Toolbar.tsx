@@ -21,23 +21,23 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
             </div>
           </div>
           <div id='communicate'>
-          <ul className="flex items-center text-pink-500 mr-2">
-            <li className="text-xl opacity-75 hover:opacity-100">
-              <a href='https://asyncapi.com' title='AsyncAPI Website' target='_blank' rel="noreferrer">
-                <IoGlobeOutline />
-              </a>
-            </li>
-            <li className="text-xl ml-2 opacity-75 hover:opacity-100">
-              <a href='https://github.com/asyncapi/studio' title='AsyncAPI Studio Github Repository' target='_blank' rel="noreferrer">
-                <IoLogoGithub />
-              </a>
-            </li>
-            <li className="text-xl ml-2 opacity-75 hover:opacity-100">
-              <a href='https://asyncapi.com/slack-invite' title='AsyncAPI Slack Workspace' target='_blank' rel="noreferrer">
-                <IoLogoSlack />
-              </a>
-            </li>
-          </ul>
+            <ul className="flex items-center text-pink-500 mr-2">
+              <li className="text-xl opacity-75 hover:opacity-100">
+                <a href='https://asyncapi.com' title='AsyncAPI Website' target='_blank' rel="noreferrer">
+                  <IoGlobeOutline />
+                </a>
+              </li>
+              <li className="text-xl ml-2 opacity-75 hover:opacity-100">
+                <a href='https://github.com/asyncapi/studio' title='AsyncAPI Studio Github Repository' target='_blank' rel="noreferrer">
+                  <IoLogoGithub />
+                </a>
+              </li>
+              <li className="text-xl ml-2 opacity-75 hover:opacity-100">
+                <a href='https://asyncapi.com/slack-invite' title='AsyncAPI Slack Workspace' target='_blank' rel="noreferrer">
+                  <IoLogoSlack />
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
