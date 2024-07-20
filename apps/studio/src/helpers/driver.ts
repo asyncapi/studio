@@ -10,7 +10,7 @@ export const driverObj = driver({
 
   steps: [
     {
-      element: '#tour-example',
+      element: '#tour-start',
       popover: {
         title: 'Welcome to AsyncAPI Studio',
         description:
@@ -24,7 +24,7 @@ export const driverObj = driver({
       popover: {
         title: 'Control Center',
         description:
-          'This controle center allows you to toggle the editor, information panel, and HTML preview on or off. It\'s also your gateway to creating new API templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your API design process from here.',
+          'This control center allows you to toggle the editor, information panel, and HTML preview on or off. It\'s also your gateway to creating new API templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your API design process from here.',
         side: 'left',
         align: 'start',
       },

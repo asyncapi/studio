@@ -9,7 +9,7 @@ export const Toolbar: React.FunctionComponent<ToolbarProps> = () => {
       <div className="px-2 border-b border-gray-700 bg-gray-800">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <div className="flex-shrink-0 ml-1.5" id="tour-example">
+            <div className="flex-shrink-0 ml-1.5">
               <img
                 className="inline-block h-16"
                 src={`${process.env.PUBLIC_URL}/img/logo-studio.svg`}
