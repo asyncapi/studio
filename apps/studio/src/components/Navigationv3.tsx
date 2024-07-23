@@ -327,7 +327,7 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 
   const components = document.components();
   return (
-    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}  id="information">
+    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}  id="navigation-panel">
       <ul>
         <li className="mb-4">
           <div
