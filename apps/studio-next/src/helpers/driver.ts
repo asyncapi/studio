@@ -22,17 +22,17 @@ export const driverObj = driver({
       popover: {
         title: "Control Center",
         description:
-          "This control center allows you to toggle the editor, information panel, and HTML preview on or off. It's also your gateway to creating new AsyncAPI templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your AsyncAPI design process from here.",
+          "This control center allows you to toggle the editor, navigation panel, and HTML preview on or off. It's also your gateway to creating new AsyncAPI templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your AsyncAPI design process from here.",
         side: "left",
         align: "start",
       },
     },
     {
-      element: "#information",
+      element: "#navigation-panel",
       popover: {
-        title: "Information Panel",
+        title: "Navigation Panel",
         description:
-          "Explore your API structure using this information panel. Quickly access Servers, Channels, Operations, Messages, and Schemas - the building blocks of your AsyncAPI specification.",
+          "Explore your API structure using this navigation panel. Quickly access Servers, Channels, Operations, Messages, and Schemas - the building blocks of your AsyncAPI document.",
         side: "left",
         align: "start",
       },
