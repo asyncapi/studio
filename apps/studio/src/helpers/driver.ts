@@ -14,7 +14,7 @@ export const driverObj = driver({
       popover: {
         title: 'Welcome to AsyncAPI Studio',
         description:
-          'Discover a powerful tool for designing, documenting, and managing AsyncAPI-based applications. This tour will guide you through key features to enhance your API development workflow.',
+          'Discover a powerful tool for designing, documenting, and managing AsyncAPI-based applications. This tour will guide you through key features to enhance your AsyncAPI development workflow.',
         side: 'left',
         align: 'start',
       },
@@ -24,7 +24,7 @@ export const driverObj = driver({
       popover: {
         title: 'Control Center',
         description:
-          'This control center allows you to toggle the editor, information panel, and HTML preview on or off. It\'s also your gateway to creating new API templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your API design process from here.',
+          'This control center allows you to toggle the editor, information panel, and HTML preview on or off. It\'s also your gateway to creating new AsyncAPI templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your AsyncAPI design process from here.',
         side: 'left',
         align: 'start',
       },

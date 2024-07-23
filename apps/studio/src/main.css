@@ -147,7 +147,7 @@
   transition: background-color 0.3s ease;
 }
 
-.driver-popover.driverjs-theme button:hover {
+.driver-popover.driverjs-theme button:not(.driver-popover-close-btn):hover {
   background-color: #c81c67;
   cursor: pointer;
 }
@@ -159,10 +159,6 @@
   top: 13px;
   right: 5px;
   padding: 0%;
-}
-
-.driver-popover.driverjs-theme .driver-popover-close-btn:hover {
-  background-color: transparent;
   cursor: pointer;
 }
 
