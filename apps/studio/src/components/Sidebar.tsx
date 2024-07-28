@@ -115,6 +115,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   navigation = navigation.filter(item => item.enabled);
 
+  const driverTourHandler = () => {
+    const getCurrentTourStep = localStorage.getItem('currentTourStep');
+    driverObj.drive(parseInt(getCurrentTourStep || '0'));
+  };
+  
   return (
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="navbar">
       <div className="flex flex-col">
@@ -139,7 +144,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
             title="Start Tour"  
             className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
             type="button"  
-            onClick={() => (driverObj.drive())}
+            onClick={driverTourHandler}
           >
             <VscPlayCircle className="w-6 h-6" />
           </button>

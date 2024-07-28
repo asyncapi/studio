@@ -17,6 +17,10 @@ export const driverObj = driver({
           'Discover a powerful tool for designing, documenting, and managing AsyncAPI-based applications. This tour will guide you through key features to enhance your AsyncAPI development workflow.',
         side: 'left',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -27,6 +31,10 @@ export const driverObj = driver({
           'This control center allows you to toggle the editor, navigation panel, and HTML preview on or off. It\'s also your gateway to creating new AsyncAPI templates for various protocols like Apache Kafka, WebSocket, HTTP, and more. Customize your workspace and jumpstart your AsyncAPI design process from here.',
         side: 'left',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -37,6 +45,10 @@ export const driverObj = driver({
           'Explore your API structure using this navigation panel. Quickly access Servers, Channels, Operations, Messages, and Schemas - the building blocks of your AsyncAPI document.',
         side: 'left',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -47,6 +59,10 @@ export const driverObj = driver({
           'Create and edit your AsyncAPI documents with ease. Enjoy features like syntax highlighting, auto-completion, and real-time validation to streamline your API design process.',
         side: 'bottom',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -57,6 +73,10 @@ export const driverObj = driver({
           'Collaborate on your work and access document management tools. Import, export, and convert your API specifications with just a few clicks.',
         side: 'top',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -67,6 +87,10 @@ export const driverObj = driver({
           'Quickly identify and resolve issues in your specification. View errors, warnings, and helpful messages to ensure your API documentation is error-free.',
         side: 'bottom',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -77,6 +101,10 @@ export const driverObj = driver({
           'See your API documentation come to life in real-time. This panel renders a human-readable version of your specification as you make changes.',
         side: 'top',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -87,6 +115,10 @@ export const driverObj = driver({
           'Customize your AsyncAPI Studio experience. Adjust preferences and settings to tailor the tool to your workflow.',
         side: 'top',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -97,6 +129,10 @@ export const driverObj = driver({
           'Connect with fellow AsyncAPI developers. Join our Slack community to share ideas, get help, and stay updated on AsyncAPI news and events.',
         side: 'top',
         align: 'start',
+        onPopoverRender: () => {
+          const {activeIndex} = driverObj.getState();
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+        },
       },
     },
     {
@@ -107,6 +143,9 @@ export const driverObj = driver({
           'Thanks for exploring AsyncAPI Studio. We hope you find it valuable for your API projects. Feel free to reach out with any questions or feedback. Happy coding!',
         side: 'top',
         align: 'start',
+        onPopoverRender: () => {
+          localStorage.setItem('currentTourStep', "0");
+        },
       },
     },
   ],
