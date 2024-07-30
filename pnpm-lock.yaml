@@ -176,8 +176,8 @@ importers:
         specifier: ^3.0.22
         version: 3.0.22
       '@asyncapi/parser':
-        specifier: ^3.0.14
-        version: 3.0.14
+        specifier: ^3.2.1
+        version: 3.2.1
       '@asyncapi/protobuf-schema-parser':
         specifier: ^3.2.11
         version: 3.2.12
@@ -208,9 +208,11 @@ importers:
       '@tippyjs/react':
         specifier: ^4.2.6
         version: 4.2.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+
       driver.js:
         specifier: ^1.3.1
         version: 1.3.1
+
       js-base64:
         specifier: ^3.7.3
         version: 3.7.7
@@ -408,8 +410,8 @@ importers:
         specifier: ^3.0.18
         version: 3.0.22
       '@asyncapi/parser':
-        specifier: ^3.0.11
-        version: 3.0.14
+        specifier: ^3.2.1
+        version: 3.2.1
       '@asyncapi/protobuf-schema-parser':
         specifier: ^3.2.8
         version: 3.2.12
@@ -836,8 +838,8 @@ packages:
   '@asyncapi/parser@3.0.0-next-major-spec.8':
     resolution: {integrity: sha512-d8ebYM08BCsx3Q4AeLke6naU/NrcAXFEVpS6b3EWcKRdUDce+v0X5k9aDH+YXWCaQApEF28UzcxhlSOJvhIFgQ==}
 
-  '@asyncapi/parser@3.0.14':
-    resolution: {integrity: sha512-tC2gmKkw28PWWMcGUXHQjTfVftiZdr+FQtsfapaHh36spX9uwe13iYzkcTyCkwSJAHibtg7wvStuHsiufP8xng==}
+  '@asyncapi/parser@3.2.1':
+    resolution: {integrity: sha512-Qws9XZdKigSYH5O+kn3uNDs77x7LM9tIocVRinhWIBsdR8H0c8zSJZ08IiC+E1X3PYluV2sk6FqCJUFxSy75vA==}
 
   '@asyncapi/protobuf-schema-parser@3.2.12':
     resolution: {integrity: sha512-ROMx71sdfeAvpRoRWkjKXxP6Cu6xNE2P/b7Nl3jiXcPUNhlwUu2m5ScV00v4C2d/So6jNrxnUzXeg1Q3f20EZw==}
@@ -4322,6 +4324,9 @@ packages:
   ajv@8.13.0:
     resolution: {integrity: sha512-PRA911Blj99jR5RMeTunVbNXMF6Lp4vZXnk5GQjcnUWUTsrXtekg/pnmFFI2u/I36Y/2bITGS30GZCXei6uNkA==}
 
+  ajv@8.17.1:
+    resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
+
   alterschema@1.1.3:
     resolution: {integrity: sha512-VqKTk8lX8LHVRvSOgEZDGPeEYOvrSOjlX/1PAi4el7ac8acC6/6a99HuVjfU6N1tNrHV5dU0sQDmuOjRvBf/Sw==}
     hasBin: true
@@ -6032,6 +6037,9 @@ packages:
 
   fast-memoize@2.5.2:
     resolution: {integrity: sha512-Ue0LwpDYErFbmNnZSF0UH6eImUwDmogUO1jyE+JbN2gsQz/jICm1Ve7t9QT0rNSsfJt+Hs4/S3GnsDVjL4HVrw==}
+
+  fast-uri@3.0.1:
+    resolution: {integrity: sha512-MWipKbbYiYI0UC7cl8m/i/IWTqfC8YXsqjzybjddLsFjStroQzsHXkc73JutMvBiXmOvapk+axIl79ig5t55Bw==}
 
   fastest-stable-stringify@2.0.2:
     resolution: {integrity: sha512-bijHueCGd0LqqNK9b5oCMHc0MluJAx0cwqASgbWMvkO01lCYgIhacVRLcaDz3QnyYIRNJRDwMb41VuT6pHJ91Q==}
@@ -10794,7 +10802,7 @@ snapshots:
 
   '@asyncapi/avro-schema-parser@3.0.22':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@types/json-schema': 7.0.15
       avsc: 5.7.7
     transitivePeerDependencies:
@@ -10802,7 +10810,7 @@ snapshots:
 
   '@asyncapi/converter@1.4.19':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       js-yaml: 3.14.1
     transitivePeerDependencies:
       - encoding
@@ -10847,7 +10855,7 @@ snapshots:
 
   '@asyncapi/generator-react-sdk@1.0.18(@types/babel__core@7.20.5)':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@babel/core': 7.12.9
       '@babel/preset-env': 7.24.5(@babel/core@7.12.9)
       '@babel/preset-react': 7.24.1(@babel/core@7.12.9)
@@ -10878,7 +10886,7 @@ snapshots:
   '@asyncapi/html-template@2.3.5(@types/babel__core@7.20.5)(react@18.2.0)':
     dependencies:
       '@asyncapi/generator-react-sdk': 1.0.18(@types/babel__core@7.20.5)
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@asyncapi/react-component': 1.4.10(react-dom@17.0.2(react@18.2.0))(react@18.2.0)
       highlight.js: 10.7.3
       puppeteer: 14.4.1
@@ -10953,7 +10961,7 @@ snapshots:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 11.6.1
       '@apidevtools/swagger-parser': 10.1.0(openapi-types@9.3.0)
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@smoya/multi-parser': 5.0.7
       '@swc/core': 1.5.7(@swc/helpers@0.5.5)
       '@swc/jest': 0.2.36(@swc/core@1.5.7(@swc/helpers@0.5.5))
@@ -11007,7 +11015,7 @@ snapshots:
 
   '@asyncapi/openapi-schema-parser@3.0.22':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       ajv: 8.13.0
       ajv-errors: 3.0.0(ajv@8.13.0)
@@ -11075,7 +11083,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/parser@3.0.14':
+  '@asyncapi/parser@3.2.1':
     dependencies:
       '@asyncapi/specs': 6.7.1
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
@@ -11089,9 +11097,9 @@ snapshots:
       '@stoplight/types': 13.20.0
       '@types/json-schema': 7.0.15
       '@types/urijs': 1.19.25
-      ajv: 8.13.0
-      ajv-errors: 3.0.0(ajv@8.13.0)
-      ajv-formats: 2.1.1(ajv@8.13.0)
+      ajv: 8.17.1
+      ajv-errors: 3.0.0(ajv@8.17.1)
+      ajv-formats: 2.1.1(ajv@8.17.1)
       avsc: 5.7.7
       js-yaml: 4.1.0
       jsonpath-plus: 7.2.0
@@ -11101,7 +11109,7 @@ snapshots:
 
   '@asyncapi/protobuf-schema-parser@3.2.12':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@types/protocol-buffers-schema': 3.4.3
       protobufjs: 7.3.0
     transitivePeerDependencies:
@@ -11115,7 +11123,7 @@ snapshots:
 
   '@asyncapi/raml-dt-schema-parser@4.0.22':
     dependencies:
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       js-yaml: 4.1.0
       ramldt2jsonschema: 1.2.3
       webapi-parser: 0.5.0
@@ -11126,7 +11134,7 @@ snapshots:
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.22
       '@asyncapi/openapi-schema-parser': 3.0.22
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@asyncapi/protobuf-schema-parser': 3.2.12
       highlight.js: 10.7.3
       isomorphic-dompurify: 0.13.0
@@ -11146,7 +11154,7 @@ snapshots:
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.22
       '@asyncapi/openapi-schema-parser': 3.0.22
-      '@asyncapi/parser': 3.0.14
+      '@asyncapi/parser': 3.2.1
       '@asyncapi/protobuf-schema-parser': 3.2.12
       highlight.js: 10.7.3
       isomorphic-dompurify: 0.13.0
@@ -14414,19 +14422,19 @@ snapshots:
       '@asyncapi/raml-dt-schema-parser': 4.0.22
       parserapiv1: '@asyncapi/parser@2.1.2'
       parserapiv2: '@asyncapi/parser@3.0.0-next-major-spec.8'
-      parserapiv3: '@asyncapi/parser@3.0.14'
+      parserapiv3: '@asyncapi/parser@3.2.1'
     transitivePeerDependencies:
       - encoding
 
-  '@stoplight/better-ajv-errors@1.0.3(ajv@8.13.0)':
+  '@stoplight/better-ajv-errors@1.0.3(ajv@8.17.1)':
     dependencies:
-      ajv: 8.13.0
+      ajv: 8.17.1
       jsonpointer: 5.0.1
       leven: 3.1.0
 
   '@stoplight/json-ref-readers@1.2.2':
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       tslib: 1.14.1
     transitivePeerDependencies:
       - encoding
@@ -14459,7 +14467,7 @@ snapshots:
 
   '@stoplight/spectral-core@1.18.3':
     dependencies:
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.13.0)
+      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
       '@stoplight/json': 3.21.0
       '@stoplight/path': 1.3.2
       '@stoplight/spectral-parsers': 1.0.4
@@ -14468,9 +14476,9 @@ snapshots:
       '@stoplight/types': 13.6.0
       '@types/es-aggregate-error': 1.0.6
       '@types/json-schema': 7.0.15
-      ajv: 8.13.0
-      ajv-errors: 3.0.0(ajv@8.13.0)
-      ajv-formats: 2.1.1(ajv@8.13.0)
+      ajv: 8.17.1
+      ajv-errors: 3.0.0(ajv@8.17.1)
+      ajv-formats: 2.1.1(ajv@8.17.1)
       es-aggregate-error: 1.0.13
       jsonpath-plus: 7.1.0
       lodash: 4.17.21
@@ -14494,15 +14502,15 @@ snapshots:
 
   '@stoplight/spectral-functions@1.7.2':
     dependencies:
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.13.0)
+      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
       '@stoplight/json': 3.21.0
       '@stoplight/spectral-core': 1.18.3
       '@stoplight/spectral-formats': 1.6.0
       '@stoplight/spectral-runtime': 1.1.2
-      ajv: 8.13.0
-      ajv-draft-04: 1.0.0(ajv@8.13.0)
-      ajv-errors: 3.0.0(ajv@8.13.0)
-      ajv-formats: 2.1.1(ajv@8.13.0)
+      ajv: 8.17.1
+      ajv-draft-04: 1.0.0(ajv@8.17.1)
+      ajv-errors: 3.0.0(ajv@8.17.1)
+      ajv-formats: 2.1.1(ajv@8.17.1)
       lodash: 4.17.21
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -14532,7 +14540,7 @@ snapshots:
       '@stoplight/types': 12.5.0
       abort-controller: 3.0.0
       lodash: 4.17.21
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
@@ -16386,13 +16394,25 @@ snapshots:
     optionalDependencies:
       ajv: 8.13.0
 
+  ajv-draft-04@1.0.0(ajv@8.17.1):
+    optionalDependencies:
+      ajv: 8.17.1
+
   ajv-errors@3.0.0(ajv@8.13.0):
     dependencies:
       ajv: 8.13.0
 
+  ajv-errors@3.0.0(ajv@8.17.1):
+    dependencies:
+      ajv: 8.17.1
+
   ajv-formats@2.1.1(ajv@8.13.0):
     optionalDependencies:
       ajv: 8.13.0
+
+  ajv-formats@2.1.1(ajv@8.17.1):
+    optionalDependencies:
+      ajv: 8.17.1
 
   ajv-keywords@3.5.2(ajv@6.12.6):
     dependencies:
@@ -16430,6 +16450,13 @@ snapshots:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
+
+  ajv@8.17.1:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      fast-uri: 3.0.1
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
 
   alterschema@1.1.3:
     dependencies:
@@ -18679,6 +18706,8 @@ snapshots:
   fast-levenshtein@2.0.6: {}
 
   fast-memoize@2.5.2: {}
+
+  fast-uri@3.0.1: {}
 
   fastest-stable-stringify@2.0.2: {}
 
