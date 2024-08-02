@@ -1,7 +1,6 @@
-import dynamic from 'next/dynamic';
-const StudioWrapper = dynamic(() => import('@/components/StudioWrapper'), {ssr: false})
 import { Metadata } from 'next';
 import ogImage from '@/img/meta-studio-og-image.jpeg';
+import StudioEditor from '@/components/StudioEditor';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://studio-next.netlify.app'),
@@ -25,6 +24,6 @@ export const metadata: Metadata = {
 }
 export default async function Home() {
   return (
-    <StudioWrapper />
+    <StudioEditor />
   )
 }
