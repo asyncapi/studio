@@ -19,7 +19,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -33,7 +33,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -47,7 +47,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -61,7 +61,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -75,7 +75,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -89,7 +89,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -103,7 +103,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -117,7 +117,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -131,7 +131,7 @@ export const driverObj = driver({
         align: 'start',
         onPopoverRender: () => {
           const {activeIndex} = driverObj.getState();
-          localStorage.setItem('currentTourStep', activeIndex?.toString() || "0");
+          localStorage.setItem('currentTourStep', activeIndex?.toString() || '0');
         },
       },
     },
@@ -144,7 +144,7 @@ export const driverObj = driver({
         side: 'top',
         align: 'start',
         onPopoverRender: () => {
-          localStorage.setItem('currentTourStep', "0");
+          localStorage.setItem('currentTourStep', '0');
         },
       },
     },
