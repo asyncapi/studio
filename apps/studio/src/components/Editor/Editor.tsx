@@ -21,7 +21,7 @@ export const Editor: React.FunctionComponent<EditorProps> = () => {
         size={editorHeight}
         defaultSize={editorHeight}
       >
-        <div className="flex flex-1 flex-col h-full overflow-hidden">
+        <div className="flex flex-1 flex-col h-full overflow-hidden" id="editor">
           <EditorSidebar />
           <MonacoWrapper />
         </div>

@@ -6,7 +6,7 @@ export type OtherState = {
 }
 
 export const otherState = create<OtherState>(() => ({
-  editorHeight: 'calc(100% - 36px)',
+  editorHeight: 'calc(100% - 161px)',
   templateRerender: false,
 }));
 
