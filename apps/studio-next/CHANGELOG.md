@@ -1,5 +1,11 @@
 # studio-next
 
+## 0.1.3
+
+### Patch Changes
+
+- 943fec1: fix: report correct `range` values in error diagnostics for YAML files
+
 ## 0.1.2
 
 ### Patch Changes
