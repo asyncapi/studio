@@ -1,11 +1,12 @@
-import type { Config } from 'jest'
-import nextJest from 'next/jest.js'
+import type { Config } from 'jest';
+import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest();
 const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   transform: {
+    '^.+\\.(ts|tsx)?$': 'ts-jest',
     '^.+\\.yml$': 'jest-transform-yaml',
     '^.+\\.yaml$': 'jest-transform-yaml',
   },

@@ -10,7 +10,7 @@ const base64url = "https://studio-studio-next.vercel.app/?base64=YXN5bmNhcGk6IDM
 const accountServiceTags = {
     "og:title": 'Account Service',
     "og:description": 'This service is in charge of processing user signups',
-    "og:image": 'https://ogp-studio.netlify.app/og?title=Account+Service&description=This+service+is+in+charge+of+processing+user+signups&numChannels=1&numOperations=1&numMessages=1'
+    "og:image": 'https://ogp-studio.vercel.app/api/og?title=Account+Service&description=This+service+is+in+charge+of+processing+user+signups&numChannels=1&numOperations=1&numMessages=1'
 }
 
 describe('Testing the document with base64 query parameter for various open graph crawlers', () => {
@@ -37,26 +37,23 @@ const externalDocUrl = 'https://studio-studio-next.vercel.app/?url=https://raw.g
 const mercurHubTags = {
     "og:title": 'Mercure Hub Example',
     "og:description": 'This example demonstrates how to define a Mercure hub.',
-    "og:image": 'https://ogp-studio.netlify.app/og?title=Mercure+Hub+Example&description=This+example+demonstrates+how+to+define+a+Mercure+hub.&numServers=1&numChannels=1&numOperations=2&numMessages=1'
+    "og:image": 'https://ogp-studio.vercel.app/api/og?title=Mercure+Hub+Example&description=This+example+demonstrates+how+to+define+a+Mercure+hub.&numServers=1&numChannels=1&numOperations=2&numMessages=1'
 }
 
 describe('Testing the document with url query parameter for various open graph crawlers', () => {
     jest.setTimeout(30000);
 
     test('Test Open Graph tags for Facebook', async () => {
-        const facebookCrawler = 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)';
         const openGraphTags = await fetchOpenGraphTags(externalDocUrl, facebookCrawler);
         expect(openGraphTags).toEqual(mercurHubTags);
     });
 
     test('Test Open Graph tags for X', async () => {
-        const XCrawler = 'Twitterbot/1.0';
         const openGraphTags = await fetchOpenGraphTags(externalDocUrl, XCrawler);
         expect(openGraphTags).toEqual(mercurHubTags);
     });
 
     test('Test Open Graph tags for Slack', async () => {
-        const SlackCrawler = 'Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)';
         const openGraphTags = await fetchOpenGraphTags(externalDocUrl, SlackCrawler);
         expect(openGraphTags).toEqual(mercurHubTags);
     });

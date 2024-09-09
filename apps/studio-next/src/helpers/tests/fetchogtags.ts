@@ -8,7 +8,7 @@ export async function fetchOpenGraphTags(url: string, userAgent: string) {
                 'User-Agent': userAgent
             }
         });
-
+        console.log("the data is", data)
         const $ = cheerio.load(data);
         const ogTags: { [key: string]: string } = {};
 
