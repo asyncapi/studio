@@ -1,5 +1,17 @@
 # studio-next
 
+## 0.1.3
+
+### Patch Changes
+
+- 943fec1: fix: report correct `range` values in error diagnostics for YAML files
+
+## 0.1.2
+
+### Patch Changes
+
+- c3248c8: fix: fix the validation error for payload of type `date` (https://github.com/asyncapi/parser-js/issues/980)
+
 ## 0.1.1
 
 ### Patch Changes
