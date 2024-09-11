@@ -170,7 +170,7 @@ importers:
         specifier: ^3.0.22
         version: 3.0.24
       '@asyncapi/converter':
-        specifier: ^1.4.19
+        specifier: ^1.6.0
         version: 1.6.0
       '@asyncapi/openapi-schema-parser':
         specifier: ^3.0.22
@@ -399,7 +399,7 @@ importers:
         specifier: ^3.0.19
         version: 3.0.24
       '@asyncapi/converter':
-        specifier: ^1.4.16
+        specifier: ^1.6.0
         version: 1.6.0
       '@asyncapi/openapi-schema-parser':
         specifier: ^3.0.18
@@ -466,7 +466,7 @@ importers:
         version: 4.0.2(monaco-editor@0.34.1)
       next:
         specifier: 14.2.3
-        version: 14.2.3(@babel/core@7.25.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 14.2.3(@babel/core@7.12.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       postcss:
         specifier: 8.4.31
         version: 8.4.31
@@ -21676,7 +21676,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@14.2.3(@babel/core@7.25.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next@14.2.3(@babel/core@7.12.9)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
@@ -21686,7 +21686,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.25.2)(react@18.2.0)
+      styled-jsx: 5.1.1(@babel/core@7.12.9)(react@18.2.0)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.3
       '@next/swc-darwin-x64': 14.2.3
@@ -23936,12 +23936,12 @@ snapshots:
     dependencies:
       webpack: 5.94.0(@swc/core@1.7.26(@swc/helpers@0.5.5))(esbuild@0.18.20)
 
-  styled-jsx@5.1.1(@babel/core@7.25.2)(react@18.2.0):
+  styled-jsx@5.1.1(@babel/core@7.12.9)(react@18.2.0):
     dependencies:
       client-only: 0.0.1
       react: 18.2.0
     optionalDependencies:
-      '@babel/core': 7.25.2
+      '@babel/core': 7.12.9
 
   stylehacks@5.1.1(postcss@8.4.31):
     dependencies:
