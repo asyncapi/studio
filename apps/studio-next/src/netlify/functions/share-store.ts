@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import type { Config, Context } from "@netlify/edge-functions";
+import type { Config, Context } from "@netlify/functions";
 import { randomUUID } from "crypto";
 
 export default async (req: Request, context: Context) => {

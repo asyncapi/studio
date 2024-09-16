@@ -1,9 +1,9 @@
-import { Config, Context } from "@netlify/edge-functions";
 import { getStore } from "@netlify/blobs";
+import type { Config, Context } from "@netlify/functions";
 
 export default async (req: Request, context: Context) => {
   const share = getStore("share");
-  const shareId = req.url.split("/").pop();
+  const { shareId } = context.params; 
 
   if (!shareId) {
     return new Response("Not found", { status: 404 });
@@ -23,5 +23,5 @@ export default async (req: Request, context: Context) => {
 }
 
 export const config: Config = {
-  path: "/share/*",
+  path: "/share/:shareId",
 };
