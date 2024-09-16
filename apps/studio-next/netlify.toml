@@ -1,0 +1,14 @@
+[devs]
+  edge_functions = "apps/studio-next/src/netlify/edge-functions"
+  targetPort = 3001
+
+[build]
+  edge_functions = "apps/studio-next/src/netlify/edge-functions"
+
+[[edge_functions]]
+  path = "/share"
+  function = "share-store"
+
+[[edge_functions]]
+  path = "/share/*"
+  function = "share-retreive"
