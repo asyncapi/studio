@@ -8,6 +8,7 @@ import {
   ImportBase64Modal,
   GeneratorModal,
   ConvertModal,
+  ImportUUIDModal,
 } from '../Modals';
 import { Dropdown } from '../common';
 
@@ -31,6 +32,17 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       onClick={() => show(ImportURLModal)}
     >
       Import from URL
+    </button>
+  );
+
+  const importShareIdButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Import from UUID"
+      onClick={() => show(ImportUUIDModal)}
+    >
+      Import from UUID
     </button>
   );
 
@@ -208,6 +220,31 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </button>
   );
 
+  const shareButtonBase64 = (
+    <button 
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
+      title='Share as Base64'
+      onClick={() => {
+        toast.promise(
+          (async function () {
+            const base64 = await editorSvc.exportAsBase64();
+            const url = `${window.location.origin}/?base64=${encodeURIComponent(
+              base64
+            )}`;
+            await navigator.clipboard.writeText(url);
+          }()),
+          {
+            loading: 'Copying URL to clipboard...',
+            success: 'URL copied to clipboard!',
+            error: 'Failed to copy URL to clipboard.',
+          }
+        );
+      }}>
+      Share as Base64
+    </button>
+  );
+
   return (
     <Dropdown
       opener={<FaEllipsisH />}
@@ -224,10 +261,18 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           <li className="hover:bg-gray-900">
             {importBase64Button}
           </li>
+          <li className="hover:bg-gray-900">
+            {importShareIdButton}
+          </li>
         </div>
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
             {generateButton}
+          </li>
+        </div>
+        <div className="border-b border-gray-700">
+          <li className="hover:bg-gray-900">
+            {shareButtonBase64}
           </li>
         </div>
         <div className="border-b border-gray-700">
