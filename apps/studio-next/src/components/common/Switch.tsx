@@ -11,7 +11,7 @@ export const Switch: React.FunctionComponent<SwitchProps> = ({
 }) => {
   const [toggle, setToggle] = useState(initToggle);
 
-  const onClickHandler = (e: any) => {
+  const onClickHandler = (e: any) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     const newValue = !toggle;
     setToggle(newValue);
     onChange(newValue);

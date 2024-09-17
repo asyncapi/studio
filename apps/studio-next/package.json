@@ -6,11 +6,17 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "echo 'No linting configured'"
+    "lint": "next lint",
+    "cy:e2e:chrome": "cypress run --e2e --browser chrome",
+    "cy:e2e:chromium": "cypress run --e2e --browser chromium",
+    "cy:e2e:edge": "cypress run --e2e --browser edge",
+    "cy:e2e:electron": "cypress run --e2e --browser electron",
+    "cy:e2e:firefox": "cypress run --e2e --browser firefox",
+    "cy:open": "cypress open"
   },
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^3.0.19",
-    "@asyncapi/converter": "^1.4.16",
+    "@asyncapi/converter": "^1.6.0",
     "@asyncapi/openapi-schema-parser": "^3.0.18",
     "@asyncapi/parser": "^3.2.2",
     "@asyncapi/protobuf-schema-parser": "^3.2.8",
@@ -30,12 +36,10 @@
     "react-icons": "^4.6.0",
     "reactflow": "^11.2.0",
     "@stoplight/yaml": "^4.3.0",
-    "@codemirror/view": "^6.26.3",
     "@types/node": "20.4.6",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",
-    "codemirror": "^6.0.1",
     "eslint-config-next": "13.4.12",
     "next": "14.2.3",
     "postcss": "8.4.31",
@@ -72,6 +76,7 @@
     "autoprefixer": "^10.4.13",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "cypress": "^13.10.0",
     "eslint-config-next": "14.1.4",
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sonarjs": "^0.16.0",
@@ -88,5 +93,6 @@
     "util": "^0.12.5",
     "web-vitals": "^3.1.0",
     "webpack": "^5.75.0"
-  }
+  },
+  "packageManager": "pnpm@9.0.6"
 }
