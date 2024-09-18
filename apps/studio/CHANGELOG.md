@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.21.4
+
+### Patch Changes
+
+- 877810d: fix: temporarily hard-lock `@asyncapi/converter` on `v1.5.0` as a hotfix (#1138)
+
 ## 0.21.3
 
 ### Patch Changes
