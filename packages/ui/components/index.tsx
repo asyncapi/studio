@@ -2,6 +2,8 @@
 import './styles.css'
 
 // components
+export * from './Chip'
+export * from './DropdownChipInput'
 export * from './ChipInput'
 export * from './EditorSwitch'
 export * from './DropdownMenu'

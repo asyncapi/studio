@@ -1,4 +1,5 @@
 import { FunctionComponent, KeyboardEvent, useRef } from 'react';
+import { Chip } from './Chip';
 
 interface ChipInputProps {
   name: string;
@@ -44,7 +45,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
     }
   };
 
-  const handleDelete = (chipToDelete: string) => () => {
+  const handleDelete = (chipToDelete: string) => {
     const updatedChips = chips.filter(chip => chip !== chipToDelete);
     onChange(updatedChips);
   };
@@ -52,17 +53,7 @@ export const ChipInput: FunctionComponent<ChipInputProps> = ({
   return (
     <div className={`${className} flex flex-wrapitems-center p-1 bg-gray-900 rounded border border-gray-800`} style={{ width: '862px', height: '46px' }}>
       {chips.map((chip, index) => (
-        <div 
-          key={chip} 
-          className="m-1 bg-gray-100 text-gray-900 rounded px-2 py-1 flex items-center border border-gray-400 focus:border-blue-500 focus:border-2 focus:outline-none"
-          style={{ height: '28px', borderStyle: 'solid' }}
-          tabIndex={0} 
-          onKeyDown={handleChipKeyDown(index)}
-          ref={index === 0 ? firstChipRef : undefined}
-        >
-          <span>{chip}</span>
-          <button onClick={handleDelete(chip)} tabIndex={-1} className="ml-1 text-gray-400 focus:outline-none" aria-label='Close'>×</button>
-        </div>
+        <Chip key={chip} chip={chip} tabIndex={0} onDelete={handleDelete} onKeyDown={handleChipKeyDown(index)} ref={index === 0 ? firstChipRef : undefined} />
       ))}
       <input
         ref={inputRef}
