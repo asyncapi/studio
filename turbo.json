@@ -19,6 +19,6 @@
     },
     "clean": {},
     "lint": {},
-    "generate:assets":{}
+    "generate:assets": {}
   }
 }

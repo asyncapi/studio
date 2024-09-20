@@ -2,12 +2,12 @@ import { AbstractService } from './abstract.service';
 
 import { convert } from '@asyncapi/converter';
 
-import type { ConvertVersion, ConvertOptions } from '@asyncapi/converter';
+import type { AsyncAPIConvertVersion, ConvertOptions } from '@asyncapi/converter';
 
 export class ConverterService extends AbstractService {
   async convert(
     spec: string,
-    version?: ConvertVersion,
+    version?: AsyncAPIConvertVersion,
     options?: ConvertOptions,
   ): Promise<string> {
     version = version || this.svcs.specificationSvc.latestVersion;
