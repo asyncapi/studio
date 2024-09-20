@@ -12,16 +12,13 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
   const handleShare = () => {
     toast.promise(
       (async function () {
-        const base64 = await editorSvc.exportAsBase64();
-        const url = `${window.location.origin}/?base64=${encodeURIComponent(
-          base64
-        )}`;
+        const url = await editorSvc.exportAsURL();
         await navigator.clipboard.writeText(url);
       }()),
       {
         loading: 'Copying URL to clipboard...',
         success: 'URL copied to clipboard!',
-        error: 'Failed to copy URL to clipboard.',
+        error: 'Failed to share the AsyncAPI document.',
       }
     );
   };

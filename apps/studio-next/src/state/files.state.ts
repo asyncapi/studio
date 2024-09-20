@@ -218,7 +218,7 @@ export type File = {
   uri: string;
   name: string;
   content: string;
-  from: 'storage' | 'url' | 'base64';
+  from: 'storage' | 'url' | 'base64' | 'share';
   source?: string;
   language: 'json' | 'yaml';
   modified: boolean;

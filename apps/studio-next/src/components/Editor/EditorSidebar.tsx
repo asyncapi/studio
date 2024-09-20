@@ -17,6 +17,8 @@ export const EditorSidebar: React.FunctionComponent<
     documentFromText = 'From localStorage';
   } else if (from === 'base64') {
     documentFromText = 'From Base64';
+  } else if (from === 'share') {
+    documentFromText = 'From Shared';
   } else {
     documentFromText = `From URL ${source}`;
   }
