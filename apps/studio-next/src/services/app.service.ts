@@ -14,7 +14,7 @@ export class ApplicationService extends AbstractService {
     const { readOnly, url, base64, share } =
       this.svcs.navigationSvc.getUrlParameters();
     // readOnly state should be only set to true when someone pass also url or base64 or share parameter
-    const isStrictReadonly = Boolean(readOnly && (url || base64 || share ));
+    const isStrictReadonly = Boolean(readOnly && (url || base64 || share));
 
     let error: any;
     try {
@@ -66,11 +66,19 @@ export class ApplicationService extends AbstractService {
 
     const language = this.svcs.formatSvc.retrieveLangauge(content);
     const source = url || undefined;
+    let from = 'url';
+
+    if (base64) {
+      from = 'base64';
+    } else if (share) {
+      from = 'share';
+    }
+
     updateFile('asyncapi', {
       content,
       language,
       source,
-      from: url ? 'url' : base64 ? 'base64' : 'storage',
+      from: from as 'url' | 'base64' | 'share',
     });
     await this.svcs.parserSvc.parse('asyncapi', content, { source });
   }
