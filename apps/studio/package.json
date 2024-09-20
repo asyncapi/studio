@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^3.0.22",
-    "@asyncapi/converter": "^1.4.19",
+    "@asyncapi/converter": "1.5.0",
     "@asyncapi/openapi-schema-parser": "^3.0.22",
     "@asyncapi/parser": "^3.2.2",
     "@asyncapi/protobuf-schema-parser": "^3.2.11",

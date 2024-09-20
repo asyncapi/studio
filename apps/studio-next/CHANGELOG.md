@@ -1,5 +1,11 @@
 # studio-next
 
+## 0.1.4
+
+### Patch Changes
+
+- 877810d: fix: temporarily hard-lock `@asyncapi/converter` on `v1.5.0` as a hotfix (#1138)
+
 ## 0.1.3
 
 ### Patch Changes

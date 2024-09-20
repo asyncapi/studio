@@ -10,7 +10,7 @@ import { appState, documentsState, filesState, settingsState } from '../state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser/cjs';
-import type { ConvertVersion } from '@asyncapi/converter';
+import type { AsyncAPIConvertVersion } from '@asyncapi/converter';
 import type { File } from '../state/files.state';
 
 export interface UpdateState {
@@ -97,8 +97,8 @@ export class EditorService extends AbstractService {
     });
   }
 
-  async convertSpec(version?: ConvertVersion | string) {
-    const converted = await this.svcs.converterSvc.convert(this.value, version as ConvertVersion);
+  async convertSpec(version?: AsyncAPIConvertVersion | string) {
+    const converted = await this.svcs.converterSvc.convert(this.value, version as AsyncAPIConvertVersion);
     this.updateState({ content: converted, updateModel: true });
   }
 
