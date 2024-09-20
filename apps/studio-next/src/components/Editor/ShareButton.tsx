@@ -18,7 +18,7 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
       {
         loading: 'Copying URL to clipboard...',
         success: 'URL copied to clipboard!',
-        error: 'Failed to share document.',
+        error: 'Failed to share the AsyncAPI document.',
       }
     );
   };
