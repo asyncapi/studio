@@ -37,11 +37,11 @@ export default function StudioWrapper() {
       const servicess = await createServices();
       setServices(servicess);
       configureMonacoEnvironment();
-      const alreadyVisitedSession = sessionStorage.getItem("alreadyVisited");
-      const alreadyVisitedLocal = localStorage.getItem("alreadyVisited");
+      const alreadyVisitedSession = sessionStorage.getItem('alreadyVisited');
+      const alreadyVisitedLocal = localStorage.getItem('alreadyVisited');
       if (!alreadyVisitedSession && !alreadyVisitedLocal) {
-        sessionStorage.setItem("alreadyVisited", "true");
-        localStorage.setItem("alreadyVisited", "true");
+        sessionStorage.setItem('alreadyVisited', 'true');
+        localStorage.setItem('alreadyVisited', 'true');
         driverObj.drive();
       }
     };

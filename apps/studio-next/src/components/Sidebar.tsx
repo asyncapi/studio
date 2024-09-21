@@ -123,10 +123,9 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   const driverTourHandler = () => {
     const getCurrentTourStep = localStorage.getItem('currentTourStep');
-    driverObj.drive(parseInt(getCurrentTourStep || '0'));
+    driverObj.drive(parseInt(getCurrentTourStep || '0', 10));
   };
   
-
   return (
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
       <div className="flex flex-col">
@@ -146,7 +145,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         ))}
       </div>
       <div className="flex flex-col">
-      <Tooltip content='Start Tour' placement='right' hideOnClick={true}>
+        <Tooltip content='Start Tour' placement='right' hideOnClick={true}>
           <button
             title="Start Tour"  
             className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
