@@ -166,6 +166,45 @@ export class EditorService extends AbstractService {
     }
   }
 
+  async importFromShareID(shareID: string) {
+    try {
+      const response = await fetch(`/share/${shareID}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch shared document');
+      }
+
+      const data = await response.json();
+      this.updateState({ 
+        content: data.content, 
+        updateModel: true, 
+        file: { 
+          from: 'share', 
+          source: undefined, 
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async exportAsURL() {
+    try {
+      const file = filesState.getState().files['asyncapi'];
+      const shareID = await fetch('/share', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: file.content }),
+      }).then(res => res.text());
+      return `${window.location.origin}/?share=${shareID}`;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   async exportAsBase64() {
     try {
       const file = filesState.getState().files['asyncapi'];

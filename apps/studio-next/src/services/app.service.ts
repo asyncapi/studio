@@ -11,14 +11,14 @@ export class ApplicationService extends AbstractService {
     // subscribe to state to hide preloader
     this.hidePreloader();
 
-    const { readOnly, url, base64 } =
+    const { readOnly, url, base64, share } =
       this.svcs.navigationSvc.getUrlParameters();
-    // readOnly state should be only set to true when someone pass also url or base64 parameter
-    const isStrictReadonly = Boolean(readOnly && (url || base64));
+    // readOnly state should be only set to true when someone pass also url or base64 or share parameter
+    const isStrictReadonly = Boolean(readOnly && (url || base64 || share));
 
     let error: any;
     try {
-      await this.fetchResource(url, base64);
+      await this.fetchResource(url, base64, share);
     } catch (err) {
       error = err;
       console.error(err);
@@ -37,9 +37,9 @@ export class ApplicationService extends AbstractService {
   }
 
   public async afterAppInit() {
-    const { readOnly, url, base64, redirectedFrom } =
+    const { readOnly, url, base64, share, redirectedFrom } =
       this.svcs.navigationSvc.getUrlParameters();
-    const isStrictReadonly = Boolean(readOnly && (url || base64));
+    const isStrictReadonly = Boolean(readOnly && (url || base64 || share));
 
     // show RedirectedModal modal if the redirectedFrom is set (only when readOnly state is set to false)
     if (!isStrictReadonly && redirectedFrom) {
@@ -47,8 +47,8 @@ export class ApplicationService extends AbstractService {
     }
   }
 
-  private async fetchResource(url: string | null, base64: string | null) {
-    if (!url && !base64) {
+  private async fetchResource(url: string | null, base64: string | null, share: string | null) {
+    if (!url && !base64 && !share) {
       return;
     }
 
@@ -58,15 +58,27 @@ export class ApplicationService extends AbstractService {
       content = await fetch(url).then((res) => res.text());
     } else if (base64) {
       content = this.svcs.formatSvc.decodeBase64(base64);
+    } else if (share) {
+      const response = await fetch(`/share/${share}`);
+      const data = await response.json();
+      content = data.content;
     }
 
     const language = this.svcs.formatSvc.retrieveLangauge(content);
     const source = url || undefined;
+    let from = 'url';
+
+    if (base64) {
+      from = 'base64';
+    } else if (share) {
+      from = 'share';
+    }
+
     updateFile('asyncapi', {
       content,
       language,
       source,
-      from: url ? 'url' : 'base64',
+      from: from as 'url' | 'base64' | 'share',
     });
     await this.svcs.parserSvc.parse('asyncapi', content, { source });
   }
