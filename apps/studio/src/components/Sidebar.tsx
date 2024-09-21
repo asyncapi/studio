@@ -117,7 +117,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   const driverTourHandler = () => {
     const getCurrentTourStep = localStorage.getItem('currentTourStep');
-    driverObj.drive(parseInt(getCurrentTourStep || '0', 10));
+    driverObj.drive(parseInt(getCurrentTourStep ?? '0', 10));
   };
   
   return (
