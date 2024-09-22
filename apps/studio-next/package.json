@@ -1,9 +1,28 @@
 {
-  "name": "studio-next",
+  "name": "@asyncapi/studio-next",
   "version": "0.1.4",
-  "private": true,
+  "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/asyncapi/studio/issues"
+  },
+  "keywords": [
+    "asyncapi",
+    "documentation",
+    "studio",
+    "playground"
+  ],
+  "author": {
+    "name": "The AsyncAPI maintainers"
+  },
+  "files": [
+    "/build",
+    "/public",
+    "./README.md",
+    "./LICENSE"
+  ],
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,7 +32,8 @@
     "cy:e2e:edge": "cypress run --e2e --browser edge",
     "cy:e2e:electron": "cypress run --e2e --browser electron",
     "cy:e2e:firefox": "cypress run --e2e --browser firefox",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf build"
   },
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^3.0.19",
@@ -98,5 +118,20 @@
     "web-vitals": "^3.1.0",
     "webpack": "^5.75.0"
   },
-  "packageManager": "pnpm@9.0.6"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "packageManager": "pnpm@9.0.6",
+  "publishConfig": {
+    "access": "public"
+  }
 }
