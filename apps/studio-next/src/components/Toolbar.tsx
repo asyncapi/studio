@@ -19,7 +19,7 @@ export function Toolbar() {
               </span>
             </div>
           </div>
-          <ul className="flex items-center text-pink-500 mr-2">
+          <ul className="flex items-center text-pink-500 mr-2" id='communicate'>
             <li className="text-xl opacity-75 hover:opacity-100" data-test="button-website">
               <a href='https://asyncapi.com' title='AsyncAPI Website' target='_blank' rel="noreferrer">
                 <IoGlobeOutline />
