@@ -1,4 +1,4 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear,VscPlayCircle } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
@@ -8,6 +8,7 @@ import { usePanelsState, panelsState, useDocumentsState } from '../state';
 
 import type { FunctionComponent, ReactNode } from 'react';
 import type { PanelsState } from '../state/panels.state';
+import { driverObj } from '../helpers/driver';
 
 function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
   const settingsState = panelsState.getState();
@@ -114,8 +115,13 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   navigation = navigation.filter(item => item.enabled);
 
+  const driverTourHandler = () => {
+    const getCurrentTourStep = localStorage.getItem('currentTourStep');
+    driverObj.drive(parseInt(getCurrentTourStep ?? '0', 10));
+  };
+  
   return (
-    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between">
+    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="navbar">
       <div className="flex flex-col">
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
@@ -133,12 +139,23 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         ))}
       </div>
       <div className="flex flex-col">
+        <Tooltip content='Start Tour' placement='right' hideOnClick={true}>
+          <button
+            title="Start Tour"  
+            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            type="button"  
+            onClick={driverTourHandler}
+          >
+            <VscPlayCircle className="w-6 h-6" />
+          </button>
+        </Tooltip>
         <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
           <button
             title="Studio settings"  
             className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
             type="button"  
             onClick={() => showModal(SettingsModal)}
+            id="studio-setting"
           >
             <VscSettingsGear className="w-5 h-5" />
           </button>

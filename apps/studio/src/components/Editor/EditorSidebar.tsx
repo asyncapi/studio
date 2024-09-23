@@ -36,7 +36,7 @@ export const EditorSidebar: React.FunctionComponent<
         className="flex flex-row items-center"
         style={{ height: '30px', lineHeight: '30px' }}
       >
-        <div>
+        <div  id="editor-dropdown">
           <ul className="flex">
             <li>
               <ShareButton />

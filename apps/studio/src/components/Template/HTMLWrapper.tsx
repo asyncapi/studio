@@ -59,7 +59,7 @@ export const HTMLWrapper: React.FunctionComponent<HTMLWrapperProps> = () => {
   return (
     parsedSpec && (
       <div className="flex flex-1 flex-col h-full overflow-hidden">
-        <div className="overflow-auto">
+        <div className="overflow-auto" id="html-preview">
           <AsyncApiComponentWP
             schema={parsedSpec}
             config={{ 
