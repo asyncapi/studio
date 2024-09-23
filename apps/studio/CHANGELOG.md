@@ -1,4 +1,4 @@
-# studio-next
+# studio
 
 ## 0.1.4
 

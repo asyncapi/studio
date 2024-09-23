@@ -1,5 +1,5 @@
 {
-  "name": "@asyncapi/studio-next",
+  "name": "@asyncapi/studio",
   "version": "0.1.4",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
@@ -103,6 +103,7 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "cypress": "^13.10.0",
+    "eslint-config-custom": "workspace:*",
     "eslint-config-next": "14.1.4",
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sonarjs": "^0.16.0",

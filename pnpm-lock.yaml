@@ -164,7 +164,7 @@ importers:
         specifier: ^5.69.0
         version: 5.75.0(@swc/core@1.7.26)(esbuild@0.18.20)
 
-  apps/studio-next:
+  apps/studio:
     dependencies:
       '@asyncapi/avro-schema-parser':
         specifier: ^3.0.19
@@ -350,6 +350,9 @@ importers:
       cypress:
         specifier: ^13.10.0
         version: 13.10.0
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
       eslint-plugin-security:
         specifier: ^1.5.0
         version: 1.5.0
@@ -552,7 +555,7 @@ packages:
     resolution: {integrity: sha512-r1w81DpR+KyRWd3f+rk6TNqMgedmAxZP5v5KWlXQWlgMUUtyEJch0DKEci1SorPMiSeM8XPl7MZ3miJ60JIpQg==}
     dependencies:
       '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       call-me-maybe: 1.0.2
       js-yaml: 4.1.0
     dev: true
@@ -585,7 +588,7 @@ packages:
     resolution: {integrity: sha512-nrrIIPehHoS1+Zc0eCO3+ijo7VJhWaFqVTupFYJVxxiwNrx7HpldLiTt1awIUDU6rJTm9czGLQq8MIgtXb/Dqg==}
     dependencies:
       '@asyncapi/parser': 3.2.2
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       avsc: 5.7.7
     transitivePeerDependencies:
       - encoding
@@ -633,7 +636,7 @@ packages:
       '@asyncapi/parser': 1.18.1
       '@babel/core': 7.12.9
       '@babel/preset-env': 7.24.4(@babel/core@7.12.9)
-      '@babel/preset-react': 7.22.3(@babel/core@7.12.9)
+      '@babel/preset-react': 7.24.7(@babel/core@7.12.9)
       '@rollup/plugin-babel': 5.3.1(@babel/core@7.12.9)(rollup@2.79.1)
       babel-plugin-source-map-support: 2.2.0
       prop-types: 15.8.1
@@ -652,7 +655,7 @@ packages:
       '@asyncapi/parser': 3.2.2
       '@babel/core': 7.12.9
       '@babel/preset-env': 7.24.4(@babel/core@7.12.9)
-      '@babel/preset-react': 7.22.3(@babel/core@7.12.9)
+      '@babel/preset-react': 7.24.7(@babel/core@7.12.9)
       '@rollup/plugin-babel': 5.3.1(@babel/core@7.12.9)(rollup@2.79.1)
       babel-plugin-source-map-support: 2.2.0
       prop-types: 15.8.1
@@ -855,7 +858,7 @@ packages:
       '@stoplight/spectral-parsers': 1.0.4
       '@stoplight/spectral-ref-resolver': 1.0.4
       '@stoplight/types': 13.20.0
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       '@types/urijs': 1.19.25
       ajv: 8.17.1
       ajv-errors: 3.0.0(ajv@8.17.1)
@@ -905,7 +908,7 @@ packages:
       '@stoplight/spectral-parsers': 1.0.4
       '@stoplight/spectral-ref-resolver': 1.0.4
       '@stoplight/types': 13.20.0
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       '@types/urijs': 1.19.25
       ajv: 8.17.1
       ajv-errors: 3.0.0(ajv@8.17.1)
@@ -925,6 +928,7 @@ packages:
       protobufjs: 7.4.0
     transitivePeerDependencies:
       - encoding
+    dev: false
 
   /@asyncapi/protobuf-schema-parser@3.2.14:
     resolution: {integrity: sha512-7v64Jxhz2IBfaQECUhfwuLRMFQTysvmqtvT+Esgd9NooIPRnkEzgCbBnC25oGjzSB6Sju28G406lQpO15HHaEw==}
@@ -1007,19 +1011,19 @@ packages:
   /@asyncapi/specs@4.3.1:
     resolution: {integrity: sha512-EfexhJu/lwF8OdQDm28NKLJHFkx0Gb6O+rcezhZYLPIoNYKXJMh2J1vFGpwmfAcTTh+ffK44Oc2Hs1Q4sLBp+A==}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
     dev: true
 
   /@asyncapi/specs@5.1.0:
     resolution: {integrity: sha512-yffhETqehkim43luMnPKOwzY0D0YtU4bKpORIXIaid6p5Y5kDLrMGJaEPkNieQp03HMjhjFrnUPtT8kvqe0+aQ==}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
     dev: true
 
   /@asyncapi/specs@6.7.0:
     resolution: {integrity: sha512-TygnAHctm0e7Y55Zy2PBjE6t/jai/txu4MZiyHkcbom9WQoC6Nl7M1M3TQQMzDrb5iLZtuRDm1GAwvawZPPn5A==}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
 
   /@asyncapi/ts-nats-template@0.10.3:
     resolution: {integrity: sha512-cHdx552aSOZ0JWDDHHhVQWvfss1Thq+KENPSMBOmcCLi58PTg20Lkg+Jd3fchyGueLnh55yUzfyr31JrSreUaw==}
@@ -4657,23 +4661,6 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /@babel/preset-react@7.22.3(@babel/core@7.12.9):
-    resolution: {integrity: sha512-lxDz1mnZ9polqClBCVBjIVUypoB4qV3/tZUDb/IlYbW1kiiLaXaX+bInbRjl+lNQ/iUZraQ3+S8daEmoELMWug==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.12.9
-      '@babel/helper-plugin-utils': 7.24.8
-      '@babel/helper-validator-option': 7.24.8
-      '@babel/plugin-transform-react-display-name': 7.24.7(@babel/core@7.12.9)
-      '@babel/plugin-transform-react-jsx': 7.25.2(@babel/core@7.12.9)
-      '@babel/plugin-transform-react-jsx-development': 7.24.7(@babel/core@7.12.9)
-      '@babel/plugin-transform-react-pure-annotations': 7.24.7(@babel/core@7.12.9)
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@babel/preset-react@7.22.3(@babel/core@7.17.4):
     resolution: {integrity: sha512-lxDz1mnZ9polqClBCVBjIVUypoB4qV3/tZUDb/IlYbW1kiiLaXaX+bInbRjl+lNQ/iUZraQ3+S8daEmoELMWug==}
     engines: {node: '>=6.9.0'}
@@ -4687,6 +4674,23 @@ packages:
       '@babel/plugin-transform-react-jsx': 7.25.2(@babel/core@7.17.4)
       '@babel/plugin-transform-react-jsx-development': 7.24.7(@babel/core@7.17.4)
       '@babel/plugin-transform-react-pure-annotations': 7.24.7(@babel/core@7.17.4)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@babel/preset-react@7.24.7(@babel/core@7.12.9):
+    resolution: {integrity: sha512-AAH4lEkpmzFWrGVlHaxJB7RLH21uPQ9+He+eFLWHmF9IuFQVugz8eAsamaW0DXRrTfco5zj1wWtpdcXJUOfsag==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.12.9
+      '@babel/helper-plugin-utils': 7.24.8
+      '@babel/helper-validator-option': 7.24.8
+      '@babel/plugin-transform-react-display-name': 7.24.7(@babel/core@7.12.9)
+      '@babel/plugin-transform-react-jsx': 7.25.2(@babel/core@7.12.9)
+      '@babel/plugin-transform-react-jsx-development': 7.24.7(@babel/core@7.12.9)
+      '@babel/plugin-transform-react-pure-annotations': 7.24.7(@babel/core@7.12.9)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5003,7 +5007,7 @@ packages:
       prettier: 2.8.8
     dev: false
 
-  /@codemirror/autocomplete@6.18.1(@codemirror/language@6.10.3)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1):
+  /@codemirror/autocomplete@6.18.1(@codemirror/language@6.10.3)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)(@lezer/common@1.2.1):
     resolution: {integrity: sha512-iWHdj/B1ethnHRTwZj+C1obmmuCzquH29EbcKr0qIjA9NfDeBDJ7vs+WOHsFeLeflE4o+dHfYndJloMKHUkWUA==}
     peerDependencies:
       '@codemirror/language': ^6.0.0
@@ -5013,7 +5017,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.10.3
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.3
+      '@codemirror/view': 6.33.0
       '@lezer/common': 1.2.1
     dev: false
 
@@ -5030,7 +5034,7 @@ packages:
     resolution: {integrity: sha512-kDqEU5sCP55Oabl6E7m5N+vZRoc0iWqgDVhEKifcHzPzjqCegcO4amfrYVL9PmPZpl4G0yjkpTpUO/Ui8CzO8A==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.3
+      '@codemirror/view': 6.33.0
       '@lezer/common': 1.2.1
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
@@ -5041,7 +5045,7 @@ packages:
     resolution: {integrity: sha512-IZ0Y7S4/bpaunwggW2jYqwLuHj0QtESf5xcROewY6+lDNwZ/NzvR4t+vpYgg9m7V8UXLPYqG+lu3DF470E5Oxg==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.3
+      '@codemirror/view': 6.33.0
       crelt: 1.0.6
     dev: false
 
@@ -5049,7 +5053,7 @@ packages:
     resolution: {integrity: sha512-rpMgcsh7o0GuCDUXKPvww+muLA1pDJaFrpq/CCHtpQJYz8xopu4D1hPcKRoDD0YlF8gZaqTNIRa4VRBWyhyy7Q==}
     dependencies:
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.3
+      '@codemirror/view': 6.33.0
       crelt: 1.0.6
     dev: false
 
@@ -7908,7 +7912,7 @@ packages:
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.22
       '@asyncapi/openapi-schema-parser': 3.0.22
-      '@asyncapi/protobuf-schema-parser': 3.2.11
+      '@asyncapi/protobuf-schema-parser': 3.2.14
       '@asyncapi/raml-dt-schema-parser': 4.0.24
       parserapiv1: /@asyncapi/parser@2.1.2
       parserapiv2: /@asyncapi/parser@3.0.0-next-major-spec.8
@@ -7931,7 +7935,7 @@ packages:
     resolution: {integrity: sha512-nty0tHUq2f1IKuFYsLM4CXLZGHdMn+X/IwEUIpeSOXt0QjMUbL0Em57iJUDzz+2MkWG83smIigNZ3fauGjqgdQ==}
     engines: {node: '>=8.3.0'}
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
       tslib: 1.14.1
     transitivePeerDependencies:
       - encoding
@@ -7940,7 +7944,7 @@ packages:
     resolution: {integrity: sha512-YNcWv3R3n3U6iQYBsFOiWSuRGE5su1tJSiX6pAPRVk7dP0L7lqCteXGzuVRQ0gMZqUl8v1P0+fAKxF6PLo9B5A==}
     engines: {node: '>=8.3.0'}
     dependencies:
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/path': 1.3.2
       '@stoplight/types': 13.20.0
       '@types/urijs': 1.19.25
@@ -7972,7 +7976,6 @@ packages:
       jsonc-parser: 2.2.1
       lodash: 4.17.21
       safe-stable-stringify: 1.1.1
-    dev: true
 
   /@stoplight/ordered-object-literal@1.0.5:
     resolution: {integrity: sha512-COTiuCU5bgMUtbIFBuyyh2/yVVzlr5Om0v5utQDgBCuQUOPgU1DwoffkTfg4UBQOvByi5foF4w4T+H9CoRe5wg==}
@@ -7987,14 +7990,14 @@ packages:
     engines: {node: ^12.20 || >= 14.13}
     dependencies:
       '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/path': 1.3.2
       '@stoplight/spectral-parsers': 1.0.4
       '@stoplight/spectral-ref-resolver': 1.0.4
       '@stoplight/spectral-runtime': 1.1.2
       '@stoplight/types': 13.6.0
       '@types/es-aggregate-error': 1.0.6
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       ajv: 8.17.1
       ajv-errors: 3.0.0(ajv@8.17.1)
       ajv-formats: 2.1.1(ajv@8.17.1)
@@ -8014,9 +8017,9 @@ packages:
     resolution: {integrity: sha512-vJ1vIkA2s96fdJp0d3AJBGuPAW3sj8yMamyzR+dquEFO6ZAoYBo/BVsKKQskYzZi/nwljlRqUmGVmcf2PncIaA==}
     engines: {node: '>=12'}
     dependencies:
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/spectral-core': 1.19.1
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       tslib: 2.7.0
     transitivePeerDependencies:
       - encoding
@@ -8026,7 +8029,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/spectral-core': 1.19.1
       '@stoplight/spectral-formats': 1.7.0
       '@stoplight/spectral-runtime': 1.1.2
@@ -8043,7 +8046,7 @@ packages:
     resolution: {integrity: sha512-nCTVvtX6q71M8o5Uvv9kxU31Gk1TRmgD6/k8HBhdCmKG6FWcwgjiZouA/R3xHLn/VwTI/9k8SdG5Mkdy0RBqbQ==}
     engines: {node: ^12.20 || >=14.13}
     dependencies:
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/types': 14.1.1
       '@stoplight/yaml': 4.3.0
       tslib: 2.7.0
@@ -8064,7 +8067,7 @@ packages:
     resolution: {integrity: sha512-fr5zRceXI+hrl82yAVoME+4GvJie8v3wmOe9tU+ZLRRNonizthy8qDi0Z/z4olE+vGreSDcuDOZ7JjRxFW5kTw==}
     engines: {node: '>=12'}
     dependencies:
-      '@stoplight/json': 3.21.0
+      '@stoplight/json': 3.21.7
       '@stoplight/path': 1.3.2
       '@stoplight/types': 12.5.0
       abort-controller: 3.0.0
@@ -8078,28 +8081,28 @@ packages:
     resolution: {integrity: sha512-dwqYcDrGmEyUv5TWrDam5TGOxU72ufyQ7hnOIIDdmW5ezOwZaBFoR5XQ9AsH49w7wgvOqB2Bmo799pJPWnpCbg==}
     engines: {node: '>=8'}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       utility-types: 3.11.0
 
   /@stoplight/types@13.20.0:
     resolution: {integrity: sha512-2FNTv05If7ib79VPDA/r9eUet76jewXFH2y2K5vuge6SXbRHtWBhcaRmu+6QpF4/WRNoJj5XYRSwLGXDxysBGA==}
     engines: {node: ^12.20 || >=14.13}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       utility-types: 3.11.0
 
   /@stoplight/types@13.6.0:
     resolution: {integrity: sha512-dzyuzvUjv3m1wmhPfq82lCVYGcXG0xUYgqnWfCq3PCVR4BKFhjdkHrnJ+jIDoMKvXb05AZP/ObQF6+NpDo29IQ==}
     engines: {node: ^12.20 || >=14.13}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       utility-types: 3.11.0
 
   /@stoplight/types@14.1.1:
     resolution: {integrity: sha512-/kjtr+0t0tjKr+heVfviO9FrU/uGLc+QNX3fHJc19xsCNYqU7lVhaXxDmEID9BZTjG+/r9pK9xP/xU02XGg65g==}
     engines: {node: ^12.20 || >=14.13}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       utility-types: 3.11.0
 
   /@stoplight/yaml-ast-parser@0.0.50:
@@ -10145,10 +10148,10 @@ packages:
 
   /@types/json-schema@7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
+    dev: true
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-    dev: true
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -12257,13 +12260,13 @@ packages:
   /codemirror@6.0.1(@lezer/common@1.2.1):
     resolution: {integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==}
     dependencies:
-      '@codemirror/autocomplete': 6.18.1(@codemirror/language@6.10.3)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1)
+      '@codemirror/autocomplete': 6.18.1(@codemirror/language@6.10.3)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)(@lezer/common@1.2.1)
       '@codemirror/commands': 6.6.2
       '@codemirror/language': 6.10.3
       '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.26.3
+      '@codemirror/view': 6.33.0
     transitivePeerDependencies:
       - '@lezer/common'
     dev: false
@@ -18199,7 +18202,7 @@ packages:
     peerDependencies:
       monaco-editor: '>=0.30'
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       jsonc-parser: 3.3.1
       monaco-editor: 0.34.1
       monaco-marker-data-provider: 1.2.3
@@ -18608,7 +18611,7 @@ packages:
   /openapi-sampler@1.5.1:
     resolution: {integrity: sha512-tIWIrZUKNAsbqf3bd9U1oH6JEXo8LNYuDlXw26By67EygpjT+ArFnsxxyTMjFWRfbqo5ozkvgSQDK69Gd8CddA==}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       json-pointer: 0.6.2
 
   /openapi-types@9.3.0:
@@ -20987,7 +20990,7 @@ packages:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
     dev: true
@@ -20996,7 +20999,7 @@ packages:
     resolution: {integrity: sha512-L0jRsrPpjdckP3oPug3/VxNKt2trR8TcabrM6FOAAlvC/9Phcmm+cuAgTlxBqdBR1WJx7Naj9WHw+aOmheSVbw==}
     engines: {node: '>= 12.13.0'}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
@@ -22613,7 +22616,7 @@ packages:
     resolution: {integrity: sha512-xirQK0s95K3OL7Knve0OOxQHErByCxUsgXr5oCHa9J0jWgiA+9/tidHWPu1UMjRv7MoX5ViP6QmOrWCi+dvRew==}
     hasBin: true
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       '@types/node': 16.18.108
       glob: 7.2.3
       path-equal: 1.2.5
@@ -22630,7 +22633,7 @@ packages:
     resolution: {integrity: sha512-EcmquhfGEmEJOAezLZC6CzY0rPNzfXuky+Z3zoXULEEncW8e13aAjmC2r8ppT1bvvDekJj1TJ4xVhOdkjYtkUA==}
     hasBin: true
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.15
       '@types/node': 16.18.108
       glob: 7.2.3
       path-equal: 1.2.5

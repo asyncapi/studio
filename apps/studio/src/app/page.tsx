@@ -4,12 +4,12 @@ import { Metadata } from 'next';
 import ogImage from '@/img/meta-studio-og-image.jpeg';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://studio-next.netlify.app'),
+  metadataBase: new URL('https://studio.netlify.app'),
   openGraph: {
     type: 'website',
     title: 'AsyncAPI Studio',
     description: 'Studio for AsyncAPI specification, where you can validate, view preview documentation, and generate templates from AsyncAPI document.',
-    url: 'https://studio-next.netlify.app',
+    url: 'https://studio.netlify.app',
     images: [
       {
         url: ogImage.src,
