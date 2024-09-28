@@ -1,4 +1,4 @@
-import type { OldAsyncAPIDocument as AsyncAPIDocument, OldChannel, OldOperation, OldMessage } from '@asyncapi/parser/cjs';
+import type { OldAsyncAPIDocument as AsyncAPIDocument, OldChannel, OldOperation, OldMessage } from '@asyncapi/parser';
 import type { Node, Edge } from 'reactflow';
 
 interface FileredChannel {

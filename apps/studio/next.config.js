@@ -36,7 +36,8 @@ const nextConfig = {
 
     return config;
   },
-  output: 'standalone'
+  output: 'standalone',
+  distDir: 'build'
 };
 
 module.exports = nextConfig;

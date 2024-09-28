@@ -3,7 +3,7 @@ import { BsFillCheckCircleFill } from 'react-icons/bs';
 import toast from 'react-hot-toast';
 import { create } from '@ebay/nice-modal-react';
 
-import examples from '../../examples';
+import examples from '@/examples';
 
 import { ConfirmModal } from './ConfirmModal';
 import { useServices } from '../../services';

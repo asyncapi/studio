@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { AsyncAPIDocumentInterface, Diagnostic, ParseOutput } from '@asyncapi/parser/cjs';
+import type { AsyncAPIDocumentInterface, Diagnostic, ParseOutput } from '@asyncapi/parser';
 
 export type DocumentDiagnostics = {
   original: Diagnostic[];

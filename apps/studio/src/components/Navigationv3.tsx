@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { useServices } from '../services';
-import { useDocumentsState, useFilesState } from '../state';
+import { useServices } from '@/services';
+import { useDocumentsState, useFilesState } from '@/state';
 
-import type { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
+import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
 
 interface NavigationProps {
   className?: string;
@@ -17,6 +17,9 @@ interface NavigationSectionProps {
   hash: string;
 }
 
+export const NAVIGATION_SUB_SECTION_STYLE = 'p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900';
+export const NAVIGATION_SECTION_STYLE = 'p-2 pl-3 text-white cursor-pointer hover:bg-gray-900'
+
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
   hash,
@@ -26,12 +29,16 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'servers' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo('/servers', 'servers')
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo('/servers', 'servers');
+        }}
       >
         Servers
       </div>
@@ -39,8 +46,9 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         {document.servers().all().map((server) => {
           const serverName = server.id();
           return <li
+            tabIndex={0}
             key={serverName}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `server-${serverName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -49,6 +57,12 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `server-${serverName}`,
               )
             }
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                `/servers/${serverName.replace(/\//g, '~1')}`,
+                `server-${serverName}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -77,7 +91,7 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     (channel) => {
       return  <li
         key={channel.id()}
-        className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+        className={`${NAVIGATION_SUB_SECTION_STYLE} ${
           hash === `channels-${channel.id()}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -86,6 +100,14 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             `channels-${channel.id()}`,
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            `/channels/${(channel.id() ?? '').replace(/\//g, '~1')}`,
+            `channels-${channel.id()}`,
+          );
+        }}
+        
       >
         <div className="flex flex-row">
           <div className="flex-none">
@@ -102,7 +124,7 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'channels' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -111,6 +133,14 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'channels',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/channels',
+            'channels',
+          );
+        }}
+        
       >
         Channels
       </div>
@@ -124,7 +154,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   hash,
 }) => {
   const { navigationSvc } = useServices();
-
+  /* eslint-disable sonarjs/cognitive-complexity */
   const operations = document.operations().all().map(
     (operation) => {
       const operations: React.ReactNode[] = [];
@@ -132,7 +162,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         operations.push(
           <li
             key={operation.id()}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `operation-receive-${operation.id()}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -141,6 +171,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `operation-receive-${operation.id()}`,
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-receive-${operation.id()}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -157,7 +194,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
         operations.push(
           <li
             key={`${operation.id()}-send`}
-            className={`p-2 pl-3 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 ${
+            className={`${NAVIGATION_SUB_SECTION_STYLE} ${
               hash === `operation-send-${operation.id()}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -166,6 +203,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
                 `operation-send-${operation.id()}`,
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                `/operations/${(operation.id() ?? '').replace(/\//g, '~1')}`,
+                `operation-send-${operation.id()}`,
+              );
+            }}
           >
             <div className="flex flex-row">
               <div className="flex-none">
@@ -182,11 +226,11 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return operations;
     },
   );
-
+  /* eslint-enable sonarjs/cognitive-complexity */
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'operations' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -195,6 +239,13 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'operations',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/operations',
+            'operations',
+          );
+        }}
       >
         Operations
       </div>
@@ -214,7 +265,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       const messageName = message.id();
       return <li
         key={messageName}
-        className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
+        className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
           hash === `message-${messageName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -223,6 +274,13 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             `message-${messageName}`,
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            `/components/messages/${messageName.replace(/\//g, '~1')}`,
+            `message-${messageName}`,
+          );
+        }}
       >
         {messageName}
       </li>
@@ -232,7 +290,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'messages' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -241,6 +299,13 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'messages',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/components/messages',
+            'messages',
+          );
+        }}
       >
         Messages
       </div>
@@ -260,7 +325,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       const schemaName = schema.id();
       return <li
         key={schemaName}
-        className={`p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900 truncate ${
+        className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
           hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -269,6 +334,13 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             `schema-${schemaName}`,
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            `/components/schemas/${schemaName.replace(/\//g, '~1')}`,
+            `schema-${schemaName}`,
+          );
+        }}
       >
         {schemaName}
       </li>
@@ -278,7 +350,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   return (
     <>
       <div
-        className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+        className={`${NAVIGATION_SECTION_STYLE} ${
           hash === 'schemas' ? 'bg-gray-800' : ''
         }`}
         onClick={() =>
@@ -287,6 +359,13 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             'schemas',
           )
         }
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+            '/components/schemas',
+            'schemas',
+          );
+        }}
       >
         Schemas
       </div>
@@ -327,11 +406,11 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 
   const components = document.components();
   return (
-    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}  id="navigation-panel">
+    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
       <ul>
         <li className="mb-4">
           <div
-            className={`p-2 pl-3 text-white cursor-pointer hover:bg-gray-900 ${
+            className={`${NAVIGATION_SECTION_STYLE} ${
               hash === 'introduction' ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
@@ -340,6 +419,13 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
                 'introduction',
               )
             }
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                '/info',
+                'introduction',
+              );
+            }}
           >
             Information
           </div>

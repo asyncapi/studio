@@ -5,10 +5,10 @@ import { Navigationv3 } from './Navigationv3';
 import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
-import { debounce } from '../helpers';
-import { usePanelsState, useDocumentsState } from '../state';
+import { debounce } from '@/helpers';
+import { usePanelsState, useDocumentsState } from '@/state';
 
-import type { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 
 interface ContentProps {}
 

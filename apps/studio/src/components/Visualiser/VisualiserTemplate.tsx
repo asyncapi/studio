@@ -1,7 +1,7 @@
 import { Visualiser } from './Visualiser';
 import { TemplateSidebar } from '../Template/TemplateSidebar';
 
-import type { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 
 interface VisualiserTemplateProps {}
 

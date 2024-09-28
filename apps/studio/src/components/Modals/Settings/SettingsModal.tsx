@@ -7,10 +7,10 @@ import { SettingsTabs, SettingTab } from './SettingsTabs';
 import { ConfirmModal } from '../index';
 import { Switch } from '../../common';
 
-import { useServices } from '../../../services';
+import { useServices } from '@/services';
 
 import type { Dispatch, SetStateAction, FunctionComponent } from 'react';
-import type { SettingsState } from '../../../state/settings.state';
+import type { SettingsState } from '@/state/settings.state';
 
 interface ShowGovernanceOptionProps {
   label: 'warning' | 'information' | 'hint';

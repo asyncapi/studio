@@ -1,6 +1,0 @@
-[devs]
-  functions = "apps/studio-next/src/netlify/functions"
-  targetPort = 3001
-
-[build]
-  functions = "apps/studio-next/src/netlify/functions"

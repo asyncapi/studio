@@ -4,7 +4,7 @@ import { AsyncApiComponentWP } from '@asyncapi/react-component';
 import { useServices } from '../../services';
 import { appState, useDocumentsState, useSettingsState, useOtherState, otherState } from '../../state';
 
-import { AsyncAPIDocumentInterface } from '@asyncapi/parser/cjs';
+import { AsyncAPIDocumentInterface } from '@asyncapi/parser';
 
 interface HTMLWrapperProps {}
 

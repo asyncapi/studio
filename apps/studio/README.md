@@ -37,8 +37,8 @@ This project is still under development and has not reached version 1.0.0 yet. T
 Run:
 
 ```bash
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 and then go to [http://localhost:3000](http://localhost:3000).
@@ -67,9 +67,9 @@ Studio is also available as a Docker Desktop Extension. For more information, ch
 
 ## Development
 
-1. Setup project by installing dependencies `npm install`
+1. Setup project by installing dependencies `pnpm install`
 2. Write code and tests.
-3. Make sure all tests pass `npm test`
+3. Make sure all tests pass `pnpm test`
 
 ### Spin up Gitpod 
 In order to prepare and spin up a Gitpod dev environment for our project, we configured our workspace through a [.gitpod.yml](/.gitpod.yml) file.

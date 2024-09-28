@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 
-import { useServices } from '../../../services';
+import { useServices } from '@/services';
 import getBackgroundColor from '../utils/random-background-color';
 
 // @ts-ignore

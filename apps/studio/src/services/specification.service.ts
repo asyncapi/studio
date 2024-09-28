@@ -5,7 +5,7 @@ import { show } from '@ebay/nice-modal-react';
 
 import { ConvertToLatestModal } from '../components/Modals';
 
-import { documentsState, settingsState } from '../state';
+import { documentsState, settingsState } from '@/state';
 
 import type { SpecVersions } from '../types';
 

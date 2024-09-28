@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
+const document = typeof window !== 'undefined' ? localStorage.getItem('document') : undefined
 const schema =
-  localStorage.getItem('document') || `asyncapi: 3.0.0
+  document || `asyncapi: 3.0.0
 info:
   title: Streetlights Kafka API
   version: 1.0.0
@@ -217,7 +218,7 @@ export type File = {
   uri: string;
   name: string;
   content: string;
-  from: 'storage' | 'url' | 'base64';
+  from: 'storage' | 'url' | 'base64' | 'share';
   source?: string;
   language: 'json' | 'yaml';
   modified: boolean;

@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Markdown as MarkdownComponent } from '@asyncapi/react-component/lib/cjs/components/Markdown';
+import { Markdown as MarkdownComponent } from '@asyncapi/react-component/lib/esm/components/Markdown';
 
 import type { FunctionComponent, PropsWithChildren } from 'react';
 

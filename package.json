@@ -8,8 +8,7 @@
     "lint": "turbo run lint",
     "dev": "turbo run dev",
     "ds": "turbo run dev --no-cache --continue --filter=design-system...",
-    "studio": "turbo run dev --filter=studio...",
-    "studio-next": "turbo run dev --no-cache --filter=studio-next...",
+    "studio": "turbo run dev --no-cache --filter=studio...",
     "clean": "turbo run clean && rm -rf node_modules",
     "build": "turbo run build",
     "test": "turbo run test",
@@ -18,11 +17,10 @@
     "publish-packages": "turbo run build && changeset publish",
     "build:studio": "turbo run build --no-cache --filter=studio...",
     "build:ds": "turbo run build --filter=design-system...",
-    "build:studio-next": "turbo run build --no-cache --filter=studio-next...",
     "generate:assets": "turbo run generate:assets"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
     "eslint": "^8.27.0",
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-security": "^3.0.0",

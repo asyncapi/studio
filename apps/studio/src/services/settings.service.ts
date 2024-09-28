@@ -1,9 +1,9 @@
 import { AbstractService } from './abstract.service';
 
-import { isDeepEqual } from '../helpers';
-import { settingsState } from '../state';
+import { isDeepEqual } from '@/helpers';
+import { settingsState } from '@/state';
 
-import type { SettingsState } from '../state/settings.state';
+import type { SettingsState } from '@/state/settings.state';
 
 export class SettingsService extends AbstractService {
   get(): SettingsState {

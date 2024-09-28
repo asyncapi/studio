@@ -4,7 +4,7 @@ import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
 import YAML from 'js-yaml';
 
-import { documentsState, filesState } from '../state';
+import { documentsState, filesState } from '@/state';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { DiagnosticsOptions as YAMLDiagnosticsOptions } from 'monaco-yaml';

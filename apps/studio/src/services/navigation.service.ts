@@ -17,6 +17,7 @@ export class NavigationService extends AbstractService {
     return {
       url: urlParams.get('url') || urlParams.get('load'),
       base64: urlParams.get('base64'),
+      share: urlParams.get('share'),
       readOnly: urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === '',
       liveServer: urlParams.get('liveServer'),
       redirectedFrom: urlParams.get('redirectedFrom'),

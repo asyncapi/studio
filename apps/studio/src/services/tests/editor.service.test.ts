@@ -1,10 +1,10 @@
 import * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
-import { DiagnosticSeverity } from '@asyncapi/parser/cjs';
+import { DiagnosticSeverity } from '@asyncapi/parser';
 
 import { createServices } from '../';
 
 import type { EditorService } from '../editor.service';
-import type { Diagnostic } from '@asyncapi/parser/cjs';
+import type { Diagnostic } from '@asyncapi/parser';
 
 describe('EditorService', () => {
   let editorSvc: EditorService;

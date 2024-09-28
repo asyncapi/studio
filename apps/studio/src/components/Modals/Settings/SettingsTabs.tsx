@@ -36,6 +36,11 @@ export const SettingsTabs: FunctionComponent<SettingTabsProps> = ({
               key={tab.name}
               className="cursor-pointer"
               onClick={() => setActiveTab(tab.name)}
+              tabIndex={0}
+              role='tab'
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') setActiveTab(tab.name);
+              }}
             >
               <div
                 className={`p-2 hover:text-pink-500 ${

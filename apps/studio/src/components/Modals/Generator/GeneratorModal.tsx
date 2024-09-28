@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { create, useModal } from '@ebay/nice-modal-react';
@@ -5,24 +6,23 @@ import { create, useModal } from '@ebay/nice-modal-react';
 import { ConfirmModal } from '../index';
 import { TemplateParameters, TemplateParametersHandle } from './TemplateParameters';
 
-import { useServices } from '../../../services';
-import { ServerAPIProblem } from '../../../services/server-api.service';
+import { useServices } from '@/services';
+import { ServerAPIProblem } from '@/services/server-api.service';
 
-import { filesState, useDocumentsState } from '../../../state';
+import { filesState, useDocumentsState } from '@/state';
 
 import templates from './template-parameters.json';
 
 const unsupportedGenerators = [
   '@asyncapi/dotnet-nats-template',
-  '@asyncapi/ts-nats-template',
-  '@asyncapi/python-paho-template',
-  '@asyncapi/nodejs-ws-template',
-  '@asyncapi/java-spring-cloud-stream-template',
   '@asyncapi/go-watermill-template',
+  '@asyncapi/java-spring-cloud-stream-template',
   '@asyncapi/java-spring-template',
   '@asyncapi/nodejs-template',
-  '@asyncapi/java-template',
-  '@asyncapi/php-template'
+  '@asyncapi/nodejs-ws-template',
+  '@asyncapi/php-template',
+  '@asyncapi/python-paho-template',
+  '@asyncapi/ts-nats-template',
 ];
 
 const renderOptions = (actualVersion: string) => {
