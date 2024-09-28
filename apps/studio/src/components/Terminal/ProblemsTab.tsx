@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react';
 import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSettingsGear } from 'react-icons/vsc';
 import { useModal } from '@ebay/nice-modal-react';
 import { DiagnosticSeverity } from '@asyncapi/parser';
@@ -10,7 +10,6 @@ import { useServices } from '../../services';
 import { debounce } from '../../helpers';
 import { useDocumentsState, useSettingsState } from '../../state';
 
-import { FunctionComponent } from 'react';
 import type { Diagnostic } from '@asyncapi/parser';
 
 interface ProblemsTabProps {}

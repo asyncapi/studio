@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FunctionComponent } from 'react';
 import { Handle, Position } from 'reactflow';
 import { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser';
 
 import { useServices } from '@/services';
 import { Markdown } from '../../common';
-
-import { FunctionComponent } from 'react';
 
 interface IData {
   spec: AsyncAPIDocument

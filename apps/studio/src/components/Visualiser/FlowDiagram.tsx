@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, FunctionComponent } from 'react';
 import ReactFlow, { Controls as FlowControls, Background, BackgroundVariant, useReactFlow, useStore, useNodesState, useEdgesState, useNodes } from 'reactflow';
 
 import NodeTypes from './Nodes';
@@ -7,7 +7,6 @@ import { getElementsFromAsyncAPISpec } from './utils/node-factory';
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
 
 import type { OldAsyncAPIDocument as AsyncAPIDocument } from '@asyncapi/parser';
-import { FunctionComponent } from 'react';
 
 interface FlowDiagramProps {
   parsedSpec: AsyncAPIDocument;

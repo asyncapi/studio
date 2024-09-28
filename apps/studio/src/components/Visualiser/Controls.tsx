@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FunctionComponent } from 'react';
 import { useStore, useReactFlow, useNodes, useEdges } from 'reactflow';
 import { VscDebugStart, VscDebugPause, VscRefresh } from 'react-icons/vsc';
 
 import { calculateNodesForDynamicLayout } from './utils/node-calculator';
-
-import { FunctionComponent } from 'react';
 
 interface ControlsProps {}
 

@@ -37,6 +37,7 @@ export const SettingsTabs: FunctionComponent<SettingTabsProps> = ({
               className="cursor-pointer"
               onClick={() => setActiveTab(tab.name)}
               tabIndex={0}
+              role='tab'
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') setActiveTab(tab.name);
               }}
