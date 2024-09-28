@@ -58,7 +58,7 @@ function serializeParam(configParam: TemplateParameter): JSONSchema7 {
 }
 
 function serializeTemplateParameters(config: TemplateConfig): JSONSchema7 | undefined {
-  if (!config || !config.parameters) {
+  if (!config?.parameters) {
     return;
   }
 

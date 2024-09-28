@@ -280,6 +280,14 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
                         range.start.character + 1,
                       )
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        navigationSvc.scrollToEditorLine(
+                          range.start.line + 1,
+                          range.start.character + 1,
+                        );
+                      }
+                    }}
                   >
                     {range.start.line + 1}:{range.start.character + 1}
                   </td>
