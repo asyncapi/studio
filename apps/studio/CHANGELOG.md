@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.22.0
+
+### Minor Changes
+
+- fce346d: Shift the production environment to Next.JS
+
 ## 0.21.4
 
 ### Patch Changes
