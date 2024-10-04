@@ -61,10 +61,6 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   const [isV3, setIsV3] = useState(document?.version().startsWith('3.'));
 
-  if (show.activityBar === false) {
-    return null;
-  }
-
   let navigation: NavItem[] = [
     // navigation
     {
@@ -136,6 +132,10 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       setIsV3(document?.version().startsWith('3.'));
     }
   }, [document]);
+
+  if (show.activityBar === false) {
+    return null;
+  }
   
   return (
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
