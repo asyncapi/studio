@@ -25,7 +25,9 @@
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-form": "^0.0.3",
     "@radix-ui/react-select": "^1.2.2",
+    "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toolbar": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "classnames": "^2.3.2",
@@ -35,12 +37,12 @@
     "react-icons": "^5.2.1"
   },
   "devDependencies": {
+    "@asyncapi/studio-utils": "workspace:*",
     "@types/lodash": "^4.17.0",
     "@types/react": "^18.2.5",
     "eslint-config-custom": "workspace:*",
     "postcss": "^8.4.31",
     "tailwind-config": "workspace:*",
-    "@asyncapi/studio-utils": "workspace:*",
     "tsconfig": "workspace:*",
     "tsup": "^8.0.2",
     "typescript": "^4.9.4"
