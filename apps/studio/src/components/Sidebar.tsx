@@ -6,7 +6,7 @@ import { SettingsModal, ConfirmNewFileModal } from './Modals';
 
 import { usePanelsState, panelsState, useDocumentsState } from '@/state';
 
-import type { FunctionComponent, ReactNode } from 'react';
+import { useEffect, useState, type FunctionComponent, type ReactNode } from 'react';
 import type { PanelsState } from '@/state/panels.state';
 import { driverObj } from '@/helpers/driver';
 
@@ -54,12 +54,12 @@ interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
-  const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const isV3 = document?.version().startsWith('3.');
-  
-  if (show.activityBar === false) {
-    return null;
-  }
+  const [document, hasErrors] = useDocumentsState((state) => [
+    state.documents['asyncapi']?.document,
+    state.documents['asyncapi']?.diagnostics?.errors.length > 0,
+  ]) || [null, false];
+
+  const [isV3, setIsV3] = useState(document?.version().startsWith('3.'));
 
   let navigation: NavItem[] = [
     // navigation
@@ -125,6 +125,17 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
     const getCurrentTourStep = localStorage.getItem('currentTourStep');
     driverObj.drive(parseInt(getCurrentTourStep ?? '0', 10));
   };
+
+  useEffect(() => {
+    // if the document has no errors then only update the setIsV3 variable
+    if (!hasErrors) {
+      setIsV3(document?.version().startsWith('3.'));
+    }
+  }, [document]);
+
+  if (show.activityBar === false) {
+    return null;
+  }
   
   return (
     <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
