@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.22.1
+
+### Patch Changes
+
+- 0336253: fixed the rendering of block visualiser when document has errors
+
 ## 0.22.0
 
 ### Minor Changes
