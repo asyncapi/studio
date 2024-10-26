@@ -4,14 +4,16 @@ import { Metadata } from 'next';
 
 const description = 'Studio for AsyncAPI specification, where you can validate, view preview documentation, and generate templates from AsyncAPI document.';
 const title = 'AsyncAPI Studio';
+const url = 'https://studio.asyncapi.com/';
 
 export const metadata : Metadata = {
   title,
   description,
+  metadataBase: new URL(url),
   themeColor: '#000000',
   openGraph: {
     type: 'website',
-    url: 'https://studio.asyncapi.com/',
+    url,
     title,
     description,
     images: [
