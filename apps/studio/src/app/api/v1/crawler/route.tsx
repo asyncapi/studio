@@ -1,39 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import parseURL from "@/helpers/parser";
-import { DocumentInfo } from "@/types";
-import axios from "axios";
-import { metadata } from "@/app/page";
+import { NextRequest, NextResponse } from 'next/server';
+import parseURL from '@/helpers/parser';
+import { DocumentInfo } from '@/types';
+import axios from 'axios';
+import { metadata } from '@/app/page';
 
 export async function GET(request: NextRequest) {
-    const Base64searchParams = request.nextUrl.searchParams.get('base64');
-    const URLsearchParams = request.nextUrl.searchParams.get('url');
+  const Base64searchParams = request.nextUrl.searchParams.get('base64');
+  const URLsearchParams = request.nextUrl.searchParams.get('url');
 
-    try {
-        if (!Base64searchParams && !URLsearchParams) return new NextResponse(null, { status: 200 });
-        let info: DocumentInfo | null = null;
+  try {
+    if (!Base64searchParams && !URLsearchParams) return new NextResponse(null, { status: 200 });
+    let info: DocumentInfo | null = null;
 
-        if (Base64searchParams) {
-            // directly run the parsing function
-            info = await parseURL(Base64searchParams);
+    if (Base64searchParams) {
+      // directly run the parsing function
+      info = await parseURL(Base64searchParams);
+    }
+    if (URLsearchParams) {
+      // fetch the document information from the URL
+      try {
+        const response = await axios.get(URLsearchParams);
+        if (response.status === 200) {
+          info = await parseURL(response.data);
+        } else {
+          return new NextResponse('Not a valid URL', { status: 500 });
         }
-        if (URLsearchParams) {
-            // fetch the document information from the URL
-            try {
-                const response = await axios.get(URLsearchParams);
-                if (response.status === 200) {
-                    info = await parseURL(response.data);
-                } else {
-                    return new NextResponse("Not a valid URL", { status: 500 });
-                }
-            } catch (error) {
-                return new NextResponse("Not a valid URL", { status: 500 });
-            }
-        }
+      } catch (error) {
+        return new NextResponse('Not a valid URL', { status: 500 });
+      }
+    }
 
-        if (!info) {
-            const ogImage = "https://raw.githubusercontent.com/asyncapi/studio/master/apps/studio-next/public/img/meta-studio-og-image.jpeg";
+    if (!info) {
+      const ogImage = 'https://raw.githubusercontent.com/asyncapi/studio/master/apps/studio-next/public/img/meta-studio-og-image.jpeg';
 
-            const crawlerInfo = `
+      const crawlerInfo = `
        <!DOCTYPE html>
        <html lang="en">
        <head>
@@ -46,37 +46,37 @@ export async function GET(request: NextRequest) {
         <meta property="og:url" content="${metadata.openGraph?.url}" />
         <meta property="og:image" content="${ogImage}" />
       `
-            return new NextResponse(crawlerInfo, {
-                headers: {
-                    'Content-Type': 'text/html',
-                },
-            })
-        }
+      return new NextResponse(crawlerInfo, {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      })
+    }
 
-        let ogImageParams = new URLSearchParams();
+    const ogImageParams = new URLSearchParams();
 
-        if (info.title) {
-            ogImageParams.append('title', info.title.toString());
-        }
-        if (info.description) {
-            ogImageParams.append('description', info.description.toString());
-        }
-        if (info.numServers) {
-            ogImageParams.append('numServers', info.numServers.toString());
-        }
-        if (info.numChannels) {
-            ogImageParams.append('numChannels', info.numChannels.toString());
-        }
-        if (info.numOperations) {
-            ogImageParams.append('numOperations', info.numOperations.toString());
-        }
-        if (info.numMessages) {
-            ogImageParams.append('numMessages', info.numMessages.toString());
-        }
+    if (info.title) {
+      ogImageParams.append('title', info.title.toString());
+    }
+    if (info.description) {
+      ogImageParams.append('description', info.description.toString());
+    }
+    if (info.numServers) {
+      ogImageParams.append('numServers', info.numServers.toString());
+    }
+    if (info.numChannels) {
+      ogImageParams.append('numChannels', info.numChannels.toString());
+    }
+    if (info.numOperations) {
+      ogImageParams.append('numOperations', info.numOperations.toString());
+    }
+    if (info.numMessages) {
+      ogImageParams.append('numMessages', info.numMessages.toString());
+    }
 
-        const ogImageurl = `https://ogp-studio.vercel.app/api/og?${ogImageParams.toString()}`;
+    const ogImageurl = `https://ogp-studio.vercel.app/api/og?${ogImageParams.toString()}`;
 
-        const crawlerInfo = `
+    const crawlerInfo = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -90,14 +90,14 @@ export async function GET(request: NextRequest) {
       </head>
       </html>
     `;
-        console.log(crawlerInfo);
-        return new NextResponse(crawlerInfo, {
-            status: 200,
-            headers: {
-                'Content-Type': 'text/html',
-            },
-        });
-    } catch (err) {
-        return new NextResponse("Not a valid URL", { status: 500 });
-    }
+    console.log(crawlerInfo);
+    return new NextResponse(crawlerInfo, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    });
+  } catch (err) {
+    return new NextResponse('Not a valid URL', { status: 500 });
+  }
 }
