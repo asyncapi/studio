@@ -30,12 +30,15 @@
       ]
     }
   },
+  "baseUrl": ".",
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "build/types/**/*.ts"
+    "build/types/**/*.ts",
+    "src/services/tests/**/*.ts",
+    "src/helpers/tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"
