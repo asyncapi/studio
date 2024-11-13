@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const Base64searchParams = request.nextUrl.searchParams.get('base64');
   const URLsearchParams = request.nextUrl.searchParams.get('url');
 
+  const invalidResponse = new NextResponse('Not a valid URL', { status: 500 });
   try {
     if (!Base64searchParams && !URLsearchParams) return new NextResponse(null, { status: 200 });
     let info: DocumentInfo | null = null;
@@ -23,10 +24,10 @@ export async function GET(request: NextRequest) {
         if (response.status === 200) {
           info = await parseURL(response.data);
         } else {
-          return new NextResponse('Not a valid URL', { status: 500 });
+          return invalidResponse;
         }
       } catch (error) {
-        return new NextResponse('Not a valid URL', { status: 500 });
+        return invalidResponse;
       }
     }
 
@@ -90,7 +91,7 @@ export async function GET(request: NextRequest) {
       </head>
       </html>
     `;
-    console.log(crawlerInfo);
+
     return new NextResponse(crawlerInfo, {
       status: 200,
       headers: {
@@ -98,6 +99,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (err) {
-    return new NextResponse('Not a valid URL', { status: 500 });
+    return invalidResponse;
   }
 }
+
