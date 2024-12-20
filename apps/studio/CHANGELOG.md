@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.23.0
+
+### Minor Changes
+
+- 027bfc9: Publish AsyncAPI Studio Docker image with additional version tag
+
 ## 0.22.1
 
 ### Patch Changes
