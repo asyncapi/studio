@@ -17,10 +17,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get current Studio version
+        id: get-studio-version
+        uses: martinbeentjes/npm-get-version-action@3cf273023a0dda27efcd3164bdfb51908dd46a5b
+        with:
+          path: apps/studio
+
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
           file: ./apps/studio/Dockerfile
           push: true
-          tags: asyncapi/studio:latest
+          tags: |
+            asyncapi/studio:latest
+            asyncapi/studio:${{ steps.get-studio-version.outputs.current-version}}
