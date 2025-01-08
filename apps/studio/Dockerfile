@@ -9,7 +9,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-RUN npm install --global turbo
+RUN npm install --global turbo@1
 COPY . .
 RUN turbo prune --scope=@asyncapi/studio --docker
  
@@ -21,17 +21,17 @@ ARG BASE_URL_PLACEHOLDER
 RUN apk add --no-cache libc6-compat
 RUN apk update
 WORKDIR /app
- 
+RUN npm install --global pnpm@latest-10
+
 # First install the dependencies (as they change less often)
 
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN PUPPETEER_SKIP_DOWNLOAD=true npm ci
- 
+RUN PUPPETEER_SKIP_DOWNLOAD=true pnpm install
+
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} npm run build:studio
+RUN PUBLIC_URL=${BASE_URL_PLACEHOLDER} NEXT_CONFIG_OUTPUT=export pnpm run build:studio
  
 
 FROM docker.io/library/nginx:1.25.5-alpine as runtime
