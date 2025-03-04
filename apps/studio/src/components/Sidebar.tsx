@@ -60,7 +60,12 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
   ]) || [null, false];
 
   const [isV3, setIsV3] = useState(document?.version().startsWith('3.'));
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsReadOnly(params.get('readOnly') === 'true');
+  }, []);
   let navigation: NavItem[] = [
     // navigation
     {
@@ -73,28 +78,31 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       enabled: true,
       dataTest: 'button-navigation',
     },
-    // editor
-    {
-      name: 'primaryPanel',
-      title: 'Editor',
-      isActive: show.primaryPanel,
-      onClick: () => updateState('primaryPanel'),
-      icon: <VscCode className="w-5 h-5" />,
-      tooltip: 'Editor',
-      enabled: true,
-      dataTest: 'button-editor',
-    },
-    // template
-    {
-      name: 'template',
-      title: 'Template preview',
-      isActive: show.secondaryPanel && secondaryPanelType === 'template',
-      onClick: () => updateState('secondaryPanel', 'template'),
-      icon: <VscOpenPreview className="w-5 h-5" />,
-      tooltip: 'Template preview',
-      enabled: true,
-      dataTest: 'button-template-preview',
-    },
+    
+    ...(!isReadOnly ? [
+      // editor
+      {
+        name: 'primaryPanel',
+        title: 'Editor',
+        isActive: show.primaryPanel,
+        onClick: () => updateState('primaryPanel'),
+        icon: <VscCode className="w-5 h-5" />,
+        tooltip: 'Editor',
+        enabled: true,
+        dataTest: 'button-editor',
+      },
+      // template
+      {
+        name: 'template',
+        title: 'Template preview',
+        isActive: show.secondaryPanel && secondaryPanelType === 'template',
+        onClick: () => updateState('secondaryPanel', 'template'),
+        icon: <VscOpenPreview className="w-5 h-5" />,
+        tooltip: 'Template preview',
+        enabled: true,
+        dataTest: 'button-template-preview',
+      }] : []),
+
     // visuliser
     {
       name: 'visualiser',
