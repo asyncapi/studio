@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 
-import { cn } from "@asyncapi/studio-utils"
+import { cn } from "../../utils/src"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
