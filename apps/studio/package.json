@@ -19,7 +19,8 @@
     "/build",
     "/public",
     "./README.md",
-    "./LICENSE"
+    "./LICENSE",
+    "./next.config.js"
   ],
   "scripts": {
     "dev": "next dev",
