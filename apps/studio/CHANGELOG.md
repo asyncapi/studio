@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.23.1
+
+### Patch Changes
+
+- 2687e87: Include next.config.js in the released file for easier usage.
+
 ## 0.23.0
 
 ### Minor Changes
