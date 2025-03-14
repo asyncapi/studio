@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.24.1
+
+### Patch Changes
+
+- f3499ac: Fix Docker build for AsyncAPI Studio
+
 ## 0.24.0
 
 ### Minor Changes
