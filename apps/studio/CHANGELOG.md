@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.24.0
+
+### Minor Changes
+
+- 7115460: Upgrade asyncapi-react to latest version
+
 ## 0.23.1
 
 ### Patch Changes
