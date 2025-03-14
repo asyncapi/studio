@@ -38,6 +38,13 @@ pnpm run dev
 pnpm run build:studio
 ```
 
+#### Build Studio for Docker
+
+```
+docker build -f apps/studio/Dockerfile -t asyncapi/studio .
+```
+For instructions on running it please refer to this [doc](/apps/studio/README.md#using-it-via-docker).
+
 #### Build the Design System for production
 
 ```
