@@ -1,8 +1,8 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle, VscFileCode } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
-import { SettingsModal, ConfirmNewFileModal } from './Modals';
+import { SettingsModal, ConfirmNewFileModal, GeneratorModal } from './Modals';
 
 import { usePanelsState, panelsState, useDocumentsState } from '@/state';
 
@@ -117,6 +117,16 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       enabled: true,
       dataTest: 'button-new-file',
     },
+    {
+      name: 'generateCode',
+      title: 'Generate code/docs',
+      isActive: false,
+      onClick: () => showModal(GeneratorModal),
+      icon: <VscFileCode className="w-5 h-5" />,
+      tooltip: 'Generate code/docs',
+      enabled: true,
+      dataTest: 'button-new-file',
+    }
   ];
 
   navigation = navigation.filter(item => item.enabled);
