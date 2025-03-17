@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Parse PR label and title
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: lint_title_adr
         with:
           result-encoding: json
@@ -56,7 +56,7 @@ jobs:
           echo ${{ fromJSON(steps.lint_title_adr.outputs.result).message }}
           exit 1
       - if: always() && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ko')
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 #https://github.com/marocchino/sticky-pull-request-comment/releases/tag/v2.9.1
         # When the previous steps fails, the workflow would stop. By adding this
         # condition you can continue the execution with the populated error message.
         with:
@@ -70,7 +70,7 @@ jobs:
             ```
       # Delete a previous comment when the issue has been resolved
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 #https://github.com/marocchino/sticky-pull-request-comment/releases/tag/v2.9.1
         with:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           header: pr-title-lint-adr-error
@@ -78,11 +78,11 @@ jobs:
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Get all changed files
         id: changed_files_all
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@af292f1e845a0377b596972698a8598734eb2796   # using https://github.com/tj-actions/changed-files/releases/tag/v40
       - if: (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Get files that should be changed
         id: changed_files_only
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@af292f1e845a0377b596972698a8598734eb2796   # using https://github.com/tj-actions/changed-files/releases/tag/v40
         with:
           files: |
             ${{ fromJSON(steps.lint_title_adr.outputs.result).expectedFileMatch }}
@@ -99,7 +99,7 @@ jobs:
           fi
       - if: always() && steps.changed_files_check.outputs.only_adr == 0 && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Comment files changed
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 #https://github.com/marocchino/sticky-pull-request-comment/releases/tag/v2.9.1
         # When the previous steps fails, the workflow would stop. By adding this
         # condition you can continue the execution with the populated error message.
         with:
@@ -115,7 +115,7 @@ jobs:
       # Delete a previous comment when the issue has been resolved
       - if: steps.changed_files_check.outputs.only_adr == 1 && (fromJSON(steps.lint_title_adr.outputs.result).status == 'ok')
         name: Delete comment fail changed
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 #https://github.com/marocchino/sticky-pull-request-comment/releases/tag/v2.9.1
         with:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           header: pr-files-changed-adr-error
