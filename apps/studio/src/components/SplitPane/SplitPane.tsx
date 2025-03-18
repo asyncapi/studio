@@ -70,7 +70,8 @@ function SplitPane(props) {
   const [pane2Size, setPane2Size] = useState(primary === 'second' ? initialSize : undefined);
   const [draggedSize, setDraggedSize] = useState();
   const [position, setPosition] = useState();
-
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  
   const splitPane = useRef();
   const pane1 = useRef();
   const pane2 = useRef();
@@ -219,6 +220,9 @@ function SplitPane(props) {
 
     getSizeUpdate();
 
+    const params = new URLSearchParams(window.location.search);
+    setIsReadOnly(params.get('readOnly') === 'true');
+
     return () => {
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('mousemove', onMouseMove);
@@ -280,29 +284,33 @@ function SplitPane(props) {
       style={style}
     >
       <Pane
-        className={pane1Classes}
-        key="pane1"
-        eleRef={node => {
-          pane1.current = node;
-        }}
-        size={pane1Size}
-        split={split}
-        style={pane1Style}
-      >
-        {notNullChildren[0]}
+          className={pane1Classes}
+          key="pane1"
+          eleRef={node => {
+            pane1.current = node;
+          }}
+          size={isReadOnly ? 0 : pane1Size}
+          split={split}
+          style={pane1Style}
+        >
+          {notNullChildren[0]}
       </Pane>
-      <Resizer
-        className={disabledClass}
-        onClick={onResizerClick}
-        onDoubleClick={onResizerDoubleClick}
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onMouseUp}
-        key="resizer"
-        resizerClassName={resizerClassNamesIncludingDefault}
-        split={split}
-        style={resizerStyle || {}}
-      />
+        
+      {!isReadOnly && (
+        <Resizer
+          className={disabledClass}
+          onClick={onResizerClick}
+          onDoubleClick={onResizerDoubleClick}
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onMouseUp}
+          key="resizer"
+          resizerClassName={resizerClassNamesIncludingDefault}
+          split={split}
+          style={resizerStyle || {}}
+        />
+      )}
+      
       <Pane
         className={pane2Classes}
         key="pane2"
