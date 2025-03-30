@@ -4,6 +4,10 @@ import { EditorDropdown } from './EditorDropdown';
 
 import { useFilesState } from '../../state';
 import { ShareButton } from './ShareButton';
+import { ImportDropdown } from './ImportDropdown';
+import { GenerateDropdown } from './GenerateDropdown';
+import { SaveDropdown } from './SaveDropdown';
+import { ConvertDropdown } from './ConvertDropdown';
 
 interface EditorSidebarProps {}
 
@@ -41,11 +45,24 @@ export const EditorSidebar: React.FunctionComponent<
         <div id="editor-dropdown">
           <ul className="flex">
             <li>
-              <ShareButton />
+              <ImportDropdown />
             </li>
             <li>
-              <EditorDropdown />
+              <GenerateDropdown />
             </li>
+            <li>
+              <SaveDropdown />
+            </li>
+            <li>
+              <ConvertDropdown />
+            </li>
+            <li>
+              <ShareButton />
+            </li>
+            {/* <li>
+              <EditorDropdown />
+            </li> */}
+            
           </ul>
         </div>
       </div>
