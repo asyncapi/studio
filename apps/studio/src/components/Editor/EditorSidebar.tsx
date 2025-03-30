@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { EditorDropdown } from './EditorDropdown';
-
 import { useFilesState } from '../../state';
 import { ShareButton } from './ShareButton';
 import { ImportDropdown } from './ImportDropdown';

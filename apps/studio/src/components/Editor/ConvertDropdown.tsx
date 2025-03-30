@@ -9,21 +9,20 @@ import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '../../state';
 
 export const ConvertDropdown: React.FC = () => {
-    const { editorSvc } = useServices();
-        const isInvalidDocument = !useDocumentsState(state => 
-            state.documents['asyncapi'].valid
-        );
-    const language = useFilesState(state => state.files['asyncapi'].language);
+  const { editorSvc } = useServices();
+  const isInvalidDocument = !useDocumentsState(state => 
+    state.documents['asyncapi'].valid
+  );
+  const language = useFilesState(state => state.files['asyncapi'].language);
       
-      
-      return (
-        <Dropdown
-        opener={<FaFileExport />}
-        buttonHoverClassName="text-gray-500 hover:text-white"
-        >
-        <ul className="bg-gray-800 text-md text-white">
-            <li className="hover:bg-gray-900">
-            <button
+  return (
+    <Dropdown
+      opener={<FaFileExport />}
+      buttonHoverClassName="text-gray-500 hover:text-white"
+    >
+      <ul className="bg-gray-800 text-md text-white">
+        <li className="hover:bg-gray-900">
+          <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title={`Convert to ${language === 'yaml' ? 'JSON' : 'YAML'}`}
@@ -52,25 +51,23 @@ export const ConvertDropdown: React.FC = () => {
               );
             }}
             disabled={isInvalidDocument}
-            >
+          >
             Convert to {language === 'yaml' ? 'JSON' : 'YAML'}
-            </button>
-            </li>
-            <li className="hover:bg-gray-900">
-            <button
-                type="button"
-                className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-                title="Convert AsyncAPI document"
-                onClick={() => show(ConvertModal)}
-            >
+          </button>
+        </li>
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Convert AsyncAPI document"
+            onClick={() => show(ConvertModal)}
+          >
                 Convert document
-            </button>
-            </li>
-        </ul>
+          </button>
+        </li>
+      </ul>
 
-        </Dropdown>
-      );
+    </Dropdown>
+  );
 }
-
-
 

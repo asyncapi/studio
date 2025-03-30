@@ -4,35 +4,35 @@ import { show } from '@ebay/nice-modal-react';
 import { FaFileImport } from 'react-icons/fa';
 
 import {
-    ImportURLModal,
-    ImportBase64Modal,
-    ImportUUIDModal,
+  ImportURLModal,
+  ImportBase64Modal,
+  ImportUUIDModal,
 } from '../Modals';
 
 import { Dropdown } from '../common';
 import { useServices } from '@/services';
 
 export const ImportDropdown: React.FC = () => {
-    const { editorSvc } = useServices();
+  const { editorSvc } = useServices();
 
-    return (
-        <Dropdown 
-            opener={<FaFileImport />}
-            buttonHoverClassName="text-gray-500 hover:text-white"
-        >
-            <ul className="bg-gray-800 text-md text-white">
-            <li className="hover:bg-gray-900">
-            <button
-                type="button"
-                className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-                title="Import from URL"
-                onClick={() => show(ImportURLModal)}
-            >
+  return (
+    <Dropdown 
+      opener={<FaFileImport />}
+      buttonHoverClassName="text-gray-500 hover:text-white"
+    >
+      <ul className="bg-gray-800 text-md text-white">
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Import from URL"
+            onClick={() => show(ImportURLModal)}
+          >
                 Import from URL
-            </button>
-            </li>
+          </button>
+        </li>
 
-            <li className="hover:bg-gray-900">
+        <li className="hover:bg-gray-900">
           <label
             className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
             title="Import File"
@@ -87,8 +87,8 @@ export const ImportDropdown: React.FC = () => {
           </button>
         </li>
 
-        </ul>
+      </ul>
             
-        </Dropdown>
-    );
+    </Dropdown>
+  );
 }
