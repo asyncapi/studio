@@ -9,7 +9,7 @@ import {
   ImportUUIDModal,
 } from '../Modals';
 
-import { Dropdown } from '../common';
+import { Dropdown, Tooltip } from '../common';
 import { useServices } from '@/services';
 
 export const ImportDropdown: React.FC = () => {
@@ -17,7 +17,13 @@ export const ImportDropdown: React.FC = () => {
 
   return (
     <Dropdown 
-      opener={<FaFileImport />}
+      opener={
+        <Tooltip content="Import" placement="top" hideOnClick={true}>
+          <button className="bg-inherit">
+            <FaFileImport />
+          </button>
+        </Tooltip>
+      }
       buttonHoverClassName="text-gray-500 hover:text-white"
     >
       <ul className="bg-gray-800 text-md text-white">

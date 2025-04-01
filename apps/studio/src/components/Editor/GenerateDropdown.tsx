@@ -4,7 +4,7 @@ import { FaCode } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 import { GeneratorModal } from '../Modals';
-import { Dropdown } from '../common';
+import { Dropdown, Tooltip } from '../common';
 import { useDocumentsState } from '../../state';
 import { useServices } from '@/services';
 
@@ -16,7 +16,13 @@ export const GenerateDropdown: React.FC = () => {
 
   return (
     <Dropdown
-      opener={<FaCode />}
+      opener={
+        <Tooltip content="Generate" placement="top" hideOnClick={true}>
+          <button className="bg-inherit">
+            <FaCode />
+          </button>
+        </Tooltip>
+      }
       buttonHoverClassName="text-gray-500 hover:text-white"
     >
       <ul className="bg-gray-800 text-md text-white">

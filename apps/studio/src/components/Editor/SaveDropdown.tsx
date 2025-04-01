@@ -2,7 +2,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { FaSave } from 'react-icons/fa';
 
-import { Dropdown } from '../common';
+import { Dropdown, Tooltip } from '../common';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '../../state';
 
@@ -15,7 +15,13 @@ export const SaveDropdown: React.FC = () => {
 
   return (
     <Dropdown
-      opener={<FaSave />}
+      opener={
+        <Tooltip content="Save" placement="top" hideOnClick={true}>
+          <button className="bg-inherit">
+            <FaSave />
+          </button>
+        </Tooltip>
+      }
       buttonHoverClassName="text-gray-500 hover:text-white"
     >
       <ul className="bg-gray-800 text-md text-white">

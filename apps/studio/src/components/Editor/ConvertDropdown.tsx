@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { FaFileExport } from 'react-icons/fa';
 
 import { ConvertModal } from '../Modals';
-import { Dropdown } from '../common';
+import { Dropdown, Tooltip } from '../common';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '../../state';
 
@@ -17,7 +17,13 @@ export const ConvertDropdown: React.FC = () => {
       
   return (
     <Dropdown
-      opener={<FaFileExport />}
+      opener={
+        <Tooltip content="Convert" placement="top" hideOnClick={true}>
+          <button className="bg-inherit">
+            <FaFileExport />
+          </button>
+        </Tooltip>
+      }
       buttonHoverClassName="text-gray-500 hover:text-white"
     >
       <ul className="bg-gray-800 text-md text-white">
