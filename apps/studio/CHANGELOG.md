@@ -1,5 +1,23 @@
 # @asyncapi/studio
 
+## 0.24.1
+
+### Patch Changes
+
+- f3499ac: Fix Docker build for AsyncAPI Studio
+
+## 0.24.0
+
+### Minor Changes
+
+- 7115460: Upgrade asyncapi-react to latest version
+
+## 0.23.1
+
+### Patch Changes
+
+- 2687e87: Include next.config.js in the released file for easier usage.
+
 ## 0.23.0
 
 ### Minor Changes

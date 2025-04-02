@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.23.0",
+  "version": "0.24.1",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -19,7 +19,8 @@
     "/build",
     "/public",
     "./README.md",
-    "./LICENSE"
+    "./LICENSE",
+    "./next.config.js"
   ],
   "scripts": {
     "dev": "next dev",
@@ -41,7 +42,7 @@
     "@asyncapi/openapi-schema-parser": "^3.0.18",
     "@asyncapi/parser": "^3.2.2",
     "@asyncapi/protobuf-schema-parser": "^3.2.8",
-    "@asyncapi/react-component": "^1.2.2",
+    "@asyncapi/react-component": "^2.5.0",
     "@asyncapi/specs": "^6.5.4",
     "@codemirror/view": "^6.26.3",
     "@ebay/nice-modal-react": "^1.2.10",
@@ -63,7 +64,7 @@
     "js-yaml": "^4.1.0",
     "monaco-editor": "0.34.1",
     "monaco-yaml": "4.0.2",
-    "next": "14.2.3",
+    "next": "14.2.21",
     "postcss": "8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
