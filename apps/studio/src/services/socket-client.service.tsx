@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { appState } from '@/state';
 
 interface IncomingMessage {
-  type: 'file:loaded' | 'file:changed' | 'file:deleted' | 'mode:preview';
+  type: 'file:loaded' | 'file:changed' | 'file:deleted';
   code?: string;
 }
 
@@ -13,9 +13,9 @@ export class SocketClient extends AbstractService {
   private ws!: WebSocket;
 
   public override onInit(): void {
-    const { url, base64, readOnly, liveServer } = this.svcs.navigationSvc.getUrlParameters();
+    const { url, base64, readOnly, liveServer, previewServer } = this.svcs.navigationSvc.getUrlParameters();
 
-    const shouldConnect = !(base64 || url || readOnly);
+    const shouldConnect = !(base64 || url || readOnly || previewServer);
     if (!shouldConnect) {
       return;
     }
@@ -58,12 +58,6 @@ export class SocketClient extends AbstractService {
         break;
       case 'file:deleted':
         console.warn('Live Server: The file has been deleted on the file system.');
-        break;
-      case 'mode:preview':
-        appState.setState({
-          readOnly: true,
-          initialized: true,
-        });  
         break;
       default:
         console.warn('Live Server: An unknown even has been received. See details:');
