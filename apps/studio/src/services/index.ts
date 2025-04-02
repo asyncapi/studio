@@ -13,9 +13,11 @@ import { ServerAPIService } from './server-api.service';
 import { SettingsService } from './settings.service';
 import { SocketClient } from './socket-client.service';
 import { SpecificationService } from './specification.service';
+import { PreviewSockeClient } from './preview.service';
 
 export type Services = {
   appSvc: ApplicationService;
+  previewSvc: PreviewSockeClient;
   converterSvc: ConverterService;
   editorSvc: EditorService;
   formatSvc: FormatService;
@@ -41,6 +43,7 @@ export async function createServices() {
 
   services.parserSvc = new ParserService(services);
   services.appSvc = new ApplicationService(services);
+  services.previewSvc = new PreviewSockeClient(services);
   services.converterSvc = new ConverterService(services);
   services.editorSvc = new EditorService(services);
   services.formatSvc = new FormatService(services);

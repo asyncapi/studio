@@ -20,6 +20,7 @@ export class NavigationService extends AbstractService {
       share: urlParams.get('share'),
       readOnly: urlParams.get('readOnly') === 'true' || urlParams.get('readOnly') === '',
       liveServer: urlParams.get('liveServer'),
+      previewServer: urlParams.get('previewServer'),
       redirectedFrom: urlParams.get('redirectedFrom'),
     };
   }
