@@ -13,9 +13,9 @@ export class SocketClient extends AbstractService {
   private ws!: WebSocket;
 
   public override onInit(): void {
-    const { url, base64, readOnly, liveServer } = this.svcs.navigationSvc.getUrlParameters();
+    const { url, base64, readOnly, liveServer, previewServer } = this.svcs.navigationSvc.getUrlParameters();
 
-    const shouldConnect = !(base64 || url || readOnly);
+    const shouldConnect = !(base64 || url || readOnly || previewServer);
     if (!shouldConnect) {
       return;
     }

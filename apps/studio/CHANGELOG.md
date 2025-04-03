@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.24.2
+
+### Patch Changes
+
+- c636c84: feat: additional changes for implementation of new preview command
+
 ## 0.24.1
 
 ### Patch Changes
