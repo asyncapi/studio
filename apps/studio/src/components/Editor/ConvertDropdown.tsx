@@ -25,6 +25,7 @@ export const ConvertDropdown: React.FC = () => {
         </Tooltip>
       }
       buttonHoverClassName="text-gray-500 hover:text-white"
+      dataTest="button-convert-dropdown"
     >
       <ul className="bg-gray-800 text-md text-white">
         <li className="hover:bg-gray-900">
