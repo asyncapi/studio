@@ -112,25 +112,41 @@ describe('Studio UI spec', () => {
     cy.contains('Share link').should('be.visible');
   });
 
-  it('Button "Dropdown" should be visible in the UI', () => {
-    cy.get('[data-test="button-dropdown"]').should('be.visible');
-  });
-
-  it('Dropdown menu should contain 8 elements with predefined text', () => {
-    cy.get('[data-test="button-dropdown"]').click();
+  it('Click on Import Dropdown should contain 4 elements', () => {
+    cy.get('[data-test="button-import-dropdown"]').click({force: true});
     cy.contains('Import from URL');
     cy.contains('Import File');
     cy.contains('Import from Base64');
+    cy.contains('Import from UUID');
+  });
+
+  it('Click on Generate Dropdown should contain 2 elements', () => {
+    cy.get('[data-test="button-generate-dropdown"]').click({force: true});
     cy.contains('Generate code/docs');
+    cy.contains('Share as Base64');
+  });
+
+  it('Should make API call when clicking Generate code/docs', () => {
+    cy.intercept('POST', 'https://api.asyncapi.com/v1/generate').as('generateApi');
+    cy.get('[data-test="button-generate-dropdown"]').click({force: true});
+    cy.contains('Generate code/docs').click({force: true});
+    cy.contains('Generate code/docs based on your AsyncAPI Document');
+    cy.get('select[name="generate"]').select('@asyncapi/html-template', {force: true}).wait(1000);
+    cy.get('[data-test="modal-confirm-button"]').click({force: true});
+    cy.wait('@generateApi', { timeout: 10000 }).then((interception) => {
+      expect(interception.response?.statusCode).to.equal(200);
+    });
+  });
+
+  it('Click on Save Dropdown should contain 2 elements', () => {
+    cy.get('[data-test="button-save-dropdown"]').click({force: true});
     cy.contains('Save as YAML');
     cy.contains('Convert and save as JSON');
-    cy.contains('Convert to JSON');
-    cy.contains('Convert document');
   });
-  
-  it('Click on Dropdown menu\'s element "Generate code/docs" should open Modal window "Generate code/docs based on your AsyncAPI Document"', () => {
-    cy.get('[data-test="button-dropdown"]').click();
-    cy.contains('Generate code/docs').click();
-    cy.contains('Generate code/docs based on your AsyncAPI Document');
+
+  it('Click on Convert Dropdown should contain 2 elements', () => {
+    cy.get('[data-test="button-convert-dropdown"]').click({force: true});
+    cy.contains('Convert document');
+    cy.contains('Convert and save as JSON');
   });
 });
