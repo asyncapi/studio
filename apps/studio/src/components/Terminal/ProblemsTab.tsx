@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FunctionComponent, useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSettingsGear } from 'react-icons/vsc';
 import { useModal } from '@ebay/nice-modal-react';
 import { DiagnosticSeverity } from '@asyncapi/parser';
@@ -11,6 +11,7 @@ import { debounce } from '../../helpers';
 import { useDocumentsState, useSettingsState } from '../../state';
 
 import type { Diagnostic } from '@asyncapi/parser';
+import { trackEvent } from '@/helpers/analytics';
 
 interface ProblemsTabProps {}
 
@@ -207,6 +208,10 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   const [search, setSearch] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    trackEvent('Diagnostics', 'panel_opened', 'Problems tab opened');
+  }, []);
+
   const setActiveFn = useCallback((severity: DiagnosticSeverity) => {
     setActive(acc => {
       if (acc.some(s => s === severity)) {
@@ -236,10 +241,18 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
           <SeverityButtons active={active} setActive={setActiveFn} />
           <div className='ml-2 flex-1 flex flex-row items-center justify-center rounded-md border border-transparent shadow-xs px-2 py-1 bg-gray-700 text-xs font-medium'>
             <VscSearch />
-            <input ref={inputRef} placeholder='Filter diagnostics...' className='w-full bg-gray-700 border-transparent ml-2 focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => setSearch(e.target.value), 250)} />
+            <input ref={inputRef} placeholder='Filter diagnostics...' className='w-full bg-gray-700 border-transparent ml-2 focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => {
+              setSearch(e.target.value)
+              if (e.target.value.length > 2 || e.target.value.length === 0) {
+                trackEvent('Diagnostics', 'search', `Search term: "${e.target.value}"`);
+              }
+            }, 250)} />
             <button type='button' className={`hover:bg-gray-900 rounded-sm border border-transparent ${search ? 'opacity-100' : 'opacity-0'}`} onClick={() => {
               if (inputRef.current) {
                 inputRef.current.value = '';
+              }
+              if (search) {
+                trackEvent('Diagnostics', 'search_clear', 'Search cleared');
               }
               setSearch('');
             }}>
@@ -250,7 +263,14 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
             <button
               type="button"
               className={'justify-center border border-transparent shadow-xs px-2 py-1 ml-2 text-xs rounded-md font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700'}
-              onClick={() => modal.show({ activeTab: 'governance' })}
+              onClick={() => { 
+                trackEvent(
+                  'Diagnostics',
+                  'settings_open',
+                  'Opened governance settings'
+                );
+                modal.show({ activeTab: 'governance' })
+              }}
             >
               <VscSettingsGear className='w-4 h-4' />
             </button>
@@ -274,14 +294,23 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
                   <td className="px-2 py-1 text-right"><SeverityIcon severity={severity} /></td>
                   <td
                     className="px-2 py-1 cursor-pointer"
-                    onClick={() =>
+                    onClick={() => { 
+                      trackEvent('Diagnostics', 'diagnostic_click', `Clicked on diagnostic at line ${range.start.line + 1}`);
                       navigationSvc.scrollToEditorLine(
                         range.start.line + 1,
                         range.start.character + 1,
                       )
                     }
+                    }
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
+                        trackEvent(
+                          'Diagnostics',
+                          'diagnostic_click',
+                          `Clicked on diagnostic at line ${
+                            range.start.line + 1
+                          }`
+                        );
                         navigationSvc.scrollToEditorLine(
                           range.start.line + 1,
                           range.start.character + 1,
