@@ -8,7 +8,7 @@ import 'reactflow/dist/style.css';
 import './globals.css'
 import { GoogleTagManager, GoogleTagManagerNoScript } from '@/components/common/GoogleTagManager';
 
-const GTM_ID = process.env.NEXT_PUBLIC_ANALYTICS_ID || '';
+const GTM_ID = process.env.NEXT_PUBLIC_ANALYTICS_ID ?? '';
 
 export default function RootLayout({
   children,

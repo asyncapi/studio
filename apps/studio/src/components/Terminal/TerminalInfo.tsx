@@ -67,6 +67,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
               `Clicked invalid status (${document.diagnostics.errors.length} errors)`
             );
           }}
+          aria-hidden="true"
         >
           <span className="text-red-500">
             <svg
@@ -94,6 +95,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
               'Clicked valid status'
             );
           }}
+          aria-hidden="true"
         >
           <span className="text-green-500">
             <svg
@@ -122,6 +124,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
               'Clicked modified status'
             );
           }}
+          aria-hidden="true"
         >
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -142,6 +145,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
               : 'Clicked autosave off status'
           );
         }}
+        aria-hidden="true"
       >
         <span className="text-blue-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -152,6 +156,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
       </div>
       {actualVersion !== latestVersion && document.valid === true && (
         <div className="ml-3" 
+          aria-hidden="true" 
           onClick={onNonLatestClick}
           tabIndex={0}
           onKeyDown={(event) => {
@@ -174,6 +179,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
             `Clicked language indicator: ${file.language}`
           );
         }}
+        aria-hidden="true"
       >
         <span>{file.language}</span>
       </div>
