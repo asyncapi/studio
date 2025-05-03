@@ -17,12 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <GoogleTagManager gtmId={GTM_ID} />
-      </head>
+      <head>{GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}</head>
       <body>
-        <GoogleTagManagerNoScript gtmId={GTM_ID} />
-        <Toolbar />
+        {GTM_ID && <GoogleTagManagerNoScript gtmId={GTM_ID} />} <Toolbar />
         <main className="flex flex-col w-full h-[calc(100vh-4rem)]">
           {children}
         </main> 
