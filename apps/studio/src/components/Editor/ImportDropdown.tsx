@@ -2,6 +2,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { show } from '@ebay/nice-modal-react';
 import { FaFileImport } from 'react-icons/fa';
+import { trackEvent} from '@/helpers/analytics';
 
 import {
   ImportURLModal,
@@ -33,7 +34,10 @@ export const ImportDropdown: React.FC = () => {
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
             title="Import from URL"
-            onClick={() => show(ImportURLModal)}
+            onClick={() => {
+              trackEvent('Import', 'click', 'Import AsyncAPI document from URL')
+              show(ImportURLModal)
+            }}
           >
                 Import from URL
           </button>
@@ -49,12 +53,13 @@ export const ImportDropdown: React.FC = () => {
               accept='.yaml, .yml, .json'
               style={{ position: 'fixed', top: '-100em' }}
               onChange={event => {
+                trackEvent('Import', 'file_upload', 'Import File');
                 toast.promise(editorSvc.importFile(event.target.files), {
                   loading: 'Importing...',
                   success: (
                     <div>
                       <span className="block text-bold">
-                      Document succesfully imported!
+                      Document successfully imported!
                       </span>
                     </div>
                   ),
@@ -77,7 +82,10 @@ export const ImportDropdown: React.FC = () => {
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
             title="Import from Base64"
-            onClick={() => show(ImportBase64Modal)}
+            onClick={() => {
+              trackEvent('Import', 'click', 'Import AsyncAPI document from Base64')
+              show(ImportBase64Modal)
+            }}
           >
             Import from Base64
           </button>
@@ -88,7 +96,10 @@ export const ImportDropdown: React.FC = () => {
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
             title="Import from UUID"
-            onClick={() => show(ImportUUIDModal)}
+            onClick={() => { 
+              trackEvent('Import', 'click', 'Import AsyncAPI document from UUID');
+              show(ImportUUIDModal);
+            }}
           >
             Import from UUID
           </button>

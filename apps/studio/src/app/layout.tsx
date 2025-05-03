@@ -6,6 +6,9 @@ import 'tippy.js/animations/shift-away.css';
 import '@asyncapi/react-component/styles/default.min.css';
 import 'reactflow/dist/style.css';
 import './globals.css'
+import { GoogleTagManager, GoogleTagManagerNoScript } from '@/components/common/GoogleTagManager';
+
+const GTM_ID = process.env.NEXT_PUBLIC_ANALYTICS_ID ?? '';
 
 export default function RootLayout({
   children,
@@ -14,8 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>{GTM_ID && <GoogleTagManager gtmId={GTM_ID} />}</head>
       <body>
-        <Toolbar />
+        {GTM_ID && <GoogleTagManagerNoScript gtmId={GTM_ID} />} <Toolbar />
         <main className="flex flex-col w-full h-[calc(100vh-4rem)]">
           {children}
         </main> 

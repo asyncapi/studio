@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { TerminalInfo } from './TerminalInfo';
 import { otherState, useDocumentsState } from '../../state';
+import { trackEvent } from '@/helpers/analytics';
 
 export interface TerminalTab {
   name: string;
@@ -25,6 +26,7 @@ const onTerminalTabClickHandler = (e: {currentTarget: {parentElement: any}}) => 
   const prevHeight = otherState.getState().editorHeight;
   const newHeight =
     height < 50 ? calc160px : calc36px;
+  trackEvent('Terminal', 'resize', `Height changed to ${newHeight}`);
   if (
     prevHeight === calc160px &&
     newHeight === calc160px
@@ -61,31 +63,49 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
         onKeyDown={onTerminalTabClickHandler}
       >
         <ul className="flex flex-row">
-          {!isV3 && tabs.map(tab => (
-            <li
-              key={tab.name}
-              className="px-2 cursor-pointer"
-              onClick={() => setActiveTab(tab.name)}
-              tabIndex={0}
-              onKeyDown={() => setActiveTab(tab.name)}
-            >
-              <div
-                className={`py-2 hover:text-white ${
-                  activeTab === tab.name
-                    ? 'text-white border-b border-white'
-                    : 'text-gray-500'
-                }`}
+          {!isV3 &&
+            tabs.map(tab => (
+              <li
+                key={tab.name}
+                className="px-2 cursor-pointer"
+                onClick={() => {
+                  trackEvent(
+                    'Terminal',
+                    'tab_change',
+                    `Changed to ${tab.name} tab`
+                  );
+                  setActiveTab(tab.name);
+                }}
+                tabIndex={0}
+                onKeyDown={() => {
+                  trackEvent(
+                    'Terminal',
+                    'tab_change_keyboard',
+                    `Changed to ${tab.name} tab via keyboard`
+                  );
+                  setActiveTab(tab.name);
+                }}
               >
-                {tab.tab}
-              </div>
-            </li>
-          ))}
+                <div
+                  className={`py-2 hover:text-white ${
+                    activeTab === tab.name
+                      ? 'text-white border-b border-white'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {tab.tab}
+                </div>
+              </li>
+            ))}
         </ul>
         <TerminalInfo />
       </div>
       <div
         className="absolute overflow-auto h-auto bottom-0 right-0 left-0"
         style={{ top: '36px' }}
+        onScroll={() => {
+          trackEvent('Terminal', 'content_scroll', 'Terminal content scrolled');
+        }}
       >
         <ul>
           {tabs.map(tab => (
