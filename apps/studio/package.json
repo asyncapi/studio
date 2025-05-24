@@ -15,13 +15,30 @@
   "author": {
     "name": "The AsyncAPI maintainers"
   },
-  "files": [
-    "/build",
-    "/public",
-    "./README.md",
-    "./LICENSE",
-    "./next.config.js"
-  ],
+ "files": [
+  "/build/server",
+  "/build/standalone",
+  "/build/static",
+  "/build/types",
+  "/build/app-build-manifest.json",
+  "/build/app-path-routes-manifest.json",
+  "/build/BUILD_ID",
+  "/build/build-manifest.json",
+  "/build/export-marker.json",
+  "/build/images-manifest.json",
+  "/build/next-minimal-server.js.nft.json",
+  "/build/next-server.js.nft.json",
+  "/build/package.json",
+  "/build/prerender-manifest.json",
+  "/build/react-loadable-manifest.json",
+  "/build/required-server-files.json",
+  "/build/routes-manifest.json",
+  "/build/trace",
+  "/public",
+  "./README.md",
+  "./LICENSE",
+  "./next.config.js"
+],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
