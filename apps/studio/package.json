@@ -1,6 +1,6 @@
 {
   "name": "@asyncapi/studio",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "description": "One place that allows you to develop an AsyncAPI document, validate it, convert it to the latest version, preview the documentation and visualize the events flow.",
   "license": "Apache-2.0",
   "bugs": {
@@ -16,7 +16,24 @@
     "name": "The AsyncAPI maintainers"
   },
   "files": [
-    "/build",
+    "/build/server",
+    "/build/standalone",
+    "/build/static",
+    "/build/types",
+    "/build/app-build-manifest.json",
+    "/build/app-path-routes-manifest.json",
+    "/build/BUILD_ID",
+    "/build/build-manifest.json",
+    "/build/export-marker.json",
+    "/build/images-manifest.json",
+    "/build/next-minimal-server.js.nft.json",
+    "/build/next-server.js.nft.json",
+    "/build/package.json",
+    "/build/prerender-manifest.json",
+    "/build/react-loadable-manifest.json",
+    "/build/required-server-files.json",
+    "/build/routes-manifest.json",
+    "/build/trace",
     "/public",
     "./README.md",
     "./LICENSE",
