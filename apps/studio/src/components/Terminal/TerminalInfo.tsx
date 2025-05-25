@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
 import { show } from '@ebay/nice-modal-react';
 
@@ -6,7 +6,7 @@ import { ConvertToLatestModal } from '../Modals';
 
 import { useServices } from '../../services';
 import { useAppState, useDocumentsState, useFilesState, useSettingsState } from '../../state';
-
+import { trackEvent } from '@/helpers/analytics';
 import type { FunctionComponent } from 'react';
 
 interface TerminalInfoProps {}
@@ -23,8 +23,29 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
 
   const onNonLatestClick = useCallback((e: {stopPropagation: ()=>void}) => {
     e.stopPropagation();
+    trackEvent(
+      'Document',
+      'version_upgrade_click',
+      `Convert from ${actualVersion} to ${latestVersion}`
+    );
     show(ConvertToLatestModal);
   }, []);
+
+  useEffect(() => {
+    if (liveServer) {
+      trackEvent('Server', 'live_server_active', 'Live server is active');
+    }
+  }, [liveServer]);
+
+  useEffect(() => {
+    if (actualVersion !== latestVersion) {
+      trackEvent(
+        'Document',
+        'version_discrepancy',
+        `Using version ${actualVersion} (latest: ${latestVersion})`
+      );
+    }
+  }, [actualVersion, latestVersion]);
 
   return (
     <div className="flex flex-row px-2">
@@ -37,7 +58,17 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
         </div>
       )}
       {document.diagnostics.errors.length > 0 ? (
-        <div className="ml-3">
+        <div
+          className="ml-3"
+          onClick={() => {
+            trackEvent(
+              'Document',
+              'invalid_status_click',
+              `Clicked invalid status (${document.diagnostics.errors.length} errors)`
+            );
+          }}
+          aria-hidden="true"
+        >
           <span className="text-red-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +86,17 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Invalid</span>
         </div>
       ) : (
-        <div className="ml-3">
+        <div
+          className="ml-3"
+          onClick={() => {
+            trackEvent(
+              'Document',
+              'valid_status_click',
+              'Clicked valid status'
+            );
+          }}
+          aria-hidden="true"
+        >
           <span className="text-green-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +115,17 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
         </div>
       )}
       {!autoSaving && file.modified && (
-        <div className="ml-3">
+        <div
+          className="ml-3"
+          onClick={() => {
+            trackEvent(
+              'Document',
+              'modified_status_click',
+              'Clicked modified status'
+            );
+          }}
+          aria-hidden="true"
+        >
           <span className="text-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -83,7 +134,19 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Modified</span>
         </div>
       )}
-      <div className="ml-3">
+      <div
+        className="ml-3"
+        onClick={() => {
+          trackEvent(
+            'Settings',
+            'autosave_status_click',
+            autoSaving
+              ? 'Clicked autosave on status'
+              : 'Clicked autosave off status'
+          );
+        }}
+        aria-hidden="true"
+      >
         <span className="text-blue-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -93,6 +156,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
       </div>
       {actualVersion !== latestVersion && document.valid === true && (
         <div className="ml-3" 
+          aria-hidden="true" 
           onClick={onNonLatestClick}
           tabIndex={0}
           onKeyDown={(event) => {
@@ -106,7 +170,17 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
           <span>Not latest</span>
         </div>
       )}
-      <div className="ml-3">
+      <div
+        className="ml-3"
+        onClick={() => {
+          trackEvent(
+            'Document',
+            'language_click',
+            `Clicked language indicator: ${file.language}`
+          );
+        }}
+        aria-hidden="true"
+      >
         <span>{file.language}</span>
       </div>
     </div>
