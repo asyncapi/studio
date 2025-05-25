@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 1.0.0
+
+### Major Changes
+
+- ef86b5b: feat: google tag manager analytics
+
 ## 0.24.3
 
 ### Patch Changes
