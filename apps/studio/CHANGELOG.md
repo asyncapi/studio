@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 0.24.3
+
+### Patch Changes
+
+- 8293782: Excluded cache folder from build to reduce package size.
+
 ## 0.24.2
 
 ### Patch Changes
