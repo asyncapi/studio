@@ -5,7 +5,6 @@ import { FaSave } from 'react-icons/fa';
 import { Dropdown, Tooltip } from '../common';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '../../state';
-import { trackEvent } from '@/helpers/analytics';
 
 export const SaveDropdown: React.FC = () => {
   const { editorSvc } = useServices();
@@ -33,11 +32,6 @@ export const SaveDropdown: React.FC = () => {
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title={`Save as ${language === 'yaml' ? 'YAML' : 'JSON'}`}
             onClick={() => {
-              trackEvent(
-                'Save',
-                'click',
-                `Save AsyncAPI document as ${language}`,
-              );
               toast.promise(
                 language === 'yaml'
                   ? editorSvc.saveAsYaml()
@@ -72,13 +66,6 @@ export const SaveDropdown: React.FC = () => {
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title={`Convert and save as ${language === 'yaml' ? 'JSON' : 'YAML'}`}
             onClick={() => {
-              trackEvent(
-                'Save',
-                'click',
-                `Convert and save AsyncAPI document as ${
-                  language === 'yaml' ? 'JSON' : 'YAML'
-                }`,
-              );
               toast.promise(
                 language === 'yaml'
                   ? editorSvc.saveAsJSON()

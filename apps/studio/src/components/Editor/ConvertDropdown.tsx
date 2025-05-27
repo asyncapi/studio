@@ -7,7 +7,6 @@ import { ConvertModal } from '../Modals';
 import { Dropdown, Tooltip } from '../common';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '../../state';
-import { trackEvent } from '@/helpers/analytics';
 
 export const ConvertDropdown: React.FC = () => {
   const { editorSvc } = useServices();
@@ -35,7 +34,6 @@ export const ConvertDropdown: React.FC = () => {
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title={`Convert to ${language === 'yaml' ? 'JSON' : 'YAML'}`}
             onClick={() => {
-              trackEvent('Convert', 'click', language === 'yaml' ? 'JSON' : 'YAML');
               toast.promise(
                 language === 'yaml'
                   ? editorSvc.convertToJSON()
@@ -69,10 +67,7 @@ export const ConvertDropdown: React.FC = () => {
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
             title="Convert AsyncAPI document"
-            onClick={() => {
-              trackEvent('Convert', 'click', 'Open convert document modal');
-              show(ConvertModal);
-            }}
+            onClick={() => show(ConvertModal)}
           >
                 Convert document
           </button>
