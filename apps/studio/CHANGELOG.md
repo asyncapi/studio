@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 1.0.1
+
+### Patch Changes
+
+- 6d8353d: chore: revert "feat: add analytics" (#1188)
+
 ## 1.0.0
 
 ### Major Changes
