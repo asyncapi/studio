@@ -7,7 +7,6 @@ import { GeneratorModal } from '../Modals';
 import { Dropdown, Tooltip } from '../common';
 import { useDocumentsState } from '../../state';
 import { useServices } from '@/services';
-import { trackEvent} from '@/helpers/analytics';
 
 export const GenerateDropdown: React.FC = () => {
   const isInvalidDocument = !useDocumentsState(state => 
@@ -34,10 +33,7 @@ export const GenerateDropdown: React.FC = () => {
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title="Generate code/docs"
             disabled={isInvalidDocument}
-            onClick={() => {
-              trackEvent('Generate', 'click', 'Generate code/docs')
-              show(GeneratorModal)
-            }}
+            onClick={() => show(GeneratorModal)}
           >
                 Generate code/docs
           </button>
@@ -48,7 +44,6 @@ export const GenerateDropdown: React.FC = () => {
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title='Share as Base64'
             onClick={() => {
-              trackEvent('Generate', 'click', 'Share as Base64');
               toast.promise(
                 (async function () {
                   const base64 = await editorSvc.exportAsBase64();

@@ -2,7 +2,6 @@ import React from 'react';
 import { VscRefresh } from 'react-icons/vsc';
 
 import { useSettingsState, otherState } from '../../state';
-import { trackEvent } from '@/helpers/analytics';
 
 interface TemplateSidebarProps {}
 
@@ -18,10 +17,7 @@ export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = ()
         <div />
       ) : (
         <div className="ml-2 text-gray-500 text-xs flex" style={{ height: '30px', lineHeight: '30px' }}>
-          <button type="button" className="text-xs" onClick={() => { 
-            trackEvent('Template', 'rerender', 'Manual template rerender');
-            otherState.setState({ templateRerender: true });
-          }}>
+          <button type="button" className="text-xs" onClick={() => otherState.setState({ templateRerender: true })}>
             <div className="inline-block">
               <VscRefresh className="w-4 h-4 mt-1" />
             </div>

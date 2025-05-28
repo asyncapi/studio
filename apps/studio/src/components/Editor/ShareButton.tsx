@@ -3,7 +3,6 @@ import { FaShareAlt } from 'react-icons/fa';
 import { useServices } from '../../services';
 import { toast } from 'react-hot-toast';
 import { Tooltip } from '../common';
-import { trackEvent } from '@/helpers/analytics';
 
 interface ShareButtonProps {}
 
@@ -11,7 +10,6 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
   const { editorSvc } = useServices();
 
   const handleShare = () => {
-    trackEvent('Share Button', 'click', 'Share AsyncAPI document');
     toast.promise(
       (async function () {
         const url = await editorSvc.exportAsURL();

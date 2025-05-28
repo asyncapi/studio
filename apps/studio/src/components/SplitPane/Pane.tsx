@@ -1,8 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { trackEvent } from "@/helpers/analytics";
-
 function Pane(props) {
   const { children, className, split, style: styleProps, size, eleRef } = props;
 
@@ -25,7 +23,6 @@ function Pane(props) {
   }
 
   style = Object.assign({}, style, styleProps || {});
-  trackEvent('SplitPane', 'render', `Pane rendered with size: ${size || 'default'}`);
 
   return (
     <div ref={eleRef} className={classes.join(' ')} style={style}>
