@@ -36,6 +36,7 @@ const nextConfig = {
 
     return config;
   },
+  basePath: process.env.NEXT_BASE_PATH ?? '',
   output: process.env.NEXT_CONFIG_OUTPUT ?? 'standalone',
   distDir: 'build'
 };
