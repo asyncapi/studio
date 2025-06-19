@@ -34,8 +34,8 @@ export const metadata : Metadata = {
     images: ['/img/meta-studio-og-image.jpeg'],
   },
   icons: {
-    icon: '/favicon.ico',
-    apple: '/favicon-194x194.png',
+    icon: `${process.env.NEXT_BASE_PATH ?? ''}/favicon.ico`,
+    apple: `${process.env.NEXT_BASE_PATH ?? ''}/favicon-194x194.png`,
   },
 };
 
