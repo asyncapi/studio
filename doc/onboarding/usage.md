@@ -51,15 +51,7 @@ The editor validates your document in real-time and highlights errors:
 - Syntax errors are marked with red squiggly underlines
 - Hover over an error to see a description of the problem
 - The status bar at the bottom shows the total number of errors and warnings
-
-## Validating Your AsyncAPI Document
-
-To validate your AsyncAPI document and see detailed validation results:
-
-1. Click the **Validate** button in the toolbar  
-2. The validation panel will appear showing any errors or warnings  
-3. Click on an error to jump to its location in the document  
-4. Fix the issues and re-validate until all errors are resolved  
+- We also a diagnostic panel that lists all errors and warnings in your document, which also allows you to filter errors. 
 
 ## Converting Between AsyncAPI Versions
 
@@ -69,6 +61,13 @@ To convert your AsyncAPI document to a different version:
 2. Select the target version you want to convert to  
 3. Review the converted document in the preview panel  
 4. Click **Apply** to replace your document with the converted version, or **Cancel** to discard  
+
+## Converting between YAML and JSON
+
+To convert your AsyncAPI document between YAML and JSON formats:
+1. Click on the **Convert** button in the toolbar
+2. Select the 'Convert to JSON' or 'Convert to YAML' option
+3. The editor will switch to the selected format, preserving the document structure
 
 ## Previewing Documentation
 
