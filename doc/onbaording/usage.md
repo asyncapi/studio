@@ -10,7 +10,7 @@ When you first open AsyncAPI Studio, you'll see the main editor interface with t
 1. **Editor Panel**: The central area where you write and edit your AsyncAPI document  
    ![Screenshot: Editor Panel](images/editor-panel.png)
 2. **Navigation Sidebar**: Access different views and tools  
-   ![Screenshot: Navigation Sidebar](images/getting-started-navigation-panel.png)
+   ![Screenshot: Navigation Sidebar](images/navigation-panel.png)
 3. **Preview Panel**: View documentation, visual diagrams, or generated code  
    ![Screenshot: Preview Panel](images/preview-panel.png)
 4. **Toolbar**: Access common actions like validation, saving, and sharing 
