@@ -73,7 +73,7 @@ To convert your AsyncAPI document between YAML and JSON formats:
 
 To see how your AsyncAPI document will be rendered as documentation:
 
-1. Click on the **Preview** tab in the preview panel  
+1. Click on the **Preview** tab in the sidebar
 2. The documentation will be rendered using the AsyncAPI React component  
 3. Scroll through the preview to see all sections of your document  
 4. The preview updates automatically as you edit your document  
@@ -82,7 +82,7 @@ To see how your AsyncAPI document will be rendered as documentation:
 
 To visualize the structure and message flows of your API:
 
-1. Click on the **Visualize** tab in the preview panel  
+1. Click on the **Visualize** button in the sidebar to see the visualizer in preview panel
 2. The visualization will show:
    - Services and operations
    - Message flows between components
@@ -96,7 +96,7 @@ To visualize the structure and message flows of your API:
 
 To generate code from your AsyncAPI document:
 
-1. Click on the **Generate** tab in the preview panel  
+1. Click on the **Generate** tab in the toolbar
 2. Select a template from the dropdown menu  
 3. Configure any template-specific options  
 4. Click **Generate** to create the code  
