@@ -23,6 +23,9 @@ const unsupportedGenerators = [
   '@asyncapi/php-template',
   '@asyncapi/python-paho-template',
   '@asyncapi/ts-nats-template',
+  '@asyncapi/html-template',
+  '@asyncapi/java-template',
+  '@asyncapi/markdown-template',
 ];
 
 const renderOptions = (actualVersion: string) => {
