@@ -1,5 +1,5 @@
 # Use a UUID as placeholder value to have a unique string to replace. 
-ARG BASE_URL_PLACEHOLDER=189b303e-37a0-4f6f-8c0a-50333bc3c36e
+ARG BASE_URL_PLACEHOLDER=/189b303e-37a0-4f6f-8c0a-50333bc3c36e
 
 
 FROM node:18-alpine AS base
@@ -43,7 +43,7 @@ ARG BASE_URL_PLACEHOLDER
 # https://github.com/nginxinc/docker-nginx/blob/master/entrypoint/docker-entrypoint.sh#L16.
 ARG ENTRYPOINT_SCRIPT=/docker-entrypoint.d/set-public-url.sh
 
-COPY --from=installer /app/apps/studio/build /usr/share/nginx/html/
+COPY --from=installer --chown=nginx:nginx /app/apps/studio/build /usr/share/nginx/html/
 # Add an entrypoint script that replaces all occurrences of the 
 # placeholder value by the configured base URL. If no base URL
 # is configured we assume the application is running at '/'.
