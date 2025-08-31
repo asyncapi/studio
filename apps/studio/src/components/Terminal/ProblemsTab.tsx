@@ -130,8 +130,8 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
   const informationTooltip = createProperMessage(!governanceShowState.informations, active, DiagnosticSeverity.Information, 'Show information messages', 'Hide information messages', 'Show only information messages');
   const hintsTooltip = createProperMessage(!governanceShowState.hints, active, DiagnosticSeverity.Hint, 'Show hints', 'Hide hints', 'Show only hints');
 
-  const activeBg = 'bg-gray-900';
-  const notActiveBg = 'bg-gray-700';
+  const activeBg = 'bg-white dark:bg-gray-900';
+  const notActiveBg = 'bg-slate-300 dark:bg-gray-700';
 
   return (
     <ul className='flex flex-row items-center'>
@@ -139,7 +139,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-l-md border border-transparent shadow-xs px-2 py-1 ${active.some(s => s === DiagnosticSeverity.Error) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-l-md border border-transparent shadow-xs px-2 py-1 ${active.some(s => s === DiagnosticSeverity.Error) ? activeBg : notActiveBg} text-xs font-medium text-black dark:text-white hover:bg-slate-200 dark:hover:bg-gray-900 disabled:bg-gray-300 dark:disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-neutral-400 dark:focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Error)}
           >
             <div className='flex flex-row items-center justify-center'>
@@ -153,7 +153,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.warnings && active.some(s => s === DiagnosticSeverity.Warning) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.warnings && active.some(s => s === DiagnosticSeverity.Warning) ? activeBg : notActiveBg} text-xs font-medium text-black dark:text-white hover:bg-slate-300 dark:hover:bg-gray-900 disabled:bg-slate-400 dark:disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-neutral-400 dark:focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Warning)}
             disabled={!governanceShowState.warnings}
           >
@@ -168,7 +168,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.informations && active.some(s => s === DiagnosticSeverity.Information) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.informations && active.some(s => s === DiagnosticSeverity.Information) ? activeBg : notActiveBg} text-xs font-medium text-black dark:text-white hover:bg-slate-300 dark:hover:bg-gray-900 disabled:bg-neutral-400 dark:disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-neutral-400 dark:focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Information)}
             disabled={!governanceShowState.informations}
           >
@@ -183,7 +183,7 @@ const SeverityButtons: FunctionComponent<SeverityButtonsProps> = ({ active, setA
         <li>
           <button
             type="button"
-            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.hints && active.some(s => s === DiagnosticSeverity.Hint) ? activeBg : notActiveBg} text-xs font-medium text-white hover:bg-gray-900 disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700`}
+            className={`disabled:cursor-not-allowed w-full inline-flex justify-center rounded-r-md border border-transparent shadow-xs px-2 py-1 ml-px ${governanceShowState.hints && active.some(s => s === DiagnosticSeverity.Hint) ? activeBg : notActiveBg} text-xs font-medium text-black dark:text-white hover:bg-slate-300 dark:hover:bg-gray-900 disabled:bg-neutral-300 dark:disabled:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-neutral-300 dark:focus:ring-gray-700`}
             onClick={() => setActive(DiagnosticSeverity.Hint)}
             disabled={!governanceShowState.hints}
           >
@@ -230,14 +230,14 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
   }, [diagnostics, search, active]);
 
   return (
-    <div className="flex-1 text-white text-xs h-full relative overflow-x-hidden overflow-y-auto">
+    <div className="flex-1 text-black dark:text-white text-xs h-full relative overflow-x-hidden overflow-y-auto">
       <div className="px-4 pt-2">
         <div className='pb-2 flex flex-row items-center'>
           <SeverityButtons active={active} setActive={setActiveFn} />
-          <div className='ml-2 flex-1 flex flex-row items-center justify-center rounded-md border border-transparent shadow-xs px-2 py-1 bg-gray-700 text-xs font-medium'>
+          <div className='ml-2 flex-1 flex flex-row items-center justify-center rounded-md border border-transparent shadow-xs px-2 py-1 bg-slate-200 dark:bg-gray-700 text-xs font-medium'>
             <VscSearch />
-            <input ref={inputRef} placeholder='Filter diagnostics...' className='w-full bg-gray-700 border-transparent ml-2 focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => setSearch(e.target.value), 250)} />
-            <button type='button' className={`hover:bg-gray-900 rounded-sm border border-transparent ${search ? 'opacity-100' : 'opacity-0'}`} onClick={() => {
+            <input ref={inputRef} placeholder='Filter diagnostics...' className='w-full bg-slate-200 dark:bg-gray-700 border-transparent ml-2 focus:border-transparent focus:ring-0 focus:outline-none' onChange={debounce((e) => setSearch(e.target.value), 250)} />
+            <button type='button' className={`hover:bg-neutral-300 dark:hover:bg-gray-900 rounded-sm border border-transparent ${search ? 'opacity-100' : 'opacity-0'}`} onClick={() => {
               if (inputRef.current) {
                 inputRef.current.value = '';
               }
@@ -249,7 +249,7 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
           <Tooltip content="Settings" hideOnClick={true}>
             <button
               type="button"
-              className={'justify-center border border-transparent shadow-xs px-2 py-1 ml-2 text-xs rounded-md font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-700'}
+              className={'justify-center border border-transparent shadow-xs px-2 py-1 ml-2 text-xs rounded-md font-medium text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-300 dark:focus:ring-gray-700'}
               onClick={() => modal.show({ activeTab: 'governance' })}
             >
               <VscSettingsGear className='w-4 h-4' />
@@ -270,7 +270,7 @@ export const ProblemsTabContent: FunctionComponent<ProblemsTabProps> = () => {
               const { severity, message, range } = diagnostic;
 
               return (
-                <tr key={id} className="border-t border-gray-700">
+                <tr key={id} className="border-t border-black dark:border-gray-700">
                   <td className="px-2 py-1 text-right"><SeverityIcon severity={severity} /></td>
                   <td
                     className="px-2 py-1 cursor-pointer"

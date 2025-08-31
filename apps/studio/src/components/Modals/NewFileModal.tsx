@@ -20,7 +20,7 @@ interface TemplateListItemProps {
 
 const TemplateListItem: FunctionComponent<TemplateListItemProps> = ({ title, description: Description, onClick, isSelected }) => {
   const containerStyles = isSelected ? 'border-pink-500' : 'border-gray-200';
-  const textStyles = isSelected ? 'text-pink-600' : 'text-gray-600';
+  const textStyles = isSelected ? 'text-pink-600' : 'text-slate-200 dark:text-gray-600';
 
   return (
     <button onClick={onClick} key={title} className={`group text-left flex flex-col cursor-pointer rounded-lg p-4 pb-6 border-2 hover:border-pink-500 ${containerStyles}`}>

@@ -24,7 +24,7 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
   const dropdownRef = useRef(null);
 
   useOutsideClickCallback(dropdownRef, () => setOpen(false));
-  buttonHoverClassName = buttonHoverClassName || 'hover:text-white';
+  buttonHoverClassName = buttonHoverClassName || 'hover:text-black dark:hover:text-white';
 
   return (
     <div className={className}>
