@@ -27,7 +27,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'servers' ? 'bg-gray-800' : ''
+          hash === 'servers' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo('/servers', 'servers')
@@ -45,7 +45,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           return <li
             key={serverName}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `server-${serverName}` ? 'bg-gray-800' : ''
+              hash === `server-${serverName}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -97,7 +97,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={`${channelName}-publish`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-publish-${channelName}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -129,7 +129,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={`${channelName}-subscribe`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-subscribe-${channelName}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -165,7 +165,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'operations' ? 'bg-gray-800' : ''
+          hash === 'operations' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -200,7 +200,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return <li
         key={messageName}
         className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
-          hash === `message-${messageName}` ? 'bg-gray-800' : ''
+          hash === `message-${messageName}` ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -225,7 +225,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'messages' ? 'bg-gray-800' : ''
+          hash === 'messages' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -260,7 +260,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return <li
         key={schemaName}
         className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
-          hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
+          hash === `schema-${schemaName}` ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -285,7 +285,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'schemas' ? 'bg-gray-800' : ''
+          hash === 'schemas' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -343,11 +343,11 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center bg-gray-800">
+      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center bg-white dark:bg-gray-800">
         {loading ?(
           <div className="rotating-wheel"></div>
         ) : (
-          <p className='text-white'>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
+          <p className='text-black dark:text-white'>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
         )
         }
       </div>
@@ -356,12 +356,12 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 
   const components = document.components();
   return (
-    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
+    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-800 h-full ${className}`}>
       <ul>
         <li className="mb-4">
           <div
             className={`${NAVIGATION_SECTION_STYLE} ${
-              hash === 'introduction' ? 'bg-gray-800' : ''
+              hash === 'introduction' ? 'bh-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(

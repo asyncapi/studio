@@ -1,4 +1,4 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
+import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle, VscSymbolColor } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
@@ -53,6 +53,14 @@ interface NavItem {
 interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+    window.document.documentElement.classList.toggle('dark', darkMode);
+    console.log('Dark mode is now', darkMode ? 'enabled' : 'disabled');
+  }, [darkMode]);
+
+
   const { show, secondaryPanelType } = usePanelsState();
   const [document, hasErrors] = useDocumentsState((state) => [
     state.documents['asyncapi']?.document,
@@ -106,6 +114,16 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       enabled: !isV3,
       dataTest: 'button-blocks-visualiser',
     },
+    {
+      name: 'Light/Dark Theme',
+      title: 'Light/Dark Theme',
+      isActive: true,
+      onClick: () => setDarkMode(prev => !prev),
+      icon: <VscSymbolColor className='w-5 h-5' />,
+      tooltip: 'Toggle Light/Dark Theme',
+      enabled: true,
+      dataTest: 'button-light-dark-theme',
+    },
     // newFile
     {
       name: 'newFile',
@@ -138,7 +156,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
   }
   
   return (
-    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
+    <div className="flex flex-col bg-slate-300 dark:bg-gray-800 shadow-lg border-r border-black dark:border-gray-700 justify-between" id="sidebar">
       <div className="flex flex-col">
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>
@@ -148,7 +166,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
               type="button"
               data-test={item.dataTest}
             >
-              <div className={item.isActive ? 'bg-gray-600 p-2 rounded text-white' : 'p-2 text-gray-500 hover:text-white'}>
+              <div className={item.isActive ? 'bg-white text-black dark:bg-gray-600 p-2 rounded dark:text-white' : 'p-2 text-black hover:text-slate-600 dark:text-gray-500 dark:hover:text-white'}>
                 {item.icon}
               </div>
             </button>
@@ -159,7 +177,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         <Tooltip content='Start Tour' placement='right' hideOnClick={true}>
           <button
             title="Start Tour"  
-            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            className='flex text-black hover:text-slate-600 dark:text-gray-500 dark:hover:text-white focus:outline-none border-box p-4'
             type="button"  
             onClick={driverTourHandler}
           >
@@ -168,7 +186,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
         </Tooltip>
         <Tooltip content='Studio settings' placement='right' hideOnClick={true}>
           <button
-            className='flex text-gray-500 hover:text-white focus:outline-none border-box p-4'
+            className='flex text-black hover:text-slate-600 dark:text-gray-500 dark:hover:text-white focus:outline-none border-box p-4'
             type="button"  
             onClick={() => showModal(SettingsModal)}
             id="studio-setting"
