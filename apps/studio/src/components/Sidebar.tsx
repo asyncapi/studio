@@ -55,11 +55,10 @@ interface SidebarProps {}
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const [darkMode, setDarkMode] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     window.document.documentElement.classList.toggle('dark', darkMode);
     console.log('Dark mode is now', darkMode ? 'enabled' : 'disabled');
   }, [darkMode]);
-
 
   const { show, secondaryPanelType } = usePanelsState();
   const [document, hasErrors] = useDocumentsState((state) => [

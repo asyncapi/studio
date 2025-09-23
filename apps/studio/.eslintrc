@@ -5,5 +5,5 @@
     "node": true
   },
   "plugins": ["security"],
-  "extends":["eslint-config-custom", "eslint-config-custom/react"]
+  "extends":["eslint-config-custom", "eslint-config-custom/react", "next/core-web-vitals"]
 }
