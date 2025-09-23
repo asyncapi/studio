@@ -2,7 +2,11 @@
   "env": {
     "es6": true,
     "browser": true,
-    "node": true
+    "node": true,
+    "es2020": true
+  },
+  "globals": {
+    "globalThis": "readonly"
   },
   "plugins": ["security"],
   "extends":["next/core-web-vitals", "eslint-config-custom", "eslint-config-custom/react"]
