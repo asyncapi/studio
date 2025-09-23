@@ -56,7 +56,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    window.document.documentElement.classList.toggle('dark', darkMode);
+    globalThis.document.documentElement.classList.toggle('dark', darkMode);
     console.log('Dark mode is now', darkMode ? 'enabled' : 'disabled');
   }, [darkMode]);
 
@@ -140,7 +140,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
 
   const driverTourHandler = () => {
     const getCurrentTourStep = localStorage.getItem('currentTourStep');
-    driverObj.drive(parseInt(getCurrentTourStep ?? '0', 10));
+    driverObj.drive(Number.parseInt(getCurrentTourStep ?? '0', 10));
   };
 
   useEffect(() => {
