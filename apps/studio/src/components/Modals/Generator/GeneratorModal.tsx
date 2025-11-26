@@ -12,6 +12,7 @@ import { ServerAPIProblem } from '@/services/server-api.service';
 import { filesState, useDocumentsState } from '@/state';
 
 import templates from './template-parameters.json';
+import { Switch } from '@/components/common';
 
 const unsupportedGenerators = [
   '@asyncapi/dotnet-nats-template',
@@ -44,6 +45,7 @@ const renderOptions = (actualVersion: string) => {
 export const GeneratorModal = create(() => {
   const modal = useModal();
   const [template, setTemplate] = useState('');
+  const [newGenerator, setNewGenerator] = useState(true);
   const { serverAPISvc } = useServices();
   const [problem, setProblem] = useState<ServerAPIProblem & { validationErrors: any[] } | null>(null);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
@@ -61,6 +63,7 @@ export const GeneratorModal = create(() => {
     setProblem(null);
     const response = await serverAPISvc.generate({
       asyncapi: filesState.getState().files['asyncapi'].content,
+      'use-fallback-generator': !newGenerator,
       template,
       parameters: templateParamsRef.current?.getValues(),
     });
@@ -134,6 +137,23 @@ export const GeneratorModal = create(() => {
             <option value="">Please Select</option>
             {renderOptions(actualVersion)}
           </select>
+        </div>
+        <div className="flex flex-col content-center justify-center mt-4">
+          <div className='flex flex-row content-center justify-between text-sm'>
+            <label
+              htmlFor="use-new-generator"
+              className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+            >
+              Use new Generator (v2) 
+            </label>
+            <Switch
+              toggle={newGenerator}
+              onChange={(v) => setNewGenerator(v)}
+            />
+          </div>
+          <div className='text-gray-400 text-xs mt-1'>
+            Use the new AsyncAPI Generator (v2) instead of the legacy one (v1). Different templates require different versions of the generator.
+          </div>
         </div>
         {template && (
           <div className='text-gray-400 text-xs mt-2 text-right'>
