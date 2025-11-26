@@ -4,16 +4,23 @@ import { IoGlobeOutline, IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
 export function Toolbar() {
   return (
     <div>
-      <div className="px-2 border-b border-gray-700 bg-gray-800">
+      <div className="px-2 border-b border-black bg-slate-200 dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center" data-test="logo">
             <div className="flex-shrink-0 ml-1.5">
               <img
-                className="inline-block h-16"
+                className="hidden h-16 dark:inline-block"
                 src={`${process.env.PUBLIC_URL || ''}/img/logo-studio.svg`}
                 title="AsyncAPI Logo"
                 alt="AsyncAPI Logo"
               />
+              <img
+                className="inline-block h-16 dark:hidden"
+                src={`${process.env.PUBLIC_URL || ''}/img/logo-studio-white.svg`}
+                title="AsyncAPI Logo"
+                alt="AsyncAPI Logo"
+              />
+
               <span className="inline-block text-xs text-teal-500 font-normal ml-1 tracking-wider uppercase" style={{ transform: 'translateY(0.3125rem)' }}>
                 beta
               </span>
