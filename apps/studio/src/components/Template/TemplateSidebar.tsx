@@ -10,13 +10,13 @@ export const TemplateSidebar: React.FunctionComponent<TemplateSidebarProps> = ()
 
   return (
     <div
-      className="flex flex-row items justify-between bg-gray-800 border-b border-gray-700 text-sm"
+      className="flex flex-row items justify-between bg-slate-200 dark:bg-gray-800 border-b border-black dark:border-gray-700 text-sm"
       style={{ height: '30px', lineHeight: '30px' }}
     >
       {autoRendering ? (
         <div />
       ) : (
-        <div className="ml-2 text-gray-500 text-xs flex" style={{ height: '30px', lineHeight: '30px' }}>
+        <div className="ml-2 text-slate-200 dark:text-gray-500 text-xs flex" style={{ height: '30px', lineHeight: '30px' }}>
           <button type="button" className="text-xs" onClick={() => otherState.setState({ templateRerender: true })}>
             <div className="inline-block">
               <VscRefresh className="w-4 h-4 mt-1" />
