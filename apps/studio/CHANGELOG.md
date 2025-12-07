@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 1.0.2
+
+### Patch Changes
+
+- 6433b2c: fix: pin Next.js to v14.2.33
+
 ## 1.0.1
 
 ### Patch Changes
