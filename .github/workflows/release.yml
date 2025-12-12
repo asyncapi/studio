@@ -11,6 +11,10 @@ jobs:
   release:
     name: Version or Create a Release in Github
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     steps:
       - name: Set git to use LF #to once and for all finish neverending fight between Unix and Windows
         run: |
@@ -22,7 +26,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
@@ -49,7 +54,6 @@ jobs:
           commit: "version packages"
           title: "chore: version packages"
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GIT_AUTHOR_NAME: asyncapi-bot
           GIT_AUTHOR_EMAIL: info@asyncapi.io

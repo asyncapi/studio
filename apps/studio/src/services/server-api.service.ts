@@ -16,6 +16,7 @@ export class ServerAPIService extends AbstractService {
 
   async generate(data: {
     asyncapi: string | Record<string, any>,
+    'use-fallback-generator'?: boolean,
     template: string,
     parameters: Record<string, any>,
   }): Promise<Response> {
