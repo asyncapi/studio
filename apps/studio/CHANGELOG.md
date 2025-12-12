@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 1.1.0
+
+### Minor Changes
+
+- 558493f: Mitigated React2Shell Vulnerability (Upgrade Next.js -> 14.2.35)
+
 ## 1.0.2
 
 ### Patch Changes
