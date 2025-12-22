@@ -17,7 +17,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint": "eslint . --ext .ts --ext .tsx --ext .js --ext .jsx",
     "generate:assets": "echo \"No assets to configure\"",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
