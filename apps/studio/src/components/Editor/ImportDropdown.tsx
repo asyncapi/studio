@@ -24,11 +24,11 @@ export const ImportDropdown: React.FC = () => {
           </button>
         </Tooltip>
       }
-      buttonHoverClassName="text-gray-500 hover:text-white"
+      buttonHoverClassName="text-gray-700 dark:text-gray-500 hover:text-black dark:hover:text-white"
       dataTest="button-import-dropdown"
     >
-      <ul className="bg-gray-800 text-md text-white">
-        <li className="hover:bg-gray-900">
+      <ul className="bg-slate-200 dark:bg-gray-800 text-md text-black dark:text-white">
+        <li className="hover:bg-slate-300 dark:hover:bg-gray-900">
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
@@ -39,7 +39,7 @@ export const ImportDropdown: React.FC = () => {
           </button>
         </li>
 
-        <li className="hover:bg-gray-900">
+        <li className="hover:bg-slate-300 dark:hover:bg-gray-900">
           <label
             className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
             title="Import File"
@@ -72,7 +72,7 @@ export const ImportDropdown: React.FC = () => {
           </label>
         </li>
 
-        <li className="hover:bg-gray-900">
+        <li className="hover:bg-slate-300 dark:hover:bg-gray-900">
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
@@ -83,7 +83,7 @@ export const ImportDropdown: React.FC = () => {
           </button>
         </li>
 
-        <li className="hover:bg-gray-900">
+        <li className="hover:bg-slate-300 dark:hover:bg-gray-900">
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
