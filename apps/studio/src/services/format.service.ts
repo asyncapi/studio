@@ -2,14 +2,17 @@ import { AbstractService } from './abstract.service';
 
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
+import toast from 'react-hot-toast';
 
 export class FormatService extends AbstractService {
   convertToYaml(spec: string) {
     try {
+
       // Editor content -> JS object -> YAML string
       const jsonContent = YAML.load(spec);
       return YAML.dump(jsonContent);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`YAML Conversion Error: ${err.message}`, { duration: Infinity });
       console.error(err);
     }
   }
@@ -20,7 +23,8 @@ export class FormatService extends AbstractService {
       const jsonContent = YAML.load(spec);
       // JS Object -> pretty JSON string
       return JSON.stringify(jsonContent, null, 2);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`JSON Conversion Error: ${err.message}`, { duration: Infinity });
       console.error(err);
     }
   }
