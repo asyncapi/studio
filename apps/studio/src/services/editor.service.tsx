@@ -365,6 +365,7 @@ export class EditorService extends AbstractService {
     return { decorations: newDecorations, markers: newMarkers };
   }
 
+  /* eslint-disable indent */
   private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
       case DiagnosticSeverity.Error: return MarkerSeverity.Error;
@@ -383,6 +384,7 @@ export class EditorService extends AbstractService {
       default: return 'diagnostic-warning';
     }
   }
+  /* eslint-enable indent */
 
   private fileName = 'asyncapi';
   private downloadFile(content: string, fileName: string) {
