@@ -1,9 +1,16 @@
 import React, { useEffect } from 'react';
+
 import toast, { Toaster } from 'react-hot-toast';
 
-import { Content, Sidebar, Template } from '@/components';
-
-import { afterAppInit, useServices } from '@/services';
+import {
+  Content,
+  Sidebar,
+  Template,
+} from '@/components';
+import {
+  afterAppInit,
+  useServices,
+} from '@/services';
 import { appState } from '@/state';
 
 export interface AsyncAPIStudioProps {}

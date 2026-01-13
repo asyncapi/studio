@@ -1,14 +1,34 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
+import {
+  type FunctionComponent,
+  type ReactNode,
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  VscCode,
+  VscGraph,
+  VscListSelection,
+  VscNewFile,
+  VscOpenPreview,
+  VscPlayCircle,
+  VscSettingsGear,
+} from 'react-icons/vsc';
+
+import { driverObj } from '@/helpers/driver';
+import {
+  panelsState,
+  useDocumentsState,
+  usePanelsState,
+} from '@/state';
+import type { PanelsState } from '@/state/panels.state';
 import { show as showModal } from '@ebay/nice-modal-react';
 
 import { Tooltip } from './common';
-import { SettingsModal, ConfirmNewFileModal } from './Modals';
-
-import { usePanelsState, panelsState, useDocumentsState } from '@/state';
-
-import { useEffect, useState, type FunctionComponent, type ReactNode } from 'react';
-import type { PanelsState } from '@/state/panels.state';
-import { driverObj } from '@/helpers/driver';
+import {
+  ConfirmNewFileModal,
+  SettingsModal,
+} from './Modals';
 
 function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
   const settingsState = panelsState.getState();

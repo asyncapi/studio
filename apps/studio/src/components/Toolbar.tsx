@@ -1,5 +1,8 @@
-
-import { IoGlobeOutline, IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
+import {
+  IoGlobeOutline,
+  IoLogoGithub,
+  IoLogoSlack,
+} from 'react-icons/io5';
 
 export function Toolbar() {
   return (
@@ -8,12 +11,19 @@ export function Toolbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center" data-test="logo">
             <div className="flex-shrink-0 ml-1.5">
-              <img
-                className="inline-block h-16"
-                src={`${process.env.PUBLIC_URL || ''}/img/logo-studio.svg`}
-                title="AsyncAPI Logo"
-                alt="AsyncAPI Logo"
-              />
+
+              <a
+                href="https://www.asyncapi.com/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Go to AsyncAPI website"
+              >
+                <img
+                  className="inline-block h-16 cursor-pointer"
+                  src={`${process.env.PUBLIC_URL || ''}/img/logo-studio.svg`}
+                  alt="AsyncAPI Logo"
+                />
+              </a>  
               <span className="inline-block text-xs text-teal-500 font-normal ml-1 tracking-wider uppercase" style={{ transform: 'translateY(0.3125rem)' }}>
                 beta
               </span>

@@ -1,14 +1,17 @@
-import SplitPane from './SplitPane';
+import { FunctionComponent } from 'react';
+
+import { debounce } from '@/helpers';
+import {
+  useDocumentsState,
+  usePanelsState,
+} from '@/state';
+
 import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Navigationv3 } from './Navigationv3';
+import SplitPane from './SplitPane';
 import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
-
-import { debounce } from '@/helpers';
-import { usePanelsState, useDocumentsState } from '@/state';
-
-import { FunctionComponent } from 'react';
 
 interface ContentProps {}
 
