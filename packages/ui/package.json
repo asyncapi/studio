@@ -29,7 +29,7 @@
     "@radix-ui/react-toolbar": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "classnames": "^2.3.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1"
