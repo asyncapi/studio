@@ -16,7 +16,7 @@ export const ImportDropdown: React.FC = () => {
   const { editorSvc } = useServices();
 
   return (
-    <Dropdown 
+    <Dropdown
       opener={
         <Tooltip content="Import" placement="top" hideOnClick={true}>
           <button className="bg-inherit">
@@ -35,7 +35,7 @@ export const ImportDropdown: React.FC = () => {
             title="Import from URL"
             onClick={() => show(ImportURLModal)}
           >
-                Import from URL
+            Import from URL
           </button>
         </li>
 
@@ -54,14 +54,14 @@ export const ImportDropdown: React.FC = () => {
                   success: (
                     <div>
                       <span className="block text-bold">
-                      Document succesfully imported!
+                        Document succesfully imported!
                       </span>
                     </div>
                   ),
                   error: (
                     <div>
                       <span className="block text-bold text-red-400">
-                      Failed to import document. Maybe the file type is invalid.
+                        Failed to import document. Maybe the file type is invalid.
                       </span>
                     </div>
                   ),
@@ -95,7 +95,7 @@ export const ImportDropdown: React.FC = () => {
         </li>
 
       </ul>
-            
+
     </Dropdown>
   );
 }

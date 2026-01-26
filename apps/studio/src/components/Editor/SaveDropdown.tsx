@@ -8,7 +8,7 @@ import { useDocumentsState, useFilesState } from '../../state';
 
 export const SaveDropdown: React.FC = () => {
   const { editorSvc } = useServices();
-  const isInvalidDocument = !useDocumentsState(state => 
+  const isInvalidDocument = !useDocumentsState(state =>
     state.documents['asyncapi'].valid
   );
   const language = useFilesState(state => state.files['asyncapi'].language);
@@ -94,7 +94,7 @@ export const SaveDropdown: React.FC = () => {
             Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
           </button>
         </li>
-       
+
       </ul>
     </Dropdown>
   );

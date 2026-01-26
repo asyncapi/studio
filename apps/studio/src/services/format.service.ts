@@ -7,13 +7,13 @@ import toast from 'react-hot-toast';
 export class FormatService extends AbstractService {
   convertToYaml(spec: string) {
     try {
-
       // Editor content -> JS object -> YAML string
       const jsonContent = YAML.load(spec);
       return YAML.dump(jsonContent);
     } catch (err: any) {
       toast.error(`YAML Conversion Error: ${err.message}`, { duration: Infinity });
       console.error(err);
+      throw err;
     }
   }
 
@@ -26,6 +26,7 @@ export class FormatService extends AbstractService {
     } catch (err: any) {
       toast.error(`JSON Conversion Error: ${err.message}`, { duration: Infinity });
       console.error(err);
+      throw err;
     }
   }
 

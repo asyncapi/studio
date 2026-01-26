@@ -168,7 +168,7 @@ export class EditorService extends AbstractService {
     }
   }
 
-  async importFromShareID(shareID: string) {
+  async importFromShareID(shareID: string) { // checked
     try {
       const response = await fetch(`/share/${shareID}`);
       if (!response.ok) {
@@ -191,7 +191,7 @@ export class EditorService extends AbstractService {
     }
   }
 
-  async exportAsURL() {
+  async exportAsURL() { // no option on ui
     try {
       const file = filesState.getState().files['asyncapi'];
       const shareID = await fetch('/share', {
@@ -208,7 +208,7 @@ export class EditorService extends AbstractService {
       throw err;
     }
   }
-
+  // done
   async exportAsBase64() {
     try {
       const file = filesState.getState().files['asyncapi'];
@@ -258,7 +258,7 @@ export class EditorService extends AbstractService {
     }
   }
 
-  async saveAsYaml() {
+  async saveAsYaml() { // done
     try {
       const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
       if (yamlContent) {
@@ -271,7 +271,7 @@ export class EditorService extends AbstractService {
     }
   }
 
-  async saveAsJSON() {
+  async saveAsJSON() { // done
     try {
       const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
       if (jsonContent) {
@@ -376,20 +376,20 @@ export class EditorService extends AbstractService {
 
   private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
-      case DiagnosticSeverity.Error: return MarkerSeverity.Error;
-      case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
-      case DiagnosticSeverity.Information: return MarkerSeverity.Info;
-      case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
-      default: return MarkerSeverity.Error;
+    case DiagnosticSeverity.Error: return MarkerSeverity.Error;
+    case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
+    case DiagnosticSeverity.Information: return MarkerSeverity.Info;
+    case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
+    default: return MarkerSeverity.Error;
     }
   }
 
   private getSeverityClassName(severity: DiagnosticSeverity): string {
     switch (severity) {
-      case DiagnosticSeverity.Warning: return 'diagnostic-warning';
-      case DiagnosticSeverity.Information: return 'diagnostic-information';
-      case DiagnosticSeverity.Hint: return 'diagnostic-hint';
-      default: return 'diagnostic-warning';
+    case DiagnosticSeverity.Warning: return 'diagnostic-warning';
+    case DiagnosticSeverity.Information: return 'diagnostic-information';
+    case DiagnosticSeverity.Hint: return 'diagnostic-hint';
+    default: return 'diagnostic-warning';
     }
   }
 

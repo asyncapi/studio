@@ -39,15 +39,12 @@ export class ParserService extends AbstractService {
   }
 
   async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
-
     if (uri !== 'asyncapi' && !options.source) {
       options.source = uri;
     }
 
     let diagnostics: Diagnostic[] = [];
     try {
-
-
       const { document, diagnostics: _diagnostics, extras } = await this.parser.parse(spec, options);
       diagnostics = _diagnostics;
       if (document) {
