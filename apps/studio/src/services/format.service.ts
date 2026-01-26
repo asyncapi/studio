@@ -7,26 +7,25 @@ import toast from 'react-hot-toast';
 export class FormatService extends AbstractService {
   convertToYaml(spec: string) {
     try {
-      // Editor content -> JS object -> YAML string
       const jsonContent = YAML.load(spec);
       return YAML.dump(jsonContent);
     } catch (err: any) {
-      toast.error(`YAML Conversion Error: ${err.message}`, { duration: Infinity });
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      toast.error(`YAML Conversion Error: ${errorMessage}`, { duration: Infinity });
       console.error(err);
-      throw err;
+      throw new Error(`YAML conversion failed: ${errorMessage}`);
     }
   }
 
   convertToJSON(spec: string) {
     try {
-      // JSON or YAML String -> JS object
       const jsonContent = YAML.load(spec);
-      // JS Object -> pretty JSON string
       return JSON.stringify(jsonContent, null, 2);
     } catch (err: any) {
-      toast.error(`JSON Conversion Error: ${err.message}`, { duration: Infinity });
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      toast.error(`JSON Conversion Error: ${errorMessage}`, { duration: Infinity });
       console.error(err);
-      throw err;
+      throw new Error(`JSON conversion failed: ${errorMessage}`);
     }
   }
 
