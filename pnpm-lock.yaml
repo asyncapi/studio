@@ -185,8 +185,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@asyncapi/specs':
-        specifier: ^6.5.4
-        version: 6.5.4
+        specifier: ^6.11.0
+        version: 6.11.0
       '@codemirror/view':
         specifier: ^6.26.3
         version: 6.26.3
@@ -653,11 +653,8 @@ packages:
   '@asyncapi/specs@5.1.0':
     resolution: {integrity: sha512-yffhETqehkim43luMnPKOwzY0D0YtU4bKpORIXIaid6p5Y5kDLrMGJaEPkNieQp03HMjhjFrnUPtT8kvqe0+aQ==}
 
-  '@asyncapi/specs@6.5.4':
-    resolution: {integrity: sha512-olC+iuboGIGjFRKuqfwaXxm5I6Wae3JohmySwMfExl21nYUd88IbfwywunOPLWyLV05aXeoTJ5tDXiM9e4gWcQ==}
-
-  '@asyncapi/specs@6.8.0':
-    resolution: {integrity: sha512-1i6xs8+IOh6U5T7yH+bCMGQBF+m7kP/NpwyAlt++XaDQutoGCgACf24mQBgcDVqDWWoY81evQv+9ABvw0BviVg==}
+  '@asyncapi/specs@6.11.0':
+    resolution: {integrity: sha512-drio51lVmCLiUpD1F/vAGYmiofUW8jAQQU1VGUjZSbt+gofASh8gHi3EvTw1Euj++9YJp6Rjhoxab/VSPuqKCQ==}
 
   '@asyncapi/ts-nats-template@0.10.3':
     resolution: {integrity: sha512-cHdx552aSOZ0JWDDHHhVQWvfss1Thq+KENPSMBOmcCLi58PTg20Lkg+Jd3fchyGueLnh55yUzfyr31JrSreUaw==}
@@ -12671,7 +12668,7 @@ snapshots:
 
   '@asyncapi/parser@3.0.0-next-major-spec.8':
     dependencies:
-      '@asyncapi/specs': 6.8.0
+      '@asyncapi/specs': 6.11.0
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       '@stoplight/json-ref-resolver': 3.1.6
       '@stoplight/spectral-core': 1.20.0
@@ -12693,7 +12690,7 @@ snapshots:
 
   '@asyncapi/parser@3.2.2':
     dependencies:
-      '@asyncapi/specs': 6.8.0
+      '@asyncapi/specs': 6.11.0
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       '@stoplight/json': 3.21.0
       '@stoplight/json-ref-readers': 1.2.2
@@ -12717,7 +12714,7 @@ snapshots:
 
   '@asyncapi/parser@3.4.0':
     dependencies:
-      '@asyncapi/specs': 6.8.0
+      '@asyncapi/specs': 6.11.0
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       '@stoplight/json': 3.21.0
       '@stoplight/json-ref-readers': 1.2.2
@@ -12820,11 +12817,7 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@asyncapi/specs@6.5.4':
-    dependencies:
-      '@types/json-schema': 7.0.15
-
-  '@asyncapi/specs@6.8.0':
+  '@asyncapi/specs@6.11.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
