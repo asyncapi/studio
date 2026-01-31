@@ -10,11 +10,11 @@ import { useDocumentsState, useFilesState } from '../../state';
 
 export const ConvertDropdown: React.FC = () => {
   const { editorSvc } = useServices();
-  const isInvalidDocument = !useDocumentsState(state => 
+  const isInvalidDocument = !useDocumentsState(state =>
     state.documents['asyncapi'].valid
   );
   const language = useFilesState(state => state.files['asyncapi'].language);
-      
+
   return (
     <Dropdown
       opener={
@@ -69,7 +69,7 @@ export const ConvertDropdown: React.FC = () => {
             title="Convert AsyncAPI document"
             onClick={() => show(ConvertModal)}
           >
-                Convert document
+            Convert document
           </button>
         </li>
       </ul>
