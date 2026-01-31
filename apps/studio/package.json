@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^3.0.19",
-    "@asyncapi/converter": "1.5.0",
+    "@asyncapi/converter": "1.7.0",
     "@asyncapi/openapi-schema-parser": "^3.0.18",
     "@asyncapi/parser": "^3.2.2",
     "@asyncapi/protobuf-schema-parser": "^3.2.8",
