@@ -182,8 +182,8 @@ importers:
         specifier: ^3.2.8
         version: 3.2.8
       '@asyncapi/react-component':
-        specifier: ^3.0.0
-        version: 3.0.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^3.0.1
+        version: 3.0.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@asyncapi/specs':
         specifier: ^6.11.1
         version: 6.11.1
@@ -638,8 +638,8 @@ packages:
       Project is archived. See https://github.com/asyncapi-archived-repos/raml-dt-schema-parser
       .
 
-  '@asyncapi/react-component@3.0.0':
-    resolution: {integrity: sha512-XLcI7OYBu/KiPgShjYERDmG4OEd4F5We+L65JOvahtmC/yGa6uI9m0PQoQdzxSHsD2RPNo/T3/PAQzB7C9GDVg==}
+  '@asyncapi/react-component@3.0.1':
+    resolution: {integrity: sha512-EEyw4GqdcorvuAwrlEErzhrU9LqaT7kaPlslgm450zzztsuvVUOxDvsqYBPRyQYNaCJXZG9P6yTV1cf2uEsdFA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -12463,7 +12463,7 @@ snapshots:
     dependencies:
       '@asyncapi/generator-react-sdk': 1.1.2(@types/babel__core@7.20.5)
       '@asyncapi/parser': 3.6.0
-      '@asyncapi/react-component': 3.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@asyncapi/react-component': 3.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       highlight.js: 10.7.3
       puppeteer: 24.31.0(typescript@5.1.6)
       react: 18.3.1
@@ -12712,7 +12712,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/react-component@3.0.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@asyncapi/react-component@3.0.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
@@ -12733,7 +12733,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@asyncapi/react-component@3.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@asyncapi/react-component@3.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
@@ -19220,7 +19220,7 @@ snapshots:
   '@testing-library/dom@8.20.1':
     dependencies:
       '@babel/code-frame': 7.24.7
-      '@babel/runtime': 7.25.6
+      '@babel/runtime': 7.28.4
       '@types/aria-query': 5.0.4
       aria-query: 5.1.3
       chalk: 4.1.2
