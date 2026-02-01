@@ -288,8 +288,8 @@ importers:
         specifier: ^0.2.72
         version: 0.2.72(@swc/helpers@0.5.5)(@types/babel__core@7.20.5)
       '@asyncapi/html-template':
-        specifier: ^3.5.2
-        version: 3.5.2(@types/babel__core@7.20.5)(typescript@5.1.6)
+        specifier: ^3.5.3
+        version: 3.5.3(@types/babel__core@7.20.5)(typescript@5.1.6)
       '@asyncapi/java-spring-cloud-stream-template':
         specifier: ^0.13.4
         version: 0.13.4
@@ -574,8 +574,8 @@ packages:
   '@asyncapi/go-watermill-template@0.2.72':
     resolution: {integrity: sha512-y7bCIgaTKgTsscc3x5A4nnJRgUP9+h4IXhGJpqHGLvcQe/QPlpVZo8kft2m10C4ka2wzNX1ws+edbcUeEQGFAg==}
 
-  '@asyncapi/html-template@3.5.2':
-    resolution: {integrity: sha512-uX8Iwxk1vteZuj99+mnltRDIEiJsw3lQ9qD8RQnIw+pAQZtqIwWNafI7wTkm5k7YtKzJpBDgVTMZGauhj2BKAQ==}
+  '@asyncapi/html-template@3.5.3':
+    resolution: {integrity: sha512-w0txFoDoEIqXwqk0TYP/gSK/zsQ3+JOiXyNBE5skdeIXmeqqrLyYMpIAiVl3KbCYACmomrDkeKER0w+PnZU4/w==}
 
   '@asyncapi/java-spring-cloud-stream-template@0.13.4':
     resolution: {integrity: sha512-Xq0QRuRMFfsyFUPYNiiLEgmaO2Ft1eIqW6HPsHV704rLsPY4RTqhy2bMYMbcrCsOEAPa+c19ZhgDlhsZAG61pQ==}
@@ -12892,7 +12892,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@asyncapi/html-template@3.5.2(@types/babel__core@7.20.5)(typescript@5.1.6)':
+  '@asyncapi/html-template@3.5.3(@types/babel__core@7.20.5)(typescript@5.1.6)':
     dependencies:
       '@asyncapi/generator-react-sdk': 1.1.2(@types/babel__core@7.20.5)
       '@asyncapi/parser': 3.6.0
@@ -21029,11 +21029,11 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.7.1
       '@typescript-eslint/visitor-keys': 7.7.1
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.6.3
+      semver: 7.7.3
       ts-api-utils: 1.3.0(typescript@5.1.6)
     optionalDependencies:
       typescript: 5.1.6
