@@ -170,8 +170,8 @@ importers:
         specifier: ^3.0.19
         version: 3.0.19
       '@asyncapi/converter':
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.1
+        version: 2.0.1
       '@asyncapi/openapi-schema-parser':
         specifier: ^3.0.18
         version: 3.0.18
@@ -550,8 +550,8 @@ packages:
   '@asyncapi/avro-schema-parser@3.0.24':
     resolution: {integrity: sha512-YMyr2S2heMrWHRyECknjHeejlZl5exUSv9nD1gTejAT13fSf0PqIRydZ9ZuoglCLBg55AeehypR2zLIBu/9kHQ==}
 
-  '@asyncapi/converter@2.0.0':
-    resolution: {integrity: sha512-qA2u6enYPH5plYBW2nsVlRji5rH/7kHRWTpX6dAwq2TYmHE/GqTVtHUcukk9lUfB0oXzybDxkspSEqhVklMd3Q==}
+  '@asyncapi/converter@2.0.1':
+    resolution: {integrity: sha512-twDn7urUww+f7S4wvDRUbbUWEeuG0pOUKnbt4tbIqfcR/4/ilZvZ6R8n7MzqdbtkEEHuECbSrA5X7lgFk9qc2g==}
 
   '@asyncapi/dotnet-nats-template@0.12.1':
     resolution: {integrity: sha512-z4diZOJz9c097PATuapH3fhZEQgsfVgUHxMUhijem59Y0XYSKWaqfY5odcPbvWsBXGgf2zaswpgqUQ1Ap7zhiw==}
@@ -12383,7 +12383,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/converter@2.0.0':
+  '@asyncapi/converter@2.0.1':
     dependencies:
       '@asyncapi/parser': 3.6.0
       js-yaml: 3.14.2
