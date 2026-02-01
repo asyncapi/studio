@@ -101,7 +101,7 @@
   "devDependencies": {
     "@asyncapi/dotnet-nats-template": "^0.12.1",
     "@asyncapi/go-watermill-template": "^0.2.72",
-    "@asyncapi/html-template": "^3.5.2",
+    "@asyncapi/html-template": "^3.5.3",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^1.5.1",
     "@asyncapi/java-template": "^0.2.1",
