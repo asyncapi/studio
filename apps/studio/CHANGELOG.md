@@ -1,5 +1,11 @@
 # @asyncapi/studio
 
+## 1.2.0
+
+### Minor Changes
+
+- 533606b: Support for v3.1.0 spec. Ref: https://github.com/asyncapi/spec/issues/1176
+
 ## 1.1.0
 
 ### Minor Changes
