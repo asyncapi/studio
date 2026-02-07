@@ -5,6 +5,7 @@ import { OpenAPISchemaParser } from '@asyncapi/openapi-schema-parser';
 import { AvroSchemaParser } from '@asyncapi/avro-schema-parser';
 import { ProtoBuffSchemaParser } from '@asyncapi/protobuf-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
+import toast from 'react-hot-toast';
 
 import { isDeepEqual } from '@/helpers';
 import { filesState, documentsState, settingsState } from '@/state';
@@ -55,8 +56,10 @@ export class ParserService extends AbstractService {
           valid: true,
         });
         return;
-      } 
+      }
     } catch (err: unknown) {
+      const parsedError = err instanceof Error ? err : new Error(String(err));
+      toast.error(`Parser Error: ${parsedError.message}`, { duration: Infinity });
       console.log(err);
     }
 
@@ -81,7 +84,8 @@ export class ParserService extends AbstractService {
 
         return extras.document.getRangeForJsonPath(jsonPath);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Error calculating range for JSON path: ${err.message}`, { duration: Infinity });
       console.error(err);
     }
   }
@@ -100,7 +104,8 @@ export class ParserService extends AbstractService {
         const location = getLocationForJsonPath(yamlDoc, jsonPath, true);
         return location?.range || { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } };
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Error calculating range for YAML path: ${err.message}`, { duration: Infinity });
       console.error(err);
     }
   }
@@ -130,7 +135,7 @@ export class ParserService extends AbstractService {
         diagnostic.message = 'File references are not yet supported in Studio';
       }
     });
-    
+
     const collections: DocumentDiagnostics = {
       original: diagnostics,
       filtered: [],
