@@ -140,7 +140,7 @@
     "url": "^0.11.0",
     "util": "^0.12.5",
     "web-vitals": "^3.1.0",
-    "webpack": "^5.75.0"
+    "webpack": "^5.104.1"
   },
   "browserslist": {
     "production": [
