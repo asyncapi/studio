@@ -65,7 +65,7 @@
     "react-docgen-typescript": "^2.2.2",
     "react-docgen-typescript-plugin": "^1.0.5",
     "remark-gfm": "^3.0.1",
-    "storybook": "^7.6.20",
+    "storybook": "^7.6.21",
     "tailwind-config": "workspace:*",
     "tailwindcss": "^3.4.3",
     "ts-loader": "^9.4.3",
