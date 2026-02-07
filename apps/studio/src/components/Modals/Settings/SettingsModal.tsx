@@ -29,7 +29,7 @@ const ShowGovernanceOption: FunctionComponent<ShowGovernanceOptionProps> = ({
         <div className="flex flex-row content-center justify-between">
           <label
             htmlFor={`settings-governance-show-${label}`}
-            className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+            className="flex justify-right items-center w-1/2 content-center font-medium text-white"
           >
             Show&nbsp;<strong>{label}</strong>&nbsp;governance issues
           </label>
@@ -116,7 +116,7 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
             <div className="flex flex-row content-center justify-between">
               <label
                 htmlFor="settings-auto-saving"
-                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-white"
               >
                 Auto saving
               </label>
@@ -133,7 +133,7 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
             <div className="flex flex-row content-center justify-between">
               <label
                 htmlFor="settings-template-delay"
-                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-white"
               >
                 Delay (in miliseconds)
               </label>
@@ -179,7 +179,7 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
             <div className="flex flex-row content-center justify-between">
               <label
                 htmlFor="asyncapi-version"
-                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
+                className="flex justify-right items-center w-1/2 content-center font-medium text-white"
               >
                 Auto rendering
               </label>
