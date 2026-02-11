@@ -64,7 +64,7 @@
     "@asyncapi/openapi-schema-parser": "^3.0.18",
     "@asyncapi/parser": "^3.6.0",
     "@asyncapi/protobuf-schema-parser": "^3.2.8",
-    "@asyncapi/react-component": "^3.0.1",
+    "@asyncapi/react-component": "^3.0.2",
     "@asyncapi/specs": "^6.11.1",
     "@codemirror/view": "^6.26.3",
     "@ebay/nice-modal-react": "^1.2.10",
