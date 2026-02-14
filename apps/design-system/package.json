@@ -21,7 +21,7 @@
     "generate:assets": "echo \"No assets to configure\"",
     "test": "echo \"No tests\"",
     "eject": "react-scripts eject",
-    "dev": "concurrently 'npm run watch:*'",
+    "dev": "concurrently 'pnpm run watch:*'",
     "watch:storybook": "storybook dev -p 6006 --no-open",
     "watch:tailwind": "npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/tailwind.output.css --watch",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",

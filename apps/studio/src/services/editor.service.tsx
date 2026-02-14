@@ -18,7 +18,7 @@ export interface UpdateState {
   updateModel?: boolean;
   sendToServer?: boolean;
   file?: Partial<File>;
-} 
+}
 
 export class EditorService extends AbstractService {
   private created = false;
@@ -26,7 +26,7 @@ export class EditorService extends AbstractService {
   private instance: monacoAPI.editor.IStandaloneCodeEditor | undefined;
 
   override onInit() {
-    this.subcribeToDocuments();
+    this.subscribeToDocuments();
   }
 
   async onDidCreate(editor: monacoAPI.editor.IStandaloneCodeEditor) {
@@ -43,13 +43,13 @@ export class EditorService extends AbstractService {
     } else {
       this.applyMarkersAndDecorations(document.diagnostics.filtered);
     }
-    
+
     // apply save command
     editor.addCommand(
       KeyMod.CtrlCmd | KeyCode.KeyS,
       () => this.saveToLocalStorage(),
     );
-    
+
     appState.setState({ initialized: true });
   }
 
@@ -107,12 +107,12 @@ export class EditorService extends AbstractService {
       return fetch(url)
         .then(res => res.text())
         .then(async text => {
-          this.updateState({ 
-            content: text, 
-            updateModel: true, 
-            file: { 
-              source: url, 
-              from: 'url' 
+          this.updateState({
+            content: text,
+            updateModel: true,
+            file: {
+              source: url,
+              from: 'url'
             },
           });
         })
@@ -131,7 +131,7 @@ export class EditorService extends AbstractService {
     if (!file) {
       return;
     }
-    
+
     // Check if file is valid (only JSON and YAML are allowed currently) ----Change afterwards as per the requirement
     if (
       file.type !== 'application/json' &&
@@ -152,12 +152,12 @@ export class EditorService extends AbstractService {
   async importBase64(content: string) {
     try {
       const decoded = this.svcs.formatSvc.decodeBase64(content);
-      this.updateState({ 
-        content: String(decoded), 
-        updateModel: true, 
-        file: { 
-          from: 'base64', 
-          source: undefined, 
+      this.updateState({
+        content: String(decoded),
+        updateModel: true,
+        file: {
+          from: 'base64',
+          source: undefined,
         },
       });
     } catch (err) {
@@ -174,12 +174,12 @@ export class EditorService extends AbstractService {
       }
 
       const data = await response.json();
-      this.updateState({ 
-        content: data.content, 
-        updateModel: true, 
-        file: { 
-          from: 'share', 
-          source: undefined, 
+      this.updateState({
+        content: data.content,
+        updateModel: true,
+        file: {
+          from: 'share',
+          source: undefined,
         },
       });
     } catch (err) {
@@ -219,9 +219,9 @@ export class EditorService extends AbstractService {
     try {
       const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
       if (yamlContent) {
-        this.updateState({ 
-          content: yamlContent, 
-          updateModel: true, 
+        this.updateState({
+          content: yamlContent,
+          updateModel: true,
           file: {
             language: 'yaml',
           }
@@ -237,9 +237,9 @@ export class EditorService extends AbstractService {
     try {
       const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
       if (jsonContent) {
-        this.updateState({ 
-          content: jsonContent, 
-          updateModel: true, 
+        this.updateState({
+          content: jsonContent,
+          updateModel: true,
           file: {
             language: 'json',
           }
@@ -339,7 +339,7 @@ export class EditorService extends AbstractService {
           id: 'asyncapi',
           ownerId: 0,
           range: new Range(
-            range.start.line + 1, 
+            range.start.line + 1,
             range.start.character + 1,
             range.end.line + 1,
             range.end.character + 1
@@ -351,7 +351,7 @@ export class EditorService extends AbstractService {
         });
         return;
       }
-  
+
       newMarkers.push({
         startLineNumber: range.start.line + 1,
         startColumn: range.start.character + 1,
@@ -365,31 +365,33 @@ export class EditorService extends AbstractService {
     return { decorations: newDecorations, markers: newMarkers };
   }
 
+  /* eslint-disable indent */
   private getSeverity(severity: DiagnosticSeverity): monacoAPI.MarkerSeverity {
     switch (severity) {
-    case DiagnosticSeverity.Error: return MarkerSeverity.Error;
-    case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
-    case DiagnosticSeverity.Information: return MarkerSeverity.Info;
-    case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
-    default: return MarkerSeverity.Error;
+      case DiagnosticSeverity.Error: return MarkerSeverity.Error;
+      case DiagnosticSeverity.Warning: return MarkerSeverity.Warning;
+      case DiagnosticSeverity.Information: return MarkerSeverity.Info;
+      case DiagnosticSeverity.Hint: return MarkerSeverity.Hint;
+      default: return MarkerSeverity.Error;
     }
   }
 
   private getSeverityClassName(severity: DiagnosticSeverity): string {
     switch (severity) {
-    case DiagnosticSeverity.Warning: return 'diagnostic-warning';
-    case DiagnosticSeverity.Information: return 'diagnostic-information';
-    case DiagnosticSeverity.Hint: return 'diagnostic-hint';
-    default: return 'diagnostic-warning';
+      case DiagnosticSeverity.Warning: return 'diagnostic-warning';
+      case DiagnosticSeverity.Information: return 'diagnostic-information';
+      case DiagnosticSeverity.Hint: return 'diagnostic-hint';
+      default: return 'diagnostic-warning';
     }
   }
+  /* eslint-enable indent */
 
   private fileName = 'asyncapi';
   private downloadFile(content: string, fileName: string) {
     return fileDownload(content, fileName);
   }
 
-  private subcribeToDocuments() {
+  private subscribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       const newDocuments = state.documents;
       const oldDocuments = prevState.documents;

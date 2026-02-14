@@ -27,7 +27,7 @@ export class MonacoService extends AbstractService {
     // load initial language config (for json and yaml)
     this.setLanguageConfig(this.svcs.specificationSvc.latestVersion);
     // subscribe to document to update JSON/YAML language config
-    this.subcribeToDocuments();
+    this.subscribeToDocuments();
   }
 
   get monaco() {
@@ -85,7 +85,7 @@ export class MonacoService extends AbstractService {
     if (process.env.NODE_ENV === 'test') {
       return;
     }
-    
+
     const monaco = this.monacoInstance = await import('monaco-editor');
     loader.config({ monaco });
   }
@@ -124,7 +124,7 @@ export class MonacoService extends AbstractService {
       }
 
       return {
-        uri, 
+        uri,
         schema,
       };
     });
@@ -158,7 +158,7 @@ export class MonacoService extends AbstractService {
     })) as JSONSchema7;
   }
 
-  private subcribeToDocuments() {
+  private subscribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       const newDocuments = state.documents;
       const oldDocuments = prevState.documents;

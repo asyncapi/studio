@@ -12,7 +12,7 @@ import type { SpecVersions } from '../types';
 export class SpecificationService extends AbstractService {
   private keySessionStorage = 'informed-about-latest';
   override onInit() {
-    this.subcribeToDocuments();
+    this.subscribeToDocuments();
     this.subscribeToSettings();
   }
 
@@ -21,14 +21,14 @@ export class SpecificationService extends AbstractService {
   }
 
   get latestVersion(): SpecVersions {
-    return  Object.keys(this.specs).pop() as SpecVersions;
+    return Object.keys(this.specs).pop() as SpecVersions;
   }
 
   getSpec(version: SpecVersions) {
     return this.specs[String(version) as SpecVersions];
   }
 
-  private subcribeToDocuments() {
+  private subscribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       const newDocuments = state.documents;
       const oldDocuments = prevState.documents;
