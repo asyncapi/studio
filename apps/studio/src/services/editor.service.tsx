@@ -18,7 +18,7 @@ export interface UpdateState {
   updateModel?: boolean;
   sendToServer?: boolean;
   file?: Partial<File>;
-} 
+}
 
 export class EditorService extends AbstractService {
   private created = false;
@@ -43,13 +43,13 @@ export class EditorService extends AbstractService {
     } else {
       this.applyMarkersAndDecorations(document.diagnostics.filtered);
     }
-    
+
     // apply save command
     editor.addCommand(
       KeyMod.CtrlCmd | KeyCode.KeyS,
       () => this.saveToLocalStorage(),
     );
-    
+
     appState.setState({ initialized: true });
   }
 
@@ -107,16 +107,17 @@ export class EditorService extends AbstractService {
       return fetch(url)
         .then(res => res.text())
         .then(async text => {
-          this.updateState({ 
-            content: text, 
-            updateModel: true, 
-            file: { 
-              source: url, 
-              from: 'url' 
+          this.updateState({
+            content: text,
+            updateModel: true,
+            file: {
+              source: url,
+              from: 'url'
             },
           });
         })
         .catch(err => {
+          toast.error(`Failed to import from URL: ${err.message}`, { duration: Infinity });
           console.error(err);
           throw err;
         });
@@ -131,7 +132,7 @@ export class EditorService extends AbstractService {
     if (!file) {
       return;
     }
-    
+
     // Check if file is valid (only JSON and YAML are allowed currently) ----Change afterwards as per the requirement
     if (
       file.type !== 'application/json' &&
@@ -152,21 +153,22 @@ export class EditorService extends AbstractService {
   async importBase64(content: string) {
     try {
       const decoded = this.svcs.formatSvc.decodeBase64(content);
-      this.updateState({ 
-        content: String(decoded), 
-        updateModel: true, 
-        file: { 
-          from: 'base64', 
-          source: undefined, 
+      this.updateState({
+        content: String(decoded),
+        updateModel: true,
+        file: {
+          from: 'base64',
+          source: undefined,
         },
       });
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to import Base64 content: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
   }
 
-  async importFromShareID(shareID: string) {
+  async importFromShareID(shareID: string) { // checked
     try {
       const response = await fetch(`/share/${shareID}`);
       if (!response.ok) {
@@ -174,21 +176,22 @@ export class EditorService extends AbstractService {
       }
 
       const data = await response.json();
-      this.updateState({ 
-        content: data.content, 
-        updateModel: true, 
-        file: { 
-          from: 'share', 
-          source: undefined, 
+      this.updateState({
+        content: data.content,
+        updateModel: true,
+        file: {
+          from: 'share',
+          source: undefined,
         },
       });
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to import from Share ID: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
   }
 
-  async exportAsURL() {
+  async exportAsURL() { // no option on ui
     try {
       const file = filesState.getState().files['asyncapi'];
       const shareID = await fetch('/share', {
@@ -199,17 +202,19 @@ export class EditorService extends AbstractService {
         body: JSON.stringify({ content: file.content }),
       }).then(res => res.text());
       return `${window.location.origin}/?share=${shareID}`;
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to export as URL: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
   }
-
+  // done
   async exportAsBase64() {
     try {
       const file = filesState.getState().files['asyncapi'];
       return this.svcs.formatSvc.encodeBase64(file.content);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to export as Base64: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
@@ -219,15 +224,16 @@ export class EditorService extends AbstractService {
     try {
       const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
       if (yamlContent) {
-        this.updateState({ 
-          content: yamlContent, 
-          updateModel: true, 
+        this.updateState({
+          content: yamlContent,
+          updateModel: true,
           file: {
             language: 'yaml',
           }
         });
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to convert to YAML: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
@@ -237,39 +243,42 @@ export class EditorService extends AbstractService {
     try {
       const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
       if (jsonContent) {
-        this.updateState({ 
-          content: jsonContent, 
-          updateModel: true, 
+        this.updateState({
+          content: jsonContent,
+          updateModel: true,
           file: {
             language: 'json',
           }
         });
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to convert to JSON: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
   }
 
-  async saveAsYaml() {
+  async saveAsYaml() { // done
     try {
       const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
       if (yamlContent) {
         this.downloadFile(yamlContent, `${this.fileName}.yaml`);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to save as YAML: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
   }
 
-  async saveAsJSON() {
+  async saveAsJSON() { // done
     try {
       const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
       if (jsonContent) {
         this.downloadFile(jsonContent, `${this.fileName}.json`);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Failed to save as JSON: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }
@@ -339,7 +348,7 @@ export class EditorService extends AbstractService {
           id: 'asyncapi',
           ownerId: 0,
           range: new Range(
-            range.start.line + 1, 
+            range.start.line + 1,
             range.start.character + 1,
             range.end.line + 1,
             range.end.character + 1
@@ -351,7 +360,7 @@ export class EditorService extends AbstractService {
         });
         return;
       }
-  
+
       newMarkers.push({
         startLineNumber: range.start.line + 1,
         startColumn: range.start.character + 1,
