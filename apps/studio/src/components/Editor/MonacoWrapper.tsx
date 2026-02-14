@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, FunctionComponent } from 'react';
+import { useState, useEffect, useMemo, FunctionComponent } from 'react';
 import MonacoEditor from '@monaco-editor/react';
 
 import { debounce } from '@/helpers';
@@ -11,6 +11,21 @@ import type { EditorProps as MonacoEditorProps } from '@monaco-editor/react';
 export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   ...props
 }) => {
+  const [isDark, setIsDark] = useState(
+    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   const { editorSvc, parserSvc } = useServices();
   const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
   const file = useFilesState(state => state.files['asyncapi']);
@@ -27,7 +42,7 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
     <MonacoEditor
       language={file.language}
       defaultValue={file.content}
-      theme="asyncapi-theme"
+      theme={isDark ? 'asyncapi-theme' : 'vs'}
       onMount={editorSvc.onDidCreate.bind(editorSvc)}
       onChange={onChange}
       options={{

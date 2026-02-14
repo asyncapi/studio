@@ -55,7 +55,7 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
   return (
     <div>
       <div
-        className="flex flex-row justify-between items-center px-2 border-b border-gray-700 text-white uppercase font-bold text-xs cursor-pointer"
+        className="flex flex-row justify-between items-center px-2 border-b border-black text-black dark:border-gray-700 dark:text-white uppercase font-bold text-xs cursor-pointer"
         onClick={onTerminalTabClickHandler}
         tabIndex={0}
         onKeyDown={onTerminalTabClickHandler}
@@ -70,10 +70,10 @@ export const TerminalTabs: React.FunctionComponent<TerminalTabsProps> = ({
               onKeyDown={() => setActiveTab(tab.name)}
             >
               <div
-                className={`py-2 hover:text-white ${
+                className={`py-2 hover:text-slate-400 dark:hover:text-white ${
                   activeTab === tab.name
-                    ? 'text-white border-b border-white'
-                    : 'text-gray-500'
+                    ? 'text-black dark:text-white border-b border-black dark:border-white'
+                    : 'text-slate-500 dark:text-gray-500'
                 }`}
               >
                 {tab.tab}

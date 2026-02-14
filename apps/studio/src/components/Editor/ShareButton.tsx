@@ -26,7 +26,7 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
   return (
     <Tooltip content={'Share link'} placement="top" hideOnClick={true}>
       <button className="bg-inherit" onClick={handleShare} data-test="button-share">
-        <FaShareAlt className="text-gray-500 hover:text-white" />
+        <FaShareAlt className="text-gray-700 dark:text-gray-500 hover:text-black dark:hover:text-white" />
       </button>
     </Tooltip>
   );

@@ -17,8 +17,8 @@ interface NavigationSectionProps {
   hash: string;
 }
 
-export const NAVIGATION_SUB_SECTION_STYLE = 'p-2 pl-6 text-white cursor-pointer text-xs border-t border-gray-700 hover:bg-gray-900';
-export const NAVIGATION_SECTION_STYLE = 'p-2 pl-3 text-white cursor-pointer hover:bg-gray-900'
+export const NAVIGATION_SUB_SECTION_STYLE = 'p-2 pl-6 text-black dark:text-white cursor-pointer text-xs border-t border-black hover:bg-slate-300 dark:border-gray-700 dark:hover:bg-gray-900';
+export const NAVIGATION_SECTION_STYLE = 'p-2 pl-3 text-black dark:text-white cursor-pointer hover:bg-slate-300 dark:hover:bg-gray-900'
 
 const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
   document,
@@ -30,7 +30,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'servers' ? 'bg-gray-800' : ''
+          hash === 'servers' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo('/servers', 'servers')
@@ -49,7 +49,7 @@ const ServersNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             tabIndex={0}
             key={serverName}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `server-${serverName}` ? 'bg-gray-800' : ''
+              hash === `server-${serverName}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -92,7 +92,7 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return  <li
         key={channel.id()}
         className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-          hash === `channels-${channel.id()}` ? 'bg-gray-800' : ''
+          hash === `channels-${channel.id()}` ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -125,7 +125,7 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'channels' ? 'bg-gray-800' : ''
+          hash === 'channels' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -163,7 +163,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={operation.id()}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-receive-${operation.id()}` ? 'bg-gray-800' : ''
+              hash === `operation-receive-${operation.id()}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -195,7 +195,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           <li
             key={`${operation.id()}-send`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-send-${operation.id()}` ? 'bg-gray-800' : ''
+              hash === `operation-send-${operation.id()}` ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
@@ -231,7 +231,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'operations' ? 'bg-gray-800' : ''
+          hash === 'operations' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -266,7 +266,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return <li
         key={messageName}
         className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
-          hash === `message-${messageName}` ? 'bg-gray-800' : ''
+          hash === `message-${messageName}` ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -291,7 +291,7 @@ const MessagesNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'messages' ? 'bg-gray-800' : ''
+          hash === 'messages' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -326,7 +326,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       return <li
         key={schemaName}
         className={`${NAVIGATION_SUB_SECTION_STYLE} truncate ${
-          hash === `schema-${schemaName}` ? 'bg-gray-800' : ''
+          hash === `schema-${schemaName}` ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -351,7 +351,7 @@ const SchemasNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     <>
       <div
         className={`${NAVIGATION_SECTION_STYLE} ${
-          hash === 'schemas' ? 'bg-gray-800' : ''
+          hash === 'schemas' ? 'bg-white dark:bg-gray-800' : ''
         }`}
         onClick={() =>
           navigationSvc.scrollTo(
@@ -398,7 +398,7 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
+      <div className="flex overflow-hidden bg-white dark:bg-gray-800 h-full justify-center items-center text-center text-black dark:text-white text-md px-6">
         Empty or invalid document. Please fix errors/define AsyncAPI document.
       </div>
     );
@@ -406,12 +406,12 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 
   const components = document.components();
   return (
-    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
+    <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-800 h-full ${className}`} id="navigation-panel">
       <ul>
         <li className="mb-4">
           <div
             className={`${NAVIGATION_SECTION_STYLE} ${
-              hash === 'introduction' ? 'bg-gray-800' : ''
+              hash === 'introduction' ? 'bg-white dark:bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
