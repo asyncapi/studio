@@ -64,7 +64,7 @@
     "@asyncapi/openapi-schema-parser": "^3.0.18",
     "@asyncapi/parser": "^3.6.0",
     "@asyncapi/protobuf-schema-parser": "^3.2.8",
-    "@asyncapi/react-component": "^3.0.1",
+    "@asyncapi/react-component": "^3.0.2",
     "@asyncapi/specs": "^6.11.1",
     "@codemirror/view": "^6.26.3",
     "@ebay/nice-modal-react": "^1.2.10",
@@ -101,7 +101,7 @@
   "devDependencies": {
     "@asyncapi/dotnet-nats-template": "^0.12.1",
     "@asyncapi/go-watermill-template": "^0.2.72",
-    "@asyncapi/html-template": "^3.5.4",
+    "@asyncapi/html-template": "^3.5.5",
     "@asyncapi/java-spring-cloud-stream-template": "^0.13.4",
     "@asyncapi/java-spring-template": "^1.5.1",
     "@asyncapi/java-template": "^0.2.1",
