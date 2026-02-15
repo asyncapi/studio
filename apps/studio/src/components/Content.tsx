@@ -12,7 +12,7 @@ import React, { FunctionComponent, useMemo, useCallback } from 'react';
 
 interface ContentProps {}
 
-export const Content: FunctionComponent<ContentProps> = React.memo(() => {
+const ContentComponent: FunctionComponent<ContentProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
   const document =
     useDocumentsState(state => state.documents['asyncapi']?.document) || null;
@@ -143,4 +143,8 @@ export const Content: FunctionComponent<ContentProps> = React.memo(() => {
       </div>
     </div>
   );
-});
+};
+
+ContentComponent.displayName = 'Content';
+
+export const Content = React.memo(ContentComponent);
