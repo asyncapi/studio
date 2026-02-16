@@ -17,11 +17,14 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 
   const onChange = useMemo(() => {
     return debounce((v: string) => {
-      editorSvc.updateState({ content: v, file: { from: 'storage', source: undefined } });
+      // Preserve the current source URL instead of setting to undefined
+      const currentSource = file?.source;
+      editorSvc.updateState({ content: v, file: { from: 'storage', source: currentSource } });
       autoSaving && editorSvc.saveToLocalStorage(v, false);
-      parserSvc.parse('asyncapi', v);
+      // Pass source to parser to maintain remote $refs support
+      parserSvc.parse('asyncapi', v, { source: currentSource });
     }, savingDelay);
-  }, [autoSaving, savingDelay]);
+  }, [autoSaving, savingDelay, file?.source]);
 
   return (
     <MonacoEditor

@@ -1,6 +1,31 @@
 import { create } from 'zustand';
 
-const document = typeof window !== 'undefined' ? localStorage.getItem('document') : undefined
+// Helper function to extract content and source from localStorage
+const getDocumentFromLocalStorage = () => {
+  if (typeof window === 'undefined') return { content: undefined, source: undefined };
+
+  const stored = localStorage.getItem('document');
+  if (!stored) return { content: undefined, source: undefined };
+
+  try {
+    // Try to parse as JSON (new format)
+    const parsed = JSON.parse(stored);
+    if (parsed && typeof parsed === 'object' && 'content' in parsed) {
+      return {
+        content: parsed.content,
+        source: parsed.source || undefined,
+      };
+    }
+  } catch {
+    // If parsing fails, it's the old format (plain string)
+    return { content: stored, source: undefined };
+  }
+
+  // Fallback to treating as plain string
+  return { content: stored, source: undefined };
+};
+
+const { content: document, source: documentSource } = getDocumentFromLocalStorage();
 const schema =
   document || `asyncapi: 3.0.0
 info:
@@ -240,7 +265,7 @@ export const filesState = create<FilesState & FilesActions>(set => ({
       name: 'asyncapi',
       content: schema,
       from: 'storage',
-      source: undefined,
+      source: documentSource, // Use source from localStorage if available
       language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
       modified: false,
       stat: {

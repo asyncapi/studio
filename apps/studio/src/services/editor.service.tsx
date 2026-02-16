@@ -103,24 +103,36 @@ export class EditorService extends AbstractService {
   }
 
   async importFromURL(url: string): Promise<void> {
-    if (url) {
-      return fetch(url)
-        .then(res => res.text())
-        .then(async text => {
-          this.updateState({ 
-            content: text, 
-            updateModel: true, 
-            file: { 
-              source: url, 
-              from: 'url' 
-            },
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          throw err;
-        });
+    if (!url) {
+      throw new Error('URL is required');
     }
+
+    // Update browser URL with ?url= parameter (no page reload)
+    const currentUrl = window.location.href.split('?')[0];
+    window.history.pushState({}, '', `${currentUrl}?url=${url}`);
+
+    return fetch(url)
+      .then(res => res.text())
+      .then(async text => {
+        const language = this.svcs.formatSvc.retrieveLangauge(text);
+
+        this.updateState({
+          content: text,
+          updateModel: true,
+          file: {
+            source: url,
+            from: 'url',
+            language,
+          },
+        });
+
+        // Parse with source for remote $refs resolution
+        await this.svcs.parserSvc.parse('asyncapi', text, { source: url });
+      })
+      .catch(err => {
+        console.error(err);
+        throw err;
+      });
   }
 
   async importFile(files: FileList | null) {
@@ -277,12 +289,22 @@ export class EditorService extends AbstractService {
 
   saveToLocalStorage(editorValue?: string, notify = true) {
     editorValue = editorValue || this.value;
-    localStorage.setItem('document', editorValue);
+
+    // Get current source URL to preserve it
+    const currentFile = filesState.getState().files['asyncapi'];
+    const source = currentFile?.source;
+
+    // Store both content and source in localStorage
+    const documentData = {
+      content: editorValue,
+      source: source || undefined,
+    };
+    localStorage.setItem('document', JSON.stringify(documentData));
 
     const { updateFile } = filesState.getState();
     updateFile('asyncapi', {
       from: 'storage',
-      source: undefined,
+      source, // Preserve the source URL
       modified: false,
     });
 
@@ -308,7 +330,40 @@ export class EditorService extends AbstractService {
   }
 
   getFromLocalStorage() {
-    return localStorage.getItem('document');
+    const stored = localStorage.getItem('document');
+    if (!stored) return null;
+
+    try {
+      // Try to parse as JSON (new format)
+      const parsed = JSON.parse(stored);
+      if (parsed && typeof parsed === 'object' && 'content' in parsed) {
+        return parsed.content; // Return just the content for compatibility
+      }
+    } catch {
+      // If parsing fails, it's the old format (plain string)
+      return stored;
+    }
+
+    // Fallback to treating as plain string
+    return stored;
+  }
+
+  getSourceFromLocalStorage() {
+    const stored = localStorage.getItem('document');
+    if (!stored) return undefined;
+
+    try {
+      // Try to parse as JSON (new format)
+      const parsed = JSON.parse(stored);
+      if (parsed && typeof parsed === 'object' && 'source' in parsed) {
+        return parsed.source;
+      }
+    } catch {
+      // If parsing fails, it's the old format (no source)
+      return undefined;
+    }
+
+    return undefined;
   }
 
   private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {

@@ -85,9 +85,16 @@ export class MonacoService extends AbstractService {
     if (process.env.NODE_ENV === 'test') {
       return;
     }
-    
-    const monaco = this.monacoInstance = await import('monaco-editor');
-    loader.config({ monaco });
+
+    try {
+      // Use the loader to get Monaco instead of direct import
+      this.monacoInstance = await loader.init();
+    } catch (error) {
+      console.error('Failed to load Monaco:', error);
+      // Fallback to direct import if loader fails
+      const monaco = this.monacoInstance = await import('monaco-editor');
+      loader.config({ monaco });
+    }
   }
 
   private setMonacoTheme() {
