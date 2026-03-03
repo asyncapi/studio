@@ -17,9 +17,9 @@ export const SaveDropdown: React.FC = () => {
     <Dropdown
       opener={
         <Tooltip content="Save" placement="top" hideOnClick={true}>
-          <button className="bg-inherit">
+          <div className="bg-inherit">
             <FaSave />
-          </button>
+          </div>
         </Tooltip>
       }
       buttonHoverClassName="text-gray-500 hover:text-white"
