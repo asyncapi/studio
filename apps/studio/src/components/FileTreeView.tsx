@@ -89,7 +89,17 @@ function truncateExternalUrl(url: string): string {
 }
 
 function formatRemoteGroupLabel(url: string): string {
-  return url;
+  try {
+    const parsed = new URL(url);
+    const host = parsed.host;
+    const port = parsed.port;
+    const fullhost = port ? `${host}:${port}` : host;
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    const tail = parts.length > 0 ? parts[parts.length - 1] : parsed.host;
+    return `${parsed.protocol}//${fullhost}/.../${tail}/`;
+  } catch {
+    return truncateExternalUrl(url);
+  }
 }
 
 export const FileTreeView: React.FC = () => {
