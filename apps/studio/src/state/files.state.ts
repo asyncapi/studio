@@ -243,11 +243,17 @@ export type File = {
   uri: string;
   name: string;
   content: string;
-  from: 'storage' | 'url' | 'base64' | 'share';
+  from: 'storage' | 'url' | 'base64' | 'share' | 'file';
   source?: string;
   language: 'json' | 'yaml';
   modified: boolean;
   stat?: FileStat;
+  /** File System Access API handle for the specific file (Stage 4: save-back) */
+  fileHandle?: FileSystemFileHandle;
+  /** File System Access API handle for the containing folder (Stage 2/3: local $ref resolution) */
+  directoryHandle?: FileSystemDirectoryHandle;
+  /** Relative path of this file within the directoryHandle folder, e.g. "asyncapi.yaml" or "specs/api.yaml" */
+  localPath?: string;
 }
 
 export type FilesState = {
@@ -258,7 +264,7 @@ export type FilesActions = {
   updateFile: (uri: string, file: Partial<File>) => void;
 }
 
-export const filesState = create<FilesState & FilesActions>(set => ({
+export const filesState = create<FilesState & FilesActions>((set, get) => ({
   files: {
     asyncapi: {
       uri: 'asyncapi',
@@ -274,7 +280,16 @@ export const filesState = create<FilesState & FilesActions>(set => ({
     }
   },
   updateFile(uri: string, file: Partial<File>) {
+    const before = get().files[String(uri)];
+    const logBefore = before
+      ? { from: before.from, source: before.source, localPath: before.localPath, hasDirectoryHandle: !!before.directoryHandle, hasFileHandle: !!before.fileHandle }
+      : '(new file)';
+    const logPatch = { from: file.from, source: file.source, localPath: file.localPath, hasDirectoryHandle: !!file.directoryHandle, hasFileHandle: !!file.fileHandle };
+    console.log('[DEBUG:filesState] updateFile ▶', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
     set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
+    const after = get().files[String(uri)];
+    const logAfter = { from: after.from, source: after.source, localPath: after.localPath, hasDirectoryHandle: !!after.directoryHandle, hasFileHandle: !!after.fileHandle };
+    console.log('[DEBUG:filesState] updateFile ◀', uri, '\n  after: ', logAfter);
   }
 }));
 

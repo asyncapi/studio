@@ -102,10 +102,83 @@ export class EditorService extends AbstractService {
     this.updateState({ content: converted, updateModel: true });
   }
 
+  async grantFolderAccess(): Promise<void> {
+    // 1. Ask user to pick the root folder
+    let directoryHandle: FileSystemDirectoryHandle;
+    try {
+      directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
+    } catch (err: any) {
+      // User cancelled — silently ignore
+      if (err?.name === 'AbortError') return;
+      throw err;
+    }
+
+    // 2. Ask user to pick the AsyncAPI file within that folder
+    toast.loading('Please select the AsyncAPI file within the folder...', { id: 'folder-access' });
+    let fileHandle: FileSystemFileHandle;
+    try {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'AsyncAPI files', accept: { 'text/*': ['.yaml', '.yml', '.json'] } }],
+        multiple: false,
+      });
+      fileHandle = handle;
+    } catch (err: any) {
+      toast.dismiss('folder-access');
+      if (err?.name === 'AbortError') return;
+      throw err;
+    }
+
+    // 3. Compute the relative path of the selected file within the folder
+    const pathParts = await directoryHandle.resolve(fileHandle);
+    if (!pathParts) {
+      toast.dismiss('folder-access');
+      toast.error('Selected file is not within the chosen folder. Please select a file inside the folder.');
+      return;
+    }
+    const localPath = pathParts.join('/');
+
+    // 4. Read file content
+    const file = await fileHandle.getFile();
+    const content = await file.text();
+    const language = this.svcs.formatSvc.retrieveLangauge(content);
+
+    // 5. Update file state — parser subscription will re-parse automatically with the local resolver
+    console.log(
+      '[DEBUG:editor] grantFolderAccess — updating file state',
+      '\n  from: file',
+      '\n  source:', `${directoryHandle.name}/${localPath}`,
+      '\n  localPath:', localPath,
+      '\n  directoryHandle:', directoryHandle.name,
+    );
+    const { updateFile } = filesState.getState();
+    updateFile('asyncapi', {
+      content,
+      language,
+      from: 'file',
+      source: `${directoryHandle.name}/${localPath}`,
+      directoryHandle,
+      fileHandle,
+      localPath,
+      modified: false,
+      stat: { mtime: Date.now() },
+    });
+
+    // Update the editor model
+    if (this.editor) {
+      const model = this.editor.getModel();
+      if (model) model.setValue(content);
+    }
+
+    toast.dismiss('folder-access');
+    toast.success('Folder access granted! File references will now be resolved.');
+  }
+
   async importFromURL(url: string): Promise<void> {
     if (!url) {
       throw new Error('URL is required');
     }
+
+    console.log('[DEBUG:editor] importFromURL', url);
 
     // Update browser URL with ?url= parameter (no page reload)
     const currentUrl = window.location.href.split('?')[0];
@@ -123,11 +196,9 @@ export class EditorService extends AbstractService {
             source: url,
             from: 'url',
             language,
+            stat: { mtime: Date.now() },
           },
         });
-
-        // Parse with source for remote $refs resolution
-        await this.svcs.parserSvc.parse('asyncapi', text, { source: url });
       })
       .catch(err => {
         console.error(err);
@@ -143,20 +214,31 @@ export class EditorService extends AbstractService {
     if (!file) {
       return;
     }
-    
-    // Check if file is valid (only JSON and YAML are allowed currently) ----Change afterwards as per the requirement
-    if (
-      file.type !== 'application/json' &&
-      file.type !== 'application/x-yaml' &&
-      file.type !== 'application/yaml'
-    ) {
-      throw new Error('Invalid file type');
+
+    // Validate by extension — MIME types are unreliable across browsers
+    const allowedExtensions = ['json', 'yaml', 'yml', 'avsc'];
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!allowedExtensions.includes(ext)) {
+      throw new Error('Invalid file type. Only .json, .yaml, .yml, and .avsc files are supported.');
     }
+
+    console.log('[DEBUG:editor] importFile', file.name);
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
       const content = fileLoadedEvent.target?.result;
-      this.updateState({ content: String(content), updateModel: true });
+      this.updateState({
+        content: String(content),
+        updateModel: true,
+        file: {
+          from: 'file',
+          source: undefined,
+          directoryHandle: undefined,
+          fileHandle: undefined,
+          localPath: undefined,
+          stat: { mtime: Date.now() },
+        },
+      });
     };
     fileReader.readAsText(file, 'UTF-8');
   }
@@ -303,7 +385,6 @@ export class EditorService extends AbstractService {
 
     const { updateFile } = filesState.getState();
     updateFile('asyncapi', {
-      from: 'storage',
       source, // Preserve the source URL
       modified: false,
     });

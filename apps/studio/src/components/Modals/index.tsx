@@ -9,5 +9,6 @@ export * from './ImportURLModal';
 export * from './ImportUUIDModal';
 
 export * from './NewFileModal';
+export * from './OpenFolderModal';
 export * from './RedirectedModal';
 export * from './ConfirmNewFileModal';

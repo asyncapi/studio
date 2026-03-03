@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { show } from '@ebay/nice-modal-react';
 import { FaFileImport } from 'react-icons/fa';
@@ -7,6 +7,7 @@ import {
   ImportURLModal,
   ImportBase64Modal,
   ImportUUIDModal,
+  OpenFolderModal,
 } from '../Modals';
 
 import { Dropdown, Tooltip } from '../common';
@@ -14,14 +15,15 @@ import { useServices } from '@/services';
 
 export const ImportDropdown: React.FC = () => {
   const { editorSvc } = useServices();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <Dropdown 
       opener={
         <Tooltip content="Import" placement="top" hideOnClick={true}>
-          <button className="bg-inherit">
+          <span>
             <FaFileImport />
-          </button>
+          </span>
         </Tooltip>
       }
       buttonHoverClassName="text-gray-500 hover:text-white"
@@ -32,21 +34,22 @@ export const ImportDropdown: React.FC = () => {
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Import from URL"
+            title="Open URL"
             onClick={() => show(ImportURLModal)}
           >
-                Import from URL
+                Open URL
           </button>
         </li>
 
         <li className="hover:bg-gray-900">
           <label
             className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
-            title="Import File"
+            title="Open File"
           >
             <input
+              ref={fileInputRef}
               type="file"
-              accept='.yaml, .yml, .json'
+              accept='.yaml, .yml, .json, .avsc'
               style={{ position: 'fixed', top: '-100em' }}
               onChange={event => {
                 toast.promise(editorSvc.importFile(event.target.files), {
@@ -66,10 +69,23 @@ export const ImportDropdown: React.FC = () => {
                     </div>
                   ),
                 });
+                // Reset so the same file can be re-imported
+                if (fileInputRef.current) fileInputRef.current.value = '';
               }}
             />
-            Import File
+            Open File
           </label>
+        </li>
+
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Open Folder"
+            onClick={() => show(OpenFolderModal)}
+          >
+            Open Folder
+          </button>
         </li>
 
         <li className="hover:bg-gray-900">

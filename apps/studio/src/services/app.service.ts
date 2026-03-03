@@ -52,6 +52,8 @@ export class ApplicationService extends AbstractService {
       return;
     }
 
+    console.log('[DEBUG:app] fetchResource', { url, base64: !!base64, share });
+
     const { updateFile } = filesState.getState();
     let content = '';
     if (url) {
@@ -79,8 +81,8 @@ export class ApplicationService extends AbstractService {
       language,
       source,
       from: from as 'url' | 'base64' | 'share',
+      stat: { mtime: Date.now() },
     });
-    await this.svcs.parserSvc.parse('asyncapi', content, { source });
   }
 
   private hidePreloader() {

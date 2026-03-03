@@ -8,6 +8,7 @@ import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { isDeepEqual } from '@/helpers';
 import { filesState, documentsState, settingsState } from '@/state';
+import { createLocalFileResolver } from './local-file-resolver';
 
 import type { Diagnostic, ParseOptions } from '@asyncapi/parser';
 import type { DocumentDiagnostics } from '@/state/documents.state';
@@ -16,6 +17,8 @@ import { getLocationForJsonPath, parseWithPointers } from '@stoplight/yaml';
 
 export class ParserService extends AbstractService {
   private parser!: Parser;
+  private unsubscribeFiles?: () => void;
+  private unsubscribeSettings?: () => void;
 
   override async onInit() {
     this.parser = new Parser({
@@ -37,9 +40,39 @@ export class ParserService extends AbstractService {
     await this.parseSavedDocuments();
   }
 
+  destroy() {
+    // Clean up subscriptions when service is destroyed
+    this.unsubscribeFiles?.();
+    this.unsubscribeSettings?.();
+  }
+
   async parse(uri: string, spec: string, options: ParseOptions = {}): Promise<void> {
     if (uri !== 'asyncapi' && !options.source) {
       options.source = uri;
+    }
+
+    // Inject local file resolver when the file was opened from local disk with folder access
+    const file = filesState.getState().files[String(uri)];
+    const useLocalResolver = !!(file?.from === 'file' && file.directoryHandle && file.localPath);
+    console.log(
+      '[DEBUG:parser] parse()', uri,
+      '\n  file.from:', file?.from,
+      '\n  file.source:', file?.source,
+      '\n  file.localPath:', file?.localPath,
+      '\n  hasDirectoryHandle:', !!file?.directoryHandle,
+      '\n  options.source:', options.source,
+      '\n  → resolver:', useLocalResolver ? 'LOCAL FILE RESOLVER' : 'default (remote/HTTP)',
+    );
+    if (useLocalResolver && file.directoryHandle && file.localPath) {
+      const resolver = createLocalFileResolver({
+        directoryHandle: file.directoryHandle,
+        basePath: file.localPath,
+      });
+      (options as any).__unstable = {
+        resolver: {
+          resolvers: [resolver],
+        },
+      };
     }
 
     let diagnostics: Diagnostic[] = [];
@@ -124,10 +157,15 @@ export class ParserService extends AbstractService {
   private updateDocument = documentsState.getState().updateDocument;
 
   private createDiagnostics(diagnostics: Diagnostic[]) {
-    // map messages of invalid ref to file
+    // Map unresolvable local file ref errors to a clear, actionable message
     diagnostics.forEach(diagnostic => {
-      if (diagnostic.code === 'invalid-ref' && diagnostic.message.endsWith('readFile is not a function')) {
-        diagnostic.message = 'File references are not yet supported in Studio';
+      if (
+        diagnostic.code === 'invalid-ref' &&
+        (diagnostic.message.endsWith('readFile is not a function') ||
+          diagnostic.message.includes('File references are not yet supported'))
+      ) {
+        diagnostic.message =
+          'Local file reference detected. Click Import → Grant Folder Access to resolve this reference.';
       }
     });
     
@@ -162,20 +200,48 @@ export class ParserService extends AbstractService {
   }
 
   private subscribeToFiles() {
-    filesState.subscribe((state, prevState) => {
+    // Unsubscribe from previous subscription if it exists
+    if (this.unsubscribeFiles) {
+      console.log('[DEBUG:parser] subscribeToFiles - cleaning up previous subscription');
+      this.unsubscribeFiles();
+    }
+
+    this.unsubscribeFiles = filesState.subscribe((state, prevState) => {
       const newFiles = state.files;
       const oldFiles = prevState.files;
 
       Object.entries(newFiles).forEach(([uri, file]) => {
         const oldFile = oldFiles[String(uri)];
         if (file === oldFile) return;
+
+        // Skip cosmetic-only changes (from, modified, language, name).
+        // Re-parse only when content, resolver configuration, or the explicit
+        // freshness timestamp (stat.mtime) changed.
+        const contentChanged = file.content !== oldFile?.content;
+        const sourceChanged = file.source !== oldFile?.source;
+        const directoryHandleChanged = file.directoryHandle !== oldFile?.directoryHandle;
+        const localPathChanged = file.localPath !== oldFile?.localPath;
+        const mtimeChanged = file.stat?.mtime !== oldFile?.stat?.mtime;
+
+        console.log('[DEBUG:parser] subscribeToFiles', uri, { contentChanged, sourceChanged, directoryHandleChanged, localPathChanged, mtimeChanged });
+
+        if (!contentChanged && !sourceChanged && !directoryHandleChanged && !localPathChanged && !mtimeChanged) {
+          return;
+        }
+
         this.parse(uri, file.content, { source: file.source }).catch(console.error);
       });
     });
   }
 
   private subscribeToSettings() {
-    settingsState.subscribe((state, prevState) => {
+    // Unsubscribe from previous subscription if it exists
+    if (this.unsubscribeSettings) {
+      console.log('[DEBUG:parser] subscribeToSettings - cleaning up previous subscription');
+      this.unsubscribeSettings();
+    }
+
+    this.unsubscribeSettings = settingsState.subscribe((state, prevState) => {
       if (isDeepEqual(state.governance, prevState.governance)) return;
 
       const { files } = filesState.getState();

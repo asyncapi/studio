@@ -9,6 +9,7 @@ import {
   GeneratorModal,
   ConvertModal,
   ImportUUIDModal,
+  OpenFolderModal,
 } from '../Modals';
 import { Dropdown } from '../common';
 
@@ -28,10 +29,10 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-      title="Import from URL"
+      title="Open URL"
       onClick={() => show(ImportURLModal)}
     >
-      Import from URL
+      Open URL
     </button>
   );
 
@@ -46,14 +47,17 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </button>
   );
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const importFileButton = (
     <label
       className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
-      title="Import File"
+      title="Open File"
     >
       <input
+        ref={fileInputRef}
         type="file"
-        accept='.yaml, .yml, .json'
+        accept='.yaml, .yml, .json, .avsc'
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
           toast.promise(editorSvc.importFile(event.target.files), {
@@ -73,10 +77,23 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
               </div>
             ),
           });
+          // Reset so the same file can be re-imported
+          if (fileInputRef.current) fileInputRef.current.value = '';
         }}
       />
-      Import File
+      Open File
     </label>
+  );
+
+  const openFolderButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Open Folder"
+      onClick={() => show(OpenFolderModal)}
+    >
+      Open Folder
+    </button>
   );
 
   const importBase64Button = (
@@ -257,6 +274,9 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           </li>
           <li className="hover:bg-gray-900">
             {importFileButton}
+          </li>
+          <li className="hover:bg-gray-900">
+            {openFolderButton}
           </li>
           <li className="hover:bg-gray-900">
             {importBase64Button}
