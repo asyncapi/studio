@@ -1,8 +1,15 @@
 import { AbstractService } from './abstract.service';
+import { filesState } from '@/state';
 
 import type React from 'react';
 
 export class NavigationService extends AbstractService {
+  private unsubscribeFiles?: () => void;
+
+  override onInit() {
+    this.subscribeToFiles();
+  }
+
   override async afterAppInit() {
     try {
       await this.scrollToHash();
@@ -105,5 +112,54 @@ export class NavigationService extends AbstractService {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
     window.history.pushState({}, '', hash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));
+  }
+
+  destroy() {
+    this.unsubscribeFiles?.();
+  }
+
+  private subscribeToFiles() {
+    this.unsubscribeFiles?.();
+
+    this.unsubscribeFiles = filesState.subscribe((state, prevState) => {
+      const currentFile = state.files['asyncapi'];
+      const previousFile = prevState.files['asyncapi'];
+
+      if (!currentFile || !previousFile) {
+        return;
+      }
+
+      if (currentFile.from === previousFile.from) {
+        return;
+      }
+
+      if (previousFile.from === 'url' && currentFile.from !== 'url') {
+        this.removeRemoteUrlParams();
+      }
+    });
+  }
+
+  private removeRemoteUrlParams() {
+    const [baseWithPath, hash] = window.location.href.split('#');
+    const [base, query] = baseWithPath.split('?');
+
+    if (!query) {
+      return;
+    }
+
+    const segments = query.split('&').filter(Boolean);
+    const keptSegments = segments.filter((part) => {
+      return part !== 'url' &&
+        !part.startsWith('url=') &&
+        part !== 'load' &&
+        !part.startsWith('load=');
+    });
+
+    const nextUrl = keptSegments.length > 0
+      ? `${base}?${keptSegments.join('&')}`
+      : base;
+
+    const urlWithHash = hash ? `${nextUrl}#${hash}` : nextUrl;
+    window.history.replaceState({}, '', urlWithHash);
   }
 }
