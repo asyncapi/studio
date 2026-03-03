@@ -51,9 +51,21 @@ export class ParserService extends AbstractService {
       options.source = uri;
     }
 
+    const active = filesState.getState().files['asyncapi'];
+    if (uri !== 'asyncapi') {
+      return;
+    }
+
+    if (!this.isAsyncApiDocument(spec)) {
+      filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: false });
+      return;
+    }
+    filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: true });
+
     // Inject local file resolver when the file was opened from local disk with folder access
-    const file = filesState.getState().files[String(uri)];
+    const file = active;
     const useLocalResolver = !!(file?.from === 'file' && file.directoryHandle && file.localPath);
+    const useRemoteResolver = !!(file?.from === 'url' && /^https?:\/\//.test(file.source || ''));
     console.log(
       '[DEBUG:parser] parse()', uri,
       '\n  file.from:', file?.from,
@@ -63,14 +75,38 @@ export class ParserService extends AbstractService {
       '\n  options.source:', options.source,
       '\n  → resolver:', useLocalResolver ? 'LOCAL FILE RESOLVER' : 'default (remote/HTTP)',
     );
+    const resolvers: any[] = [];
     if (useLocalResolver && file.directoryHandle && file.localPath) {
       const resolver = createLocalFileResolver({
         directoryHandle: file.directoryHandle,
         basePath: file.localPath,
+        onReadFile: async ({ relativePath, source, content, fileHandle }) => {
+          filesState.getState().updateFile(relativePath, {
+            uri: relativePath,
+            name: relativePath.split('/').pop() || relativePath,
+            content,
+            from: 'file',
+            source,
+            language: this.inferLanguage(relativePath, content),
+            modified: false,
+            directoryHandle: file.directoryHandle,
+            fileHandle,
+            localPath: relativePath,
+            stat: { mtime: Date.now() },
+            isAsyncApiDocument: this.isAsyncApiDocument(content),
+          });
+        },
       });
+      resolvers.push(resolver);
+    }
+    if (useRemoteResolver) {
+      resolvers.push(this.createRemoteTrackingResolver('http'));
+      resolvers.push(this.createRemoteTrackingResolver('https'));
+    }
+    if (resolvers.length > 0) {
       (options as any).__unstable = {
         resolver: {
-          resolvers: [resolver],
+          resolvers,
         },
       };
     }
@@ -156,6 +192,57 @@ export class ParserService extends AbstractService {
 
   private updateDocument = documentsState.getState().updateDocument;
 
+  private inferLanguage(uri: string, content: string): 'json' | 'yaml' {
+    if (uri.toLowerCase().endsWith('.json') || uri.toLowerCase().endsWith('.avsc')) {
+      return 'json';
+    }
+    const trimmed = String(content || '').trim();
+    return trimmed.startsWith('{') ? 'json' : 'yaml';
+  }
+
+  private isAsyncApiDocument(spec: string): boolean {
+    const trimmed = String(spec || '').trim();
+    if (!trimmed) return false;
+    if (trimmed.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return !!parsed?.asyncapi;
+      } catch {
+        return false;
+      }
+    }
+    return /^asyncapi\s*:/m.test(trimmed);
+  }
+
+  private createRemoteTrackingResolver(schema: 'http' | 'https') {
+    const isAsyncApiDocument = this.isAsyncApiDocument.bind(this);
+    const inferLanguage = this.inferLanguage.bind(this);
+    return {
+      schema,
+      order: 1,
+      canRead(uri: any) {
+        const url = String(uri);
+        return /^https?:\/\//.test(url);
+      },
+      async read(uri: any): Promise<string> {
+        const url = String(uri);
+        const content = await fetch(url).then((res) => res.text());
+        filesState.getState().updateFile(url, {
+          uri: url,
+          name: url.split('/').pop() || url,
+          content,
+          from: 'url',
+          source: url,
+          language: inferLanguage(url, content),
+          modified: false,
+          stat: { mtime: Date.now() },
+          isAsyncApiDocument: isAsyncApiDocument(content),
+        });
+        return content;
+      },
+    };
+  }
+
   private createDiagnostics(diagnostics: Diagnostic[]) {
     // Map unresolvable local file ref errors to a clear, actionable message
     diagnostics.forEach(diagnostic => {
@@ -207,30 +294,24 @@ export class ParserService extends AbstractService {
     }
 
     this.unsubscribeFiles = filesState.subscribe((state, prevState) => {
-      const newFiles = state.files;
-      const oldFiles = prevState.files;
+      const file = state.files['asyncapi'];
+      const oldFile = prevState.files['asyncapi'];
+      if (!file || file === oldFile) return;
 
-      Object.entries(newFiles).forEach(([uri, file]) => {
-        const oldFile = oldFiles[String(uri)];
-        if (file === oldFile) return;
+      const activeChanged = state.activeFileUri !== prevState.activeFileUri;
+      const contentChanged = file.content !== oldFile?.content;
+      const sourceChanged = file.source !== oldFile?.source;
+      const directoryHandleChanged = file.directoryHandle !== oldFile?.directoryHandle;
+      const localPathChanged = file.localPath !== oldFile?.localPath;
+      const mtimeChanged = file.stat?.mtime !== oldFile?.stat?.mtime;
 
-        // Skip cosmetic-only changes (from, modified, language, name).
-        // Re-parse only when content, resolver configuration, or the explicit
-        // freshness timestamp (stat.mtime) changed.
-        const contentChanged = file.content !== oldFile?.content;
-        const sourceChanged = file.source !== oldFile?.source;
-        const directoryHandleChanged = file.directoryHandle !== oldFile?.directoryHandle;
-        const localPathChanged = file.localPath !== oldFile?.localPath;
-        const mtimeChanged = file.stat?.mtime !== oldFile?.stat?.mtime;
+      console.log('[DEBUG:parser] subscribeToFiles', 'asyncapi', { activeChanged, contentChanged, sourceChanged, directoryHandleChanged, localPathChanged, mtimeChanged });
 
-        console.log('[DEBUG:parser] subscribeToFiles', uri, { contentChanged, sourceChanged, directoryHandleChanged, localPathChanged, mtimeChanged });
+      if (!activeChanged && !contentChanged && !sourceChanged && !directoryHandleChanged && !localPathChanged && !mtimeChanged) {
+        return;
+      }
 
-        if (!contentChanged && !sourceChanged && !directoryHandleChanged && !localPathChanged && !mtimeChanged) {
-          return;
-        }
-
-        this.parse(uri, file.content, { source: file.source }).catch(console.error);
-      });
+      this.parse('asyncapi', file.content, { source: file.source }).catch(console.error);
     });
   }
 
@@ -244,19 +325,18 @@ export class ParserService extends AbstractService {
     this.unsubscribeSettings = settingsState.subscribe((state, prevState) => {
       if (isDeepEqual(state.governance, prevState.governance)) return;
 
-      const { files } = filesState.getState();
-      Object.entries(files).forEach(([uri, file]) => {
-        this.parse(uri, file.content).catch(console.error);
-      });
+      const file = filesState.getState().files['asyncapi'];
+      if (file) {
+        this.parse('asyncapi', file.content, { source: file.source }).catch(console.error);
+      }
     });
   }
 
   private parseSavedDocuments() {
-    const { files } = filesState.getState();
-    return Promise.all(
-      Object.entries(files).map(([uri, file]) => {
-        return this.parse(uri, file.content);
-      }),
-    );
+    const file = filesState.getState().files['asyncapi'];
+    if (!file) {
+      return Promise.resolve([]);
+    }
+    return Promise.all([this.parse('asyncapi', file.content, { source: file.source })]);
   }
 }

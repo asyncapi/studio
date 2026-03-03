@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '@/state';
+import { FileTreeView } from './FileTreeView';
 
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
 
@@ -398,8 +399,11 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-        Empty or invalid document. Please fix errors/define AsyncAPI document.
+      <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
+        <FileTreeView />
+        <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
+          Empty or invalid document. Please fix errors/define AsyncAPI document.
+        </div>
       </div>
     );
   }
@@ -407,6 +411,7 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
   const components = document.components();
   return (
     <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
+      <FileTreeView />
       <ul>
         <li className="mb-4">
           <div

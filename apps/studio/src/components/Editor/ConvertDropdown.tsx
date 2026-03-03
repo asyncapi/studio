@@ -11,7 +11,7 @@ import { useDocumentsState, useFilesState } from '../../state';
 export const ConvertDropdown: React.FC = () => {
   const { editorSvc } = useServices();
   const isInvalidDocument = !useDocumentsState(state => 
-    state.documents['asyncapi'].valid
+    state.documents['asyncapi']?.valid
   );
   const language = useFilesState(state => state.files['asyncapi'].language);
       
@@ -77,4 +77,5 @@ export const ConvertDropdown: React.FC = () => {
     </Dropdown>
   );
 }
+
 

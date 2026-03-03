@@ -14,6 +14,9 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   const { editorSvc } = useServices();
   const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
   const file = useFilesState(state => state.files['asyncapi']);
+  if (!file) {
+    return null;
+  }
 
   const onChange = useMemo(() => {
     return debounce((v: string) => {
@@ -27,8 +30,9 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
 
   return (
     <MonacoEditor
+      key={file.uri}
       language={file.language}
-      defaultValue={file.content}
+      value={file.content}
       theme="asyncapi-theme"
       onMount={editorSvc.onDidCreate.bind(editorSvc)}
       onChange={onChange}

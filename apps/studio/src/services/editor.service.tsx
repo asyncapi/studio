@@ -61,6 +61,145 @@ export class EditorService extends AbstractService {
     return this.editor?.getModel()?.getValue() as string;
   }
 
+  private getFileNameFromUri(uri: string): string {
+    if (!uri) return 'asyncapi';
+    const normalized = uri.replace(/\\/g, '/');
+    const parts = normalized.split('/');
+    return parts[parts.length - 1] || uri;
+  }
+
+  private inferLanguageFromUri(uri: string, content?: string): 'json' | 'yaml' {
+    const byContent = content ? this.svcs.formatSvc.retrieveLangauge(content) : undefined;
+    if (byContent === 'json' || byContent === 'yaml') {
+      return byContent;
+    }
+    const lower = uri.toLowerCase();
+    if (lower.endsWith('.json') || lower.endsWith('.avsc')) {
+      return 'json';
+    }
+    return 'yaml';
+  }
+
+  private isAsyncApiContent(content: string): boolean {
+    const trimmed = String(content || '').trim();
+    if (!trimmed) return false;
+    if (trimmed.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return !!parsed?.asyncapi;
+      } catch {
+        return false;
+      }
+    }
+    return /^asyncapi\s*:/m.test(trimmed);
+  }
+
+  private hasUnsupportedEditorExtension(uri: string): boolean {
+    const blocked = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico', '.pdf', '.zip', '.tar', '.gz', '.woff', '.woff2'];
+    const path = uri.split('?')[0].toLowerCase();
+    return blocked.some((ext) => path.endsWith(ext));
+  }
+
+  async switchToFile(uri: string): Promise<void> {
+    const { files, setFileTreeLoading, setActiveFile, updateFile } = filesState.getState();
+    const target = files[String(uri)];
+    if (!target) {
+      return;
+    }
+
+    if (this.hasUnsupportedEditorExtension(uri)) {
+      toast.error('This file type is not supported in the editor.');
+      return;
+    }
+
+    setFileTreeLoading(true);
+    try {
+      let content = target.content;
+      let fileHandle = target.fileHandle;
+      if (!content && fileHandle) {
+        const file = await fileHandle.getFile();
+        content = await file.text();
+      }
+      if (!content && /^https?:\/\//.test(uri)) {
+        content = await fetch(uri).then((res) => res.text());
+      }
+
+      if (typeof content !== 'string') {
+        content = '';
+      }
+
+      const language = this.inferLanguageFromUri(uri, content);
+      updateFile(uri, {
+        content,
+        language,
+        name: target.name || this.getFileNameFromUri(uri),
+        isAsyncApiDocument: this.isAsyncApiContent(content),
+        stat: { mtime: Date.now() },
+      });
+      setActiveFile(uri);
+      this.updateState({
+        content,
+        updateModel: true,
+        sendToServer: false,
+        file: {
+          source: target.source,
+          from: target.from,
+          language,
+          fileHandle,
+          directoryHandle: target.directoryHandle,
+          localPath: target.localPath,
+          name: target.name || this.getFileNameFromUri(uri),
+          isAsyncApiDocument: this.isAsyncApiContent(content),
+          stat: { mtime: Date.now() },
+        },
+      });
+    } finally {
+      setFileTreeLoading(false);
+    }
+  }
+
+  private async collectLocalProjectFiles(
+    directoryHandle: FileSystemDirectoryHandle,
+    basePath = '',
+    rootName = directoryHandle.name,
+  ): Promise<Record<string, File>> {
+    const files: Record<string, File> = {};
+
+    for await (const [, entry] of directoryHandle.entries()) {
+      if (entry.kind === 'directory') {
+        const childPath = basePath ? `${basePath}/${entry.name}` : entry.name;
+        const nested = await this.collectLocalProjectFiles(entry, childPath, rootName);
+        Object.assign(files, nested);
+      } else if (entry.kind === 'file') {
+        const localPath = basePath ? `${basePath}/${entry.name}` : entry.name;
+        const fileHandle = entry as FileSystemFileHandle;
+        try {
+          const file = await fileHandle.getFile();
+          const content = await file.text();
+          const language = this.inferLanguageFromUri(localPath, content);
+          files[localPath] = {
+            uri: localPath,
+            name: this.getFileNameFromUri(localPath),
+            content,
+            from: 'file',
+            source: `${rootName}/${localPath}`,
+            language,
+            modified: false,
+            directoryHandle,
+            fileHandle,
+            localPath,
+            isAsyncApiDocument: this.isAsyncApiContent(content),
+            stat: { mtime: Date.now() },
+          };
+        } catch (err) {
+          console.error('[DEBUG:editor] Failed to read local file for tree', localPath, err);
+        }
+      }
+    }
+
+    return files;
+  }
+
   updateState({
     content,
     updateModel = false,
@@ -103,17 +242,14 @@ export class EditorService extends AbstractService {
   }
 
   async grantFolderAccess(): Promise<void> {
-    // 1. Ask user to pick the root folder
     let directoryHandle: FileSystemDirectoryHandle;
     try {
       directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
-      // User cancelled — silently ignore
       if (err?.name === 'AbortError') return;
       throw err;
     }
 
-    // 2. Ask user to pick the AsyncAPI file within that folder
     toast.loading('Please select the AsyncAPI file within the folder...', { id: 'folder-access' });
     let fileHandle: FileSystemFileHandle;
     try {
@@ -128,51 +264,50 @@ export class EditorService extends AbstractService {
       throw err;
     }
 
-    // 3. Compute the relative path of the selected file within the folder
     const pathParts = await directoryHandle.resolve(fileHandle);
     if (!pathParts) {
       toast.dismiss('folder-access');
       toast.error('Selected file is not within the chosen folder. Please select a file inside the folder.');
       return;
     }
+
     const localPath = pathParts.join('/');
+    const files = await this.collectLocalProjectFiles(directoryHandle);
+    const selectedFile = await fileHandle.getFile();
+    const selectedContent = await selectedFile.text();
+    const selectedLanguage = this.inferLanguageFromUri(localPath, selectedContent);
 
-    // 4. Read file content
-    const file = await fileHandle.getFile();
-    const content = await file.text();
-    const language = this.svcs.formatSvc.retrieveLangauge(content);
-
-    // 5. Update file state — parser subscription will re-parse automatically with the local resolver
-    console.log(
-      '[DEBUG:editor] grantFolderAccess — updating file state',
-      '\n  from: file',
-      '\n  source:', `${directoryHandle.name}/${localPath}`,
-      '\n  localPath:', localPath,
-      '\n  directoryHandle:', directoryHandle.name,
-    );
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', {
-      content,
-      language,
+    files[localPath] = {
+      uri: localPath,
+      name: this.getFileNameFromUri(localPath),
+      content: selectedContent,
+      language: selectedLanguage,
       from: 'file',
       source: `${directoryHandle.name}/${localPath}`,
       directoryHandle,
       fileHandle,
       localPath,
       modified: false,
+      isAsyncApiDocument: this.isAsyncApiContent(selectedContent),
       stat: { mtime: Date.now() },
+    };
+
+    filesState.getState().setProjectFiles(files, {
+      activeFileUri: localPath,
+      fileTreeMode: 'local',
+      projectRoot: directoryHandle.name,
     });
 
-    // Update the editor model
-    if (this.editor) {
-      const model = this.editor.getModel();
-      if (model) model.setValue(content);
-    }
+    this.updateState({
+      content: selectedContent,
+      updateModel: true,
+      sendToServer: false,
+      file: files[localPath],
+    });
 
     toast.dismiss('folder-access');
     toast.success('Folder access granted! File references will now be resolved.');
   }
-
   async importFromURL(url: string): Promise<void> {
     if (!url) {
       throw new Error('URL is required');
@@ -180,24 +315,43 @@ export class EditorService extends AbstractService {
 
     console.log('[DEBUG:editor] importFromURL', url);
 
-    // Update browser URL with ?url= parameter (no page reload)
     const currentUrl = window.location.href.split('?')[0];
     window.history.pushState({}, '', `${currentUrl}?url=${url}`);
 
     return fetch(url)
       .then(res => res.text())
       .then(async text => {
-        const language = this.svcs.formatSvc.retrieveLangauge(text);
+        const language = this.inferLanguageFromUri(url, text);
+        const projectRoot = (() => {
+          try {
+            return new URL(url).host;
+          } catch {
+            return 'Remote Files';
+          }
+        })();
+
+        const mainFile: File = {
+          uri: url,
+          name: this.getFileNameFromUri(url),
+          content: text,
+          from: 'url',
+          source: url,
+          language,
+          modified: false,
+          isAsyncApiDocument: this.isAsyncApiContent(text),
+          stat: { mtime: Date.now() },
+        };
+
+        filesState.getState().setProjectFiles(
+          { [url]: mainFile },
+          { activeFileUri: url, fileTreeMode: 'remote', projectRoot },
+        );
 
         this.updateState({
           content: text,
           updateModel: true,
-          file: {
-            source: url,
-            from: 'url',
-            language,
-            stat: { mtime: Date.now() },
-          },
+          sendToServer: false,
+          file: mainFile,
         });
       })
       .catch(err => {
@@ -205,7 +359,6 @@ export class EditorService extends AbstractService {
         throw err;
       });
   }
-
   async importFile(files: FileList | null) {
     if (files === null || files?.length !== 1) {
       return;
@@ -215,7 +368,6 @@ export class EditorService extends AbstractService {
       return;
     }
 
-    // Validate by extension — MIME types are unreliable across browsers
     const allowedExtensions = ['json', 'yaml', 'yml', 'avsc'];
     const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
     if (!allowedExtensions.includes(ext)) {
@@ -226,40 +378,68 @@ export class EditorService extends AbstractService {
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
-      const content = fileLoadedEvent.target?.result;
+      const content = String(fileLoadedEvent.target?.result || '');
+      const uri = file.name;
+      const language = this.inferLanguageFromUri(uri, content);
+      const importedFile: File = {
+        uri,
+        name: file.name,
+        content,
+        from: 'file',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(content),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
       this.updateState({
-        content: String(content),
+        content,
         updateModel: true,
-        file: {
-          from: 'file',
-          source: undefined,
-          directoryHandle: undefined,
-          fileHandle: undefined,
-          localPath: undefined,
-          stat: { mtime: Date.now() },
-        },
+        sendToServer: false,
+        file: importedFile,
       });
     };
     fileReader.readAsText(file, 'UTF-8');
   }
-
   async importBase64(content: string) {
     try {
       const decoded = this.svcs.formatSvc.decodeBase64(content);
-      this.updateState({ 
-        content: String(decoded), 
-        updateModel: true, 
-        file: { 
-          from: 'base64', 
-          source: undefined, 
-        },
+      const uri = 'base64://document';
+      const language = this.inferLanguageFromUri(uri, String(decoded));
+      const importedFile: File = {
+        uri,
+        name: 'Base64 document',
+        content: String(decoded),
+        from: 'base64',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(String(decoded)),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
+      this.updateState({
+        content: String(decoded),
+        updateModel: true,
+        sendToServer: false,
+        file: importedFile,
       });
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
-
   async importFromShareID(shareID: string) {
     try {
       const response = await fetch(`/share/${shareID}`);
@@ -268,20 +448,36 @@ export class EditorService extends AbstractService {
       }
 
       const data = await response.json();
-      this.updateState({ 
-        content: data.content, 
-        updateModel: true, 
-        file: { 
-          from: 'share', 
-          source: undefined, 
-        },
+      const uri = `share://${shareID}`;
+      const language = this.inferLanguageFromUri(uri, data.content);
+      const importedFile: File = {
+        uri,
+        name: `Shared ${shareID}`,
+        content: data.content,
+        from: 'share',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(data.content),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
+      this.updateState({
+        content: data.content,
+        updateModel: true,
+        sendToServer: false,
+        file: importedFile,
       });
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
-
   async exportAsURL() {
     try {
       const file = filesState.getState().files['asyncapi'];
@@ -538,3 +734,5 @@ export class EditorService extends AbstractService {
     });
   }
 }
+
+

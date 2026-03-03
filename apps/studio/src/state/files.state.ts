@@ -248,20 +248,34 @@ export type File = {
   language: 'json' | 'yaml';
   modified: boolean;
   stat?: FileStat;
-  /** File System Access API handle for the specific file (Stage 4: save-back) */
   fileHandle?: FileSystemFileHandle;
-  /** File System Access API handle for the containing folder (Stage 2/3: local $ref resolution) */
   directoryHandle?: FileSystemDirectoryHandle;
-  /** Relative path of this file within the directoryHandle folder, e.g. "asyncapi.yaml" or "specs/api.yaml" */
   localPath?: string;
+  isAsyncApiDocument?: boolean;
 }
+
+export type FileTreeMode = 'none' | 'local' | 'remote';
 
 export type FilesState = {
   files: Record<string, File>;
+  activeFileUri: string;
+  fileTreeMode: FileTreeMode;
+  projectRoot?: string;
+  fileTreeLoading: boolean;
 }
 
 export type FilesActions = {
   updateFile: (uri: string, file: Partial<File>) => void;
+  setActiveFile: (uri: string) => void;
+  setProjectFiles: (
+    files: Record<string, File>,
+    options?: {
+      activeFileUri?: string;
+      fileTreeMode?: FileTreeMode;
+      projectRoot?: string;
+    },
+  ) => void;
+  setFileTreeLoading: (loading: boolean) => void;
 }
 
 export const filesState = create<FilesState & FilesActions>((set, get) => ({
@@ -271,7 +285,7 @@ export const filesState = create<FilesState & FilesActions>((set, get) => ({
       name: 'asyncapi',
       content: schema,
       from: 'storage',
-      source: documentSource, // Use source from localStorage if available
+      source: documentSource,
       language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
       modified: false,
       stat: {
@@ -279,18 +293,73 @@ export const filesState = create<FilesState & FilesActions>((set, get) => ({
       }
     }
   },
+  activeFileUri: 'asyncapi',
+  fileTreeMode: 'none',
+  projectRoot: undefined,
+  fileTreeLoading: false,
   updateFile(uri: string, file: Partial<File>) {
     const before = get().files[String(uri)];
     const logBefore = before
       ? { from: before.from, source: before.source, localPath: before.localPath, hasDirectoryHandle: !!before.directoryHandle, hasFileHandle: !!before.fileHandle }
       : '(new file)';
     const logPatch = { from: file.from, source: file.source, localPath: file.localPath, hasDirectoryHandle: !!file.directoryHandle, hasFileHandle: !!file.fileHandle };
-    console.log('[DEBUG:filesState] updateFile ▶', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
-    set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
+    console.log('[DEBUG:filesState] updateFile', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
+    set((state) => {
+      const nextFiles: Record<string, File> = {
+        ...state.files,
+        [String(uri)]: { ...state.files[String(uri)] || {}, ...file } as File,
+      };
+      if (String(uri) === 'asyncapi' && state.activeFileUri !== 'asyncapi' && nextFiles[state.activeFileUri]) {
+        nextFiles[state.activeFileUri] = { ...nextFiles[state.activeFileUri], ...file, uri: state.activeFileUri };
+      }
+      if (String(uri) === state.activeFileUri && String(uri) !== 'asyncapi' && nextFiles.asyncapi) {
+        nextFiles.asyncapi = { ...nextFiles.asyncapi, ...file, uri: state.activeFileUri };
+      }
+      return { files: nextFiles };
+    });
     const after = get().files[String(uri)];
     const logAfter = { from: after.from, source: after.source, localPath: after.localPath, hasDirectoryHandle: !!after.directoryHandle, hasFileHandle: !!after.fileHandle };
-    console.log('[DEBUG:filesState] updateFile ◀', uri, '\n  after: ', logAfter);
-  }
+    console.log('[DEBUG:filesState] updateFile', uri, '\n  after: ', logAfter);
+  },
+  setActiveFile(uri: string) {
+    const selected = get().files[String(uri)];
+    if (!selected) {
+      return;
+    }
+    set((state) => ({
+      activeFileUri: uri,
+      files: {
+        ...state.files,
+        asyncapi: {
+          ...state.files.asyncapi,
+          ...selected,
+          uri,
+        },
+      },
+    }));
+  },
+  setProjectFiles(nextProjectFiles, options = {}) {
+    const candidateActiveUri = options.activeFileUri || Object.keys(nextProjectFiles)[0] || 'asyncapi';
+    const selected = nextProjectFiles[candidateActiveUri];
+    const activeFileUri = selected ? candidateActiveUri : 'asyncapi';
+
+    set((state) => ({
+      files: {
+        asyncapi: selected
+          ? { ...state.files.asyncapi, ...selected, uri: activeFileUri }
+          : state.files.asyncapi,
+        ...nextProjectFiles,
+      },
+      activeFileUri,
+      fileTreeMode: options.fileTreeMode ?? state.fileTreeMode,
+      projectRoot: options.projectRoot ?? state.projectRoot,
+      fileTreeLoading: false,
+    }));
+  },
+  setFileTreeLoading(loading: boolean) {
+    set({ fileTreeLoading: loading });
+  },
 }));
 
 export const useFilesState = filesState;
+

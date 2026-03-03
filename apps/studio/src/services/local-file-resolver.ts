@@ -79,6 +79,12 @@ export interface LocalFileResolverOptions {
   directoryHandle: FileSystemDirectoryHandle;
   /** Relative path of the main AsyncAPI file within the folder, e.g. "asyncapi.yaml" or "specs/api.yaml" */
   basePath: string;
+  onReadFile?: (file: {
+    relativePath: string;
+    source: string;
+    content: string;
+    fileHandle: FileSystemFileHandle;
+  }) => Promise<void> | void;
 }
 
 /**
@@ -101,7 +107,7 @@ function extractPath(uri: any): string {
  * (which would fail in the browser with "readFile is not a function").
  */
 export function createLocalFileResolver(options: LocalFileResolverOptions) {
-  const { directoryHandle, basePath } = options;
+  const { directoryHandle, basePath, onReadFile } = options;
   // The source passed to the parser is `folderName/localPath` (e.g. "apis/asyncapi.yml").
   // The parser resolves $refs relative to that source, producing paths like
   // "apis/schemas/User.avsc".  We need to strip the folder name prefix to get
@@ -135,9 +141,16 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
       const fileHandle = await getFileHandleFromPath(directoryHandle, relativePath);
       const file = await fileHandle.getFile();
       const content = await file.text();
+      if (onReadFile) {
+        await onReadFile({
+          relativePath,
+          source: `${directoryHandle.name}/${relativePath}`,
+          content,
+          fileHandle,
+        });
+      }
       console.log('[DEBUG:resolver] read() success for', relativePath, `(${content.length} chars)`);
       return content;
     },
   };
 }
-

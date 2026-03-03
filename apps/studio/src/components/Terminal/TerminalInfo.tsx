@@ -17,6 +17,10 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const document = useDocumentsState(state => state.documents['asyncapi']);
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
 
+  if (!document) {
+    return null;
+  }
+
   const liveServer = useAppState(state => state.liveServer);
   const actualVersion = document.document?.version() || '2.0.0';
   const latestVersion = specificationSvc.latestVersion;

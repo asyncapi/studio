@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '@/state';
 import { NAVIGATION_SECTION_STYLE, NAVIGATION_SUB_SECTION_STYLE } from './Navigationv3';
+import { FileTreeView } from './FileTreeView';
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
 
 interface NavigationProps {
@@ -343,13 +344,16 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
 
   if (!rawSpec || !document) {
     return (
-      <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center bg-gray-800">
-        {loading ?(
-          <div className="rotating-wheel"></div>
-        ) : (
-          <p className='text-white'>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
-        )
-        }
+      <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
+        <FileTreeView />
+        <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center bg-gray-800">
+          {loading ?(
+            <div className="rotating-wheel"></div>
+          ) : (
+            <p className='text-white'>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
+          )
+          }
+        </div>
       </div>
     );
   }
@@ -357,6 +361,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const components = document.components();
   return (
     <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`}>
+      <FileTreeView />
       <ul>
         <li className="mb-4">
           <div

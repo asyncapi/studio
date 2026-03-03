@@ -54,7 +54,6 @@ export class ApplicationService extends AbstractService {
 
     console.log('[DEBUG:app] fetchResource', { url, base64: !!base64, share });
 
-    const { updateFile } = filesState.getState();
     let content = '';
     if (url) {
       content = await fetch(url).then((res) => res.text());
@@ -66,23 +65,39 @@ export class ApplicationService extends AbstractService {
       content = data.content;
     }
 
-    const language = this.svcs.formatSvc.retrieveLangauge(content);
+    const detectedLanguage = this.svcs.formatSvc.retrieveLangauge(content);
+    const language: 'json' | 'yaml' = detectedLanguage === 'json' ? 'json' : 'yaml';
     const source = url || undefined;
-    let from = 'url';
-
-    if (base64) {
-      from = 'base64';
-    } else if (share) {
-      from = 'share';
-    }
-
-    updateFile('asyncapi', {
+    const from = base64 ? 'base64' : share ? 'share' : 'url';
+    const uri = url || (share ? `share://${share}` : 'base64://document');
+    const file = {
+      uri,
+      name: uri.split('/').pop() || uri,
       content,
       language,
       source,
       from: from as 'url' | 'base64' | 'share',
+      modified: false,
       stat: { mtime: Date.now() },
-    });
+      isAsyncApiDocument: /^asyncapi\s*:/m.test(String(content).trim()) || (String(content).trim().startsWith('{') && (() => {
+        try {
+          return !!JSON.parse(String(content)).asyncapi;
+        } catch {
+          return false;
+        }
+      })()),
+    };
+    const projectRoot = url ? (() => {
+      try {
+        return new URL(url).host;
+      } catch {
+        return 'Remote Files';
+      }
+    })() : undefined;
+    filesState.getState().setProjectFiles(
+      { [uri]: file },
+      { activeFileUri: uri, fileTreeMode: url ? 'remote' : 'none', projectRoot },
+    );
   }
 
   private hidePreloader() {

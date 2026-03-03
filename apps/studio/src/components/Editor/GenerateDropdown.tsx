@@ -10,7 +10,7 @@ import { useServices } from '@/services';
 
 export const GenerateDropdown: React.FC = () => {
   const isInvalidDocument = !useDocumentsState(state => 
-    state.documents['asyncapi'].valid
+    state.documents['asyncapi']?.valid
   );
   const { editorSvc } = useServices();
 
@@ -66,3 +66,4 @@ export const GenerateDropdown: React.FC = () => {
     </Dropdown>
   );
 };
+
