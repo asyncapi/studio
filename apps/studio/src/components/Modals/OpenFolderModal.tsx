@@ -8,13 +8,18 @@ import { useServices } from '../../services';
 export const OpenFolderModal = create(() => {
   const { editorSvc } = useServices();
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    const toastId = 'open-folder';
     console.log('[DEBUG:ui] Open Folder — Continue clicked');
-    toast.promise(editorSvc.grantFolderAccess(), {
-      loading: 'Granting folder access...',
-      success: 'Folder access granted! File references will now be resolved.',
-      error: 'Failed to grant folder access.',
-    });
+    toast.loading('Granting folder access...', { id: toastId });
+    try {
+      await editorSvc.grantFolderAccess();
+      toast.success('Folder access granted! File references will now be resolved.', { id: toastId });
+    } catch (err: unknown) {
+      console.error('[DEBUG:ui] Open Folder failed', err);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Failed to grant folder access: ${message}`, { id: toastId });
+    }
   };
 
   return (
@@ -44,4 +49,3 @@ export const OpenFolderModal = create(() => {
     </ConfirmModal>
   );
 });
-

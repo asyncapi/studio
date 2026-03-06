@@ -244,11 +244,21 @@ export class EditorService extends AbstractService {
 
   async grantFolderAccess(): Promise<void> {
     const folderAccessToastId = 'folder-access';
+    if (!window.isSecureContext) {
+      throw new Error('Open Folder requires a secure context (HTTPS or localhost).');
+    }
+    if (
+      typeof window.showDirectoryPicker !== 'function' ||
+      typeof window.showOpenFilePicker !== 'function'
+    ) {
+      throw new Error('This browser context does not support the File System Access API.');
+    }
     let directoryHandle: DirectoryHandle;
     try {
       directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
       if (err?.name === 'AbortError') return;
+      console.error('[DEBUG:editor] showDirectoryPicker failed', err);
       throw err;
     }
 
@@ -263,6 +273,7 @@ export class EditorService extends AbstractService {
     } catch (err: any) {
       toast.dismiss(folderAccessToastId);
       if (err?.name === 'AbortError') return;
+      console.error('[DEBUG:editor] showOpenFilePicker failed', err);
       throw err;
     }
 
