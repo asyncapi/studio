@@ -48,16 +48,20 @@ export const documentsState = create<DocumentsState & DocumentsActions>(set => (
   },
   updateDocument(uri: string, document: Partial<Document>) {
     set(state => ({
-      documents: {
-        ...state.documents,
-        [String(uri)]: {
-          uri: String(uri),
-          diagnostics: emptyDiagnostics,
-          valid: false,
-          ...state.documents[String(uri)] || {},
-          ...document,
-        }
-      }
+      documents: (() => {
+        const key = String(uri);
+        const existing = state.documents[key] || {};
+        const merged = { ...existing, ...document };
+        return {
+          ...state.documents,
+          [key]: {
+            ...merged,
+            uri: key,
+            diagnostics: merged.diagnostics ?? emptyDiagnostics,
+            valid: merged.valid ?? false,
+          },
+        };
+      })(),
     }));
   },
 }));
