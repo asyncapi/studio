@@ -16,19 +16,18 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
   const file = useFilesState(state => state.files['asyncapi']);
   const document = useDocumentsState(state => state.documents['asyncapi']);
   const autoSaving = useSettingsState(state => state.editor.autoSaving);
-
-  if (!document) {
-    return null;
-  }
-
   const liveServer = useAppState(state => state.liveServer);
-  const actualVersion = document.document?.version() || '2.0.0';
-  const latestVersion = specificationSvc.latestVersion;
 
   const onNonLatestClick = useCallback((e: {stopPropagation: ()=>void}) => {
     e.stopPropagation();
     show(ConvertToLatestModal);
   }, []);
+
+  if (!document) {
+    return null;
+  }
+  const actualVersion = document.document?.version() || '2.0.0';
+  const latestVersion = specificationSvc.latestVersion;
 
   return (
     <div className="flex flex-row px-2">

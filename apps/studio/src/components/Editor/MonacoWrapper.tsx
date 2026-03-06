@@ -14,9 +14,6 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   const { editorSvc } = useServices();
   const { autoSaving, savingDelay } = useSettingsState(state => state.editor);
   const file = useFilesState(state => state.files['asyncapi']);
-  if (!file) {
-    return null;
-  }
 
   const onChange = useMemo(() => {
     return debounce((v: string) => {
@@ -26,7 +23,11 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
       autoSaving && editorSvc.saveToLocalStorage(v, false);
       // subscribeToFiles will trigger a re-parse when content changes
     }, savingDelay);
-  }, [autoSaving, savingDelay, file?.source]);
+  }, [autoSaving, savingDelay, file?.source, editorSvc]);
+
+  if (!file) {
+    return null;
+  }
 
   return (
     <MonacoEditor
