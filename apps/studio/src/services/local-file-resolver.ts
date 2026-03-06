@@ -1,3 +1,5 @@
+import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
+
 /**
  * Local File Resolver for AsyncAPI Parser (Stage 2/3)
  *
@@ -40,9 +42,9 @@ export function normaliseRelativePath(basePath: string, relativePath: string): s
  * Throws descriptive errors if intermediate directories or the final file are not found.
  */
 export async function getFileHandleFromPath(
-  directoryHandle: FileSystemDirectoryHandle,
+  directoryHandle: DirectoryHandle,
   filePath: string,
-): Promise<FileSystemFileHandle> {
+): Promise<FileHandle> {
   const parts = filePath.split('/').filter(Boolean);
   const fileName = parts.pop();
 
@@ -76,14 +78,14 @@ export async function getFileHandleFromPath(
 }
 
 export interface LocalFileResolverOptions {
-  directoryHandle: FileSystemDirectoryHandle;
+  directoryHandle: DirectoryHandle;
   /** Relative path of the main AsyncAPI file within the folder, e.g. "asyncapi.yaml" or "specs/api.yaml" */
   basePath: string;
   onReadFile?: (file: {
     relativePath: string;
     source: string;
     content: string;
-    fileHandle: FileSystemFileHandle;
+    fileHandle: FileHandle;
   }) => Promise<void> | void;
 }
 
@@ -112,7 +114,7 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
   // The parser resolves $refs relative to that source, producing paths like
   // "apis/schemas/User.avsc".  We need to strip the folder name prefix to get
   // the path relative to the directoryHandle (e.g. "schemas/User.avsc").
-  const folderPrefix = directoryHandle.name + '/';
+  const folderPrefix = `${directoryHandle.name  }/`;
 
   console.log('[DEBUG:resolver] createLocalFileResolver created', { basePath, folderName: directoryHandle.name, folderPrefix });
 

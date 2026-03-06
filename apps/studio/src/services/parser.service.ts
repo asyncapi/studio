@@ -65,7 +65,7 @@ export class ParserService extends AbstractService {
     // Inject local file resolver when the file was opened from local disk with folder access
     const file = active;
     const useLocalResolver = !!(file?.from === 'file' && file.directoryHandle && file.localPath);
-    const useRemoteResolver = !!(file?.from === 'url' && /^https?:\/\//.test(file.source || ''));
+    const useRemoteResolver = !!(file?.from === 'url' && (/^https?:\/\//).test(file.source || ''));
     console.log(
       '[DEBUG:parser] parse()', uri,
       '\n  file.from:', file?.from,
@@ -211,7 +211,7 @@ export class ParserService extends AbstractService {
         return false;
       }
     }
-    return /^asyncapi\s*:/m.test(trimmed);
+    return (/^asyncapi\s*:/m).test(trimmed);
   }
 
   private createRemoteTrackingResolver(schema: 'http' | 'https') {
@@ -222,7 +222,7 @@ export class ParserService extends AbstractService {
       order: 1,
       canRead(uri: any) {
         const url = String(uri);
-        return /^https?:\/\//.test(url);
+        return (/^https?:\/\//).test(url);
       },
       async read(uri: any): Promise<string> {
         const url = String(uri);

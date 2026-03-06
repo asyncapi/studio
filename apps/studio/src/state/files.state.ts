@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
 // Helper function to extract content and source from localStorage
 const getDocumentFromLocalStorage = () => {
@@ -248,8 +249,8 @@ export type File = {
   language: 'json' | 'yaml';
   modified: boolean;
   stat?: FileStat;
-  fileHandle?: FileSystemFileHandle;
-  directoryHandle?: FileSystemDirectoryHandle;
+  fileHandle?: FileHandle;
+  directoryHandle?: DirectoryHandle;
   localPath?: string;
   isAsyncApiDocument?: boolean;
 }

@@ -68,7 +68,12 @@ export class ApplicationService extends AbstractService {
     const detectedLanguage = this.svcs.formatSvc.retrieveLangauge(content);
     const language: 'json' | 'yaml' = detectedLanguage === 'json' ? 'json' : 'yaml';
     const source = url || undefined;
-    const from = base64 ? 'base64' : share ? 'share' : 'url';
+    let from: 'url' | 'base64' | 'share' = 'url';
+    if (base64) {
+      from = 'base64';
+    } else if (share) {
+      from = 'share';
+    }
     const uri = url || (share ? `share://${share}` : 'base64://document');
     const file = {
       uri,
@@ -76,10 +81,10 @@ export class ApplicationService extends AbstractService {
       content,
       language,
       source,
-      from: from as 'url' | 'base64' | 'share',
+      from,
       modified: false,
       stat: { mtime: Date.now() },
-      isAsyncApiDocument: /^asyncapi\s*:/m.test(String(content).trim()) || (String(content).trim().startsWith('{') && (() => {
+      isAsyncApiDocument: (/^asyncapi\s*:/m).test(String(content).trim()) || (String(content).trim().startsWith('{') && (() => {
         try {
           return !!JSON.parse(String(content)).asyncapi;
         } catch {

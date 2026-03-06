@@ -135,7 +135,7 @@ export const FileTreeView: React.FC = () => {
   );
 
   const remoteTree = useMemo(() => {
-    const remoteFiles = projectFiles.filter((file) => /^https?:\/\//.test(file.uri));
+    const remoteFiles = projectFiles.filter((file) => (/^https?:\/\//).test(file.uri));
     const mainRemote = remoteFiles.find((file) => file.isAsyncApiDocument) || remoteFiles[0];
     const baseDir = (() => {
       if (!mainRemote) return undefined;

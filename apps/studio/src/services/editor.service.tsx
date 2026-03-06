@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import fileDownload from 'js-file-download';
 
 import { appState, documentsState, filesState, settingsState } from '@/state';
+import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser';
@@ -91,7 +92,7 @@ export class EditorService extends AbstractService {
         return false;
       }
     }
-    return /^asyncapi\s*:/m.test(trimmed);
+    return (/^asyncapi\s*:/m).test(trimmed);
   }
 
   private hasUnsupportedEditorExtension(uri: string): boolean {
@@ -115,12 +116,12 @@ export class EditorService extends AbstractService {
     setFileTreeLoading(true);
     try {
       let content = target.content;
-      let fileHandle = target.fileHandle;
+      const fileHandle = target.fileHandle;
       if (!content && fileHandle) {
         const file = await fileHandle.getFile();
         content = await file.text();
       }
-      if (!content && /^https?:\/\//.test(uri)) {
+      if (!content && (/^https?:\/\//).test(uri)) {
         content = await fetch(uri).then((res) => res.text());
       }
 
@@ -159,7 +160,7 @@ export class EditorService extends AbstractService {
   }
 
   private async collectLocalProjectFiles(
-    directoryHandle: FileSystemDirectoryHandle,
+    directoryHandle: DirectoryHandle,
     basePath = '',
     rootName = directoryHandle.name,
   ): Promise<Record<string, File>> {
@@ -172,7 +173,7 @@ export class EditorService extends AbstractService {
         Object.assign(files, nested);
       } else if (entry.kind === 'file') {
         const localPath = basePath ? `${basePath}/${entry.name}` : entry.name;
-        const fileHandle = entry as FileSystemFileHandle;
+        const fileHandle = entry as FileHandle;
         try {
           const file = await fileHandle.getFile();
           const content = await file.text();
@@ -242,7 +243,8 @@ export class EditorService extends AbstractService {
   }
 
   async grantFolderAccess(): Promise<void> {
-    let directoryHandle: FileSystemDirectoryHandle;
+    const folderAccessToastId = 'folder-access';
+    let directoryHandle: DirectoryHandle;
     try {
       directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
@@ -250,8 +252,8 @@ export class EditorService extends AbstractService {
       throw err;
     }
 
-    toast.loading('Please select the AsyncAPI file within the folder...', { id: 'folder-access' });
-    let fileHandle: FileSystemFileHandle;
+    toast.loading('Please select the AsyncAPI file within the folder...', { id: folderAccessToastId });
+    let fileHandle: FileHandle;
     try {
       const [handle] = await window.showOpenFilePicker({
         types: [{ description: 'AsyncAPI files', accept: { 'text/*': ['.yaml', '.yml', '.json'] } }],
@@ -259,14 +261,14 @@ export class EditorService extends AbstractService {
       });
       fileHandle = handle;
     } catch (err: any) {
-      toast.dismiss('folder-access');
+      toast.dismiss(folderAccessToastId);
       if (err?.name === 'AbortError') return;
       throw err;
     }
 
     const pathParts = await directoryHandle.resolve(fileHandle);
     if (!pathParts) {
-      toast.dismiss('folder-access');
+      toast.dismiss(folderAccessToastId);
       toast.error('Selected file is not within the chosen folder. Please select a file inside the folder.');
       return;
     }
@@ -305,7 +307,7 @@ export class EditorService extends AbstractService {
       file: files[localPath],
     });
 
-    toast.dismiss('folder-access');
+    toast.dismiss(folderAccessToastId);
     toast.success('Folder access granted! File references will now be resolved.');
   }
   async importFromURL(url: string): Promise<void> {
@@ -734,5 +736,4 @@ export class EditorService extends AbstractService {
     });
   }
 }
-
 
