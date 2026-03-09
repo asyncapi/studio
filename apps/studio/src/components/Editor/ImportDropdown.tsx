@@ -34,10 +34,10 @@ export const ImportDropdown: React.FC = () => {
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Open Folder"
-            onClick={() => show(OpenFolderModal)}
+            title="Import from URL"
+            onClick={() => show(ImportURLModal)}
           >
-            Open Folder
+            Import from URL
           </button>
         </li>
 
@@ -45,10 +45,10 @@ export const ImportDropdown: React.FC = () => {
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Import from URL"
-            onClick={() => show(ImportURLModal)}
+            title="Open Folder"
+            onClick={() => show(OpenFolderModal)}
           >
-            Import from URL
+            Open Folder
           </button>
         </li>
 

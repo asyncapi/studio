@@ -270,10 +270,10 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       <ul className="bg-gray-800 text-md text-white">
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
-            {openFolderButton}
+            {importUrlButton}
           </li>
           <li className="hover:bg-gray-900">
-            {importUrlButton}
+            {openFolderButton}
           </li>
           <li className="hover:bg-gray-900">
             {importFileButton}
