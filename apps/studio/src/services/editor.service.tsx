@@ -4,9 +4,8 @@ import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser';
 import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
-import fileDownload from 'js-file-download';
 
-import { appState, documentsState, filesState, settingsState } from '@/state';
+import { appState, documentsState, filesState } from '@/state';
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
@@ -48,7 +47,12 @@ export class EditorService extends AbstractService {
     // apply save command
     editor.addCommand(
       KeyMod.CtrlCmd | KeyCode.KeyS,
-      () => this.saveToLocalStorage(),
+      () => {
+        this.saveCurrentFile().catch((err) => {
+          console.error(err);
+          toast.error('Failed to save document.');
+        });
+      },
     );
     
     appState.setState({ initialized: true });
@@ -232,7 +236,7 @@ export class EditorService extends AbstractService {
     updateFile('asyncapi', {
       language,
       content,
-      modified: this.getFromLocalStorage() !== content,
+      modified: file.modified ?? true,
       ...file,
     });
   }
@@ -319,7 +323,6 @@ export class EditorService extends AbstractService {
     });
 
     toast.dismiss(folderAccessToastId);
-    toast.success('Folder access granted! File references will now be resolved.');
   }
   async importFromURL(url: string): Promise<void> {
     if (!url) {
@@ -552,108 +555,83 @@ export class EditorService extends AbstractService {
       console.error(err);
       throw err;
     }
-  }
-
-  async saveAsYaml() {
-    try {
-      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
-      if (yamlContent) {
-        this.downloadFile(yamlContent, `${this.fileName}.yaml`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  async saveAsJSON() {
-    try {
-      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
-      if (jsonContent) {
-        this.downloadFile(jsonContent, `${this.fileName}.json`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  saveToLocalStorage(editorValue?: string, notify = true) {
-    editorValue = editorValue || this.value;
-
-    // Get current source URL to preserve it
+  }  private getCurrentContentByLanguage() {
     const currentFile = filesState.getState().files['asyncapi'];
-    const source = currentFile?.source;
+    if (!currentFile) {
+      throw new Error('No active file to save.');
+    }
 
-    // Store both content and source in localStorage
-    const documentData = {
-      content: editorValue,
-      source: source || undefined,
+    const language = currentFile.language;
+    const editorContent = this.editor?.getModel()?.getValue();
+    const isValidContent = (value: unknown): value is string =>
+      typeof value === 'string' && value !== 'undefined';
+    let content: string | null = null;
+    if (isValidContent(editorContent)) {
+      content = editorContent;
+    } else if (isValidContent(currentFile.content)) {
+      content = currentFile.content;
+    }
+    if (!isValidContent(content)) {
+      throw new Error('Failed to get current document content for saving.');
+    }
+
+    return {
+      file: currentFile,
+      language,
+      content,
+      extension: language === 'yaml' ? 'yaml' : 'json',
+      mimeType: language === 'yaml' ? 'text/yaml' : 'application/json',
     };
-    localStorage.setItem('document', JSON.stringify(documentData));
+  }
 
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', {
-      source, // Preserve the source URL
-      modified: false,
+  async saveCurrentFile() {
+    const { file, language, content, extension, mimeType } = this.getCurrentContentByLanguage();
+
+    if (file.from === 'file' && file.fileHandle) {
+      const writable = await file.fileHandle.createWritable();
+      await writable.write(content);
+      await writable.close();
+      filesState.getState().updateFile('asyncapi', {
+        content,
+        language,
+        modified: false,
+        stat: { mtime: Date.now() },
+      });
+      return;
+    }
+
+    if (typeof window.showSaveFilePicker !== 'function') {
+      throw new Error('This browser does not support saving files through Save As dialog.');
+    }
+
+    const suggestedFileName = file.name?.includes('.')
+      ? file.name
+      : `${file.name || 'asyncapi'}.${extension}`;
+    const fileHandle = await window.showSaveFilePicker({
+      suggestedName: suggestedFileName,
+      types: [
+        {
+          description: language === 'yaml' ? 'YAML file' : 'JSON file',
+          accept: { [mimeType]: [`.${extension}`] },
+        },
+      ],
     });
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
 
-    if (notify) {
-      if (settingsState.getState().editor.autoSaving) {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Studio is currently saving your work automatically 💪
-            </span>
-          </div>,
-        );
-      } else {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Document succesfully saved to the local storage!
-            </span>
-          </div>,
-        );
-      }
-    }
-  }
-
-  getFromLocalStorage() {
-    const stored = localStorage.getItem('document');
-    if (!stored) return null;
-
-    try {
-      // Try to parse as JSON (new format)
-      const parsed = JSON.parse(stored);
-      if (parsed && typeof parsed === 'object' && 'content' in parsed) {
-        return parsed.content; // Return just the content for compatibility
-      }
-    } catch {
-      // If parsing fails, it's the old format (plain string)
-      return stored;
-    }
-
-    // Fallback to treating as plain string
-    return stored;
-  }
-
-  getSourceFromLocalStorage() {
-    const stored = localStorage.getItem('document');
-    if (!stored) return undefined;
-
-    try {
-      // Try to parse as JSON (new format)
-      const parsed = JSON.parse(stored);
-      if (parsed && typeof parsed === 'object' && 'source' in parsed) {
-        return parsed.source;
-      }
-    } catch {
-      // If parsing fails, it's the old format (no source)
-      return undefined;
-    }
-
-    return undefined;
+    filesState.getState().updateFile('asyncapi', {
+      content,
+      language,
+      name: fileHandle.name || suggestedFileName,
+      from: 'file',
+      source: undefined,
+      fileHandle,
+      directoryHandle: undefined,
+      localPath: undefined,
+      modified: false,
+      stat: { mtime: Date.now() },
+    });
   }
 
   private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
@@ -728,12 +706,6 @@ export class EditorService extends AbstractService {
     default: return 'diagnostic-warning';
     }
   }
-
-  private fileName = 'asyncapi';
-  private downloadFile(content: string, fileName: string) {
-    return fileDownload(content, fileName);
-  }
-
   private subcribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       const newDocuments = state.documents;

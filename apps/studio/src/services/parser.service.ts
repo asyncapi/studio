@@ -252,7 +252,7 @@ export class ParserService extends AbstractService {
           diagnostic.message.includes('File references are not yet supported'))
       ) {
         diagnostic.message =
-          'Local file reference detected. Click Import → Grant Folder Access to resolve this reference.';
+          'Local file reference detected.  Open this file using "Open Folder" to grant folder access and resolve relative references.';
       }
     });
     

@@ -2,101 +2,57 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { FaSave } from 'react-icons/fa';
 
-import { Dropdown, Tooltip } from '../common';
+import { Tooltip } from '../common';
 import { useServices } from '@/services';
-import { useDocumentsState, useFilesState } from '../../state';
+import { useFilesState } from '../../state';
 
-export const SaveDropdown: React.FC = () => {
+export const SaveButton: React.FC = () => {
   const { editorSvc } = useServices();
-  const isInvalidDocument = !useDocumentsState(state => 
-    state.documents['asyncapi']?.valid
-  );
-  const language = useFilesState(state => state.files['asyncapi'].language);
+  const file = useFilesState(state => state.files['asyncapi']);
+  const isDirectSave = file?.from === 'file' && !!file?.fileHandle;
+  const baseLabel = isDirectSave ? 'Save' : 'Export';
+  const tooltipText = file?.modified ? baseLabel : `${baseLabel} (saved)`;
 
   return (
-    <Dropdown
-      opener={
-        <Tooltip content="Save" placement="top" hideOnClick={true}>
-          <div className="bg-inherit">
-            <FaSave />
-          </div>
-        </Tooltip>
-      }
-      buttonHoverClassName="text-gray-500 hover:text-white"
-      dataTest="button-save-dropdown"
-    >
-      <ul className="bg-gray-800 text-md text-white">
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
-            title={`Save as ${language === 'yaml' ? 'YAML' : 'JSON'}`}
-            onClick={() => {
-              toast.promise(
-                language === 'yaml'
-                  ? editorSvc.saveAsYaml()
-                  : editorSvc.saveAsJSON(),
-                {
-                  loading: 'Saving...',
-                  success: (
-                    <div>
-                      <span className="block text-bold">
-                        Document succesfully saved!
-                      </span>
-                    </div>
-                  ),
-                  error: (
-                    <div>
-                      <span className="block text-bold text-red-400">
-                        Failed to save document.
-                      </span>
-                    </div>
-                  ),
-                },
-              );
-            }}
-            disabled={isInvalidDocument}
-          >
-            Save as {language === 'yaml' ? 'YAML' : 'JSON'}
-          </button>
-        </li>
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
-            title={`Convert and save as ${language === 'yaml' ? 'JSON' : 'YAML'}`}
-            onClick={() => {
-              toast.promise(
-                language === 'yaml'
-                  ? editorSvc.saveAsJSON()
-                  : editorSvc.saveAsYaml(),
-                {
-                  loading: 'Saving...',
-                  success: (
-                    <div>
-                      <span className="block text-bold">
-                        Document succesfully converted and saved!
-                      </span>
-                    </div>
-                  ),
-                  error: (
-                    <div>
-                      <span className="block text-bold text-red-400">
-                        Failed to convert and save document.
-                      </span>
-                    </div>
-                  ),
-                },
-              );
-            }}
-            disabled={isInvalidDocument}
-          >
-            Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
-          </button>
-        </li>
-       
-      </ul>
-    </Dropdown>
+    <Tooltip content={tooltipText} placement="top" hideOnClick={true}>
+      <button
+        type="button"
+        className="bg-inherit px-2 disabled:cursor-not-allowed"
+        title={tooltipText}
+        onClick={() => {
+          toast.promise(
+            editorSvc.saveCurrentFile(),
+            {
+              loading: 'Saving...',
+              success: (
+                <div>
+                  <span className="block text-bold">
+                    Document succesfully saved!
+                  </span>
+                </div>
+              ),
+              error: (
+                <div>
+                  <span className="block text-bold text-red-400">
+                    Failed to save document.
+                  </span>
+                </div>
+              ),
+            },
+          );
+        }}
+        disabled={!file?.modified}
+        data-test="button-save-dropdown"
+      >
+        <FaSave
+          className={
+            !file?.modified
+              ? 'text-gray-600'
+              : 'text-gray-500 hover:text-white'
+          }
+        />
+      </button>
+    </Tooltip>
   );
 };
 

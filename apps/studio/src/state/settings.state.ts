@@ -2,10 +2,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type SettingsState = {
-  editor: {
-    autoSaving: boolean;
-    savingDelay: number;
-  };
   governance: {
     show: {
       warnings: boolean;
@@ -21,10 +17,6 @@ export type SettingsState = {
 export const settingsState = create(
   persist<SettingsState>(() => 
     ({
-      editor: {
-        autoSaving: true,
-        savingDelay: 625,
-      },
       governance: {
         show: {
           warnings: true,

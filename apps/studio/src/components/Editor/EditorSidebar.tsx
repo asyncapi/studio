@@ -4,7 +4,7 @@ import { useFilesState } from '../../state';
 import { ShareButton } from './ShareButton';
 import { ImportDropdown } from './ImportDropdown';
 import { GenerateDropdown } from './GenerateDropdown';
-import { SaveDropdown } from './SaveDropdown';
+import { SaveButton } from './SaveDropdown';
 import { ConvertDropdown } from './ConvertDropdown';
 
 interface EditorSidebarProps {}
@@ -12,17 +12,22 @@ interface EditorSidebarProps {}
 export const EditorSidebar: React.FunctionComponent<
   EditorSidebarProps
 > = () => {
-  const { source, from } = useFilesState((state) => state.files['asyncapi']);
+  const { source, from, localPath, uri } = useFilesState((state) => state.files['asyncapi']);
 
   let documentFromText = '';
   if (from === 'storage') {
     documentFromText = 'From localStorage';
+  } else if (from === 'file') {
+    const path = source || localPath || uri;
+    documentFromText = path ? `From local file ${path}` : 'From local file';
+  } else if (from === 'url') {
+    documentFromText = `From URL ${source || uri || ''}`.trim();
   } else if (from === 'base64') {
     documentFromText = 'From Base64';
   } else if (from === 'share') {
     documentFromText = 'From Shared';
   } else {
-    documentFromText = `From URL ${source}`;
+    documentFromText = source || uri ? `From ${source || uri}` : 'From unknown source';
   }
 
   return (
@@ -49,7 +54,7 @@ export const EditorSidebar: React.FunctionComponent<
               <GenerateDropdown />
             </li>
             <li>
-              <SaveDropdown />
+              <SaveButton />
             </li>
             <li>
               <ConvertDropdown />
