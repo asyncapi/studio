@@ -29,10 +29,10 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-      title="Open URL"
+      title="Import from URL"
       onClick={() => show(ImportURLModal)}
     >
-      Open URL
+      Import from URL
     </button>
   );
 
@@ -52,7 +52,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   const importFileButton = (
     <label
       className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
-      title="Open File"
+      title="Import File"
     >
       <input
         ref={fileInputRef}
@@ -81,7 +81,7 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           if (fileInputRef.current) fileInputRef.current.value = '';
         }}
       />
-      Open File
+      Import File
     </label>
   );
 
@@ -270,13 +270,13 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
       <ul className="bg-gray-800 text-md text-white">
         <div className="border-b border-gray-700">
           <li className="hover:bg-gray-900">
+            {openFolderButton}
+          </li>
+          <li className="hover:bg-gray-900">
             {importUrlButton}
           </li>
           <li className="hover:bg-gray-900">
             {importFileButton}
-          </li>
-          <li className="hover:bg-gray-900">
-            {openFolderButton}
           </li>
           <li className="hover:bg-gray-900">
             {importBase64Button}

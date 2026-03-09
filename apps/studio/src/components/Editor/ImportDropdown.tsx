@@ -34,17 +34,28 @@ export const ImportDropdown: React.FC = () => {
           <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Open URL"
+            title="Open Folder"
+            onClick={() => show(OpenFolderModal)}
+          >
+            Open Folder
+          </button>
+        </li>
+
+        <li className="hover:bg-gray-900">
+          <button
+            type="button"
+            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+            title="Import from URL"
             onClick={() => show(ImportURLModal)}
           >
-                Open URL
+            Import from URL
           </button>
         </li>
 
         <li className="hover:bg-gray-900">
           <label
             className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
-            title="Open File"
+            title="Import File"
           >
             <input
               ref={fileInputRef}
@@ -73,19 +84,8 @@ export const ImportDropdown: React.FC = () => {
                 if (fileInputRef.current) fileInputRef.current.value = '';
               }}
             />
-            Open File
+            Import File
           </label>
-        </li>
-
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Open Folder"
-            onClick={() => show(OpenFolderModal)}
-          >
-            Open Folder
-          </button>
         </li>
 
         <li className="hover:bg-gray-900">
