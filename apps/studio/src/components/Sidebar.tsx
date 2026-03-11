@@ -88,23 +88,12 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
     {
       name: 'template',
       title: 'Template preview',
-      isActive: show.secondaryPanel && secondaryPanelType === 'template',
+      isActive: show.secondaryPanel && (secondaryPanelType === 'template' || secondaryPanelType === 'avro'),
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'Template preview',
       enabled: true,
       dataTest: 'button-template-preview',
-    },
-    // avro preview
-    {
-      name: 'avro',
-      title: 'Avro preview',
-      isActive: show.secondaryPanel && secondaryPanelType === 'avro',
-      onClick: () => updateState('secondaryPanel', 'avro'),
-      icon: <VscGraph className="w-5 h-5" />,
-      tooltip: 'Avro preview',
-      enabled: true,
-      dataTest: 'button-avro-preview',
     },
     // visuliser
     {
@@ -114,7 +103,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
-      enabled: !isV3,
+      enabled: true, // !isV3, this is already compatible with v3
       dataTest: 'button-blocks-visualiser',
     },
     // newFile
