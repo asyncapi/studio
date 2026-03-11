@@ -13,8 +13,12 @@ export const OpenFolderModal = create(() => {
     console.log('[DEBUG:ui] Open Folder — Continue clicked');
     toast.loading('Granting folder access...', { id: toastId });
     try {
-      await editorSvc.grantFolderAccess();
-      toast.success('Folder access granted! File references will now be resolved.', { id: toastId });
+      const granted = await editorSvc.grantFolderAccess();
+      if (granted) {
+        toast.success('Folder access granted! File references will now be resolved.', { id: toastId });
+      } else {
+        toast.dismiss(toastId);
+      }
     } catch (err: unknown) {
       console.error('[DEBUG:ui] Open Folder failed', err);
       const message = err instanceof Error ? err.message : 'Unknown error';

@@ -2,9 +2,11 @@ import { AbstractService } from './abstract.service';
 
 import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser';
+import { show } from '@ebay/nice-modal-react';
 import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 
+import { BrowserNotSupportedModal } from '@/components/Modals';
 import { appState, documentsState, filesState } from '@/state';
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
@@ -265,7 +267,7 @@ export class EditorService extends AbstractService {
     this.updateState({ content: converted, updateModel: true });
   }
 
-  async grantFolderAccess(): Promise<void> {
+  async grantFolderAccess(): Promise<boolean> {
     const folderAccessToastId = 'folder-access';
     if (!window.isSecureContext) {
       throw new Error('Open Folder requires a secure context (HTTPS or localhost).');
@@ -274,13 +276,16 @@ export class EditorService extends AbstractService {
       typeof window.showDirectoryPicker !== 'function' ||
       typeof window.showOpenFilePicker !== 'function'
     ) {
-      throw new Error('This browser context does not support the File System Access API.');
+      show(BrowserNotSupportedModal, {
+        isBrave: await this.isBraveBrowser(),
+      });
+      return false;
     }
     let directoryHandle: DirectoryHandle;
     try {
       directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
-      if (err?.name === 'AbortError') return;
+      if (err?.name === 'AbortError') return false;
       console.error('[DEBUG:editor] showDirectoryPicker failed', err);
       throw err;
     }
@@ -295,7 +300,7 @@ export class EditorService extends AbstractService {
       fileHandle = handle;
     } catch (err: any) {
       toast.dismiss(folderAccessToastId);
-      if (err?.name === 'AbortError') return;
+      if (err?.name === 'AbortError') return false;
       console.error('[DEBUG:editor] showOpenFilePicker failed', err);
       throw err;
     }
@@ -304,7 +309,7 @@ export class EditorService extends AbstractService {
     if (!pathParts) {
       toast.dismiss(folderAccessToastId);
       toast.error('Selected file is not within the chosen folder. Please select a file inside the folder.');
-      return;
+      return false;
     }
 
     const localPath = pathParts.join('/');
@@ -342,6 +347,19 @@ export class EditorService extends AbstractService {
     });
 
     toast.dismiss(folderAccessToastId);
+    return true;
+  }
+
+  private async isBraveBrowser(): Promise<boolean> {
+    if (!navigator.brave || typeof navigator.brave.isBrave !== 'function') {
+      return false;
+    }
+
+    try {
+      return await navigator.brave.isBrave();
+    } catch {
+      return false;
+    }
   }
   async importFromURL(url: string): Promise<void> {
     if (!url) {
