@@ -4,6 +4,7 @@ import { show } from '@ebay/nice-modal-react';
 
 import { RedirectedModal } from '../components/Modals';
 
+import { debugLog } from '@/helpers/debug';
 import { appState, filesState } from '@/state';
 
 export class ApplicationService extends AbstractService {
@@ -52,7 +53,7 @@ export class ApplicationService extends AbstractService {
       return;
     }
 
-    console.log('[DEBUG:app] fetchResource', { url, base64: !!base64, share });
+    debugLog('app', 'fetchResource', { url, base64: !!base64, share });
 
     let content = '';
     if (url) {

@@ -7,6 +7,7 @@ import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
 
 import { BrowserNotSupportedModal } from '@/components/Modals';
+import { debugError, debugLog } from '@/helpers/debug';
 import { appState, documentsState, filesState } from '@/state';
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
@@ -214,7 +215,7 @@ export class EditorService extends AbstractService {
             stat: { mtime: Date.now() },
           };
         } catch (err) {
-          console.error('[DEBUG:editor] Failed to read local file for tree', localPath, err);
+          debugError('editor', 'Failed to read local file for tree', localPath, err);
         }
       }
     }
@@ -286,7 +287,7 @@ export class EditorService extends AbstractService {
       directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
       if (err?.name === 'AbortError') return false;
-      console.error('[DEBUG:editor] showDirectoryPicker failed', err);
+      debugError('editor', 'showDirectoryPicker failed', err);
       throw err;
     }
 
@@ -301,7 +302,7 @@ export class EditorService extends AbstractService {
     } catch (err: any) {
       toast.dismiss(folderAccessToastId);
       if (err?.name === 'AbortError') return false;
-      console.error('[DEBUG:editor] showOpenFilePicker failed', err);
+      debugError('editor', 'showOpenFilePicker failed', err);
       throw err;
     }
 
@@ -366,7 +367,7 @@ export class EditorService extends AbstractService {
       throw new Error('URL is required');
     }
 
-    console.log('[DEBUG:editor] importFromURL', url);
+    debugLog('editor', 'importFromURL', url);
 
     const currentUrl = window.location.href.split('?')[0];
     window.history.pushState({}, '', `${currentUrl}?url=${url}`);
@@ -427,7 +428,7 @@ export class EditorService extends AbstractService {
       throw new Error('Invalid file type. Only .json, .yaml, .yml, .avsc, .md, and .markdown files are supported.');
     }
 
-    console.log('[DEBUG:editor] importFile', file.name);
+    debugLog('editor', 'importFile', file.name);
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {

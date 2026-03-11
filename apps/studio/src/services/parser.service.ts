@@ -6,6 +6,7 @@ import { AvroSchemaParser } from '@asyncapi/avro-schema-parser';
 import { ProtoBuffSchemaParser } from '@asyncapi/protobuf-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
+import { debugLog } from '@/helpers/debug';
 import { isDeepEqual } from '@/helpers';
 import { filesState, documentsState, settingsState } from '@/state';
 import { createLocalFileResolver } from './local-file-resolver';
@@ -74,8 +75,10 @@ export class ParserService extends AbstractService {
     const file = active;
     const useLocalResolver = !!(file?.from === 'file' && file.directoryHandle && file.localPath);
     const useRemoteResolver = !!(file?.from === 'url' && (/^https?:\/\//).test(file.source || ''));
-    console.log(
-      '[DEBUG:parser] parse()', uri,
+    debugLog(
+      'parser',
+      'parse()',
+      uri,
       '\n  file.from:', file?.from,
       '\n  file.source:', file?.source,
       '\n  file.localPath:', file?.localPath,
@@ -306,7 +309,7 @@ export class ParserService extends AbstractService {
   private subscribeToFiles() {
     // Unsubscribe from previous subscription if it exists
     if (this.unsubscribeFiles) {
-      console.log('[DEBUG:parser] subscribeToFiles - cleaning up previous subscription');
+      debugLog('parser', 'subscribeToFiles - cleaning up previous subscription');
       this.unsubscribeFiles();
     }
 
@@ -322,7 +325,7 @@ export class ParserService extends AbstractService {
       const localPathChanged = file.localPath !== oldFile?.localPath;
       const mtimeChanged = file.stat?.mtime !== oldFile?.stat?.mtime;
 
-      console.log('[DEBUG:parser] subscribeToFiles', 'asyncapi', { activeChanged, contentChanged, sourceChanged, directoryHandleChanged, localPathChanged, mtimeChanged });
+      debugLog('parser', 'subscribeToFiles', 'asyncapi', { activeChanged, contentChanged, sourceChanged, directoryHandleChanged, localPathChanged, mtimeChanged });
 
       if (!activeChanged && !contentChanged && !sourceChanged && !directoryHandleChanged && !localPathChanged && !mtimeChanged) {
         return;
@@ -335,7 +338,7 @@ export class ParserService extends AbstractService {
   private subscribeToSettings() {
     // Unsubscribe from previous subscription if it exists
     if (this.unsubscribeSettings) {
-      console.log('[DEBUG:parser] subscribeToSettings - cleaning up previous subscription');
+      debugLog('parser', 'subscribeToSettings - cleaning up previous subscription');
       this.unsubscribeSettings();
     }
 

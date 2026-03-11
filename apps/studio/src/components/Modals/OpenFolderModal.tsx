@@ -3,6 +3,7 @@ import { create } from '@ebay/nice-modal-react';
 
 import { ConfirmModal } from './ConfirmModal';
 
+import { debugError, debugLog } from '@/helpers/debug';
 import { useServices } from '../../services';
 
 export const OpenFolderModal = create(() => {
@@ -10,7 +11,7 @@ export const OpenFolderModal = create(() => {
 
   const onSubmit = async () => {
     const toastId = 'open-folder';
-    console.log('[DEBUG:ui] Open Folder — Continue clicked');
+    debugLog('ui', 'Open Folder Continue clicked');
     toast.loading('Granting folder access...', { id: toastId });
     try {
       const granted = await editorSvc.grantFolderAccess();
@@ -20,7 +21,7 @@ export const OpenFolderModal = create(() => {
         toast.dismiss(toastId);
       }
     } catch (err: unknown) {
-      console.error('[DEBUG:ui] Open Folder failed', err);
+      debugError('ui', 'Open Folder failed', err);
       const message = err instanceof Error ? err.message : 'Unknown error';
       toast.error(`Failed to grant folder access: ${message}`, { id: toastId });
     }

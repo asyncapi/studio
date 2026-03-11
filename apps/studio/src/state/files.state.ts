@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
+import { debugLog } from '@/helpers/debug';
 
 // Helper function to extract content and source from localStorage
 const getDocumentFromLocalStorage = () => {
@@ -304,7 +305,7 @@ export const filesState = create<FilesState & FilesActions>((set, get) => ({
       ? { from: before.from, source: before.source, localPath: before.localPath, hasDirectoryHandle: !!before.directoryHandle, hasFileHandle: !!before.fileHandle }
       : '(new file)';
     const logPatch = { from: file.from, source: file.source, localPath: file.localPath, hasDirectoryHandle: !!file.directoryHandle, hasFileHandle: !!file.fileHandle };
-    console.log('[DEBUG:filesState] updateFile', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
+    debugLog('filesState', 'updateFile', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
     set((state) => {
       const nextFiles: Record<string, File> = {
         ...state.files,
@@ -320,7 +321,7 @@ export const filesState = create<FilesState & FilesActions>((set, get) => ({
     });
     const after = get().files[String(uri)];
     const logAfter = { from: after.from, source: after.source, localPath: after.localPath, hasDirectoryHandle: !!after.directoryHandle, hasFileHandle: !!after.fileHandle };
-    console.log('[DEBUG:filesState] updateFile', uri, '\n  after: ', logAfter);
+    debugLog('filesState', 'updateFile', uri, '\n  after: ', logAfter);
   },
   setActiveFile(uri: string) {
     const selected = get().files[String(uri)];

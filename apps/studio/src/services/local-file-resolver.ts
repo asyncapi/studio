@@ -1,4 +1,5 @@
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
+import { debugLog } from '@/helpers/debug';
 
 /**
  * Local File Resolver for AsyncAPI Parser (Stage 2/3)
@@ -31,7 +32,7 @@ export function normaliseRelativePath(basePath: string, relativePath: string): s
   }
 
   const resolved = baseParts.join('/');
-  console.log('[DEBUG:resolver] normaliseRelativePath', { basePath, relativePath, resolved });
+  debugLog('resolver', 'normaliseRelativePath', { basePath, relativePath, resolved });
   return resolved;
 }
 
@@ -56,7 +57,7 @@ export async function getFileHandleFromPath(
 
   for (const dirName of parts) {
     try {
-      console.log('[DEBUG:resolver] getFileHandleFromPath navigating to dir:', dirName);
+      debugLog('resolver', 'getFileHandleFromPath navigating to dir:', dirName);
       currentDir = await currentDir.getDirectoryHandle(dirName);
     } catch {
       throw new Error(
@@ -67,7 +68,7 @@ export async function getFileHandleFromPath(
   }
 
   try {
-    console.log('[DEBUG:resolver] getFileHandleFromPath getting file:', fileName);
+    debugLog('resolver', 'getFileHandleFromPath getting file:', fileName);
     return await currentDir.getFileHandle(fileName);
   } catch {
     throw new Error(
@@ -116,7 +117,7 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
   // the path relative to the directoryHandle (e.g. "schemas/User.avsc").
   const folderPrefix = `${directoryHandle.name  }/`;
 
-  console.log('[DEBUG:resolver] createLocalFileResolver created', { basePath, folderName: directoryHandle.name, folderPrefix });
+  debugLog('resolver', 'createLocalFileResolver created', { basePath, folderName: directoryHandle.name, folderPrefix });
 
   return {
     schema: 'file' as const,
@@ -124,13 +125,13 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
 
     canRead(uri: any) {
       const p = extractPath(uri);
-      console.log('[DEBUG:resolver] canRead called for', p, '(raw uri:', String(uri), ')');
+      debugLog('resolver', 'canRead called for', p, '(raw uri:', String(uri), ')');
       return true; // Accept all file:// URIs — we handle everything in this folder
     },
 
     async read(uri: any): Promise<string> {
       const rawPath = extractPath(uri);
-      console.log('[DEBUG:resolver] read() called for', rawPath, '(raw uri:', String(uri), ')');
+      debugLog('resolver', 'read() called for', rawPath, '(raw uri:', String(uri), ')');
 
       // Strip leading slashes and the folder name prefix to get a path
       // relative to the directoryHandle.
@@ -139,7 +140,7 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
         relativePath = relativePath.slice(folderPrefix.length);
       }
 
-      console.log('[DEBUG:resolver] read() relativePath:', relativePath);
+      debugLog('resolver', 'read() relativePath:', relativePath);
       const fileHandle = await getFileHandleFromPath(directoryHandle, relativePath);
       const file = await fileHandle.getFile();
       const content = await file.text();
@@ -151,7 +152,7 @@ export function createLocalFileResolver(options: LocalFileResolverOptions) {
           fileHandle,
         });
       }
-      console.log('[DEBUG:resolver] read() success for', relativePath, `(${content.length} chars)`);
+      debugLog('resolver', 'read() success for', relativePath, `(${content.length} chars)`);
       return content;
     },
   };
