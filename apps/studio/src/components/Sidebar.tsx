@@ -15,7 +15,7 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
   let secondaryPanelType = settingsState.secondaryPanelType;
   const newShow = { ...settingsState.show };
 
-  if (type === 'template' || type === 'visualiser') {
+  if (type === 'template' || type === 'visualiser' || type === 'avro') {
     // on current type
     if (secondaryPanelType === type) {
       newShow[`${panelName}`] = !newShow[`${panelName}`];
@@ -94,6 +94,17 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       tooltip: 'Template preview',
       enabled: true,
       dataTest: 'button-template-preview',
+    },
+    // avro preview
+    {
+      name: 'avro',
+      title: 'Avro preview',
+      isActive: show.secondaryPanel && secondaryPanelType === 'avro',
+      onClick: () => updateState('secondaryPanel', 'avro'),
+      icon: <VscGraph className="w-5 h-5" />,
+      tooltip: 'Avro preview',
+      enabled: true,
+      dataTest: 'button-avro-preview',
     },
     // visuliser
     {

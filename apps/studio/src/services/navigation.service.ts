@@ -34,11 +34,12 @@ export class NavigationService extends AbstractService {
 
   async scrollTo(
     jsonPointer: string | Array<string | number>,
-    hash: string,
+    hash?: string,
   ) {
     try {
       const doc = this.svcs.editorSvc;
-      const methodType = doc.value.startsWith('asyncapi') ? 'getRangeForYamlPath' : 'getRangeForJsonPath';
+      const content = String(doc.value || '');
+      const methodType = content.startsWith('asyncapi') ? 'getRangeForYamlPath' : 'getRangeForJsonPath';
       const range = this.svcs.parserSvc[methodType]('asyncapi', jsonPointer);
       
       if (range) {
@@ -46,7 +47,9 @@ export class NavigationService extends AbstractService {
       }
 
       await this.scrollToHash(hash);
-      this.emitHashChangeEvent(hash);
+      if (hash) {
+        this.emitHashChangeEvent(hash);
+      }
     } catch (e) {
       console.error(e);
     }

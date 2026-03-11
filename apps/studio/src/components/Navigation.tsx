@@ -315,9 +315,12 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const [hash, setHash] = useState(window.location.hash);
   const [loading, setloading] = useState(false);
 
-  const { navigationSvc } = useServices();
+  const { navigationSvc, formatSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const emptyStateMessage = formatSvc.detectSpecType(rawSpec || '') === 'openapi'
+    ? 'OpenAPI document detected. AsyncAPI navigation is not available for this file.'
+    : 'Empty or invalid document. Please fix errors/define AsyncAPI document.';
 
   useEffect(() => {
     const fn = () => {
@@ -350,7 +353,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
           {loading ?(
             <div className="rotating-wheel"></div>
           ) : (
-            <p className='text-white'>Empty or invalid document. Please fix errors/define AsyncAPI document.</p>
+            <p className='text-white'>{emptyStateMessage}</p>
           )
           }
         </div>

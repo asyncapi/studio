@@ -3,6 +3,7 @@ import { AbstractService } from './abstract.service';
 import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
 import YAML from 'js-yaml';
+import avroSchema from '@/schemas/avro/avro-schema.json';
 
 import { documentsState, filesState } from '@/state';
 
@@ -16,6 +17,8 @@ export class MonacoService extends AbstractService {
   private jsonSchemaDefinitions: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
   private actualVersion = 'X.X.X';
   private monacoInstance!: typeof monacoAPI;
+  private activeFileUri = 'asyncapi';
+  private isAsyncApiValidationEnabled = true;
 
   override async onInit() {
     // load monaco instance
@@ -42,6 +45,21 @@ export class MonacoService extends AbstractService {
     this.actualVersion = version;
   }
 
+  setSchemaValidationForFile(
+    fileUri: string,
+    isAsyncApiDocument: boolean,
+    version: SpecVersions = this.actualVersion as SpecVersions,
+  ) {
+    if (!this.monaco) {
+      return;
+    }
+    this.activeFileUri = this.normalizeUri(fileUri);
+    this.isAsyncApiValidationEnabled = isAsyncApiDocument;
+    const fallbackVersion = this.svcs.specificationSvc.latestVersion;
+    const resolvedVersion = this.jsonSchemaSpecs.has(version) ? version : fallbackVersion;
+    this.setLanguageConfig(resolvedVersion as SpecVersions);
+  }
+
   private setLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
     if (!this.monaco) {
       return;
@@ -58,26 +76,57 @@ export class MonacoService extends AbstractService {
     setDiagnosticsOptions(options as YAMLDiagnosticsOptions);
   }
 
-  private prepareLanguageConfig(
-    version: SpecVersions,
-  ): monacoAPI.languages.json.DiagnosticsOptions {
-    const spec = this.jsonSchemaSpecs.get(version);
+  private prepareLanguageConfig(version: SpecVersions): monacoAPI.languages.json.DiagnosticsOptions {
+    const fallbackVersion = this.svcs.specificationSvc.latestVersion;
+    const spec = this.jsonSchemaSpecs.get(version) || this.jsonSchemaSpecs.get(fallbackVersion);
+
+    const schemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+    const avroSchemaId = String((avroSchema as any).$id || 'https://json.schemastore.org/avro-avsc.json');
+    schemas.push({
+      uri: avroSchemaId,
+      fileMatch: ['*.avsc', '**/*.avsc'],
+      schema: avroSchema as any,
+    });
+
+    const asyncApiSchemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+    if (this.isAsyncApiValidationEnabled && spec) {
+      const asyncApiFileMatches = this.fileMatchesForUri(this.activeFileUri);
+      asyncApiSchemas.push({
+        uri: String(spec.$id || 'https://www.asyncapi.com/definitions/latest'),
+        fileMatch: asyncApiFileMatches,
+        schema: spec,
+      });
+      asyncApiSchemas.push(...(this.jsonSchemaDefinitions || []));
+    }
 
     return {
       enableSchemaRequest: false,
       hover: true,
       completion: true,
-      validate: true,
+      validate: schemas.length > 0,
       format: true,
       schemas: [
-        {
-          uri: spec.$id, // id of the AsyncAPI spec schema
-          fileMatch: ['*'], // associate with all models
-          schema: spec,
-        },
-        ...(this.jsonSchemaDefinitions || []),
+        ...schemas,
+        ...asyncApiSchemas,
       ],
     } as any;
+  }
+
+  private normalizeUri(uri: string): string {
+    if (!uri) {
+      return 'asyncapi';
+    }
+    return String(uri).replace(/\\/g, '/');
+  }
+
+  private fileMatchesForUri(uri: string): string[] {
+    const normalized = this.normalizeUri(uri);
+    const baseName = normalized.split('/').pop();
+    const matches = [normalized];
+    if (baseName && baseName !== normalized) {
+      matches.push(`**/${baseName}`);
+    }
+    return matches;
   }
 
   private async loadMonaco() {
@@ -167,6 +216,9 @@ export class MonacoService extends AbstractService {
 
   private subcribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
+      if (!this.isAsyncApiValidationEnabled) {
+        return;
+      }
       const newDocuments = state.documents;
       const oldDocuments = prevState.documents;
 
@@ -180,8 +232,11 @@ export class MonacoService extends AbstractService {
           try {
             const file = filesState.getState().files['asyncapi'];
             if (file) {
-              const version = (YAML.load(file.content) as { asyncapi: SpecVersions }).asyncapi;
-              this.svcs.monacoSvc.updateLanguageConfig(version);
+              const parsed = YAML.load(file.content) as { asyncapi?: SpecVersions } | undefined;
+              const fallbackVersion = parsed?.asyncapi;
+              if (fallbackVersion && this.jsonSchemaSpecs.has(fallbackVersion)) {
+                this.svcs.monacoSvc.updateLanguageConfig(fallbackVersion);
+              }
             }
           } catch (e: any) {
             // intentional

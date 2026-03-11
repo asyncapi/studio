@@ -31,6 +31,7 @@ export const MonacoWrapper: FunctionComponent<MonacoEditorProps> = ({
   return (
     <MonacoEditor
       key={file.uri}
+      path={file.uri}
       language={file.language}
       value={file.content}
       theme="asyncapi-theme"

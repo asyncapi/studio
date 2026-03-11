@@ -19,7 +19,7 @@ export const EditorSidebar: React.FunctionComponent<
     documentFromText = 'From localStorage';
   } else if (from === 'file') {
     const path = source || localPath || uri;
-    documentFromText = path ? `From local file ${path}` : 'From local file';
+    documentFromText = path ? `From local folder: ${path}` : 'From local folder';
   } else if (from === 'url') {
     documentFromText = `From URL ${source || uri || ''}`.trim();
   } else if (from === 'base64') {

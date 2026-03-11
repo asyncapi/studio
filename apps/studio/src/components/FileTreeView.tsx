@@ -74,6 +74,7 @@ function getFileTypeColor(name: string): string {
   if (lower.endsWith('.yaml') || lower.endsWith('.yml')) return 'text-blue-400';
   if (lower.endsWith('.json')) return 'text-yellow-400';
   if (lower.endsWith('.avsc')) return 'text-green-400';
+  if (lower.endsWith('.md') || lower.endsWith('.markdown')) return 'text-purple-400';
   return 'text-gray-300';
 }
 
@@ -260,7 +261,7 @@ export const FileTreeView: React.FC = () => {
     <div className="mb-4 border border-gray-700 bg-gray-800 rounded">
       <button
         type="button"
-        className="w-full flex items-center justify-between px-2 py-2 text-left text-white text-sm border-b border-gray-700"
+        className="w-full flex items-center justify-between px-2 py-2 text-left text-white text-base border-b border-gray-700"
         onClick={() => setCollapsed((prev) => !prev)}
       >
         <span>
@@ -274,9 +275,6 @@ export const FileTreeView: React.FC = () => {
           {projectFiles.length === 0 && <div className="px-2 py-3 text-xs text-gray-400">No project files available.</div>}
           {projectFiles.length > 0 && <div className="py-1">{treeNodes.map((node) => renderNode(node))}</div>}
           {fileTreeLoading && <div className="px-2 py-2 text-xs text-gray-400">Loading file...</div>}
-          {activeFile && activeFile.isAsyncApiDocument === false && (
-            <div className="px-2 py-2 text-xs text-gray-400 border-t border-gray-700">Referenced file (not an AsyncAPI document)</div>
-          )}
         </div>
       )}
     </div>

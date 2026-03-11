@@ -56,8 +56,16 @@ export class ParserService extends AbstractService {
       return;
     }
 
-    if (!this.isAsyncApiDocument(spec)) {
+    const activeUri = active?.uri || options.source || '';
+    if (!this.isAsyncApiDocument(spec, String(activeUri))) {
       filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: false });
+      this.updateDocument(uri, {
+        uri,
+        document: undefined,
+        diagnostics: this.createDiagnostics([]),
+        extras: undefined,
+        valid: false,
+      });
       return;
     }
     filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: true });
@@ -93,7 +101,7 @@ export class ParserService extends AbstractService {
             fileHandle,
             localPath: relativePath,
             stat: { mtime: Date.now() },
-            isAsyncApiDocument: this.isAsyncApiDocument(content),
+            isAsyncApiDocument: this.isAsyncApiDocument(content, relativePath),
           });
         },
       });
@@ -192,21 +200,30 @@ export class ParserService extends AbstractService {
 
   private updateDocument = documentsState.getState().updateDocument;
 
-  private inferLanguage(uri: string, content: string): 'json' | 'yaml' {
-    if (uri.toLowerCase().endsWith('.json') || uri.toLowerCase().endsWith('.avsc')) {
+  private inferLanguage(uri: string, content: string): 'json' | 'yaml' | 'markdown' {
+    const lower = uri.toLowerCase();
+    if (lower.endsWith('.md') || lower.endsWith('.markdown')) {
+      return 'markdown';
+    }
+    if (lower.endsWith('.json') || lower.endsWith('.avsc')) {
       return 'json';
     }
     const trimmed = String(content || '').trim();
     return trimmed.startsWith('{') ? 'json' : 'yaml';
   }
 
-  private isAsyncApiDocument(spec: string): boolean {
+  private isAsyncApiDocument(spec: string, uri = ''): boolean {
+    const lowerUri = String(uri || '').toLowerCase();
+    if (lowerUri.endsWith('.avsc') || lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
+      return false;
+    }
+
     const trimmed = String(spec || '').trim();
     if (!trimmed) return false;
     if (trimmed.startsWith('{')) {
       try {
         const parsed = JSON.parse(trimmed);
-        return !!parsed?.asyncapi;
+        return typeof parsed?.asyncapi === 'string';
       } catch {
         return false;
       }
@@ -236,7 +253,7 @@ export class ParserService extends AbstractService {
           language: inferLanguage(url, content),
           modified: false,
           stat: { mtime: Date.now() },
-          isAsyncApiDocument: isAsyncApiDocument(content),
+          isAsyncApiDocument: isAsyncApiDocument(content, url),
         });
         return content;
       },

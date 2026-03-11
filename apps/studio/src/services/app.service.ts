@@ -66,7 +66,14 @@ export class ApplicationService extends AbstractService {
     }
 
     const detectedLanguage = this.svcs.formatSvc.retrieveLangauge(content);
-    const language: 'json' | 'yaml' = detectedLanguage === 'json' ? 'json' : 'yaml';
+    const sourceUri = url || (share ? `share://${share}` : 'base64://document');
+    const lowerUri = sourceUri.toLowerCase();
+    let language: 'json' | 'yaml' | 'markdown' = 'yaml';
+    if (lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
+      language = 'markdown';
+    } else if (detectedLanguage === 'json') {
+      language = 'json';
+    }
     const source = url || undefined;
     let from: 'url' | 'base64' | 'share' = 'url';
     if (base64) {
@@ -74,7 +81,7 @@ export class ApplicationService extends AbstractService {
     } else if (share) {
       from = 'share';
     }
-    const uri = url || (share ? `share://${share}` : 'base64://document');
+    const uri = sourceUri;
     const file = {
       uri,
       name: uri.split('/').pop() || uri,

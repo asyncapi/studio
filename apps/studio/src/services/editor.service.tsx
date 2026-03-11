@@ -35,6 +35,12 @@ export class EditorService extends AbstractService {
     }
     this.created = true;
     this.instance = editor;
+    const currentFile = filesState.getState().files['asyncapi'];
+    const currentUri = currentFile?.uri || 'asyncapi';
+    this.svcs.monacoSvc.setSchemaValidationForFile(
+      currentUri,
+      this.isAsyncApiContent(editor.getValue(), currentUri),
+    );
 
     // parse on first run - only when document is undefined
     const document = documentsState.getState().documents.asyncapi;
@@ -73,25 +79,33 @@ export class EditorService extends AbstractService {
     return parts[parts.length - 1] || uri;
   }
 
-  private inferLanguageFromUri(uri: string, content?: string): 'json' | 'yaml' {
+  private inferLanguageFromUri(uri: string, content?: string): 'json' | 'yaml' | 'markdown' {
+    const lower = uri.toLowerCase();
+    if (lower.endsWith('.md') || lower.endsWith('.markdown')) {
+      return 'markdown';
+    }
     const byContent = content ? this.svcs.formatSvc.retrieveLangauge(content) : undefined;
     if (byContent === 'json' || byContent === 'yaml') {
       return byContent;
     }
-    const lower = uri.toLowerCase();
     if (lower.endsWith('.json') || lower.endsWith('.avsc')) {
       return 'json';
     }
     return 'yaml';
   }
 
-  private isAsyncApiContent(content: string): boolean {
+  private isAsyncApiContent(content: string, uri = ''): boolean {
+    const lowerUri = String(uri || '').toLowerCase();
+    if (lowerUri.endsWith('.avsc') || lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
+      return false;
+    }
+
     const trimmed = String(content || '').trim();
     if (!trimmed) return false;
     if (trimmed.startsWith('{')) {
       try {
         const parsed = JSON.parse(trimmed);
-        return !!parsed?.asyncapi;
+        return typeof parsed?.asyncapi === 'string';
       } catch {
         return false;
       }
@@ -138,9 +152,10 @@ export class EditorService extends AbstractService {
         content,
         language,
         name: target.name || this.getFileNameFromUri(uri),
-        isAsyncApiDocument: this.isAsyncApiContent(content),
+        isAsyncApiDocument: this.isAsyncApiContent(content, uri),
         stat: { mtime: Date.now() },
       });
+      this.svcs.monacoSvc.setSchemaValidationForFile(uri, this.isAsyncApiContent(content, uri));
       setActiveFile(uri);
       this.updateState({
         content,
@@ -154,7 +169,7 @@ export class EditorService extends AbstractService {
           directoryHandle: target.directoryHandle,
           localPath: target.localPath,
           name: target.name || this.getFileNameFromUri(uri),
-          isAsyncApiDocument: this.isAsyncApiContent(content),
+          isAsyncApiDocument: this.isAsyncApiContent(content, uri),
           stat: { mtime: Date.now() },
         },
       });
@@ -193,7 +208,7 @@ export class EditorService extends AbstractService {
             directoryHandle,
             fileHandle,
             localPath,
-            isAsyncApiDocument: this.isAsyncApiContent(content),
+            isAsyncApiDocument: this.isAsyncApiContent(content, localPath),
             stat: { mtime: Date.now() },
           };
         } catch (err) {
@@ -216,10 +231,14 @@ export class EditorService extends AbstractService {
       return;
     }
 
-    const language = file.language || this.svcs.formatSvc.retrieveLangauge(content);
+    const currentFile = filesState.getState().files['asyncapi'];
+    const language = file.language || this.inferLanguageFromUri(currentFile?.uri || 'asyncapi', content);
     if (!language) {
       return;
     }
+    const isAsyncApiDocument = file.isAsyncApiDocument ?? this.isAsyncApiContent(content, currentFile?.uri || '');
+    const currentUri = filesState.getState().activeFileUri || file.uri || 'asyncapi';
+    this.svcs.monacoSvc.setSchemaValidationForFile(currentUri, isAsyncApiDocument);
 
     if (sendToServer) {
       this.svcs.socketClientSvc.send('file:update', { code: content });
@@ -270,7 +289,7 @@ export class EditorService extends AbstractService {
     let fileHandle: FileHandle;
     try {
       const [handle] = await window.showOpenFilePicker({
-        types: [{ description: 'AsyncAPI files', accept: { 'text/*': ['.yaml', '.yml', '.json'] } }],
+        types: [{ description: 'Supported files', accept: { 'text/*': ['.yaml', '.yml', '.json', '.md', '.markdown'] } }],
         multiple: false,
       });
       fileHandle = handle;
@@ -305,7 +324,7 @@ export class EditorService extends AbstractService {
       fileHandle,
       localPath,
       modified: false,
-      isAsyncApiDocument: this.isAsyncApiContent(selectedContent),
+      isAsyncApiDocument: this.isAsyncApiContent(selectedContent, localPath),
       stat: { mtime: Date.now() },
     };
 
@@ -354,7 +373,7 @@ export class EditorService extends AbstractService {
           source: url,
           language,
           modified: false,
-          isAsyncApiDocument: this.isAsyncApiContent(text),
+          isAsyncApiDocument: this.isAsyncApiContent(text, url),
           stat: { mtime: Date.now() },
         };
 
@@ -384,10 +403,10 @@ export class EditorService extends AbstractService {
       return;
     }
 
-    const allowedExtensions = ['json', 'yaml', 'yml', 'avsc'];
+    const allowedExtensions = ['json', 'yaml', 'yml', 'avsc', 'md', 'markdown'];
     const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
     if (!allowedExtensions.includes(ext)) {
-      throw new Error('Invalid file type. Only .json, .yaml, .yml, and .avsc files are supported.');
+      throw new Error('Invalid file type. Only .json, .yaml, .yml, .avsc, .md, and .markdown files are supported.');
     }
 
     console.log('[DEBUG:editor] importFile', file.name);
@@ -405,7 +424,7 @@ export class EditorService extends AbstractService {
         source: undefined,
         language,
         modified: false,
-        isAsyncApiDocument: this.isAsyncApiContent(content),
+        isAsyncApiDocument: this.isAsyncApiContent(content, uri),
         stat: { mtime: Date.now() },
       };
 
@@ -436,7 +455,7 @@ export class EditorService extends AbstractService {
         source: undefined,
         language,
         modified: false,
-        isAsyncApiDocument: this.isAsyncApiContent(String(decoded)),
+        isAsyncApiDocument: this.isAsyncApiContent(String(decoded), uri),
         stat: { mtime: Date.now() },
       };
 
@@ -474,7 +493,7 @@ export class EditorService extends AbstractService {
         source: undefined,
         language,
         modified: false,
-        isAsyncApiDocument: this.isAsyncApiContent(data.content),
+        isAsyncApiDocument: this.isAsyncApiContent(data.content, uri),
         stat: { mtime: Date.now() },
       };
 
@@ -575,17 +594,33 @@ export class EditorService extends AbstractService {
       throw new Error('Failed to get current document content for saving.');
     }
 
+    let extension = 'yaml';
+    let mimeType = 'text/yaml';
+    if (language === 'json') {
+      extension = 'json';
+      mimeType = 'application/json';
+    } else if (language === 'markdown') {
+      extension = 'md';
+      mimeType = 'text/markdown';
+    }
+
     return {
       file: currentFile,
       language,
       content,
-      extension: language === 'yaml' ? 'yaml' : 'json',
-      mimeType: language === 'yaml' ? 'text/yaml' : 'application/json',
+      extension,
+      mimeType,
     };
   }
 
   async saveCurrentFile() {
     const { file, language, content, extension, mimeType } = this.getCurrentContentByLanguage();
+    let fileTypeDescription = 'YAML file';
+    if (language === 'json') {
+      fileTypeDescription = 'JSON file';
+    } else if (language === 'markdown') {
+      fileTypeDescription = 'Markdown file';
+    }
 
     if (file.from === 'file' && file.fileHandle) {
       const writable = await file.fileHandle.createWritable();
@@ -611,7 +646,7 @@ export class EditorService extends AbstractService {
       suggestedName: suggestedFileName,
       types: [
         {
-          description: language === 'yaml' ? 'YAML file' : 'JSON file',
+          description: fileTypeDescription,
           accept: { [mimeType]: [`.${extension}`] },
         },
       ],

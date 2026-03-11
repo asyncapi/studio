@@ -3,6 +3,7 @@ import { Editor } from './Editor/Editor';
 import { Navigation } from './Navigation';
 import { Navigationv3 } from './Navigationv3';
 import { Template } from './Template';
+import { AvroPreview } from './Template/AvroPreview';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '@/helpers';
@@ -70,6 +71,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
         >
           {navigationAndEditor}
           {viewType === 'template' && <Template />}
+          {viewType === 'avro' && <AvroPreview />}
           {viewType === 'visualiser' && <VisualiserTemplate />}
         </SplitPane> 
       </div>

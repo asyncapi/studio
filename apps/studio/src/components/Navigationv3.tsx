@@ -380,9 +380,12 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
 }) => {
   const [hash, setHash] = useState(window.location.hash);
 
-  const { navigationSvc } = useServices();
+  const { navigationSvc, formatSvc } = useServices();
   const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
+  const emptyStateMessage = formatSvc.detectSpecType(rawSpec || '') === 'openapi'
+    ? 'OpenAPI document detected. AsyncAPI navigation is not available for this file.'
+    : 'Empty or invalid document. Please fix errors/define AsyncAPI document.';
 
   useEffect(() => {
     const fn = () => {
@@ -402,7 +405,7 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
       <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
         <FileTreeView />
         <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-          Empty or invalid document. Please fix errors/define AsyncAPI document.
+          {emptyStateMessage}
         </div>
       </div>
     );

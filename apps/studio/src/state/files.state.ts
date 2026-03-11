@@ -246,7 +246,7 @@ export type File = {
   content: string;
   from: 'storage' | 'url' | 'base64' | 'share' | 'file';
   source?: string;
-  language: 'json' | 'yaml';
+  language: 'json' | 'yaml' | 'markdown';
   modified: boolean;
   stat?: FileStat;
   fileHandle?: FileHandle;
