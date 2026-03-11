@@ -335,7 +335,8 @@ function findReferenceFile(
 
 function ensurePlaceholdersForReferences(entities: Map<string, AvroEntity>): void {
   const references = new Set<string>();
-  for (const entity of entities.values()) {
+  const entityList = Array.from(entities.values());
+  for (const entity of entityList) {
     for (const field of entity.fields) {
       for (const ref of field.references) {
         references.add(ref);
@@ -343,7 +344,8 @@ function ensurePlaceholdersForReferences(entities: Map<string, AvroEntity>): voi
     }
   }
 
-  for (const ref of references) {
+  const referenceList = Array.from(references);
+  for (const ref of referenceList) {
     if (!entities.has(ref)) {
       const { namespace } = getTypeNameAndNamespace(ref);
       entities.set(ref, {
@@ -368,7 +370,8 @@ function resolveExternalReferences(
   const queued = new Set<string>();
 
   const enqueueMissingRefs = () => {
-    for (const entity of entities.values()) {
+    const entityList = Array.from(entities.values());
+    for (const entity of entityList) {
       for (const field of entity.fields) {
         for (const ref of field.references) {
           if (!entities.has(ref) && !queued.has(ref)) {
