@@ -182,8 +182,8 @@ importers:
         specifier: ^3.2.8
         version: 3.2.8
       '@asyncapi/react-component':
-        specifier: ^3.0.3
-        version: 3.0.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^3.1.0
+        version: 3.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@asyncapi/specs':
         specifier: ^6.11.1
         version: 6.11.1
@@ -638,8 +638,8 @@ packages:
       Project is archived. See https://github.com/asyncapi-archived-repos/raml-dt-schema-parser
       .
 
-  '@asyncapi/react-component@3.0.3':
-    resolution: {integrity: sha512-pLHTxJClfbaKVvmQY65DhYADCt7oKlQ9gFz3zYQht8HKFvlFiSdTce/tDd506qCOQABirmk6WTW/Pn28v20FMw==}
+  '@asyncapi/react-component@3.1.0':
+    resolution: {integrity: sha512-D+xyoMx9BY2f6LUJ+tEwBXrQ7b7PTUl5A8uRhfkvr+EDq2mnMyWlYrwFNHaJGQ85yyDC6LKAoUgC1o0aRi5Thg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -12392,7 +12392,7 @@ snapshots:
     dependencies:
       '@asyncapi/generator-react-sdk': 1.1.2(@types/babel__core@7.20.5)
       '@asyncapi/parser': 3.6.0
-      '@asyncapi/react-component': 3.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@asyncapi/react-component': 3.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       highlight.js: 10.7.3
       puppeteer: 24.31.0(typescript@5.1.6)
       react: 18.3.1
@@ -12641,7 +12641,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/react-component@3.0.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@asyncapi/react-component@3.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
@@ -12662,7 +12662,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@asyncapi/react-component@3.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@asyncapi/react-component@3.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
