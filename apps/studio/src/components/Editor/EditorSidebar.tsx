@@ -27,11 +27,11 @@ export const EditorSidebar: React.FunctionComponent<
 
   return (
     <div
-      className="flex flex-row items justify-between bg-gray-800 border-b border-gray-700 text-sm"
+      className="flex flex-row items justify-between bg-slate-200 dark:bg-gray-800 border-b border-black dark:border-gray-700 text-sm"
       style={{ height: '30px', lineHeight: '30px' }}
     >
       <div
-        className="ml-2 text-gray-500 text-xs italic"
+        className="ml-2 text-gray-700 dark:text-gray-500 text-xs italic"
         style={{ height: '30px', lineHeight: '30px' }}
       >
         {documentFromText}
