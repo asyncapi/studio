@@ -1,6 +1,7 @@
 import { AbstractService } from './abstract.service';
 
 import { convert } from '@asyncapi/converter';
+import toast from 'react-hot-toast';
 
 import type { AsyncAPIConvertVersion, ConvertOptions } from '@asyncapi/converter';
 
@@ -18,7 +19,8 @@ export class ConverterService extends AbstractService {
         return JSON.stringify(converted, undefined, 2);
       }
       return converted;
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`Conversion Failed: ${err.message}`, { duration: Infinity });
       console.error(err);
       throw err;
     }

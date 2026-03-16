@@ -9,7 +9,7 @@ import { useDocumentsState } from '../../state';
 import { useServices } from '@/services';
 
 export const GenerateDropdown: React.FC = () => {
-  const isInvalidDocument = !useDocumentsState(state => 
+  const isInvalidDocument = !useDocumentsState(state =>
     state.documents['asyncapi'].valid
   );
   const { editorSvc } = useServices();
@@ -35,11 +35,11 @@ export const GenerateDropdown: React.FC = () => {
             disabled={isInvalidDocument}
             onClick={() => show(GeneratorModal)}
           >
-                Generate code/docs
+            Generate code/docs
           </button>
         </li>
         <li className="hover:bg-gray-900">
-          <button 
+          <button
             type="button"
             className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
             title='Share as Base64'
@@ -59,7 +59,7 @@ export const GenerateDropdown: React.FC = () => {
                 }
               );
             }}>
-                Share as Base64
+            Share as Base64
           </button>
         </li>
       </ul>
