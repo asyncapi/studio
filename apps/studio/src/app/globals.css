@@ -5,41 +5,41 @@
 
 /** Preloader */
 #preloader {
-	position: fixed;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	z-index: 10000;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
   background: #1f2937;
   color: #ffffff;
-	transition: .3s all ease;
+  transition: .3s all ease;
 }
 
 #preloader.loaded {
-	opacity: 0;
-	visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .rotating-wheel {
-	width: 32px;
-	height: 32px;
-	margin: 0 auto;
-	border: 3px solid #ec4899;
-	border-radius: 50%;
-	border-left-color: transparent;
-	border-bottom-color: transparent;
-	animation: rotating-spin .88s infinite linear;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  border: 3px solid #ec4899;
+  border-radius: 50%;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  animation: rotating-spin .88s infinite linear;
 }
 
 @keyframes rotating-spin {
-	100% {
-		transform: rotate(360deg);
-	}
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /** Resizer */
@@ -111,13 +111,14 @@
 }
 
 /** Tippy.js **/
-.tippy-box[data-placement^="bottom"] > .tippy-arrow:before {
+.tippy-box[data-placement^="bottom"]>.tippy-arrow:before {
   border-bottom-color: rgba(17, 24, 39) !important;
 }
 
-.tippy-box[data-placement^="right"] > .tippy-arrow:before {
+.tippy-box[data-placement^="right"]>.tippy-arrow:before {
   border-right-color: rgba(17, 24, 39) !important;
 }
+
 .driver-popover.driverjs-theme {
   background-color: #1a1a1a;
   border: 1px solid #333333;
@@ -180,4 +181,10 @@
 
 .driver-popover.driverjs-theme .driver-popover-arrow-side-bottom.driver-popover-arrow {
   border-bottom-color: #1a1a1a;
+}
+
+.aui-root span.font-mono {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
