@@ -103,7 +103,13 @@ function formatRemoteGroupLabel(url: string): string {
   }
 }
 
-export const FileTreeView: React.FC = () => {
+interface FileTreeViewProps {
+  className?: string;
+}
+
+export const FileTreeView: React.FC<FileTreeViewProps> = ({
+  className = '',
+}) => {
   const { editorSvc } = useServices();
   const [collapsed, setCollapsed] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
@@ -258,7 +264,7 @@ export const FileTreeView: React.FC = () => {
   const treeNodes = fileTreeMode === 'local' ? localTree : remoteTree;
 
   return (
-    <div className="mb-4 border border-gray-700 bg-gray-800 rounded">
+    <div className={`flex h-full w-full min-h-0 flex-1 flex-col border border-gray-700 bg-gray-800 rounded ${className}`}>
       <button
         type="button"
         className="w-full flex items-center justify-between px-2 py-2 text-left text-white text-base border-b border-gray-700"
@@ -266,12 +272,12 @@ export const FileTreeView: React.FC = () => {
       >
         <span>
           {fileTreeMode === 'local' ? 'Local Files' : 'Remote Files'}
-          {projectRoot ? ` • ${projectRoot}` : ''}
+          {projectRoot ? ` - ${projectRoot}` : ''}
         </span>
         {collapsed ? <VscChevronRight /> : <VscChevronDown />}
       </button>
       {!collapsed && (
-        <div className="max-h-64 overflow-auto">
+        <div className="min-h-0 flex-1 overflow-auto">
           {projectFiles.length === 0 && <div className="px-2 py-3 text-xs text-gray-400">No project files available.</div>}
           {projectFiles.length > 0 && <div className="py-1">{treeNodes.map((node) => renderNode(node))}</div>}
           {fileTreeLoading && <div className="px-2 py-2 text-xs text-gray-400">Loading file...</div>}

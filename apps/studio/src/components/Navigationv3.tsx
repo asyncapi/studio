@@ -5,8 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { useServices } from '@/services';
 import { useDocumentsState, useFilesState } from '@/state';
 import { FileTreeView } from './FileTreeView';
+import SplitPane from './SplitPane';
 
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
+import { debounce } from '@/helpers';
 
 interface NavigationProps {
   className?: string;
@@ -386,6 +388,8 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
   const emptyStateMessage = formatSvc.detectSpecType(rawSpec || '') === 'openapi'
     ? 'OpenAPI document detected. AsyncAPI navigation is not available for this file.'
     : 'Empty or invalid document. Please fix errors/define AsyncAPI document.';
+  const splitPosExplorer = 'splitPos:fileExplorer';
+  const explorerPaneSize = parseInt(localStorage.getItem(splitPosExplorer) || '0', 10) || 220;
 
   useEffect(() => {
     const fn = () => {
@@ -403,10 +407,24 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
   if (!rawSpec || !document) {
     return (
       <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
-        <FileTreeView />
-        <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
-          {emptyStateMessage}
-        </div>
+        <SplitPane
+          split="horizontal"
+          minSize={140}
+          maxSize={420}
+          defaultSize={explorerPaneSize}
+          pane1Style={{ overflow: 'hidden' }}
+          pane2Style={{ overflow: 'hidden' }}
+          onChange={debounce((size: string) => {
+            localStorage.setItem(splitPosExplorer, String(size));
+          }, 100)}
+        >
+          <div className="flex h-full w-full min-h-0">
+            <FileTreeView />
+          </div>
+          <div className="flex overflow-hidden bg-gray-800 h-full justify-center items-center text-center text-white text-md px-6">
+            {emptyStateMessage}
+          </div>
+        </SplitPane>
       </div>
     );
   }
@@ -414,72 +432,88 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
   const components = document.components();
   return (
     <div className={`flex flex-none flex-col overflow-y-auto overflow-x-hidden bg-gray-800 h-full ${className}`} id="navigation-panel">
-      <FileTreeView />
-      <ul>
-        <li className="mb-4">
-          <div
-            className={`${NAVIGATION_SECTION_STYLE} ${
-              hash === 'introduction' ? 'bg-gray-800' : ''
-            }`}
-            onClick={() =>
-              navigationSvc.scrollTo(
-                '/info',
-                'introduction',
-              )
-            }
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
-                '/info',
-                'introduction',
-              );
-            }}
-          >
-            Information
-          </div>
-        </li>
-        {!document.servers().isEmpty() && (
-          <li className="mb-4">
-            <ServersNavigation
-              document={document}
-              rawSpec={rawSpec}
-              hash={hash}
-            />
-          </li>
-        )}
-        <li className="mb-4">
-          <ChannelsNavigation
-            document={document}
-            rawSpec={rawSpec}
-            hash={hash}
-          />
-        </li>
-        <li className="mb-4">
-          <OperationsNavigation
-            document={document}
-            rawSpec={rawSpec}
-            hash={hash}
-          />
-        </li>
-        {!components.messages().isEmpty() && (
-          <li className="mb-4">
-            <MessagesNavigation
-              document={document}
-              rawSpec={rawSpec}
-              hash={hash}
-            />
-          </li>
-        )}
-        {!components.schemas().isEmpty() && (
-          <li className="mb-4">
-            <SchemasNavigation
-              document={document}
-              rawSpec={rawSpec}
-              hash={hash}
-            />
-          </li>
-        )}
-      </ul>
+      <SplitPane
+        split="horizontal"
+        minSize={140}
+        maxSize={420}
+        defaultSize={explorerPaneSize}
+        pane1Style={{ overflow: 'hidden' }}
+        pane2Style={{ overflow: 'auto' }}
+        onChange={debounce((size: string) => {
+          localStorage.setItem(splitPosExplorer, String(size));
+        }, 100)}
+      >
+        <div className="flex h-full w-full min-h-0">
+          <FileTreeView />
+        </div>
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <ul>
+            <li className="mb-4">
+              <div
+                className={`${NAVIGATION_SECTION_STYLE} ${
+                  hash === 'introduction' ? 'bg-gray-800' : ''
+                }`}
+                onClick={() =>
+                  navigationSvc.scrollTo(
+                    '/info',
+                    'introduction',
+                  )
+                }
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
+                    '/info',
+                    'introduction',
+                  );
+                }}
+              >
+                Information
+              </div>
+            </li>
+            {!document.servers().isEmpty() && (
+              <li className="mb-4">
+                <ServersNavigation
+                  document={document}
+                  rawSpec={rawSpec}
+                  hash={hash}
+                />
+              </li>
+            )}
+            <li className="mb-4">
+              <ChannelsNavigation
+                document={document}
+                rawSpec={rawSpec}
+                hash={hash}
+              />
+            </li>
+            <li className="mb-4">
+              <OperationsNavigation
+                document={document}
+                rawSpec={rawSpec}
+                hash={hash}
+              />
+            </li>
+            {!components.messages().isEmpty() && (
+              <li className="mb-4">
+                <MessagesNavigation
+                  document={document}
+                  rawSpec={rawSpec}
+                  hash={hash}
+                />
+              </li>
+            )}
+            {!components.schemas().isEmpty() && (
+              <li className="mb-4">
+                <SchemasNavigation
+                  document={document}
+                  rawSpec={rawSpec}
+                  hash={hash}
+                />
+              </li>
+            )}
+          </ul>
+        </div>
+      </SplitPane>
     </div>
   );
 };
