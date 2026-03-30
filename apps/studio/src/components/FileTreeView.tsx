@@ -21,6 +21,31 @@ type TreeEntry = {
   title?: string;
 };
 
+type VisibleTreeNode = {
+  depth: number;
+  fileUri?: string;
+  isActive: boolean;
+  isExpanded: boolean;
+  isRemoteGroup: boolean;
+  node: TreeNode;
+};
+
+function measureTreeComputation<T>(label: string, compute: () => T): T {
+  if (typeof performance === 'undefined') {
+    return compute();
+  }
+
+  const startTime = performance.now();
+  const result = compute();
+  const duration = performance.now() - startTime;
+
+  if (duration > 16 && typeof window !== 'undefined' && window.localStorage.getItem('debug:fileTreePerf') === 'true') {
+    console.debug(`[FileTreeView] ${label}: ${duration.toFixed(1)}ms`);
+  }
+
+  return result;
+}
+
 function buildTree(entries: TreeEntry[]): TreeNode[] {
   type RawNode = TreeNode & { childrenMap: Record<string, RawNode> };
   const root: Record<string, RawNode> = {};
@@ -67,6 +92,35 @@ function buildTree(entries: TreeEntry[]): TreeNode[] {
       });
 
   return normalize(root);
+}
+
+function flattenVisibleTree(nodes: TreeNode[], expandedFolders: Record<string, boolean>, activeFileUri?: string, activeAsyncApiUri?: string): VisibleTreeNode[] {
+  const visibleNodes: VisibleTreeNode[] = [];
+
+  const visit = (currentNodes: TreeNode[], depth: number) => {
+    currentNodes.forEach((node) => {
+      const isFolder = node.type === 'folder';
+      const isExpanded = isFolder ? expandedFolders[node.path] ?? true : false;
+      const fileUri = isFolder ? undefined : node.uri || node.path;
+
+      visibleNodes.push({
+        depth,
+        fileUri,
+        isActive: !!fileUri && (activeFileUri === fileUri || activeAsyncApiUri === fileUri),
+        isExpanded,
+        isRemoteGroup: !!node.isRemoteGroup || node.path.startsWith('remote-group:'),
+        node,
+      });
+
+      if (isFolder && isExpanded && node.children) {
+        visit(node.children, depth + 1);
+      }
+    });
+  };
+
+  visit(nodes, 0);
+
+  return visibleNodes;
 }
 
 function getFileTypeColor(name: string): string {
@@ -131,127 +185,142 @@ export const FileTreeView: React.FC<FileTreeViewProps> = ({
 
   const localTree = useMemo(
     () =>
-      buildTree(
-        projectFiles.map((file) => ({
-          key: 'local',
-          path: file.uri,
-          uri: file.uri,
-        })),
+      measureTreeComputation(
+        'build-local-tree',
+        () => buildTree(
+          projectFiles.map((file) => ({
+            key: 'local',
+            path: file.uri,
+            uri: file.uri,
+          })),
+        ),
       ),
     [projectFiles],
   );
 
-  const remoteTree = useMemo(() => {
-    const remoteFiles = projectFiles.filter((file) => (/^https?:\/\//).test(file.uri));
-    const mainRemote = remoteFiles.find((file) => file.isAsyncApiDocument) || remoteFiles[0];
-    const baseDir = (() => {
-      if (!mainRemote) return undefined;
-      try {
-        return new URL('.', mainRemote.uri).href;
-      } catch {
-        return undefined;
-      }
-    })();
+  const remoteTree = useMemo(
+    () => measureTreeComputation('build-remote-tree', () => {
+      const remoteFiles = projectFiles.filter((file) => (/^https?:\/\//).test(file.uri));
+      const mainRemote = remoteFiles.find((file) => file.isAsyncApiDocument) || remoteFiles[0];
+      const baseDir = (() => {
+        if (!mainRemote) return undefined;
+        try {
+          return new URL('.', mainRemote.uri).href;
+        } catch {
+          return undefined;
+        }
+      })();
 
-    const baseEntries: TreeEntry[] = [];
-    const groups = new Map<string, TreeNode>();
+      const baseEntries: TreeEntry[] = [];
+      const groups = new Map<string, TreeNode>();
 
-    for (const file of remoteFiles) {
-      if (baseDir && file.uri.startsWith(baseDir)) {
-        baseEntries.push({
-          key: 'remote-base',
-          path: file.uri.slice(baseDir.length),
+      for (const file of remoteFiles) {
+        if (baseDir && file.uri.startsWith(baseDir)) {
+          baseEntries.push({
+            key: 'remote-base',
+            path: file.uri.slice(baseDir.length),
+            uri: file.uri,
+          });
+          continue;
+        }
+
+        let baseUrl = file.uri;
+        let fileName = file.uri;
+
+        try {
+          const parsed = new URL(file.uri);
+          baseUrl = new URL('.', parsed.href).href;
+          const parts = parsed.pathname.split('/').filter(Boolean);
+          fileName = parts[parts.length - 1] || parsed.host;
+        } catch {
+          fileName = truncateExternalUrl(file.uri);
+        }
+
+        const groupPath = `remote-group:${baseUrl}`;
+        if (!groups.has(baseUrl)) {
+          groups.set(baseUrl, {
+            name: formatRemoteGroupLabel(baseUrl),
+            path: groupPath,
+            type: 'folder',
+            title: baseUrl,
+            isRemoteGroup: true,
+            children: [],
+          });
+        }
+
+        const group = groups.get(baseUrl);
+        group?.children?.push({
+          name: fileName,
+          path: `${groupPath}/${fileName}`,
+          type: 'file',
           uri: file.uri,
-        });
-        continue;
-      }
-
-      let baseUrl = file.uri;
-      let fileName = file.uri;
-
-      try {
-        const parsed = new URL(file.uri);
-        baseUrl = new URL('.', parsed.href).href;
-        const parts = parsed.pathname.split('/').filter(Boolean);
-        fileName = parts[parts.length - 1] || parsed.host;
-      } catch {
-        fileName = truncateExternalUrl(file.uri);
-      }
-
-      const groupPath = `remote-group:${baseUrl}`;
-      if (!groups.has(baseUrl)) {
-        groups.set(baseUrl, {
-          name: formatRemoteGroupLabel(baseUrl),
-          path: groupPath,
-          type: 'folder',
-          title: baseUrl,
-          isRemoteGroup: true,
-          children: [],
+          title: file.uri,
         });
       }
 
-      const group = groups.get(baseUrl);
-      group?.children?.push({
-        name: fileName,
-        path: `${groupPath}/${fileName}`,
-        type: 'file',
-        uri: file.uri,
-        title: file.uri,
-      });
-    }
+      const groupedNodes = Array.from(groups.values())
+        .map((group) => ({
+          ...group,
+          children: group.children?.slice().sort((a, b) => a.name.localeCompare(b.name)),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      const baseNodes = buildTree(baseEntries);
+      const baseFolders = baseNodes.filter((node) => node.type === 'folder');
+      const baseFiles = baseNodes.filter((node) => node.type === 'file');
 
-    const groupedNodes = Array.from(groups.values())
-      .map((group) => ({
-        ...group,
-        children: group.children?.slice().sort((a, b) => a.name.localeCompare(b.name)),
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    const baseNodes = buildTree(baseEntries);
-    const baseFolders = baseNodes.filter((node) => node.type === 'folder');
-    const baseFiles = baseNodes.filter((node) => node.type === 'file');
+      return [...groupedNodes, ...baseFolders, ...baseFiles];
+    }),
+    [projectFiles],
+  );
 
-    return [...groupedNodes, ...baseFolders, ...baseFiles];
-  }, [projectFiles]);
+  const treeNodes = fileTreeMode === 'local' ? localTree : remoteTree;
 
-  const renderNode = (node: TreeNode) => {
+  const visibleNodes = useMemo(
+    () => measureTreeComputation(
+      'flatten-visible-tree',
+      () => flattenVisibleTree(treeNodes, expandedFolders, activeFileUri, activeFile?.uri),
+    ),
+    [activeFile?.uri, activeFileUri, expandedFolders, treeNodes],
+  );
+
+  const renderRow = (visibleNode: VisibleTreeNode) => {
+    const { depth, fileUri, isActive, isExpanded, isRemoteGroup, node } = visibleNode;
+    const rowPadding = `${8 + depth * 12}px`;
+
     if (node.type === 'folder') {
-      const isExpanded = expandedFolders[node.path] ?? true;
-      const isRemoteGroup = !!node.isRemoteGroup || node.path.startsWith('remote-group:');
       return (
-        <div key={node.path}>
-          <button
-            type="button"
-            className="w-full flex items-center px-2 py-1 text-left text-xs text-gray-200 hover:bg-gray-900"
-            onClick={() => setExpandedFolders((prev) => ({ ...prev, [node.path]: !isExpanded }))}
-            title={isRemoteGroup ? node.title : undefined}
-          >
-            {isExpanded ? <VscChevronDown className="mr-1" /> : <VscChevronRight className="mr-1" />}
-            {isRemoteGroup ? (
-              <VscGlobe className="mr-1 text-blue-400" />
-            ) : (
-              <>{isExpanded ? <VscFolderOpened className="mr-1 text-yellow-400" /> : <VscFolder className="mr-1 text-yellow-400" />}</>
-            )}
-            <span className="truncate">{node.name}</span>
-          </button>
-          {isExpanded && node.children && <div className="pl-3 border-l border-gray-700">{node.children.map((child) => renderNode(child))}</div>}
-        </div>
+        <button
+          key={node.path}
+          type="button"
+          className="flex w-full items-center py-1 pr-2 text-left text-xs text-gray-200 hover:bg-gray-900"
+          onClick={() => setExpandedFolders((prev) => ({ ...prev, [node.path]: !isExpanded }))}
+          style={{ paddingLeft: rowPadding }}
+          title={isRemoteGroup ? node.title : undefined}
+        >
+          {isExpanded ? <VscChevronDown className="mr-1 shrink-0" /> : <VscChevronRight className="mr-1 shrink-0" />}
+          {isRemoteGroup ? (
+            <VscGlobe className="mr-1 shrink-0 text-blue-400" />
+          ) : (
+            <>{isExpanded ? <VscFolderOpened className="mr-1 shrink-0 text-yellow-400" /> : <VscFolder className="mr-1 shrink-0 text-yellow-400" />}</>
+          )}
+          <span className="truncate">{node.name}</span>
+        </button>
       );
     }
 
-    const fileUri = node.uri || node.path;
-    const isActive = activeFileUri === fileUri || activeFile?.uri === fileUri;
     return (
       <button
         key={node.path}
         type="button"
         disabled={fileTreeLoading}
-        onClick={() => editorSvc.switchToFile(fileUri)}
-        className={`w-full flex items-center px-2 py-1 text-left text-xs ${
+        onClick={() => fileUri && editorSvc.switchToFile(fileUri)}
+        className={`flex w-full items-center py-1 pr-2 text-left text-xs ${
           isActive ? 'bg-pink-900/40 border-l-2 border-pink-500 text-white' : 'text-gray-200 hover:bg-gray-900'
         } ${fileTreeLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        style={{ paddingLeft: rowPadding }}
         title={node.title}
       >
-        <VscFile className={`mr-1 ${getFileTypeColor(node.name)}`} />
+        <VscFile className={`mr-1 shrink-0 ${getFileTypeColor(node.name)}`} />
         <span className="truncate">{node.name}</span>
       </button>
     );
@@ -260,9 +329,6 @@ export const FileTreeView: React.FC<FileTreeViewProps> = ({
   if (fileTreeMode === 'none') {
     return null;
   }
-
-  const treeNodes = fileTreeMode === 'local' ? localTree : remoteTree;
-
   return (
     <div className={`flex h-full w-full min-h-0 flex-1 flex-col border border-gray-700 bg-gray-800 rounded ${className}`}>
       <button
@@ -279,7 +345,7 @@ export const FileTreeView: React.FC<FileTreeViewProps> = ({
       {!collapsed && (
         <div className="min-h-0 flex-1 overflow-auto">
           {projectFiles.length === 0 && <div className="px-2 py-3 text-xs text-gray-400">No project files available.</div>}
-          {projectFiles.length > 0 && <div className="py-1">{treeNodes.map((node) => renderNode(node))}</div>}
+          {projectFiles.length > 0 && <div className="py-1">{visibleNodes.map((node) => renderRow(node))}</div>}
           {fileTreeLoading && <div className="px-2 py-2 text-xs text-gray-400">Loading file...</div>}
         </div>
       )}
