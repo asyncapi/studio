@@ -54,11 +54,59 @@ async function isValidMermaidDefinition(mermaid: any, definition: string): Promi
   }
 }
 
+function getMermaidCodeBlocks(root: HTMLDivElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll('pre code'))
+    .filter((codeElement) => looksLikeMermaidDefinition(codeElement)) as HTMLElement[];
+}
+
+async function renderMermaidCodeBlock(
+  mermaid: any,
+  codeElement: HTMLElement,
+  index: number,
+  isCancelled: () => boolean,
+): Promise<void> {
+  const definition = codeElement.textContent?.trim() || '';
+  if (!definition) {
+    return;
+  }
+
+  const pre = codeElement.closest('pre');
+  if (!pre || isCancelled()) {
+    return;
+  }
+
+  const isValid = await isValidMermaidDefinition(mermaid, definition);
+  if (!isValid || isCancelled()) {
+    return;
+  }
+
+  try {
+    const id = `studio-mermaid-${Date.now()}-${index}`;
+    const { svg, bindFunctions } = await mermaid.render(id, definition);
+    if (isCancelled()) {
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'my-4 overflow-x-auto bg-white p-4 rounded';
+    wrapper.innerHTML = svg;
+    bindFunctions?.(wrapper);
+    pre.replaceWith(wrapper);
+  } catch {
+    return;
+  }
+}
+
 export const MarkdownPreview: React.FunctionComponent<MarkdownPreviewProps> = ({ content }) => {
   const previewRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    let observer: MutationObserver | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let renderScheduled = false;
+
+    const isCancelled = () => cancelled;
 
     const renderMermaidBlocks = async () => {
       const root = previewRef.current;
@@ -66,9 +114,7 @@ export const MarkdownPreview: React.FunctionComponent<MarkdownPreviewProps> = ({
         return;
       }
 
-      const codeBlocks = Array.from(root.querySelectorAll('pre code')).filter((codeElement) =>
-        looksLikeMermaidDefinition(codeElement),
-      );
+      const codeBlocks = getMermaidCodeBlocks(root);
       if (codeBlocks.length === 0) {
         return;
       }
@@ -76,48 +122,46 @@ export const MarkdownPreview: React.FunctionComponent<MarkdownPreviewProps> = ({
       try {
         const mermaid = await loadMermaid();
         await Promise.all(
-          codeBlocks.map(async (codeElement, index) => {
-            const definition = codeElement.textContent?.trim() || '';
-            if (!definition) {
-              return;
-            }
-
-            const pre = codeElement.closest('pre');
-            if (!pre || cancelled) {
-              return;
-            }
-
-            const isValid = await isValidMermaidDefinition(mermaid, definition);
-            if (!isValid) {
-              return;
-            }
-
-            try {
-              const id = `studio-mermaid-${Date.now()}-${index}`;
-              const { svg, bindFunctions } = await mermaid.render(id, definition);
-              if (cancelled) {
-                return;
-              }
-
-              const wrapper = document.createElement('div');
-              wrapper.className = 'my-4 overflow-x-auto bg-white p-4 rounded';
-              wrapper.innerHTML = svg;
-              bindFunctions?.(wrapper);
-              pre.replaceWith(wrapper);
-            } catch {
-              return;
-            }
-          }),
+          codeBlocks.map((codeElement, index) =>
+            renderMermaidCodeBlock(mermaid, codeElement, index, isCancelled),
+          ),
         );
       } catch {
         return;
       }
     };
 
-    renderMermaidBlocks().catch(() => undefined);
+    const scheduleRender = () => {
+      if (renderScheduled || cancelled) {
+        return;
+      }
+
+      renderScheduled = true;
+      queueMicrotask(() => {
+        renderScheduled = false;
+        renderMermaidBlocks().catch(() => undefined);
+      });
+    };
+
+    const root = previewRef.current;
+    if (root) {
+      observer = new MutationObserver(() => {
+        scheduleRender();
+      });
+      observer.observe(root, { childList: true, subtree: true });
+      timeoutId = setTimeout(() => {
+        observer?.disconnect();
+      }, 1500);
+    }
+
+    scheduleRender();
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [content]);
 
