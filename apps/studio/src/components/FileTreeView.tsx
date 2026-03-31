@@ -136,7 +136,7 @@ function truncateExternalUrl(url: string): string {
   try {
     const parsed = new URL(url);
     const parts = parsed.pathname.split('/').filter(Boolean);
-    const fileName = parts[parts.length - 1] || parsed.host;
+    const fileName = parts.at(-1) || parsed.host;
     return `${parsed.protocol}//.../${fileName}`;
   } catch {
     return url.length > 32 ? `${url.slice(0, 16)}...${url.slice(-12)}` : url;
@@ -150,7 +150,7 @@ function formatRemoteGroupLabel(url: string): string {
     const port = parsed.port;
     const fullhost = port ? `${host}:${port}` : host;
     const parts = parsed.pathname.split('/').filter(Boolean);
-    const tail = parts.length > 0 ? parts[parts.length - 1] : parsed.host;
+    const tail = parts.at(-1) || parsed.host;
     return `${parsed.protocol}//${fullhost}/.../${tail}/`;
   } catch {
     return truncateExternalUrl(url);
@@ -231,7 +231,7 @@ export const FileTreeView: React.FC<FileTreeViewProps> = ({
           const parsed = new URL(file.uri);
           baseUrl = new URL('.', parsed.href).href;
           const parts = parsed.pathname.split('/').filter(Boolean);
-          fileName = parts[parts.length - 1] || parsed.host;
+          fileName = parts.at(-1) || parsed.host;
         } catch {
           fileName = truncateExternalUrl(file.uri);
         }

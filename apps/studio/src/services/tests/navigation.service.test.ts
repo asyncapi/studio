@@ -3,6 +3,20 @@ import { filesState } from '@/state';
 
 import type { NavigationService } from '../navigation.service';
 
+function updateLocation(search: string) {
+  globalThis.history.replaceState({}, '', `/${search}`);
+}
+
+function updateHref(pathAndQueryAndHash: string) {
+  globalThis.history.replaceState({}, '', pathAndQueryAndHash);
+}
+
+function transitionSource(from: 'storage' | 'url' | 'base64' | 'share' | 'file', to: 'storage' | 'url' | 'base64' | 'share' | 'file') {
+  const { updateFile } = filesState.getState();
+  updateFile('asyncapi', { from, stat: { mtime: Date.now() } });
+  updateFile('asyncapi', { from: to, stat: { mtime: Date.now() + 1 } });
+}
+
 describe('NavigationService', () => {
   let navigationSvc: NavigationService;
 
@@ -16,22 +30,8 @@ describe('NavigationService', () => {
   });
 
   afterEach(() => {
-    window.history.replaceState({}, '', '/');
+    globalThis.history.replaceState({}, '', '/');
   });
-
-  function updateLocation(search: string) {
-    window.history.replaceState({}, '', `/${search}`);
-  }
-
-  function updateHref(pathAndQueryAndHash: string) {
-    window.history.replaceState({}, '', pathAndQueryAndHash);
-  }
-
-  function transitionSource(from: 'storage' | 'url' | 'base64' | 'share' | 'file', to: 'storage' | 'url' | 'base64' | 'share' | 'file') {
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', { from, stat: { mtime: Date.now() } });
-    updateFile('asyncapi', { from: to, stat: { mtime: Date.now() + 1 } });
-  }
 
   describe('.getUrlParameters() - checking readOnly parameter', () => {
     test('should return false if reaOnly flag is not defined', () => {
@@ -65,7 +65,7 @@ describe('NavigationService', () => {
 
       transitionSource('url', 'file');
 
-      expect(window.location.search).toEqual('?readOnly=true');
+      expect(globalThis.location.search).toEqual('?readOnly=true');
     });
 
     test('removes legacy `load` when leaving remote source', () => {
@@ -73,7 +73,7 @@ describe('NavigationService', () => {
 
       transitionSource('url', 'base64');
 
-      expect(window.location.search).toEqual('?previewServer=x');
+      expect(globalThis.location.search).toEqual('?previewServer=x');
     });
 
     test('removes both `url` and `load` if both are present', () => {
@@ -81,7 +81,7 @@ describe('NavigationService', () => {
 
       transitionSource('url', 'share');
 
-      expect(window.location.search).toEqual('?x=1');
+      expect(globalThis.location.search).toEqual('?x=1');
     });
 
     test('preserves hash when cleaning query params', () => {
@@ -89,8 +89,8 @@ describe('NavigationService', () => {
 
       transitionSource('url', 'file');
 
-      expect(window.location.search).toEqual('?x=1');
-      expect(window.location.hash).toEqual('#section-2');
+      expect(globalThis.location.search).toEqual('?x=1');
+      expect(globalThis.location.hash).toEqual('#section-2');
     });
 
     test('does not cleanup when source remains url', () => {
@@ -98,7 +98,7 @@ describe('NavigationService', () => {
 
       transitionSource('url', 'url');
 
-      expect(window.location.search).toEqual('?url=a&x=1');
+      expect(globalThis.location.search).toEqual('?url=a&x=1');
     });
 
     test('does not cleanup on non-url transitions', () => {
@@ -106,7 +106,7 @@ describe('NavigationService', () => {
 
       transitionSource('file', 'share');
 
-      expect(window.location.search).toEqual('?url=a&x=1');
+      expect(globalThis.location.search).toEqual('?url=a&x=1');
     });
   });
 });

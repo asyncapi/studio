@@ -389,7 +389,7 @@ export const Navigationv3: React.FunctionComponent<NavigationProps> = ({
     ? 'OpenAPI document detected. AsyncAPI navigation is not available for this file.'
     : 'Empty or invalid document. Please fix errors/define AsyncAPI document.';
   const splitPosExplorer = 'splitPos:fileExplorer';
-  const explorerPaneSize = parseInt(localStorage.getItem(splitPosExplorer) || '0', 10) || 220;
+  const explorerPaneSize = Number.parseInt(localStorage.getItem(splitPosExplorer) || '0', 10) || 220;
 
   useEffect(() => {
     const fn = () => {

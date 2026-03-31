@@ -35,13 +35,13 @@ function isObject(value: unknown): value is Record<string, any> {
 
 function getDirectoryOfUri(uri: string): string {
   if (!uri) return '';
-  const normalized = uri.replace(/\\/g, '/');
+  const normalized = uri.replaceAll('\\', '/');
   const lastSlash = normalized.lastIndexOf('/');
   return lastSlash >= 0 ? normalized.slice(0, lastSlash) : '';
 }
 
 function getBasename(uri: string): string {
-  const normalized = uri.replace(/\\/g, '/');
+  const normalized = uri.replaceAll('\\', '/');
   const lastSlash = normalized.lastIndexOf('/');
   return lastSlash >= 0 ? normalized.slice(lastSlash + 1) : normalized;
 }
@@ -73,46 +73,81 @@ function getShortName(fqName: string): string {
 }
 
 function getClassId(fqName: string): string {
-  const normalized = fqName.replace(/[^a-zA-Z0-9_]/g, '_');
+  const normalized = fqName.replaceAll(/\W/g, '_');
   return normalized || 'UnknownType';
 }
 
 function escapeMermaidLabel(value: string): string {
-  return String(value).replace(/"/g, '\\"');
+  return String(value).replaceAll('"', String.raw`\"`);
 }
 
-function analyzeType(
-  typeValue: unknown,
+function createUnknownAnalysis(): { label: string; references: string[]; collection: boolean } {
+  return { label: 'unknown', references: [], collection: false };
+}
+
+function createNamedTypeAnalysis(
+  typeName: string,
+  namespace?: string,
+): { label: string; references: string[]; collection: boolean } {
+  if (AVRO_PRIMITIVES.has(typeName)) {
+    return { label: typeName, references: [], collection: false };
+  }
+
+  const fqName = getQualifiedName(typeName, namespace);
+  return { label: getShortName(fqName), references: [fqName], collection: false };
+}
+
+function analyzeUnionType(
+  typeValue: unknown[],
   namespace: string | undefined,
   entities: Map<string, AvroEntity>,
 ): { label: string; references: string[]; collection: boolean } {
-  if (typeof typeValue === 'string') {
-    if (AVRO_PRIMITIVES.has(typeValue)) {
-      return { label: typeValue, references: [], collection: false };
-    }
-    const fqName = getQualifiedName(typeValue, namespace);
-    return { label: getShortName(fqName), references: [fqName], collection: false };
-  }
+  const analyzed = typeValue
+    .filter((entry) => !(typeof entry === 'string' && entry === 'null'))
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    .map((entry) => analyzeType(entry, namespace, entities));
+  const labels = analyzed.map((entry) => entry.label);
+  const refs = analyzed.flatMap((entry) => entry.references);
 
-  if (Array.isArray(typeValue)) {
-    const analyzed = typeValue
-      .filter((entry) => !(typeof entry === 'string' && entry === 'null'))
-      .map((entry) => analyzeType(entry, namespace, entities));
-    const labels = analyzed.map((entry) => entry.label);
-    const refs = analyzed.flatMap((entry) => entry.references);
-    return {
-      label: labels.length > 0 ? labels.join(' | ') : 'null',
-      references: Array.from(new Set(refs)),
-      collection: false,
-    };
-  }
+  return {
+    label: labels.length > 0 ? labels.join(' | ') : 'null',
+    references: Array.from(new Set(refs)),
+    collection: false,
+  };
+}
 
-  if (!isObject(typeValue)) {
-    return { label: 'unknown', references: [], collection: false };
-  }
+function analyzeNestedSchemaType(
+  rawType: 'record' | 'enum',
+  typeValue: Record<string, any>,
+  namespace: string | undefined,
+  entities: Map<string, AvroEntity>,
+): { label: string; references: string[]; collection: boolean } {
+  const entity = rawType === 'record'
+    ? (
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      extractRecord(typeValue, namespace, entities)
+    )
+    : (
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      extractEnum(typeValue, namespace, entities)
+    );
 
+  return {
+    label: entity ? getShortName(entity.fqName) : rawType,
+    references: entity ? [entity.fqName] : [],
+    collection: false,
+  };
+}
+
+function analyzeObjectType(
+  typeValue: Record<string, any>,
+  namespace: string | undefined,
+  entities: Map<string, AvroEntity>,
+): { label: string; references: string[]; collection: boolean } {
   const rawType = typeValue.type;
+
   if (rawType === 'array') {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const items = analyzeType(typeValue.items, namespace, entities);
     return {
       label: `${items.label}[]`,
@@ -122,6 +157,7 @@ function analyzeType(
   }
 
   if (rawType === 'map') {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const values = analyzeType(typeValue.values, namespace, entities);
     return {
       label: `map[string, ${values.label}]`,
@@ -130,38 +166,39 @@ function analyzeType(
     };
   }
 
-  if (rawType === 'record') {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const nested = extractRecord(typeValue, namespace, entities);
-    return {
-      label: nested ? getShortName(nested.fqName) : 'record',
-      references: nested ? [nested.fqName] : [],
-      collection: false,
-    };
-  }
-  if (rawType === 'enum') {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const nestedEnum = extractEnum(typeValue, namespace, entities);
-    return {
-      label: nestedEnum ? getShortName(nestedEnum.fqName) : 'enum',
-      references: nestedEnum ? [nestedEnum.fqName] : [],
-      collection: false,
-    };
+  if (rawType === 'record' || rawType === 'enum') {
+    return analyzeNestedSchemaType(rawType, typeValue, namespace, entities);
   }
 
   if (typeof rawType === 'string') {
-    if (AVRO_PRIMITIVES.has(rawType)) {
-      return { label: rawType, references: [], collection: false };
-    }
-    const fqName = getQualifiedName(rawType, namespace);
-    return { label: getShortName(fqName), references: [fqName], collection: false };
+    return createNamedTypeAnalysis(rawType, namespace);
   }
 
   if (Array.isArray(rawType)) {
-    return analyzeType(rawType, namespace, entities);
+    return analyzeUnionType(rawType, namespace, entities);
   }
 
-  return { label: 'unknown', references: [], collection: false };
+  return createUnknownAnalysis();
+}
+
+function analyzeType(
+  typeValue: unknown,
+  namespace: string | undefined,
+  entities: Map<string, AvroEntity>,
+): { label: string; references: string[]; collection: boolean } {
+  if (typeof typeValue === 'string') {
+    return createNamedTypeAnalysis(typeValue, namespace);
+  }
+
+  if (Array.isArray(typeValue)) {
+    return analyzeUnionType(typeValue, namespace, entities);
+  }
+
+  if (!isObject(typeValue)) {
+    return createUnknownAnalysis();
+  }
+
+  return analyzeObjectType(typeValue, namespace, entities);
 }
 
 function extractRecord(
@@ -180,7 +217,7 @@ function extractRecord(
   }
 
   const existing = entities.get(fqName);
-  if (existing && existing.kind === 'record' && existing.fields.length > 0) {
+  if (existing?.kind === 'record' && existing.fields.length > 0) {
     return existing;
   }
 
@@ -227,7 +264,7 @@ function extractEnum(
   }
 
   const existing = entities.get(fqName);
-  if (existing && existing.kind === 'enum' && existing.symbols.length > 0) {
+  if (existing?.kind === 'enum' && existing.symbols.length > 0) {
     return existing;
   }
 
@@ -346,18 +383,85 @@ function ensurePlaceholdersForReferences(entities: Map<string, AvroEntity>): voi
 
   const referenceList = Array.from(references);
   for (const ref of referenceList) {
-    if (!entities.has(ref)) {
-      const { namespace } = getTypeNameAndNamespace(ref);
-      entities.set(ref, {
-        fqName: ref,
-        displayName: getShortName(ref),
-        namespace,
-        kind: 'record',
-        fields: [],
-        symbols: [],
-      });
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    addPlaceholderEntity(entities, ref);
+  }
+}
+
+function createPlaceholderEntity(referenceFqName: string): AvroEntity {
+  const { namespace } = getTypeNameAndNamespace(referenceFqName);
+  return {
+    fqName: referenceFqName,
+    displayName: getShortName(referenceFqName),
+    namespace,
+    kind: 'record',
+    fields: [],
+    symbols: [],
+  };
+}
+
+function addPlaceholderEntity(entities: Map<string, AvroEntity>, referenceFqName: string): void {
+  if (!entities.has(referenceFqName)) {
+    entities.set(referenceFqName, createPlaceholderEntity(referenceFqName));
+  }
+}
+
+function enqueueMissingReferences(
+  entities: Map<string, AvroEntity>,
+  queue: string[],
+  queued: Set<string>,
+): void {
+  const entityList = Array.from(entities.values());
+  for (const entity of entityList) {
+    for (const field of entity.fields) {
+      for (const ref of field.references) {
+        if (!entities.has(ref) && !queued.has(ref)) {
+          queue.push(ref);
+          queued.add(ref);
+        }
+      }
     }
   }
+}
+
+function parseReferenceFileEntities(
+  refFile: File,
+  entities: Map<string, AvroEntity>,
+): boolean {
+  try {
+    const parsed = JSON.parse(refFile.content);
+    extractEntitiesFromSchema(parsed, entities);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function resolveReferenceEntity(
+  targetRef: string,
+  activeFile: File,
+  files: Record<string, File>,
+  entities: Map<string, AvroEntity>,
+  parsedFiles: Set<string>,
+): void {
+  const refFile = findReferenceFile(targetRef, activeFile.uri, files);
+  if (!refFile) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    addPlaceholderEntity(entities, targetRef);
+    return;
+  }
+
+  if (!parsedFiles.has(refFile.uri)) {
+    parsedFiles.add(refFile.uri);
+    if (!parseReferenceFileEntities(refFile, entities)) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      addPlaceholderEntity(entities, targetRef);
+      return;
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  addPlaceholderEntity(entities, targetRef);
 }
 
 function resolveExternalReferences(
@@ -369,99 +473,41 @@ function resolveExternalReferences(
   const queue: string[] = [];
   const queued = new Set<string>();
 
-  const enqueueMissingRefs = () => {
-    const entityList = Array.from(entities.values());
-    for (const entity of entityList) {
-      for (const field of entity.fields) {
-        for (const ref of field.references) {
-          if (!entities.has(ref) && !queued.has(ref)) {
-            queue.push(ref);
-            queued.add(ref);
-          }
-        }
-      }
-    }
-  };
-
-  enqueueMissingRefs();
+  enqueueMissingReferences(entities, queue, queued);
   while (queue.length > 0) {
     const targetRef = queue.shift();
     if (!targetRef || entities.has(targetRef)) {
       continue;
     }
 
-    const refFile = findReferenceFile(targetRef, activeFile.uri, files);
-    if (!refFile) {
-      const { namespace } = getTypeNameAndNamespace(targetRef);
-      entities.set(targetRef, {
-        fqName: targetRef,
-        displayName: getShortName(targetRef),
-        namespace,
-        kind: 'record',
-        fields: [],
-        symbols: [],
-      });
-      continue;
-    }
-
-    if (!parsedFiles.has(refFile.uri)) {
-      parsedFiles.add(refFile.uri);
-      try {
-        const parsed = JSON.parse(refFile.content);
-        extractEntitiesFromSchema(parsed, entities);
-      } catch {
-        const { namespace } = getTypeNameAndNamespace(targetRef);
-        entities.set(targetRef, {
-          fqName: targetRef,
-          displayName: getShortName(targetRef),
-          namespace,
-          kind: 'record',
-          fields: [],
-          symbols: [],
-        });
-      }
-    }
-
-    if (!entities.has(targetRef)) {
-      const { namespace } = getTypeNameAndNamespace(targetRef);
-      entities.set(targetRef, {
-        fqName: targetRef,
-        displayName: getShortName(targetRef),
-        namespace,
-        kind: 'record',
-        fields: [],
-        symbols: [],
-      });
-    }
-
-    enqueueMissingRefs();
+    resolveReferenceEntity(targetRef, activeFile, files, entities, parsedFiles);
+    enqueueMissingReferences(entities, queue, queued);
   }
 }
 
-function renderMermaid(entities: Map<string, AvroEntity>): string {
-  const lines: string[] = ['classDiagram'];
-  const sortedEntities = Array.from(entities.values()).sort((a, b) => a.fqName.localeCompare(b.fqName));
+function renderMermaidEntity(entity: AvroEntity, lines: string[]): void {
+  const classId = getClassId(entity.fqName);
+  lines.push(`class ${classId}["${escapeMermaidLabel(entity.fqName)}"]`);
 
-  for (const entity of sortedEntities) {
-    const classId = getClassId(entity.fqName);
-    lines.push(`class ${classId}["${escapeMermaidLabel(entity.fqName)}"]`);
-
-    if (entity.kind === 'enum' || entity.fields.length > 0) {
-      lines.push(`class ${classId} {`);
-      if (entity.kind === 'enum') {
-        lines.push('  <<enumeration>>');
-        for (const symbol of entity.symbols) {
-          lines.push(`  ${escapeMermaidLabel(symbol)}`);
-        }
-      } else {
-        for (const field of entity.fields) {
-          lines.push(`  ${escapeMermaidLabel(field.name)}: ${escapeMermaidLabel(field.typeLabel)}`);
-        }
-      }
-      lines.push('}');
-    }
+  if (entity.kind !== 'enum' && entity.fields.length === 0) {
+    return;
   }
 
+  lines.push(`class ${classId} {`);
+  if (entity.kind === 'enum') {
+    lines.push('  <<enumeration>>');
+    for (const symbol of entity.symbols) {
+      lines.push(`  ${escapeMermaidLabel(symbol)}`);
+    }
+  } else {
+    for (const field of entity.fields) {
+      lines.push(`  ${escapeMermaidLabel(field.name)}: ${escapeMermaidLabel(field.typeLabel)}`);
+    }
+  }
+  lines.push('}');
+}
+
+function renderMermaidRelations(sortedEntities: AvroEntity[], lines: string[]): void {
   const relationKeys = new Set<string>();
   for (const entity of sortedEntities) {
     const fromId = getClassId(entity.fqName);
@@ -472,12 +518,24 @@ function renderMermaid(entities: Map<string, AvroEntity>): string {
         if (relationKeys.has(key)) {
           continue;
         }
+
         relationKeys.add(key);
         const relationLabel = field.collection ? `${field.name}[]` : field.name;
         lines.push(`${fromId} --> ${toId} : ${escapeMermaidLabel(relationLabel)}`);
       }
     }
   }
+}
+
+function renderMermaid(entities: Map<string, AvroEntity>): string {
+  const lines: string[] = ['classDiagram'];
+  const sortedEntities = Array.from(entities.values()).sort((a, b) => a.fqName.localeCompare(b.fqName));
+
+  for (const entity of sortedEntities) {
+    renderMermaidEntity(entity, lines);
+  }
+
+  renderMermaidRelations(sortedEntities, lines);
 
   return lines.join('\n');
 }

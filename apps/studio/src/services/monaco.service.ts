@@ -81,11 +81,11 @@ export class MonacoService extends AbstractService {
     const spec = this.jsonSchemaSpecs.get(version) || this.jsonSchemaSpecs.get(fallbackVersion);
 
     const schemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
-    const avroSchemaId = String((avroSchema as any).$id || 'https://json.schemastore.org/avro-avsc.json');
+    const avroSchemaId = String(avroSchema.$id || 'https://json.schemastore.org/avro-avsc.json');
     schemas.push({
       uri: avroSchemaId,
       fileMatch: ['*.avsc', '**/*.avsc'],
-      schema: avroSchema as any,
+      schema: avroSchema,
     });
 
     const asyncApiSchemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
@@ -96,7 +96,7 @@ export class MonacoService extends AbstractService {
         fileMatch: asyncApiFileMatches,
         schema: spec,
       });
-      asyncApiSchemas.push(...(this.jsonSchemaDefinitions || []));
+      asyncApiSchemas.push(...this.jsonSchemaDefinitions);
     }
 
     return {
@@ -116,7 +116,7 @@ export class MonacoService extends AbstractService {
     if (!uri) {
       return 'asyncapi';
     }
-    return String(uri).replace(/\\/g, '/');
+    return String(uri).replaceAll('\\', '/');
   }
 
   private fileMatchesForUri(uri: string): string[] {
@@ -196,9 +196,7 @@ export class MonacoService extends AbstractService {
       }
 
       uris.push(definition.uri);
-      if (Array.isArray(this.jsonSchemaDefinitions)) {
-        this.jsonSchemaDefinitions.push(definition);
-      }
+      this.jsonSchemaDefinitions.push(definition);
     });
   }
 

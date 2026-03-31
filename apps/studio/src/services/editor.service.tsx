@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import { AbstractService } from './abstract.service';
 
 import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
@@ -77,9 +79,9 @@ export class EditorService extends AbstractService {
 
   private getFileNameFromUri(uri: string): string {
     if (!uri) return 'asyncapi';
-    const normalized = uri.replace(/\\/g, '/');
+    const normalized = uri.replaceAll('\\', '/');
     const parts = normalized.split('/');
-    return parts[parts.length - 1] || uri;
+    return parts.at(-1) || uri;
   }
 
   private inferLanguageFromUri(uri: string, content?: string): 'json' | 'yaml' | 'markdown' {
@@ -270,12 +272,12 @@ export class EditorService extends AbstractService {
 
   async grantFolderAccess(): Promise<boolean> {
     const folderAccessToastId = 'folder-access';
-    if (!window.isSecureContext) {
+    if (!globalThis.isSecureContext) {
       throw new Error('Open Folder requires a secure context (HTTPS or localhost).');
     }
     if (
-      typeof window.showDirectoryPicker !== 'function' ||
-      typeof window.showOpenFilePicker !== 'function'
+      typeof globalThis.showDirectoryPicker !== 'function' ||
+      typeof globalThis.showOpenFilePicker !== 'function'
     ) {
       show(BrowserNotSupportedModal, {
         isBrave: await this.isBraveBrowser(),
@@ -284,7 +286,7 @@ export class EditorService extends AbstractService {
     }
     let directoryHandle: DirectoryHandle;
     try {
-      directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
+      directoryHandle = await globalThis.showDirectoryPicker({ mode: 'read' });
     } catch (err: any) {
       if (err?.name === 'AbortError') return false;
       debugError('editor', 'showDirectoryPicker failed', err);
@@ -294,7 +296,7 @@ export class EditorService extends AbstractService {
     toast.loading('Please select the AsyncAPI file within the folder...', { id: folderAccessToastId });
     let fileHandle: FileHandle;
     try {
-      const [handle] = await window.showOpenFilePicker({
+      const [handle] = await globalThis.showOpenFilePicker({
         types: [{ description: 'Supported files', accept: { 'text/*': ['.yaml', '.yml', '.json', '.md', '.markdown'] } }],
         multiple: false,
       });
@@ -369,8 +371,8 @@ export class EditorService extends AbstractService {
 
     debugLog('editor', 'importFromURL', url);
 
-    const currentUrl = window.location.href.split('?')[0];
-    window.history.pushState({}, '', `${currentUrl}?url=${url}`);
+    const currentUrl = globalThis.location.href.split('?')[0];
+    globalThis.history.pushState({}, '', `${currentUrl}?url=${url}`);
 
     return fetch(url)
       .then(res => res.text())
@@ -432,7 +434,8 @@ export class EditorService extends AbstractService {
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
-      const content = String(fileLoadedEvent.target?.result || '');
+      const result = fileLoadedEvent.target?.result;
+      const content = typeof result === 'string' ? result : '';
       const uri = file.name;
       const language = this.inferLanguageFromUri(uri, content);
       const importedFile: File = {
@@ -542,7 +545,7 @@ export class EditorService extends AbstractService {
         },
         body: JSON.stringify({ content: file.content }),
       }).then(res => res.text());
-      return `${window.location.origin}/?share=${shareID}`;
+      return `${globalThis.location.origin}/?share=${shareID}`;
     } catch (err) {
       console.error(err);
       throw err;
@@ -654,14 +657,14 @@ export class EditorService extends AbstractService {
       return;
     }
 
-    if (typeof window.showSaveFilePicker !== 'function') {
-      throw new Error('This browser does not support saving files through Save As dialog.');
+    if (typeof globalThis.showSaveFilePicker !== 'function') {
+      throw new TypeError('This browser does not support saving files through Save As dialog.');
     }
 
     const suggestedFileName = file.name?.includes('.')
       ? file.name
       : `${file.name || 'asyncapi'}.${extension}`;
-    const fileHandle = await window.showSaveFilePicker({
+    const fileHandle = await globalThis.showSaveFilePicker({
       suggestedName: suggestedFileName,
       types: [
         {

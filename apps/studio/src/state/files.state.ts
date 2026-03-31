@@ -1,10 +1,12 @@
+/* global globalThis */
+
 import { create } from 'zustand';
 import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 import { debugLog } from '@/helpers/debug';
 
 // Helper function to extract content and source from localStorage
 const getDocumentFromLocalStorage = () => {
-  if (typeof window === 'undefined') return { content: undefined, source: undefined };
+  if (typeof globalThis.window === 'undefined') return { content: undefined, source: undefined };
 
   const stored = localStorage.getItem('document');
   if (!stored) return { content: undefined, source: undefined };
@@ -309,7 +311,7 @@ export const filesState = create<FilesState & FilesActions>((set, get) => ({
     set((state) => {
       const nextFiles: Record<string, File> = {
         ...state.files,
-        [String(uri)]: { ...state.files[String(uri)] || {}, ...file } as File,
+        [String(uri)]: { ...(state.files[String(uri)] || ({} as File)), ...file } as File,
       };
       if (String(uri) === 'asyncapi' && state.activeFileUri !== 'asyncapi' && nextFiles[state.activeFileUri]) {
         nextFiles[state.activeFileUri] = { ...nextFiles[state.activeFileUri], ...file, uri: state.activeFileUri };

@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import { AbstractService } from './abstract.service';
 import { filesState } from '@/state';
 
@@ -13,14 +15,14 @@ export class NavigationService extends AbstractService {
   override async afterAppInit() {
     try {
       await this.scrollToHash();
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
+      globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
     } catch (err: any) {
       console.error(err);
     }
   }
 
   getUrlParameters() {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(globalThis.location.search);
     return {
       url: urlParams.get('url') || urlParams.get('load'),
       base64: urlParams.get('base64'),
@@ -95,14 +97,14 @@ export class NavigationService extends AbstractService {
       }
     }
 
-    window.addEventListener('hashchange', hashChanged);
+    globalThis.addEventListener('hashchange', hashChanged);
     return () => {
-      window.removeEventListener('hashchange', hashChanged);
+      globalThis.removeEventListener('hashchange', hashChanged);
     };
   }
 
   private sanitizeHash(hash?: string): string | undefined {
-    hash = hash || window.location.hash.substring(1);
+    hash = hash || globalThis.location.hash.substring(1);
     try {
       const escapedHash = CSS.escape(hash);
       return escapedHash.startsWith('#') ? hash.substring(1) : escapedHash;
@@ -113,8 +115,8 @@ export class NavigationService extends AbstractService {
 
   private emitHashChangeEvent(hash: string) {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
-    window.history.pushState({}, '', hash);
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    globalThis.history.pushState({}, '', hash);
+    globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
   }
 
   destroy() {
@@ -143,7 +145,7 @@ export class NavigationService extends AbstractService {
   }
 
   private removeRemoteUrlParams() {
-    const [baseWithPath, hash] = window.location.href.split('#');
+    const [baseWithPath, hash] = globalThis.location.href.split('#');
     const [base, query] = baseWithPath.split('?');
 
     if (!query) {
@@ -163,6 +165,6 @@ export class NavigationService extends AbstractService {
       : base;
 
     const urlWithHash = hash ? `${nextUrl}#${hash}` : nextUrl;
-    window.history.replaceState({}, '', urlWithHash);
+    globalThis.history.replaceState({}, '', urlWithHash);
   }
 }

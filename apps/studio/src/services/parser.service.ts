@@ -111,8 +111,10 @@ export class ParserService extends AbstractService {
       resolvers.push(resolver);
     }
     if (useRemoteResolver) {
-      resolvers.push(this.createRemoteTrackingResolver('http'));
-      resolvers.push(this.createRemoteTrackingResolver('https'));
+      resolvers.push(
+        this.createRemoteTrackingResolver('http'),
+        this.createRemoteTrackingResolver('https'),
+      );
     }
     if (resolvers.length > 0) {
       (options as any).__unstable = {
@@ -357,6 +359,6 @@ export class ParserService extends AbstractService {
     if (!file) {
       return Promise.resolve([]);
     }
-    return Promise.all([this.parse('asyncapi', file.content, { source: file.source })]);
+    return this.parse('asyncapi', file.content, { source: file.source });
   }
 }

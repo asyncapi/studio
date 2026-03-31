@@ -46,9 +46,9 @@ export const SaveButton: React.FC = () => {
       >
         <FaSave
           className={
-            !file?.modified
-              ? 'text-gray-600'
-              : 'text-gray-500 hover:text-white'
+            file?.modified
+              ? 'text-gray-500 hover:text-white'
+              : 'text-gray-600'
           }
         />
       </button>

@@ -33,17 +33,15 @@ function looksLikeMermaidDefinition(codeElement: Element): boolean {
 }
 
 async function loadMermaid() {
-  if (!mermaidLoader) {
-    mermaidLoader = import('mermaid').then((module) => {
-      const mermaid = module.default;
-      mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: 'strict',
-        suppressErrorRendering: true,
-      });
-      return mermaid;
+  mermaidLoader ??= import('mermaid').then((module) => {
+    const mermaid = module.default;
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      suppressErrorRendering: true,
     });
-  }
+    return mermaid;
+  });
   return mermaidLoader;
 }
 
