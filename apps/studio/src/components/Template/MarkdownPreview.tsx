@@ -97,6 +97,60 @@ async function renderMermaidCodeBlock(
   }
 }
 
+async function renderMermaidBlocksInRoot(
+  root: HTMLDivElement,
+  isCancelled: () => boolean,
+): Promise<void> {
+  const codeBlocks = getMermaidCodeBlocks(root);
+  if (codeBlocks.length === 0) {
+    return;
+  }
+
+  try {
+    const mermaid = await loadMermaid();
+    await Promise.all(
+      codeBlocks.map((codeElement, index) =>
+        renderMermaidCodeBlock(mermaid, codeElement, index, isCancelled),
+      ),
+    );
+  } catch {
+    return;
+  }
+}
+
+function createMermaidRenderScheduler(
+  render: () => Promise<void>,
+  isCancelled: () => boolean,
+): () => void {
+  let renderScheduled = false;
+
+  return () => {
+    if (renderScheduled || isCancelled()) {
+      return;
+    }
+
+    renderScheduled = true;
+    queueMicrotask(() => {
+      renderScheduled = false;
+      render().catch(() => undefined);
+    });
+  };
+}
+
+function startPreviewObservation(
+  root: HTMLDivElement,
+  scheduleRender: () => void,
+): { observer: MutationObserver; timeoutId: ReturnType<typeof setTimeout> } {
+  const observer = new MutationObserver(scheduleRender);
+  observer.observe(root, { childList: true, subtree: true });
+
+  const timeoutId = setTimeout(() => {
+    observer.disconnect();
+  }, 1500);
+
+  return { observer, timeoutId };
+}
+
 export const MarkdownPreview: React.FunctionComponent<MarkdownPreviewProps> = ({ content }) => {
   const previewRef = useRef<HTMLDivElement | null>(null);
 
@@ -104,54 +158,20 @@ export const MarkdownPreview: React.FunctionComponent<MarkdownPreviewProps> = ({
     let cancelled = false;
     let observer: MutationObserver | undefined;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    let renderScheduled = false;
 
     const isCancelled = () => cancelled;
-
-    const renderMermaidBlocks = async () => {
-      const root = previewRef.current;
-      if (!root) {
-        return;
-      }
-
-      const codeBlocks = getMermaidCodeBlocks(root);
-      if (codeBlocks.length === 0) {
-        return;
-      }
-
-      try {
-        const mermaid = await loadMermaid();
-        await Promise.all(
-          codeBlocks.map((codeElement, index) =>
-            renderMermaidCodeBlock(mermaid, codeElement, index, isCancelled),
-          ),
-        );
-      } catch {
-        return;
-      }
-    };
-
-    const scheduleRender = () => {
-      if (renderScheduled || cancelled) {
-        return;
-      }
-
-      renderScheduled = true;
-      queueMicrotask(() => {
-        renderScheduled = false;
-        renderMermaidBlocks().catch(() => undefined);
-      });
-    };
-
     const root = previewRef.current;
+    const scheduleRender = createMermaidRenderScheduler(async () => {
+      const nextRoot = previewRef.current;
+      if (!nextRoot) {
+        return;
+      }
+
+      await renderMermaidBlocksInRoot(nextRoot, isCancelled);
+    }, isCancelled);
+
     if (root) {
-      observer = new MutationObserver(() => {
-        scheduleRender();
-      });
-      observer.observe(root, { childList: true, subtree: true });
-      timeoutId = setTimeout(() => {
-        observer?.disconnect();
-      }, 1500);
+      ({ observer, timeoutId } = startPreviewObservation(root, scheduleRender));
     }
 
     scheduleRender();

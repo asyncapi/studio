@@ -14,7 +14,7 @@ import type { JSONSchema7 } from 'json-schema';
 
 export class MonacoService extends AbstractService {
   private jsonSchemaSpecs: Map<string, any> = new Map();
-  private jsonSchemaDefinitions: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
+  private readonly jsonSchemaDefinitions: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
   private actualVersion = 'X.X.X';
   private monacoInstance!: typeof monacoAPI;
   private activeFileUri = 'asyncapi';
@@ -56,8 +56,8 @@ export class MonacoService extends AbstractService {
     this.activeFileUri = this.normalizeUri(fileUri);
     this.isAsyncApiValidationEnabled = isAsyncApiDocument;
     const fallbackVersion = this.svcs.specificationSvc.latestVersion;
-    const resolvedVersion = this.jsonSchemaSpecs.has(version) ? version : fallbackVersion;
-    this.setLanguageConfig(resolvedVersion as SpecVersions);
+    const resolvedVersion: SpecVersions = this.jsonSchemaSpecs.has(version) ? version : fallbackVersion;
+    this.setLanguageConfig(resolvedVersion);
   }
 
   private setLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
@@ -80,23 +80,23 @@ export class MonacoService extends AbstractService {
     const fallbackVersion = this.svcs.specificationSvc.latestVersion;
     const spec = this.jsonSchemaSpecs.get(version) || this.jsonSchemaSpecs.get(fallbackVersion);
 
-    const schemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
     const avroSchemaId = String(avroSchema.$id || 'https://json.schemastore.org/avro-avsc.json');
-    schemas.push({
+    const schemas: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [{
       uri: avroSchemaId,
       fileMatch: ['*.avsc', '**/*.avsc'],
       schema: avroSchema,
-    });
-
-    const asyncApiSchemas: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+    }];
+    const asyncApiSchemas: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
     if (this.isAsyncApiValidationEnabled && spec) {
       const asyncApiFileMatches = this.fileMatchesForUri(this.activeFileUri);
-      asyncApiSchemas.push({
-        uri: String(spec.$id || 'https://www.asyncapi.com/definitions/latest'),
-        fileMatch: asyncApiFileMatches,
-        schema: spec,
-      });
-      asyncApiSchemas.push(...this.jsonSchemaDefinitions);
+      asyncApiSchemas.push(
+        {
+          uri: String(spec.$id || 'https://www.asyncapi.com/definitions/latest'),
+          fileMatch: asyncApiFileMatches,
+          schema: spec,
+        },
+        ...this.jsonSchemaDefinitions,
+      );
     }
 
     return {
@@ -212,34 +212,45 @@ export class MonacoService extends AbstractService {
     })) as JSONSchema7;
   }
 
+  private updateFallbackLanguageConfig() {
+    try {
+      const file = filesState.getState().files['asyncapi'];
+      if (!file) {
+        return;
+      }
+
+      const parsed = YAML.load(file.content) as { asyncapi?: SpecVersions } | undefined;
+      const fallbackVersion = parsed?.asyncapi;
+      if (fallbackVersion && this.jsonSchemaSpecs.has(fallbackVersion)) {
+        this.svcs.monacoSvc.updateLanguageConfig(fallbackVersion);
+      }
+    } catch (e: any) {
+      // intentional
+    }
+  }
+
+  private handleDocumentVersionChange(document: any, oldDocument: any) {
+    if (document === oldDocument) {
+      return;
+    }
+
+    const version = document.document?.version();
+    if (version) {
+      this.updateLanguageConfig(version as SpecVersions);
+      return;
+    }
+
+    this.updateFallbackLanguageConfig();
+  }
+
   private subcribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       if (!this.isAsyncApiValidationEnabled) {
         return;
       }
-      const newDocuments = state.documents;
-      const oldDocuments = prevState.documents;
 
-      Object.entries(newDocuments).forEach(([uri, document]) => {
-        const oldDocument = oldDocuments[String(uri)];
-        if (document === oldDocument) return;
-        const version = document.document?.version();
-        if (version) {
-          this.updateLanguageConfig(version as SpecVersions);
-        } else {
-          try {
-            const file = filesState.getState().files['asyncapi'];
-            if (file) {
-              const parsed = YAML.load(file.content) as { asyncapi?: SpecVersions } | undefined;
-              const fallbackVersion = parsed?.asyncapi;
-              if (fallbackVersion && this.jsonSchemaSpecs.has(fallbackVersion)) {
-                this.svcs.monacoSvc.updateLanguageConfig(fallbackVersion);
-              }
-            }
-          } catch (e: any) {
-            // intentional
-          }
-        }
+      Object.entries(state.documents).forEach(([uri, document]) => {
+        this.handleDocumentVersionChange(document, prevState.documents[String(uri)]);
       });
     });
   }

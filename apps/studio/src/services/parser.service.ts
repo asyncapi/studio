@@ -59,14 +59,7 @@ export class ParserService extends AbstractService {
 
     const activeUri = active?.uri || options.source || '';
     if (!this.isAsyncApiDocument(spec, String(activeUri))) {
-      filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: false });
-      this.updateDocument(uri, {
-        uri,
-        document: undefined,
-        diagnostics: this.createDiagnostics([]),
-        extras: undefined,
-        valid: false,
-      });
+      this.setNonAsyncApiState(uri);
       return;
     }
     filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: true });
@@ -86,36 +79,7 @@ export class ParserService extends AbstractService {
       '\n  options.source:', options.source,
       '\n  → resolver:', useLocalResolver ? 'LOCAL FILE RESOLVER' : 'default (remote/HTTP)',
     );
-    const resolvers: any[] = [];
-    if (useLocalResolver && file.directoryHandle && file.localPath) {
-      const resolver = createLocalFileResolver({
-        directoryHandle: file.directoryHandle,
-        basePath: file.localPath,
-        onReadFile: async ({ relativePath, source, content, fileHandle }) => {
-          filesState.getState().updateFile(relativePath, {
-            uri: relativePath,
-            name: relativePath.split('/').pop() || relativePath,
-            content,
-            from: 'file',
-            source,
-            language: this.inferLanguage(relativePath, content),
-            modified: false,
-            directoryHandle: file.directoryHandle,
-            fileHandle,
-            localPath: relativePath,
-            stat: { mtime: Date.now() },
-            isAsyncApiDocument: this.isAsyncApiDocument(content, relativePath),
-          });
-        },
-      });
-      resolvers.push(resolver);
-    }
-    if (useRemoteResolver) {
-      resolvers.push(
-        this.createRemoteTrackingResolver('http'),
-        this.createRemoteTrackingResolver('https'),
-      );
-    }
+    const resolvers = this.buildResolvers(file, useLocalResolver, useRemoteResolver);
     if (resolvers.length > 0) {
       (options as any).__unstable = {
         resolver: {
@@ -146,6 +110,17 @@ export class ParserService extends AbstractService {
       uri,
       document: undefined,
       diagnostics: this.createDiagnostics(diagnostics),
+      extras: undefined,
+      valid: false,
+    });
+  }
+
+  private setNonAsyncApiState(uri: string) {
+    filesState.getState().updateFile('asyncapi', { isAsyncApiDocument: false });
+    this.updateDocument(uri, {
+      uri,
+      document: undefined,
+      diagnostics: this.createDiagnostics([]),
       extras: undefined,
       valid: false,
     });
@@ -234,6 +209,42 @@ export class ParserService extends AbstractService {
       }
     }
     return (/^asyncapi\s*:/m).test(trimmed);
+  }
+
+  private buildResolvers(file: any, useLocalResolver: boolean, useRemoteResolver: boolean): any[] {
+    const resolvers: any[] = [];
+
+    if (useLocalResolver && file.directoryHandle && file.localPath) {
+      resolvers.push(createLocalFileResolver({
+        directoryHandle: file.directoryHandle,
+        basePath: file.localPath,
+        onReadFile: async ({ relativePath, source, content, fileHandle }) => {
+          filesState.getState().updateFile(relativePath, {
+            uri: relativePath,
+            name: relativePath.split('/').pop() || relativePath,
+            content,
+            from: 'file',
+            source,
+            language: this.inferLanguage(relativePath, content),
+            modified: false,
+            directoryHandle: file.directoryHandle,
+            fileHandle,
+            localPath: relativePath,
+            stat: { mtime: Date.now() },
+            isAsyncApiDocument: this.isAsyncApiDocument(content, relativePath),
+          });
+        },
+      }));
+    }
+
+    if (useRemoteResolver) {
+      resolvers.push(
+        this.createRemoteTrackingResolver('http'),
+        this.createRemoteTrackingResolver('https'),
+      );
+    }
+
+    return resolvers;
   }
 
   private createRemoteTrackingResolver(schema: 'http' | 'https') {

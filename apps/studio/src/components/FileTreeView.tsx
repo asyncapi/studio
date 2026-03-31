@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import React, { useMemo, useState } from 'react';
 import { VscChevronDown, VscChevronRight, VscFile, VscFolder, VscFolderOpened, VscGlobe } from 'react-icons/vsc';
 
@@ -30,6 +32,8 @@ type VisibleTreeNode = {
   node: TreeNode;
 };
 
+type RawTreeNode = TreeNode & { childrenMap: Record<string, RawTreeNode> };
+
 function measureTreeComputation<T>(label: string, compute: () => T): T {
   if (typeof performance === 'undefined') {
     return compute();
@@ -39,59 +43,82 @@ function measureTreeComputation<T>(label: string, compute: () => T): T {
   const result = compute();
   const duration = performance.now() - startTime;
 
-  if (duration > 16 && typeof window !== 'undefined' && window.localStorage.getItem('debug:fileTreePerf') === 'true') {
+  if (
+    duration > 16 &&
+    globalThis.window?.localStorage.getItem('debug:fileTreePerf') === 'true'
+  ) {
     console.debug(`[FileTreeView] ${label}: ${duration.toFixed(1)}ms`);
   }
 
   return result;
 }
 
-function buildTree(entries: TreeEntry[]): TreeNode[] {
-  type RawNode = TreeNode & { childrenMap: Record<string, RawNode> };
-  const root: Record<string, RawNode> = {};
+function createRawTreeNode(
+  entry: TreeEntry,
+  part: string,
+  currentPath: string,
+  isFile: boolean,
+): RawTreeNode {
+  return {
+    name: part,
+    path: `${entry.key}:${currentPath}`,
+    type: isFile ? 'file' : 'folder',
+    uri: isFile ? entry.uri : undefined,
+    title: isFile ? entry.title : undefined,
+    children: isFile ? undefined : [],
+    childrenMap: {},
+  };
+}
 
-  for (const entry of entries) {
-    const parts = entry.path.split('/').filter(Boolean);
-    if (parts.length === 0) continue;
+function ensureRawTreeNode(
+  level: Record<string, RawTreeNode>,
+  entry: TreeEntry,
+  part: string,
+  currentPath: string,
+  isFile: boolean,
+): RawTreeNode {
+  level[part] ??= createRawTreeNode(entry, part, currentPath, isFile);
+  return level[part];
+}
 
-    let level = root;
-    let currentPath = '';
-    parts.forEach((part, index) => {
-      currentPath = currentPath ? `${currentPath}/${part}` : part;
-      const isFile = index === parts.length - 1;
-      if (!level[part]) {
-        level[part] = {
-          name: part,
-          path: `${entry.key}:${currentPath}`,
-          type: isFile ? 'file' : 'folder',
-          uri: isFile ? entry.uri : undefined,
-          title: isFile ? entry.title : undefined,
-          children: isFile ? undefined : [],
-          childrenMap: {},
-        };
-      }
-      if (!isFile) {
-        level[part].type = 'folder';
-        level = level[part].childrenMap;
-      }
-    });
+function addEntryToTree(root: Record<string, RawTreeNode>, entry: TreeEntry): void {
+  const parts = entry.path.split('/').filter(Boolean);
+  if (parts.length === 0) {
+    return;
   }
 
-  const normalize = (map: Record<string, RawNode>): TreeNode[] =>
-    Object.values(map)
-      .map((node) => {
-        const { childrenMap, ...rest } = node;
-        return {
-          ...rest,
-          children: Object.keys(childrenMap).length > 0 ? normalize(childrenMap) : undefined,
-        };
-      })
-      .sort((a, b) => {
-        if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
-        return a.name.localeCompare(b.name);
-      });
+  let level = root;
+  let currentPath = '';
+  parts.forEach((part, index) => {
+    currentPath = currentPath ? `${currentPath}/${part}` : part;
+    const isFile = index === parts.length - 1;
+    const node = ensureRawTreeNode(level, entry, part, currentPath, isFile);
+    if (!isFile) {
+      node.type = 'folder';
+      level = node.childrenMap;
+    }
+  });
+}
 
-  return normalize(root);
+function normalizeTreeNodes(map: Record<string, RawTreeNode>): TreeNode[] {
+  return Object.values(map)
+    .map((node) => {
+      const { childrenMap, ...rest } = node;
+      return {
+        ...rest,
+        children: Object.keys(childrenMap).length > 0 ? normalizeTreeNodes(childrenMap) : undefined,
+      };
+    })
+    .sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+}
+
+function buildTree(entries: TreeEntry[]): TreeNode[] {
+  const root: Record<string, RawTreeNode> = {};
+  entries.forEach((entry) => addEntryToTree(root, entry));
+  return normalizeTreeNodes(root);
 }
 
 function flattenVisibleTree(nodes: TreeNode[], expandedFolders: Record<string, boolean>, activeFileUri?: string, activeAsyncApiUri?: string): VisibleTreeNode[] {
@@ -157,6 +184,92 @@ function formatRemoteGroupLabel(url: string): string {
   }
 }
 
+function sortTreeNodes(nodes: TreeNode[]): TreeNode[] {
+  return nodes.slice().sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function resolveRemoteBaseDir(uri: string | undefined): string | undefined {
+  if (!uri) {
+    return undefined;
+  }
+
+  try {
+    return new URL('.', uri).href;
+  } catch {
+    return undefined;
+  }
+}
+
+function createRemoteGroup(baseUrl: string): TreeNode {
+  return {
+    name: formatRemoteGroupLabel(baseUrl),
+    path: `remote-group:${baseUrl}`,
+    type: 'folder',
+    title: baseUrl,
+    isRemoteGroup: true,
+    children: [],
+  };
+}
+
+function getRemoteGroupEntry(fileUri: string): { baseUrl: string; fileName: string } {
+  try {
+    const parsed = new URL(fileUri);
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    return {
+      baseUrl: new URL('.', parsed.href).href,
+      fileName: parts.at(-1) || parsed.host,
+    };
+  } catch {
+    return {
+      baseUrl: fileUri,
+      fileName: truncateExternalUrl(fileUri),
+    };
+  }
+}
+
+function buildRemoteTree(projectFiles: Array<{ uri: string; isAsyncApiDocument?: boolean }>): TreeNode[] {
+  const remoteFiles = projectFiles.filter((file) => (/^https?:\/\//).test(file.uri));
+  const mainRemote = remoteFiles.find((file) => file.isAsyncApiDocument) || remoteFiles[0];
+  const baseDir = resolveRemoteBaseDir(mainRemote?.uri);
+  const baseEntries: TreeEntry[] = [];
+  const groups = new Map<string, TreeNode>();
+
+  for (const file of remoteFiles) {
+    if (baseDir && file.uri.startsWith(baseDir)) {
+      baseEntries.push({
+        key: 'remote-base',
+        path: file.uri.slice(baseDir.length),
+        uri: file.uri,
+      });
+      continue;
+    }
+
+    const { baseUrl, fileName } = getRemoteGroupEntry(file.uri);
+    if (!groups.has(baseUrl)) {
+      groups.set(baseUrl, createRemoteGroup(baseUrl));
+    }
+
+    const group = groups.get(baseUrl);
+    group?.children?.push({
+      name: fileName,
+      path: `${group.path}/${fileName}`,
+      type: 'file',
+      uri: file.uri,
+      title: file.uri,
+    });
+  }
+
+  const groupedNodes = Array.from(groups.values()).map((group) => ({
+    ...group,
+    children: sortTreeNodes(group.children || []),
+  }));
+  const baseNodes = buildTree(baseEntries);
+  const baseFolders = baseNodes.filter((node) => node.type === 'folder');
+  const baseFiles = baseNodes.filter((node) => node.type === 'file');
+
+  return [...sortTreeNodes(groupedNodes), ...baseFolders, ...baseFiles];
+}
+
 interface FileTreeViewProps {
   className?: string;
 }
@@ -199,77 +312,7 @@ export const FileTreeView: React.FC<FileTreeViewProps> = ({
   );
 
   const remoteTree = useMemo(
-    () => measureTreeComputation('build-remote-tree', () => {
-      const remoteFiles = projectFiles.filter((file) => (/^https?:\/\//).test(file.uri));
-      const mainRemote = remoteFiles.find((file) => file.isAsyncApiDocument) || remoteFiles[0];
-      const baseDir = (() => {
-        if (!mainRemote) return undefined;
-        try {
-          return new URL('.', mainRemote.uri).href;
-        } catch {
-          return undefined;
-        }
-      })();
-
-      const baseEntries: TreeEntry[] = [];
-      const groups = new Map<string, TreeNode>();
-
-      for (const file of remoteFiles) {
-        if (baseDir && file.uri.startsWith(baseDir)) {
-          baseEntries.push({
-            key: 'remote-base',
-            path: file.uri.slice(baseDir.length),
-            uri: file.uri,
-          });
-          continue;
-        }
-
-        let baseUrl = file.uri;
-        let fileName = file.uri;
-
-        try {
-          const parsed = new URL(file.uri);
-          baseUrl = new URL('.', parsed.href).href;
-          const parts = parsed.pathname.split('/').filter(Boolean);
-          fileName = parts.at(-1) || parsed.host;
-        } catch {
-          fileName = truncateExternalUrl(file.uri);
-        }
-
-        const groupPath = `remote-group:${baseUrl}`;
-        if (!groups.has(baseUrl)) {
-          groups.set(baseUrl, {
-            name: formatRemoteGroupLabel(baseUrl),
-            path: groupPath,
-            type: 'folder',
-            title: baseUrl,
-            isRemoteGroup: true,
-            children: [],
-          });
-        }
-
-        const group = groups.get(baseUrl);
-        group?.children?.push({
-          name: fileName,
-          path: `${groupPath}/${fileName}`,
-          type: 'file',
-          uri: file.uri,
-          title: file.uri,
-        });
-      }
-
-      const groupedNodes = Array.from(groups.values())
-        .map((group) => ({
-          ...group,
-          children: group.children?.slice().sort((a, b) => a.name.localeCompare(b.name)),
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-      const baseNodes = buildTree(baseEntries);
-      const baseFolders = baseNodes.filter((node) => node.type === 'folder');
-      const baseFiles = baseNodes.filter((node) => node.type === 'file');
-
-      return [...groupedNodes, ...baseFolders, ...baseFiles];
-    }),
+    () => measureTreeComputation('build-remote-tree', () => buildRemoteTree(projectFiles)),
     [projectFiles],
   );
 

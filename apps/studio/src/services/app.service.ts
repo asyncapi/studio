@@ -7,6 +7,56 @@ import { RedirectedModal } from '../components/Modals';
 import { debugLog } from '@/helpers/debug';
 import { appState, filesState } from '@/state';
 
+function inferResourceLanguage(content: string, sourceUri: string): 'json' | 'yaml' | 'markdown' {
+  const lowerUri = sourceUri.toLowerCase();
+  if (lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
+    return 'markdown';
+  }
+
+  return content.trimStart().startsWith('{') ? 'json' : 'yaml';
+}
+
+function isAsyncApiContent(content: string): boolean {
+  const trimmed = String(content).trim();
+  if ((/^asyncapi\s*:/m).test(trimmed)) {
+    return true;
+  }
+
+  if (!trimmed.startsWith('{')) {
+    return false;
+  }
+
+  try {
+    return !!JSON.parse(trimmed).asyncapi;
+  } catch {
+    return false;
+  }
+}
+
+function getProjectRoot(url: string | null): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    return new URL(url).host;
+  } catch {
+    return 'Remote Files';
+  }
+}
+
+function getResourceOrigin(base64: string | null, share: string | null): 'url' | 'base64' | 'share' {
+  if (base64) {
+    return 'base64';
+  }
+
+  if (share) {
+    return 'share';
+  }
+
+  return 'url';
+}
+
 export class ApplicationService extends AbstractService {
   override async onInit() {
     // subscribe to state to hide preloader
@@ -66,22 +116,13 @@ export class ApplicationService extends AbstractService {
       content = data.content;
     }
 
-    const detectedLanguage = this.svcs.formatSvc.retrieveLangauge(content);
     const sourceUri = url || (share ? `share://${share}` : 'base64://document');
-    const lowerUri = sourceUri.toLowerCase();
-    let language: 'json' | 'yaml' | 'markdown' = 'yaml';
-    if (lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
-      language = 'markdown';
-    } else if (detectedLanguage === 'json') {
-      language = 'json';
-    }
+    const detectedLanguage = this.svcs.formatSvc.retrieveLangauge(content);
+    const language = detectedLanguage === 'json'
+      ? 'json'
+      : inferResourceLanguage(content, sourceUri);
     const source = url || undefined;
-    let from: 'url' | 'base64' | 'share' = 'url';
-    if (base64) {
-      from = 'base64';
-    } else if (share) {
-      from = 'share';
-    }
+    const from = getResourceOrigin(base64, share);
     const uri = sourceUri;
     const file = {
       uri,
@@ -92,21 +133,9 @@ export class ApplicationService extends AbstractService {
       from,
       modified: false,
       stat: { mtime: Date.now() },
-      isAsyncApiDocument: (/^asyncapi\s*:/m).test(String(content).trim()) || (String(content).trim().startsWith('{') && (() => {
-        try {
-          return !!JSON.parse(String(content)).asyncapi;
-        } catch {
-          return false;
-        }
-      })()),
+      isAsyncApiDocument: isAsyncApiContent(content),
     };
-    const projectRoot = url ? (() => {
-      try {
-        return new URL(url).host;
-      } catch {
-        return 'Remote Files';
-      }
-    })() : undefined;
+    const projectRoot = getProjectRoot(url);
     filesState.getState().setProjectFiles(
       { [uri]: file },
       { activeFileUri: uri, fileTreeMode: url ? 'remote' : 'none', projectRoot },
