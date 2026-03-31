@@ -14,7 +14,7 @@ import type { JSONSchema7 } from 'json-schema';
 
 export class MonacoService extends AbstractService {
   private jsonSchemaSpecs: Map<string, any> = new Map();
-  private jsonSchemaDefinitions: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+  private jsonSchemaDefinitions: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
   private actualVersion = 'X.X.X';
   private monacoInstance!: typeof monacoAPI;
   private activeFileUri = 'asyncapi';
