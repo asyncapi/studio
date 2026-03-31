@@ -664,14 +664,15 @@ export class EditorService extends AbstractService {
     const suggestedFileName = file.name?.includes('.')
       ? file.name
       : `${file.name || 'asyncapi'}.${extension}`;
+    const fileExtension = `.${extension}` as `.${string}`;
+    const fileAcceptType: FilePickerAcceptType = {
+      description: fileTypeDescription,
+      accept: { [mimeType as `${string}/${string}`]: [fileExtension] },
+    };
+
     const fileHandle = await globalThis.showSaveFilePicker({
       suggestedName: suggestedFileName,
-      types: [
-        {
-          description: fileTypeDescription,
-          accept: { [mimeType]: [`.${extension}`] },
-        },
-      ],
+      types: [fileAcceptType],
     });
     const writable = await fileHandle.createWritable();
     await writable.write(content);
