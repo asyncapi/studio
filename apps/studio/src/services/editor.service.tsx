@@ -616,8 +616,8 @@ export class EditorService extends AbstractService {
       throw new Error('Failed to get current document content for saving.');
     }
 
-    let extension = 'yaml';
-    let mimeType = 'text/yaml';
+    let extension: 'yaml' | 'json' | 'md' = 'yaml';
+    let mimeType: `${string}/${string}` = 'text/yaml';
     if (language === 'json') {
       extension = 'json';
       mimeType = 'application/json';
@@ -664,15 +664,14 @@ export class EditorService extends AbstractService {
     const suggestedFileName = file.name?.includes('.')
       ? file.name
       : `${file.name || 'asyncapi'}.${extension}`;
-    const fileExtension = `.${extension}` as `.${string}`;
-    const acceptedExtensions = [fileExtension] as `.${string}`[];
+    const acceptedExtensions: Array<`.${string}`> = [`.${extension}`];
 
     const fileHandle = await globalThis.showSaveFilePicker({
       suggestedName: suggestedFileName,
       types: [
         {
           description: fileTypeDescription,
-          accept: { [mimeType as `${string}/${string}`]: acceptedExtensions },
+          accept: { [mimeType]: acceptedExtensions },
         },
       ],
     });
