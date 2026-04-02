@@ -318,7 +318,7 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
   const [loading, setloading] = useState(false);
 
   const { navigationSvc, formatSvc } = useServices();
-  const rawSpec = useFilesState(state => state.files['asyncapi']?.content);
+  const { content: rawSpec, from } = useFilesState(state => state.files['asyncapi']) || {};
   const document = useDocumentsState(state => state.documents['asyncapi']?.document);
   const emptyStateMessage = formatSvc.detectSpecType(rawSpec || '') === 'openapi'
     ? 'OpenAPI document detected. AsyncAPI navigation is not available for this file.'
@@ -363,9 +363,13 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
             localStorage.setItem(splitPosExplorer, String(size));
           }, 100)}
         >
-          <div className="flex h-full w-full min-h-0">
-            <FileTreeView />
-          </div>
+          {
+            from === 'file' && (
+              <div className="flex h-full w-full min-h-0">
+                <FileTreeView />
+              </div>
+            )
+          }
           <div className="flex flex-1 overflow-hidden h-full justify-center items-center text-2xl mx-auto px-6 text-center bg-gray-800">
             {loading ?(
               <div className="rotating-wheel"></div>
@@ -393,9 +397,13 @@ export const Navigation: React.FunctionComponent<NavigationProps> = ({
           localStorage.setItem(splitPosExplorer, String(size));
         }, 100)}
       >
-        <div className="flex h-full w-full min-h-0">
-          <FileTreeView />
-        </div>
+        {
+          from === 'file' && (
+            <div className="flex h-full w-full min-h-0">
+              <FileTreeView />
+            </div>
+          )
+        }
         <div className="flex-1 min-h-0 overflow-y-auto">
           <ul>
             <li className="mb-4">
