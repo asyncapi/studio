@@ -120,4 +120,4 @@ Studio can resolve local file references (e.g., `$ref: './schema.avsc'`) by requ
 
 ### List existing architecture decision records
 
-See [docs/adr](docs/adr)
+See [doc/adr](doc/adr)
