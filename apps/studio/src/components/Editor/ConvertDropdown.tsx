@@ -11,7 +11,7 @@ import { useDocumentsState, useFilesState } from '../../state';
 export const ConvertDropdown: React.FC = () => {
   const { editorSvc } = useServices();
   const isInvalidDocument = !useDocumentsState(state => 
-    state.documents['asyncapi'].valid
+    state.documents['asyncapi']?.valid
   );
   const language = useFilesState(state => state.files['asyncapi'].language);
       
@@ -19,9 +19,9 @@ export const ConvertDropdown: React.FC = () => {
     <Dropdown
       opener={
         <Tooltip content="Convert" placement="top" hideOnClick={true}>
-          <button className="bg-inherit">
+          <div className="bg-inherit">
             <FaFileExport />
-          </button>
+          </div>
         </Tooltip>
       }
       buttonHoverClassName="text-gray-500 hover:text-white"

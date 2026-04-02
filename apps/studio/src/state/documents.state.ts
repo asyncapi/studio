@@ -27,10 +27,42 @@ export type DocumentsActions = {
   updateDocument: (uri: string, document: Partial<Document>) => void;
 }
 
+const emptyDiagnostics: DocumentDiagnostics = {
+  original: [],
+  filtered: [],
+  errors: [],
+  warnings: [],
+  informations: [],
+  hints: [],
+};
+
 export const documentsState = create<DocumentsState & DocumentsActions>(set => ({
-  documents: {},
+  documents: {
+    asyncapi: {
+      uri: 'asyncapi',
+      document: undefined,
+      extras: undefined,
+      diagnostics: emptyDiagnostics,
+      valid: false,
+    },
+  },
   updateDocument(uri: string, document: Partial<Document>) {
-    set(state => ({ documents: { ...state.documents, [String(uri)]: { ...state.documents[String(uri)] || {}, ...document } } }));
+    set(state => ({
+      documents: (() => {
+        const key = String(uri);
+        const existing = state.documents[key] || {};
+        const merged = { ...existing, ...document };
+        return {
+          ...state.documents,
+          [key]: {
+            ...merged,
+            uri: key,
+            diagnostics: merged.diagnostics ?? emptyDiagnostics,
+            valid: merged.valid ?? false,
+          },
+        };
+      })(),
+    }));
   },
 }));
 

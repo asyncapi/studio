@@ -3,6 +3,7 @@ import { AbstractService } from './abstract.service';
 import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
 import YAML from 'js-yaml';
+import avroSchema from '@/schemas/avro/avro-schema.json';
 
 import { documentsState, filesState } from '@/state';
 
@@ -13,9 +14,11 @@ import type { JSONSchema7 } from 'json-schema';
 
 export class MonacoService extends AbstractService {
   private jsonSchemaSpecs: Map<string, any> = new Map();
-  private jsonSchemaDefinitions: monacoAPI.languages.json.DiagnosticsOptions['schemas'] = [];
+  private readonly jsonSchemaDefinitions: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
   private actualVersion = 'X.X.X';
   private monacoInstance!: typeof monacoAPI;
+  private activeFileUri = 'asyncapi';
+  private isAsyncApiValidationEnabled = true;
 
   override async onInit() {
     // load monaco instance
@@ -42,6 +45,21 @@ export class MonacoService extends AbstractService {
     this.actualVersion = version;
   }
 
+  setSchemaValidationForFile(
+    fileUri: string,
+    isAsyncApiDocument: boolean,
+    version: SpecVersions = this.actualVersion as SpecVersions,
+  ) {
+    if (!this.monaco) {
+      return;
+    }
+    this.activeFileUri = this.normalizeUri(fileUri);
+    this.isAsyncApiValidationEnabled = isAsyncApiDocument;
+    const fallbackVersion = this.svcs.specificationSvc.latestVersion;
+    const resolvedVersion: SpecVersions = this.jsonSchemaSpecs.has(version) ? version : fallbackVersion;
+    this.setLanguageConfig(resolvedVersion);
+  }
+
   private setLanguageConfig(version: SpecVersions = this.svcs.specificationSvc.latestVersion) {
     if (!this.monaco) {
       return;
@@ -58,26 +76,57 @@ export class MonacoService extends AbstractService {
     setDiagnosticsOptions(options as YAMLDiagnosticsOptions);
   }
 
-  private prepareLanguageConfig(
-    version: SpecVersions,
-  ): monacoAPI.languages.json.DiagnosticsOptions {
-    const spec = this.jsonSchemaSpecs.get(version);
+  private prepareLanguageConfig(version: SpecVersions): monacoAPI.languages.json.DiagnosticsOptions {
+    const fallbackVersion = this.svcs.specificationSvc.latestVersion;
+    const spec = this.jsonSchemaSpecs.get(version) || this.jsonSchemaSpecs.get(fallbackVersion);
+
+    const avroSchemaId = String(avroSchema.$id || 'https://json.schemastore.org/avro-avsc.json');
+    const schemas: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [{
+      uri: avroSchemaId,
+      fileMatch: ['*.avsc', '**/*.avsc'],
+      schema: avroSchema,
+    }];
+    const asyncApiSchemas: NonNullable<monacoAPI.languages.json.DiagnosticsOptions['schemas']> = [];
+    if (this.isAsyncApiValidationEnabled && spec) {
+      const asyncApiFileMatches = this.fileMatchesForUri(this.activeFileUri);
+      asyncApiSchemas.push(
+        {
+          uri: String(spec.$id || 'https://www.asyncapi.com/definitions/latest'),
+          fileMatch: asyncApiFileMatches,
+          schema: spec,
+        },
+        ...this.jsonSchemaDefinitions,
+      );
+    }
 
     return {
       enableSchemaRequest: false,
       hover: true,
       completion: true,
-      validate: true,
+      validate: schemas.length > 0,
       format: true,
       schemas: [
-        {
-          uri: spec.$id, // id of the AsyncAPI spec schema
-          fileMatch: ['*'], // associate with all models
-          schema: spec,
-        },
-        ...(this.jsonSchemaDefinitions || []),
+        ...schemas,
+        ...asyncApiSchemas,
       ],
     } as any;
+  }
+
+  private normalizeUri(uri: string): string {
+    if (!uri) {
+      return 'asyncapi';
+    }
+    return String(uri).replaceAll('\\', '/');
+  }
+
+  private fileMatchesForUri(uri: string): string[] {
+    const normalized = this.normalizeUri(uri);
+    const baseName = normalized.split('/').pop();
+    const matches = [normalized];
+    if (baseName && baseName !== normalized) {
+      matches.push(`**/${baseName}`);
+    }
+    return matches;
   }
 
   private async loadMonaco() {
@@ -85,9 +134,16 @@ export class MonacoService extends AbstractService {
     if (process.env.NODE_ENV === 'test') {
       return;
     }
-    
-    const monaco = this.monacoInstance = await import('monaco-editor');
-    loader.config({ monaco });
+
+    try {
+      // Use the loader to get Monaco instead of direct import
+      this.monacoInstance = await loader.init();
+    } catch (error) {
+      console.error('Failed to load Monaco:', error);
+      // Fallback to direct import if loader fails
+      const monaco = this.monacoInstance = await import('monaco-editor');
+      loader.config({ monaco });
+    }
   }
 
   private setMonacoTheme() {
@@ -140,9 +196,7 @@ export class MonacoService extends AbstractService {
       }
 
       uris.push(definition.uri);
-      if (Array.isArray(this.jsonSchemaDefinitions)) {
-        this.jsonSchemaDefinitions.push(definition);
-      }
+      this.jsonSchemaDefinitions.push(definition);
     });
   }
 
@@ -158,28 +212,45 @@ export class MonacoService extends AbstractService {
     })) as JSONSchema7;
   }
 
+  private updateFallbackLanguageConfig() {
+    try {
+      const file = filesState.getState().files['asyncapi'];
+      if (!file) {
+        return;
+      }
+
+      const parsed = YAML.load(file.content) as { asyncapi?: SpecVersions } | undefined;
+      const fallbackVersion = parsed?.asyncapi;
+      if (fallbackVersion && this.jsonSchemaSpecs.has(fallbackVersion)) {
+        this.svcs.monacoSvc.updateLanguageConfig(fallbackVersion);
+      }
+    } catch (e: any) {
+      // intentional
+    }
+  }
+
+  private handleDocumentVersionChange(document: any, oldDocument: any) {
+    if (document === oldDocument) {
+      return;
+    }
+
+    const version = document.document?.version();
+    if (version) {
+      this.updateLanguageConfig(version as SpecVersions);
+      return;
+    }
+
+    this.updateFallbackLanguageConfig();
+  }
+
   private subcribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
-      const newDocuments = state.documents;
-      const oldDocuments = prevState.documents;
+      if (!this.isAsyncApiValidationEnabled) {
+        return;
+      }
 
-      Object.entries(newDocuments).forEach(([uri, document]) => {
-        const oldDocument = oldDocuments[String(uri)];
-        if (document === oldDocument) return;
-        const version = document.document?.version();
-        if (version) {
-          this.updateLanguageConfig(version as SpecVersions);
-        } else {
-          try {
-            const file = filesState.getState().files['asyncapi'];
-            if (file) {
-              const version = (YAML.load(file.content) as { asyncapi: SpecVersions }).asyncapi;
-              this.svcs.monacoSvc.updateLanguageConfig(version);
-            }
-          } catch (e: any) {
-            // intentional
-          }
-        }
+      Object.entries(state.documents).forEach(([uri, document]) => {
+        this.handleDocumentVersionChange(document, prevState.documents[String(uri)]);
       });
     });
   }
