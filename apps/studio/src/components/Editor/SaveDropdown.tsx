@@ -17,7 +17,7 @@ export const SaveButton: React.FC = () => {
     <Tooltip content={tooltipText} placement="top" hideOnClick={true}>
       <button
         type="button"
-        className="bg-inherit px-2 disabled:cursor-not-allowed"
+        className="flex bg-inherit p-2 disabled:cursor-not-allowed"
         title={tooltipText}
         onClick={() => {
           toast.promise(
