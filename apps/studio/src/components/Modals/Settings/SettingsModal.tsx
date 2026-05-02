@@ -55,8 +55,6 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
   const settings = settingsSvc.get();
   const modal = useModal();
 
-  const [autoSaving, setAutoSaving] = useState(settings.editor.autoSaving);
-  const [savingDelay, setSavingDelay] = useState(settings.editor.savingDelay);
   const [governanceWarnings, setGovernanceWarnings] = useState(settings.governance.show.warnings);
   const [governanceInformations, setGovernanceInformations] = useState(settings.governance.show.informations);
   const [governanceHints, setGovernanceHints] = useState(settings.governance.show.hints);
@@ -65,10 +63,6 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
 
   const createNewState = (): SettingsState => {
     return {
-      editor: {
-        autoSaving,
-        savingDelay,
-      },
       governance: {
         show: {
           warnings: governanceWarnings,
@@ -86,7 +80,7 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
     const newState = createNewState();
     const isThisSameObjects = settingsSvc.isEqual(newState);
     setConfirmDisabled(isThisSameObjects);
-  }, [autoSaving, savingDelay, autoRendering, governanceWarnings, governanceInformations, governanceHints]);
+  }, [autoRendering, governanceWarnings, governanceInformations, governanceHints]);
 
   const onCancel = useCallback(() => {
     modal.hide();
@@ -112,49 +106,8 @@ export const SettingsModal = create<SettingsModalProps>(({ activeTab = 'editor' 
       tab: <span>Editor</span>,
       content: (
         <div>
-          <div className="flex flex-col mt-4 text-sm">
-            <div className="flex flex-row content-center justify-between">
-              <label
-                htmlFor="settings-auto-saving"
-                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-              >
-                Auto saving
-              </label>
-              <Switch
-                toggle={autoSaving}
-                onChange={(v) => setAutoSaving(v)}
-              />
-            </div>
-            <div className='text-gray-400 text-xs'>
-              Save automatically after each change in the document or manually.
-            </div>
-          </div>
-          <div className="flex flex-col mt-4 text-sm">
-            <div className="flex flex-row content-center justify-between">
-              <label
-                htmlFor="settings-template-delay"
-                className="flex justify-right items-center w-1/2 content-center font-medium text-gray-700"
-              >
-                Delay (in miliseconds)
-              </label>
-              <select
-                name="settings-template-delay"
-                className="shadow-sm focus:ring-pink-500 focus:border-pink-500 w-1/4 block sm:text-sm rounded-md py-2 px-1 text-gray-700 border-pink-300 border-2"
-                onChange={e => setSavingDelay(JSON.parse(e.target.value))}
-                value={autoSaving ? savingDelay : ''}
-                disabled={!autoSaving}
-              >
-                <option value="">Please Select</option>
-                {[250, 500, 625, 750, 875, 1000].map(v => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='text-gray-400 text-xs -mt-2'>
-              Delay in saving the modified document.
-            </div>
+          <div className="text-sm text-gray-400 mt-4">
+            No editor settings available.
           </div>
         </div>
       ),

@@ -1,5 +1,5 @@
 'use client'
-import { StrictMode, useEffect, useState } from 'react';
+import { StrictMode, useEffect, useState, useRef } from 'react';
 import { Provider as ModalsProvider } from '@ebay/nice-modal-react';
 
 import { createServices, Services, ServicesProvider } from '@/services';
@@ -23,7 +23,7 @@ function configureMonacoEnvironment() {
         case 'yml':
           return new Worker(new URL('monaco-yaml/yaml.worker', import.meta.url));
         default:
-          throw new Error(`Unknown worker ${label}`);
+          throw new Error(`Unknown worker label: ${label}`);
         }
       },
     };
@@ -32,11 +32,20 @@ function configureMonacoEnvironment() {
 
 export default function StudioWrapper() {
   const [services, setServices] = useState<Services>();
+  const initializedRef = useRef(false);
+
   useEffect(() => {
+    // Prevent double initialization in React StrictMode
+    if (initializedRef.current) {
+      return;
+    }
+    initializedRef.current = true;
+
     const fetchData = async () => {
+      // Configure Monaco environment BEFORE creating services
+      configureMonacoEnvironment();
       const servicess = await createServices();
       setServices(servicess);
-      configureMonacoEnvironment();
       const alreadyVisitedSession = sessionStorage.getItem('alreadyVisited');
       const alreadyVisitedLocal = localStorage.getItem('alreadyVisited');
       if (!alreadyVisitedSession && !alreadyVisitedLocal) {

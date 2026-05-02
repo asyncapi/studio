@@ -9,6 +9,7 @@ import {
   GeneratorModal,
   ConvertModal,
   ImportUUIDModal,
+  OpenFolderModal,
 } from '../Modals';
 import { Dropdown } from '../common';
 
@@ -20,9 +21,10 @@ interface EditorDropdownProps {}
 export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () => {
   const { editorSvc } = useServices();
   const isInvalidDocument = !useDocumentsState(state => {
-    return state.documents['asyncapi'].valid
+    return state.documents['asyncapi']?.valid
   });
-  const language = useFilesState(state => state.files['asyncapi'].language);
+  const file = useFilesState(state => state.files['asyncapi']);
+  const language = file.language;
 
   const importUrlButton = (
     <button
@@ -46,14 +48,17 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </button>
   );
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const importFileButton = (
     <label
       className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
       title="Import File"
     >
       <input
+        ref={fileInputRef}
         type="file"
-        accept='.yaml, .yml, .json'
+        accept='.yaml, .yml, .json, .avsc'
         style={{ position: 'fixed', top: '-100em' }}
         onChange={event => {
           toast.promise(editorSvc.importFile(event.target.files), {
@@ -73,10 +78,23 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
               </div>
             ),
           });
+          // Reset so the same file can be re-imported
+          if (fileInputRef.current) fileInputRef.current.value = '';
         }}
       />
       Import File
     </label>
+  );
+
+  const openFolderButton = (
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+      title="Open Folder"
+      onClick={() => show(OpenFolderModal)}
+    >
+      Open Folder
+    </button>
   );
 
   const importBase64Button = (
@@ -106,12 +124,10 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     <button
       type="button"
       className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
-      title={`Save as ${language === 'yaml' ? 'YAML' : 'JSON'}`}
+      title="Save"
       onClick={() => {
         toast.promise(
-          language === 'yaml'
-            ? editorSvc.saveAsYaml()
-            : editorSvc.saveAsJSON(),
+          editorSvc.saveCurrentFile(),
           {
             loading: 'Saving...',
             success: (
@@ -131,46 +147,9 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           },
         );
       }}
-      disabled={isInvalidDocument}
+      disabled={!file.modified}
     >
-      Save as {language === 'yaml' ? 'YAML' : 'JSON'}
-    </button>
-  );
-
-  const convertLangAndSaveButton = (
-    <button
-      type="button"
-      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 disabled:cursor-not-allowed"
-      title={`Convert and save as ${
-        language === 'yaml' ? 'JSON' : 'YAML'
-      }`}
-      onClick={() => {
-        toast.promise(
-          language === 'yaml'
-            ? editorSvc.saveAsJSON()
-            : editorSvc.saveAsYaml(),
-          {
-            loading: 'Saving...',
-            success: (
-              <div>
-                <span className="block text-bold">
-                  Document succesfully converted and saved!
-                </span>
-              </div>
-            ),
-            error: (
-              <div>
-                <span className="block text-bold text-red-400">
-                  Failed to convert and save document.
-                </span>
-              </div>
-            ),
-          },
-        );
-      }}
-      disabled={isInvalidDocument}
-    >
-      Convert and save as {language === 'yaml' ? 'JSON' : 'YAML'}
+      Save
     </button>
   );
 
@@ -256,6 +235,9 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
             {importUrlButton}
           </li>
           <li className="hover:bg-gray-900">
+            {openFolderButton}
+          </li>
+          <li className="hover:bg-gray-900">
             {importFileButton}
           </li>
           <li className="hover:bg-gray-900">
@@ -279,9 +261,6 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
           <li className="hover:bg-gray-900">
             {saveFileButton}
           </li>
-          <li className="hover:bg-gray-900">
-            {convertLangAndSaveButton}
-          </li>
         </div>
         <div>
           <li className="hover:bg-gray-900">
@@ -295,3 +274,4 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
     </Dropdown>
   );
 };
+
