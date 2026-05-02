@@ -10,7 +10,7 @@ import { useServices } from '@/services';
 
 export const GenerateDropdown: React.FC = () => {
   const isInvalidDocument = !useDocumentsState(state => 
-    state.documents['asyncapi'].valid
+    state.documents['asyncapi']?.valid
   );
   const { editorSvc } = useServices();
 
@@ -18,9 +18,9 @@ export const GenerateDropdown: React.FC = () => {
     <Dropdown
       opener={
         <Tooltip content="Generate" placement="top" hideOnClick={true}>
-          <button className="bg-inherit">
+          <div className="bg-inherit">
             <FaCode />
-          </button>
+          </div>
         </Tooltip>
       }
       buttonHoverClassName="text-gray-500 hover:text-white"
@@ -66,3 +66,4 @@ export const GenerateDropdown: React.FC = () => {
     </Dropdown>
   );
 };
+

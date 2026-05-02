@@ -1,12 +1,17 @@
+/* global globalThis */
+
 import { AbstractService } from './abstract.service';
 
 import { KeyMod, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
 import { DiagnosticSeverity } from '@asyncapi/parser';
+import { show } from '@ebay/nice-modal-react';
 import { Range, MarkerSeverity } from 'monaco-editor/esm/vs/editor/editor.api';
 import toast from 'react-hot-toast';
-import fileDownload from 'js-file-download';
 
-import { appState, documentsState, filesState, settingsState } from '@/state';
+import { BrowserNotSupportedModal } from '@/components/Modals';
+import { debugError, debugLog } from '@/helpers/debug';
+import { appState, documentsState, filesState } from '@/state';
+import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
 
 import type * as monacoAPI from 'monaco-editor/esm/vs/editor/editor.api';
 import type { Diagnostic } from '@asyncapi/parser';
@@ -35,6 +40,12 @@ export class EditorService extends AbstractService {
     }
     this.created = true;
     this.instance = editor;
+    const currentFile = filesState.getState().files['asyncapi'];
+    const currentUri = currentFile?.uri || 'asyncapi';
+    this.svcs.monacoSvc.setSchemaValidationForFile(
+      currentUri,
+      this.isAsyncApiContent(editor.getValue(), currentUri),
+    );
 
     // parse on first run - only when document is undefined
     const document = documentsState.getState().documents.asyncapi;
@@ -47,7 +58,12 @@ export class EditorService extends AbstractService {
     // apply save command
     editor.addCommand(
       KeyMod.CtrlCmd | KeyCode.KeyS,
-      () => this.saveToLocalStorage(),
+      () => {
+        this.saveCurrentFile().catch((err) => {
+          console.error(err);
+          toast.error('Failed to save document.');
+        });
+      },
     );
     
     appState.setState({ initialized: true });
@@ -61,6 +77,154 @@ export class EditorService extends AbstractService {
     return this.editor?.getModel()?.getValue() as string;
   }
 
+  private getFileNameFromUri(uri: string): string {
+    if (!uri) return 'asyncapi';
+    const normalized = uri.replaceAll('\\', '/');
+    const parts = normalized.split('/');
+    return parts.at(-1) || uri;
+  }
+
+  private inferLanguageFromUri(uri: string, content?: string): 'json' | 'yaml' | 'markdown' {
+    const lower = uri.toLowerCase();
+    if (lower.endsWith('.md') || lower.endsWith('.markdown')) {
+      return 'markdown';
+    }
+    const byContent = content ? this.svcs.formatSvc.retrieveLangauge(content) : undefined;
+    if (byContent === 'json' || byContent === 'yaml') {
+      return byContent;
+    }
+    if (lower.endsWith('.json') || lower.endsWith('.avsc')) {
+      return 'json';
+    }
+    return 'yaml';
+  }
+
+  private isAsyncApiContent(content: string, uri = ''): boolean {
+    const lowerUri = String(uri || '').toLowerCase();
+    if (lowerUri.endsWith('.avsc') || lowerUri.endsWith('.md') || lowerUri.endsWith('.markdown')) {
+      return false;
+    }
+
+    const trimmed = String(content || '').trim();
+    if (!trimmed) return false;
+    if (trimmed.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return typeof parsed?.asyncapi === 'string';
+      } catch {
+        return false;
+      }
+    }
+    return (/^asyncapi\s*:/m).test(trimmed);
+  }
+
+  private hasUnsupportedEditorExtension(uri: string): boolean {
+    const blocked = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico', '.pdf', '.zip', '.tar', '.gz', '.woff', '.woff2'];
+    const path = uri.split('?')[0].toLowerCase();
+    return blocked.some((ext) => path.endsWith(ext));
+  }
+
+  async switchToFile(uri: string): Promise<void> {
+    const { files, setFileTreeLoading, setActiveFile, updateFile } = filesState.getState();
+    const target = files[String(uri)];
+    if (!target) {
+      return;
+    }
+
+    if (this.hasUnsupportedEditorExtension(uri)) {
+      toast.error('This file type is not supported in the editor.');
+      return;
+    }
+
+    setFileTreeLoading(true);
+    try {
+      let content = target.content;
+      const fileHandle = target.fileHandle;
+      if (!content && fileHandle) {
+        const file = await fileHandle.getFile();
+        content = await file.text();
+      }
+      if (!content && (/^https?:\/\//).test(uri)) {
+        content = await fetch(uri).then((res) => res.text());
+      }
+
+      if (typeof content !== 'string') {
+        content = '';
+      }
+
+      const language = this.inferLanguageFromUri(uri, content);
+      updateFile(uri, {
+        content,
+        language,
+        name: target.name || this.getFileNameFromUri(uri),
+        isAsyncApiDocument: this.isAsyncApiContent(content, uri),
+        stat: { mtime: Date.now() },
+      });
+      this.svcs.monacoSvc.setSchemaValidationForFile(uri, this.isAsyncApiContent(content, uri));
+      setActiveFile(uri);
+      this.updateState({
+        content,
+        updateModel: true,
+        sendToServer: false,
+        file: {
+          source: target.source,
+          from: target.from,
+          language,
+          fileHandle,
+          directoryHandle: target.directoryHandle,
+          localPath: target.localPath,
+          name: target.name || this.getFileNameFromUri(uri),
+          isAsyncApiDocument: this.isAsyncApiContent(content, uri),
+          stat: { mtime: Date.now() },
+        },
+      });
+    } finally {
+      setFileTreeLoading(false);
+    }
+  }
+
+  private async collectLocalProjectFiles(
+    directoryHandle: DirectoryHandle,
+    basePath = '',
+    rootName = directoryHandle.name,
+  ): Promise<Record<string, File>> {
+    const files: Record<string, File> = {};
+
+    for await (const [, entry] of directoryHandle.entries()) {
+      if (entry.kind === 'directory') {
+        const childPath = basePath ? `${basePath}/${entry.name}` : entry.name;
+        const nested = await this.collectLocalProjectFiles(entry, childPath, rootName);
+        Object.assign(files, nested);
+      } else if (entry.kind === 'file') {
+        const localPath = basePath ? `${basePath}/${entry.name}` : entry.name;
+        const fileHandle = entry as FileHandle;
+        try {
+          const file = await fileHandle.getFile();
+          const content = await file.text();
+          const language = this.inferLanguageFromUri(localPath, content);
+          files[localPath] = {
+            uri: localPath,
+            name: this.getFileNameFromUri(localPath),
+            content,
+            from: 'file',
+            source: `${rootName}/${localPath}`,
+            language,
+            modified: false,
+            directoryHandle,
+            fileHandle,
+            localPath,
+            isAsyncApiDocument: this.isAsyncApiContent(content, localPath),
+            stat: { mtime: Date.now() },
+          };
+        } catch (err) {
+          debugError('editor', 'Failed to read local file for tree', localPath, err);
+        }
+      }
+    }
+
+    return files;
+  }
+
   updateState({
     content,
     updateModel = false,
@@ -72,10 +236,14 @@ export class EditorService extends AbstractService {
       return;
     }
 
-    const language = file.language || this.svcs.formatSvc.retrieveLangauge(content);
+    const currentFile = filesState.getState().files['asyncapi'];
+    const language = file.language || this.inferLanguageFromUri(currentFile?.uri || 'asyncapi', content);
     if (!language) {
       return;
     }
+    const isAsyncApiDocument = file.isAsyncApiDocument ?? this.isAsyncApiContent(content, currentFile?.uri || '');
+    const currentUri = filesState.getState().activeFileUri || file.uri || 'asyncapi';
+    this.svcs.monacoSvc.setSchemaValidationForFile(currentUri, isAsyncApiDocument);
 
     if (sendToServer) {
       this.svcs.socketClientSvc.send('file:update', { code: content });
@@ -92,7 +260,7 @@ export class EditorService extends AbstractService {
     updateFile('asyncapi', {
       language,
       content,
-      modified: this.getFromLocalStorage() !== content,
+      modified: file.modified ?? true,
       ...file,
     });
   }
@@ -102,27 +270,151 @@ export class EditorService extends AbstractService {
     this.updateState({ content: converted, updateModel: true });
   }
 
-  async importFromURL(url: string): Promise<void> {
-    if (url) {
-      return fetch(url)
-        .then(res => res.text())
-        .then(async text => {
-          this.updateState({ 
-            content: text, 
-            updateModel: true, 
-            file: { 
-              source: url, 
-              from: 'url' 
-            },
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          throw err;
-        });
+  async grantFolderAccess(): Promise<boolean> {
+    const folderAccessToastId = 'folder-access';
+    if (!globalThis.isSecureContext) {
+      throw new Error('Open Folder requires a secure context (HTTPS or localhost).');
     }
+    if (
+      typeof globalThis.showDirectoryPicker !== 'function' ||
+      typeof globalThis.showOpenFilePicker !== 'function'
+    ) {
+      show(BrowserNotSupportedModal, {
+        isBrave: await this.isBraveBrowser(),
+      });
+      return false;
+    }
+    let directoryHandle: DirectoryHandle;
+    try {
+      directoryHandle = await globalThis.showDirectoryPicker({ mode: 'read' });
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return false;
+      debugError('editor', 'showDirectoryPicker failed', err);
+      throw err;
+    }
+
+    toast.loading('Please select the AsyncAPI file within the folder...', { id: folderAccessToastId });
+    let fileHandle: FileHandle;
+    try {
+      const [handle] = await globalThis.showOpenFilePicker({
+        types: [{ description: 'Supported files', accept: { 'text/*': ['.yaml', '.yml', '.json', '.md', '.markdown'] } }],
+        multiple: false,
+      });
+      fileHandle = handle;
+    } catch (err: any) {
+      toast.dismiss(folderAccessToastId);
+      if (err?.name === 'AbortError') return false;
+      debugError('editor', 'showOpenFilePicker failed', err);
+      throw err;
+    }
+
+    const pathParts = await directoryHandle.resolve(fileHandle);
+    if (!pathParts) {
+      toast.dismiss(folderAccessToastId);
+      toast.error('Selected file is not within the chosen folder. Please select a file inside the folder.');
+      return false;
+    }
+
+    const localPath = pathParts.join('/');
+    const files = await this.collectLocalProjectFiles(directoryHandle);
+    const selectedFile = await fileHandle.getFile();
+    const selectedContent = await selectedFile.text();
+    const selectedLanguage = this.inferLanguageFromUri(localPath, selectedContent);
+
+    files[localPath] = {
+      uri: localPath,
+      name: this.getFileNameFromUri(localPath),
+      content: selectedContent,
+      language: selectedLanguage,
+      from: 'file',
+      source: `${directoryHandle.name}/${localPath}`,
+      directoryHandle,
+      fileHandle,
+      localPath,
+      modified: false,
+      isAsyncApiDocument: this.isAsyncApiContent(selectedContent, localPath),
+      stat: { mtime: Date.now() },
+    };
+
+    filesState.getState().setProjectFiles(files, {
+      activeFileUri: localPath,
+      fileTreeMode: 'local',
+      projectRoot: directoryHandle.name,
+    });
+
+    this.updateState({
+      content: selectedContent,
+      updateModel: true,
+      sendToServer: false,
+      file: files[localPath],
+    });
+
+    toast.dismiss(folderAccessToastId);
+    return true;
   }
 
+  private async isBraveBrowser(): Promise<boolean> {
+    if (!navigator.brave || typeof navigator.brave.isBrave !== 'function') {
+      return false;
+    }
+
+    try {
+      return await navigator.brave.isBrave();
+    } catch {
+      return false;
+    }
+  }
+  async importFromURL(url: string): Promise<void> {
+    if (!url) {
+      throw new Error('URL is required');
+    }
+
+    debugLog('editor', 'importFromURL', url);
+
+    const currentUrl = globalThis.location.href.split('?')[0];
+    globalThis.history.pushState({}, '', `${currentUrl}?url=${url}`);
+
+    return fetch(url)
+      .then(res => res.text())
+      .then(async text => {
+        const language = this.inferLanguageFromUri(url, text);
+        const projectRoot = (() => {
+          try {
+            return new URL(url).host;
+          } catch {
+            return 'Remote Files';
+          }
+        })();
+
+        const mainFile: File = {
+          uri: url,
+          name: this.getFileNameFromUri(url),
+          content: text,
+          from: 'url',
+          source: url,
+          language,
+          modified: false,
+          isAsyncApiDocument: this.isAsyncApiContent(text, url),
+          stat: { mtime: Date.now() },
+        };
+
+        filesState.getState().setProjectFiles(
+          { [url]: mainFile },
+          { activeFileUri: url, fileTreeMode: 'remote', projectRoot },
+        );
+
+        this.updateState({
+          content: text,
+          updateModel: true,
+          sendToServer: false,
+          file: mainFile,
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        throw err;
+      });
+  }
   async importFile(files: FileList | null) {
     if (files === null || files?.length !== 1) {
       return;
@@ -131,41 +423,80 @@ export class EditorService extends AbstractService {
     if (!file) {
       return;
     }
-    
-    // Check if file is valid (only JSON and YAML are allowed currently) ----Change afterwards as per the requirement
-    if (
-      file.type !== 'application/json' &&
-      file.type !== 'application/x-yaml' &&
-      file.type !== 'application/yaml'
-    ) {
-      throw new Error('Invalid file type');
+
+    const allowedExtensions = ['json', 'yaml', 'yml', 'avsc', 'md', 'markdown'];
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!allowedExtensions.includes(ext)) {
+      throw new Error('Invalid file type. Only .json, .yaml, .yml, .avsc, .md, and .markdown files are supported.');
     }
+
+    debugLog('editor', 'importFile', file.name);
 
     const fileReader = new FileReader();
     fileReader.onload = fileLoadedEvent => {
-      const content = fileLoadedEvent.target?.result;
-      this.updateState({ content: String(content), updateModel: true });
+      const result = fileLoadedEvent.target?.result;
+      const content = typeof result === 'string' ? result : '';
+      const uri = file.name;
+      const language = this.inferLanguageFromUri(uri, content);
+      const importedFile: File = {
+        uri,
+        name: file.name,
+        content,
+        from: 'file',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(content, uri),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
+      this.updateState({
+        content,
+        updateModel: true,
+        sendToServer: false,
+        file: importedFile,
+      });
     };
     fileReader.readAsText(file, 'UTF-8');
   }
-
   async importBase64(content: string) {
     try {
       const decoded = this.svcs.formatSvc.decodeBase64(content);
-      this.updateState({ 
-        content: String(decoded), 
-        updateModel: true, 
-        file: { 
-          from: 'base64', 
-          source: undefined, 
-        },
+      const uri = 'base64://document';
+      const language = this.inferLanguageFromUri(uri, String(decoded));
+      const importedFile: File = {
+        uri,
+        name: 'Base64 document',
+        content: String(decoded),
+        from: 'base64',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(String(decoded), uri),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
+      this.updateState({
+        content: String(decoded),
+        updateModel: true,
+        sendToServer: false,
+        file: importedFile,
       });
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
-
   async importFromShareID(shareID: string) {
     try {
       const response = await fetch(`/share/${shareID}`);
@@ -174,20 +505,36 @@ export class EditorService extends AbstractService {
       }
 
       const data = await response.json();
-      this.updateState({ 
-        content: data.content, 
-        updateModel: true, 
-        file: { 
-          from: 'share', 
-          source: undefined, 
-        },
+      const uri = `share://${shareID}`;
+      const language = this.inferLanguageFromUri(uri, data.content);
+      const importedFile: File = {
+        uri,
+        name: `Shared ${shareID}`,
+        content: data.content,
+        from: 'share',
+        source: undefined,
+        language,
+        modified: false,
+        isAsyncApiDocument: this.isAsyncApiContent(data.content, uri),
+        stat: { mtime: Date.now() },
+      };
+
+      filesState.getState().setProjectFiles(
+        { [uri]: importedFile },
+        { activeFileUri: uri, fileTreeMode: 'none', projectRoot: undefined },
+      );
+
+      this.updateState({
+        content: data.content,
+        updateModel: true,
+        sendToServer: false,
+        file: importedFile,
       });
     } catch (err) {
       console.error(err);
       throw err;
     }
   }
-
   async exportAsURL() {
     try {
       const file = filesState.getState().files['asyncapi'];
@@ -198,7 +545,7 @@ export class EditorService extends AbstractService {
         },
         body: JSON.stringify({ content: file.content }),
       }).then(res => res.text());
-      return `${window.location.origin}/?share=${shareID}`;
+      return `${globalThis.location.origin}/?share=${shareID}`;
     } catch (err) {
       console.error(err);
       throw err;
@@ -249,66 +596,101 @@ export class EditorService extends AbstractService {
       console.error(err);
       throw err;
     }
-  }
-
-  async saveAsYaml() {
-    try {
-      const yamlContent = this.svcs.formatSvc.convertToYaml(this.value);
-      if (yamlContent) {
-        this.downloadFile(yamlContent, `${this.fileName}.yaml`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
+  }  private getCurrentContentByLanguage() {
+    const currentFile = filesState.getState().files['asyncapi'];
+    if (!currentFile) {
+      throw new Error('No active file to save.');
     }
-  }
 
-  async saveAsJSON() {
-    try {
-      const jsonContent = this.svcs.formatSvc.convertToJSON(this.value);
-      if (jsonContent) {
-        this.downloadFile(jsonContent, `${this.fileName}.json`);
-      }
-    } catch (err) {
-      console.error(err);
-      throw err;
+    const language = currentFile.language;
+    const editorContent = this.editor?.getModel()?.getValue();
+    const isValidContent = (value: unknown): value is string =>
+      typeof value === 'string' && value !== 'undefined';
+    let content: string | null = null;
+    if (isValidContent(editorContent)) {
+      content = editorContent;
+    } else if (isValidContent(currentFile.content)) {
+      content = currentFile.content;
     }
+    if (!isValidContent(content)) {
+      throw new Error('Failed to get current document content for saving.');
+    }
+
+    let extension: 'yaml' | 'json' | 'md' = 'yaml';
+    let mimeType: `${string}/${string}` = 'text/yaml';
+    if (language === 'json') {
+      extension = 'json';
+      mimeType = 'application/json';
+    } else if (language === 'markdown') {
+      extension = 'md';
+      mimeType = 'text/markdown';
+    }
+
+    return {
+      file: currentFile,
+      language,
+      content,
+      extension,
+      mimeType,
+    };
   }
 
-  saveToLocalStorage(editorValue?: string, notify = true) {
-    editorValue = editorValue || this.value;
-    localStorage.setItem('document', editorValue);
+  async saveCurrentFile() {
+    const { file, language, content, extension, mimeType } = this.getCurrentContentByLanguage();
+    let fileTypeDescription = 'YAML file';
+    if (language === 'json') {
+      fileTypeDescription = 'JSON file';
+    } else if (language === 'markdown') {
+      fileTypeDescription = 'Markdown file';
+    }
 
-    const { updateFile } = filesState.getState();
-    updateFile('asyncapi', {
-      from: 'storage',
-      source: undefined,
-      modified: false,
+    if (file.from === 'file' && file.fileHandle) {
+      const writable = await file.fileHandle.createWritable();
+      await writable.write(content);
+      await writable.close();
+      filesState.getState().updateFile('asyncapi', {
+        content,
+        language,
+        modified: false,
+        stat: { mtime: Date.now() },
+      });
+      return;
+    }
+
+    if (typeof globalThis.showSaveFilePicker !== 'function') {
+      throw new TypeError('This browser does not support saving files through Save As dialog.');
+    }
+
+    const suggestedFileName = file.name?.includes('.')
+      ? file.name
+      : `${file.name || 'asyncapi'}.${extension}`;
+    const acceptedExtensions: Array<`.${string}`> = [`.${extension}`];
+
+    const fileHandle = await globalThis.showSaveFilePicker({
+      suggestedName: suggestedFileName,
+      types: [
+        {
+          description: fileTypeDescription,
+          accept: { [mimeType]: acceptedExtensions },
+        },
+      ],
     });
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
 
-    if (notify) {
-      if (settingsState.getState().editor.autoSaving) {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Studio is currently saving your work automatically 💪
-            </span>
-          </div>,
-        );
-      } else {
-        toast.success(
-          <div>
-            <span className="block text-bold">
-              Document succesfully saved to the local storage!
-            </span>
-          </div>,
-        );
-      }
-    }
-  }
-
-  getFromLocalStorage() {
-    return localStorage.getItem('document');
+    filesState.getState().updateFile('asyncapi', {
+      content,
+      language,
+      name: fileHandle.name || suggestedFileName,
+      from: 'file',
+      source: undefined,
+      fileHandle,
+      directoryHandle: undefined,
+      localPath: undefined,
+      modified: false,
+      stat: { mtime: Date.now() },
+    });
   }
 
   private applyMarkersAndDecorations(diagnostics: Diagnostic[] = []) {
@@ -383,12 +765,6 @@ export class EditorService extends AbstractService {
     default: return 'diagnostic-warning';
     }
   }
-
-  private fileName = 'asyncapi';
-  private downloadFile(content: string, fileName: string) {
-    return fileDownload(content, fileName);
-  }
-
   private subcribeToDocuments() {
     documentsState.subscribe((state, prevState) => {
       const newDocuments = state.documents;
@@ -402,3 +778,4 @@ export class EditorService extends AbstractService {
     });
   }
 }
+

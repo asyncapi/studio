@@ -21,7 +21,7 @@ const ContentComponent: FunctionComponent<ContentProps> = () => {
   const navigationEnabled = show.primarySidebar;
   const editorEnabled = show.primaryPanel;
   const viewEnabled = show.secondaryPanel;
-  const viewType = secondaryPanelType;
+  const viewType = secondaryPanelType === 'avro' ? 'template' : secondaryPanelType;
 
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
