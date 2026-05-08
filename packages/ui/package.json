@@ -38,7 +38,7 @@
     "@types/lodash": "^4.17.0",
     "@types/react": "^18.2.5",
     "eslint-config-custom": "workspace:*",
-    "postcss": "^8.4.31",
+    "postcss": "^8.5.10",
     "tailwind-config": "workspace:*",
     "@asyncapi/studio-utils": "workspace:*",
     "tsconfig": "workspace:*",
