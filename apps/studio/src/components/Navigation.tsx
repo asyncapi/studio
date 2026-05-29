@@ -118,8 +118,8 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           >
             <div className="flex flex-row">
               <div className="flex-none">
-                <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
-                  Pub
+                <span className="mr-3 text-xs uppercase text-green-600 font-bold">
+                  Sub
                 </span>
               </div>
               <span className="truncate">{channelName}</span>
@@ -150,8 +150,8 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
           >
             <div className="flex flex-row">
               <div className="flex-none">
-                <span className="mr-3 text-xs uppercase text-green-600 font-bold">
-                  Sub
+                <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
+                  Pub
                 </span>
               </div>
               <span className="truncate">{channelName}</span>
