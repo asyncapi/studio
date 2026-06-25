@@ -121,3 +121,16 @@ Studio can resolve local file references (e.g., `$ref: './schema.avsc'`) by requ
 ### List existing architecture decision records
 
 See [doc/adr](doc/adr)
+
+### Icons Usage
+Studio uses icons from the [AsyncAPI Design system](https://www.figma.com/design/cFsY4LCfKmDqdlaTIJPpA1/AsyncAPI-Design-System?node-id=354-2046&p=f&t=CINUpbY33cZmalFG-0). All icons should follow the AsyncAPI design system — 24px grid, 1.5px stroke, outline style only.
+If you need to add or replace an icon in Studio, follow these steps:
+
+- Open the [AsyncAPI Design system](https://www.figma.com/design/cFsY4LCfKmDqdlaTIJPpA1/AsyncAPI-Design-System?node-id=354-2046&p=f&t=CINUpbY33cZmalFG-0) Figma file
+- Find the correct icon
+<img width="753" height="600" alt="Screenshot 2026-06-25 at 09 27 54" src="https://github.com/user-attachments/assets/285a001d-6d48-424e-aa8f-87b7301d7d04" />
+
+- Right-click → Copy as → SVG
+<img width="686" height="335" alt="hacopy" src="https://github.com/user-attachments/assets/8900e1c1-c861-4a9e-b973-b8a009edd5cb" />
+
+Do not import icons from react-icons, Font Awesome, Heroicons, or any other external library. See the [Icon System documentation](https://www.figma.com/design/kXSY2ELWaViixVT5gHZUGK/AsyncAPI-Icon-System?node-id=45-462&t=aE3kEtdRSApYj7XK-0) for the full usage and contribution guidelines.
