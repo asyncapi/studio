@@ -98,14 +98,14 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       if (operation.isReceive()) {
         channels.push(
           <li
-            key={`${channelName}-publish`}
+            key={`${channelName}-subscribe`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-publish-${channelName}`,
+                `operation-subscribe-${channelName}`,
               )
             }
             tabIndex={0}
@@ -119,7 +119,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             <div className="flex flex-row">
               <div className="flex-none">
                 <span className="mr-3 text-xs uppercase text-blue-500 font-bold">
-                  Pub
+                  Sub
                 </span>
               </div>
               <span className="truncate">{channelName}</span>
@@ -130,14 +130,14 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       if (operation.isSend()) {
         channels.push(
           <li
-            key={`${channelName}-subscribe`}
+            key={`${channelName}-publish`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
                 `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-subscribe-${channelName}`,
+                `operation-publish-${channelName}`,
               )
             }
             tabIndex={0}
@@ -151,7 +151,7 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             <div className="flex flex-row">
               <div className="flex-none">
                 <span className="mr-3 text-xs uppercase text-green-600 font-bold">
-                  Sub
+                  Pub
                 </span>
               </div>
               <span className="truncate">{channelName}</span>
