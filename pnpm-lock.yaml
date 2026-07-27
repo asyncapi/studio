@@ -456,8 +456,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
+        specifier: ^4.18.1
+        version: 4.18.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -6107,8 +6107,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  baseline-browser-mapping@2.11.3:
-    resolution: {integrity: sha512-sbT0Ui/CZwyAyy7icT1Gw5P1LKRlFaHwaF6tDCW5YHq2X5SeeZFphBuIagopSfwSSZq3sQcbmEL072yphxm7ew==}
+  baseline-browser-mapping@2.11.4:
+    resolution: {integrity: sha512-s4+sLr9mZ/CyqeRritFeYV/Zx73OAtmaHn6kkBS1XRoJn1hrg3xIDUcpicAEX68tkcIN0iBCgti31C8zxtkhsQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -13560,7 +13560,7 @@ snapshots:
 
   '@asyncapi/generator-filters@2.1.0':
     dependencies:
-      lodash: 4.17.21
+      lodash: 4.18.1
       markdown-it: 10.0.0
       openapi-sampler: 1.0.0-beta.17
 
@@ -20157,7 +20157,7 @@ snapshots:
 
   '@storybook/csf@0.0.1':
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.18.1
 
   '@storybook/csf@0.1.11':
     dependencies:
@@ -20443,7 +20443,7 @@ snapshots:
       acorn-walk: 7.2.0
       escodegen: 2.1.0
       html-tags: 3.3.1
-      lodash: 4.17.21
+      lodash: 4.18.1
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -21744,7 +21744,7 @@ snapshots:
     dependencies:
       '@hyperjump/json-schema': 0.23.5
       json-e: 4.7.1
-      lodash: 4.17.21
+      lodash: 4.18.1
       object-hash: 3.0.0
     transitivePeerDependencies:
       - encoding
@@ -22299,7 +22299,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  baseline-browser-mapping@2.11.3: {}
+  baseline-browser-mapping@2.11.4: {}
 
   baseline-browser-mapping@2.9.19: {}
 
@@ -22455,7 +22455,7 @@ snapshots:
 
   browserslist@4.28.7:
     dependencies:
-      baseline-browser-mapping: 2.11.3
+      baseline-browser-mapping: 2.11.4
       caniuse-lite: 1.0.30001806
       electron-to-chromium: 1.5.396
       node-releases: 2.0.51
