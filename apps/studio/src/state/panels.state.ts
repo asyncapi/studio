@@ -12,7 +12,7 @@ export type PanelsState = {
     contextPanel: boolean;
   };
   // TODO: remove when panels tabs will be introduced
-  secondaryPanelType: 'template' | 'visualiser';
+  secondaryPanelType: 'template' | 'visualiser' | 'avro';
 }
 
 export const panelsState = create(

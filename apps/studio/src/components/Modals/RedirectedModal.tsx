@@ -7,9 +7,14 @@ import { Markdown } from '../common';
 const CHANGES = `
 Below are the changes compared to the old AsyncAPI Playground:
   
-- There is no preview for markdown.
+- Markdown files now have preview support, including Mermaid code blocks.
 - Studio supports the same query parameters except **template**.
 - To download an AsyncAPI document from an external source use the editor menu and select **Import from URL**. There is also an option to use a local file, base64 saved file, convert a given version of AsyncAPI document to a newer one as well as change the format from YAML to JSON and vice versa. There is also option to download AsyncAPI document as file.
+- **Local Folder Access**: Grant folder access to resolve local file references (e.g., \`./schema.avsc\`, \`../common/types.yaml\`). Use **Import** → **Open Folder** to select your project root.
+- **Schema Editing**: Edit referenced schema files directly. Changes are automatically reflected in validation.
+- **File Saving**: Files opened from folders can be saved to their original location. Other files use **Save As**.
+- **Markdown Preview**: View documentation files with full Markdown rendering, including Mermaid diagrams.
+- **Avro Schema Viewer**: Visualize Avro schemas with automatically generated Mermaid diagrams.
 - To generate the template, please click on the **Generate code/docs** item in the menu at the top right corner of the editor, enter (needed) the parameters and click **Generate**.
 - The left navigation is used to open/close the panels.
 - Errors in the AsyncAPI document are shown in a panel at the bottom of the editor. The panel is expandable.

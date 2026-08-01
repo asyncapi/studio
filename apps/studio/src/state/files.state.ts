@@ -1,6 +1,35 @@
-import { create } from 'zustand';
+/* global globalThis */
 
-const document = typeof window !== 'undefined' ? localStorage.getItem('document') : undefined
+import { create } from 'zustand';
+import { DirectoryHandle, FileHandle } from '@/helpers/file-system-access.types';
+import { debugLog } from '@/helpers/debug';
+
+// Helper function to extract content and source from localStorage
+const getDocumentFromLocalStorage = () => {
+  if (globalThis.window === undefined) return { content: undefined, source: undefined };
+
+  const stored = localStorage.getItem('document');
+  if (!stored) return { content: undefined, source: undefined };
+
+  try {
+    // Try to parse as JSON (new format)
+    const parsed = JSON.parse(stored);
+    if (parsed && typeof parsed === 'object' && 'content' in parsed) {
+      return {
+        content: parsed.content,
+        source: parsed.source || undefined,
+      };
+    }
+  } catch {
+    // If parsing fails, it's the old format (plain string)
+    return { content: stored, source: undefined };
+  }
+
+  // Fallback to treating as plain string
+  return { content: stored, source: undefined };
+};
+
+const { content: document, source: documentSource } = getDocumentFromLocalStorage();
 const schema =
   document || `asyncapi: 3.0.0
 info:
@@ -218,29 +247,79 @@ export type File = {
   uri: string;
   name: string;
   content: string;
-  from: 'storage' | 'url' | 'base64' | 'share';
+  from: 'storage' | 'url' | 'base64' | 'share' | 'file';
   source?: string;
-  language: 'json' | 'yaml';
+  language: 'json' | 'yaml' | 'markdown';
   modified: boolean;
   stat?: FileStat;
+  fileHandle?: FileHandle;
+  directoryHandle?: DirectoryHandle;
+  localPath?: string;
+  isAsyncApiDocument?: boolean;
 }
+
+export type FileTreeMode = 'none' | 'local' | 'remote';
 
 export type FilesState = {
   files: Record<string, File>;
+  activeFileUri: string;
+  fileTreeMode: FileTreeMode;
+  projectRoot?: string;
+  fileTreeLoading: boolean;
 }
 
 export type FilesActions = {
   updateFile: (uri: string, file: Partial<File>) => void;
+  setActiveFile: (uri: string) => void;
+  setProjectFiles: (
+    files: Record<string, File>,
+    options?: {
+      activeFileUri?: string;
+      fileTreeMode?: FileTreeMode;
+      projectRoot?: string;
+    },
+  ) => void;
+  setFileTreeLoading: (loading: boolean) => void;
 }
 
-export const filesState = create<FilesState & FilesActions>(set => ({
+function createFileMirror(
+  currentFile: File | undefined,
+  patch: Partial<File>,
+  fallbackUri: string,
+): File {
+  return { ...(currentFile || ({} as File)), ...patch, uri: fallbackUri } as File;
+}
+
+function updateMirroredFiles(
+  files: Record<string, File>,
+  activeFileUri: string,
+  uri: string,
+  patch: Partial<File>,
+): Record<string, File> {
+  const nextFiles: Record<string, File> = {
+    ...files,
+    [uri]: { ...(files[uri] || ({} as File)), ...patch } as File,
+  };
+
+  if (uri === 'asyncapi' && activeFileUri !== 'asyncapi' && nextFiles[activeFileUri]) {
+    nextFiles[activeFileUri] = createFileMirror(nextFiles[activeFileUri], patch, activeFileUri);
+  }
+
+  if (uri === activeFileUri && uri !== 'asyncapi' && nextFiles.asyncapi) {
+    nextFiles.asyncapi = createFileMirror(nextFiles.asyncapi, patch, activeFileUri);
+  }
+
+  return nextFiles;
+}
+
+export const filesState = create<FilesState & FilesActions>((set, get) => ({
   files: {
     asyncapi: {
       uri: 'asyncapi',
       name: 'asyncapi',
       content: schema,
       from: 'storage',
-      source: undefined,
+      source: documentSource,
       language: schema.trimStart()[0] === '{' ? 'json' : 'yaml',
       modified: false,
       stat: {
@@ -248,9 +327,65 @@ export const filesState = create<FilesState & FilesActions>(set => ({
       }
     }
   },
+  activeFileUri: 'asyncapi',
+  fileTreeMode: 'none',
+  projectRoot: undefined,
+  fileTreeLoading: false,
   updateFile(uri: string, file: Partial<File>) {
-    set(state => ({ files: { ...state.files, [String(uri)]: { ...state.files[String(uri)] || {}, ...file } } }));
-  }
+    const before = get().files[String(uri)];
+    const logBefore = before
+      ? { from: before.from, source: before.source, localPath: before.localPath, hasDirectoryHandle: !!before.directoryHandle, hasFileHandle: !!before.fileHandle }
+      : '(new file)';
+    const logPatch = { from: file.from, source: file.source, localPath: file.localPath, hasDirectoryHandle: !!file.directoryHandle, hasFileHandle: !!file.fileHandle };
+    debugLog('filesState', 'updateFile', uri, '\n  before:', logBefore, '\n  patch: ', logPatch);
+    set((state) => {
+      return {
+        files: updateMirroredFiles(state.files, state.activeFileUri, String(uri), file),
+      };
+    });
+    const after = get().files[String(uri)];
+    const logAfter = { from: after.from, source: after.source, localPath: after.localPath, hasDirectoryHandle: !!after.directoryHandle, hasFileHandle: !!after.fileHandle };
+    debugLog('filesState', 'updateFile', uri, '\n  after: ', logAfter);
+  },
+  setActiveFile(uri: string) {
+    const selected = get().files[String(uri)];
+    if (!selected) {
+      return;
+    }
+    set((state) => ({
+      activeFileUri: uri,
+      files: {
+        ...state.files,
+        asyncapi: {
+          ...state.files.asyncapi,
+          ...selected,
+          uri,
+        },
+      },
+    }));
+  },
+  setProjectFiles(nextProjectFiles, options = {}) {
+    const candidateActiveUri = options.activeFileUri || Object.keys(nextProjectFiles)[0] || 'asyncapi';
+    const selected = nextProjectFiles[candidateActiveUri];
+    const activeFileUri = selected ? candidateActiveUri : 'asyncapi';
+
+    set((state) => ({
+      files: {
+        asyncapi: selected
+          ? { ...state.files.asyncapi, ...selected, uri: activeFileUri }
+          : state.files.asyncapi,
+        ...nextProjectFiles,
+      },
+      activeFileUri,
+      fileTreeMode: options.fileTreeMode ?? state.fileTreeMode,
+      projectRoot: options.projectRoot ?? state.projectRoot,
+      fileTreeLoading: false,
+    }));
+  },
+  setFileTreeLoading(loading: boolean) {
+    set({ fileTreeLoading: loading });
+  },
 }));
 
 export const useFilesState = filesState;
+

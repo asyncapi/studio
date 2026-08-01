@@ -3,6 +3,8 @@ import { AbstractService } from './abstract.service';
 import { encode, decode } from 'js-base64';
 import YAML from 'js-yaml';
 
+export type SpecType = 'asyncapi' | 'openapi' | 'unknown';
+
 export class FormatService extends AbstractService {
   convertToYaml(spec: string) {
     try {
@@ -38,5 +40,33 @@ export class FormatService extends AbstractService {
       return 'json';
     }
     return 'yaml';
+  }
+
+  detectSpecType(content: string): SpecType {
+    const text = String(content || '').trim();
+    if (!text) {
+      return 'unknown';
+    }
+
+    let parsed: any;
+    try {
+      parsed = text.startsWith('{') ? JSON.parse(text) : YAML.load(text);
+    } catch {
+      return 'unknown';
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+      return 'unknown';
+    }
+
+    if (typeof parsed.asyncapi === 'string') {
+      return 'asyncapi';
+    }
+
+    if (typeof parsed.openapi === 'string' || typeof parsed.swagger === 'string') {
+      return 'openapi';
+    }
+
+    return 'unknown';
   }
 }
