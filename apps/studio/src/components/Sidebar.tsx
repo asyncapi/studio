@@ -4,9 +4,9 @@ import { show as showModal } from '@ebay/nice-modal-react';
 import { Tooltip } from './common';
 import { SettingsModal, ConfirmNewFileModal } from './Modals';
 
-import { usePanelsState, panelsState, useDocumentsState } from '@/state';
+import { usePanelsState, panelsState } from '@/state';
 
-import { useEffect, useState, type FunctionComponent, type ReactNode } from 'react';
+import { type FunctionComponent, type ReactNode } from 'react';
 import type { PanelsState } from '@/state/panels.state';
 import { driverObj } from '@/helpers/driver';
 
@@ -15,7 +15,7 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
   let secondaryPanelType = settingsState.secondaryPanelType;
   const newShow = { ...settingsState.show };
 
-  if (type === 'template' || type === 'visualiser') {
+  if (type === 'template' || type === 'visualiser' || type === 'avro') {
     // on current type
     if (secondaryPanelType === type) {
       newShow[`${panelName}`] = !newShow[`${panelName}`];
@@ -54,12 +54,6 @@ interface SidebarProps {}
 
 export const Sidebar: FunctionComponent<SidebarProps> = () => {
   const { show, secondaryPanelType } = usePanelsState();
-  const [document, hasErrors] = useDocumentsState((state) => [
-    state.documents['asyncapi']?.document,
-    state.documents['asyncapi']?.diagnostics?.errors.length > 0,
-  ]) || [null, false];
-
-  const [isV3, setIsV3] = useState(document?.version().startsWith('3.'));
 
   let navigation: NavItem[] = [
     // navigation
@@ -88,7 +82,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
     {
       name: 'template',
       title: 'Template preview',
-      isActive: show.secondaryPanel && secondaryPanelType === 'template',
+      isActive: show.secondaryPanel && (secondaryPanelType === 'template' || secondaryPanelType === 'avro'),
       onClick: () => updateState('secondaryPanel', 'template'),
       icon: <VscOpenPreview className="w-5 h-5" />,
       tooltip: 'Template preview',
@@ -103,7 +97,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       onClick: () => updateState('secondaryPanel', 'visualiser'),
       icon: <VscGraph className="w-5 h-5" />,
       tooltip: 'Blocks visualiser',
-      enabled: !isV3,
+      enabled: true, // !isV3, this is already compatible with v3
       dataTest: 'button-blocks-visualiser',
     },
     // newFile
@@ -125,13 +119,6 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
     const getCurrentTourStep = localStorage.getItem('currentTourStep');
     driverObj.drive(parseInt(getCurrentTourStep ?? '0', 10));
   };
-
-  useEffect(() => {
-    // if the document has no errors then only update the setIsV3 variable
-    if (!hasErrors) {
-      setIsV3(document?.version().startsWith('3.'));
-    }
-  }, [document]);
 
   if (show.activityBar === false) {
     return null;

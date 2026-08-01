@@ -1,19 +1,28 @@
+/* global globalThis */
+
 import { AbstractService } from './abstract.service';
+import { filesState } from '@/state';
 
 import type React from 'react';
 
 export class NavigationService extends AbstractService {
+  private unsubscribeFiles?: () => void;
+
+  override onInit() {
+    this.subscribeToFiles();
+  }
+
   override async afterAppInit() {
     try {
       await this.scrollToHash();
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
+      globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
     } catch (err: any) {
       console.error(err);
     }
   }
 
   getUrlParameters() {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(globalThis.location.search);
     return {
       url: urlParams.get('url') || urlParams.get('load'),
       base64: urlParams.get('base64'),
@@ -27,11 +36,12 @@ export class NavigationService extends AbstractService {
 
   async scrollTo(
     jsonPointer: string | Array<string | number>,
-    hash: string,
+    hash?: string,
   ) {
     try {
       const doc = this.svcs.editorSvc;
-      const methodType = doc.value.startsWith('asyncapi') ? 'getRangeForYamlPath' : 'getRangeForJsonPath';
+      const content = String(doc.value || '');
+      const methodType = content.startsWith('asyncapi') ? 'getRangeForYamlPath' : 'getRangeForJsonPath';
       const range = this.svcs.parserSvc[methodType]('asyncapi', jsonPointer);
       
       if (range) {
@@ -39,7 +49,9 @@ export class NavigationService extends AbstractService {
       }
 
       await this.scrollToHash(hash);
-      this.emitHashChangeEvent(hash);
+      if (hash) {
+        this.emitHashChangeEvent(hash);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -85,14 +97,14 @@ export class NavigationService extends AbstractService {
       }
     }
 
-    window.addEventListener('hashchange', hashChanged);
+    globalThis.addEventListener('hashchange', hashChanged);
     return () => {
-      window.removeEventListener('hashchange', hashChanged);
+      globalThis.removeEventListener('hashchange', hashChanged);
     };
   }
 
   private sanitizeHash(hash?: string): string | undefined {
-    hash = hash || window.location.hash.substring(1);
+    hash = hash || globalThis.location.hash.substring(1);
     try {
       const escapedHash = CSS.escape(hash);
       return escapedHash.startsWith('#') ? hash.substring(1) : escapedHash;
@@ -103,7 +115,56 @@ export class NavigationService extends AbstractService {
 
   private emitHashChangeEvent(hash: string) {
     hash = hash.startsWith('#') ? hash : `#${hash}`;
-    window.history.pushState({}, '', hash);
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    globalThis.history.pushState({}, '', hash);
+    globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
+  }
+
+  destroy() {
+    this.unsubscribeFiles?.();
+  }
+
+  private subscribeToFiles() {
+    this.unsubscribeFiles?.();
+
+    this.unsubscribeFiles = filesState.subscribe((state, prevState) => {
+      const currentFile = state.files['asyncapi'];
+      const previousFile = prevState.files['asyncapi'];
+
+      if (!currentFile || !previousFile) {
+        return;
+      }
+
+      if (currentFile.from === previousFile.from) {
+        return;
+      }
+
+      if (previousFile.from === 'url' && currentFile.from !== 'url') {
+        this.removeRemoteUrlParams();
+      }
+    });
+  }
+
+  private removeRemoteUrlParams() {
+    const [baseWithPath, hash] = globalThis.location.href.split('#');
+    const [base, query] = baseWithPath.split('?');
+
+    if (!query) {
+      return;
+    }
+
+    const segments = query.split('&').filter(Boolean);
+    const keptSegments = segments.filter((part) => {
+      return part !== 'url' &&
+        !part.startsWith('url=') &&
+        part !== 'load' &&
+        !part.startsWith('load=');
+    });
+
+    const nextUrl = keptSegments.length > 0
+      ? `${base}?${keptSegments.join('&')}`
+      : base;
+
+    const urlWithHash = hash ? `${nextUrl}#${hash}` : nextUrl;
+    globalThis.history.replaceState({}, '', urlWithHash);
   }
 }
