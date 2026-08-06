@@ -8,7 +8,7 @@ import { NAVIGATION_SECTION_STYLE, NAVIGATION_SUB_SECTION_STYLE } from './Naviga
 import { FileTreeView } from './FileTreeView';
 import SplitPane from './SplitPane';
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
-import { debounce } from '@/helpers';
+import { debounce, getChannelDisplayName } from '@/helpers';
 
 interface NavigationProps {
   className?: string;
@@ -91,28 +91,31 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
     (operation) => {
       const channels: React.ReactNode[] = [];
       // only has one channel per operation 
+      let channelAddress = 'Unknown';
       let channelName = 'Unknown';
       if (!operation.channels().isEmpty()) {
-        channelName = operation.channels().all()[0].address() ?? 'Unknown';
+        const channel = operation.channels().all()[0];
+        channelAddress = channel.address() ?? 'Unknown';
+        channelName = getChannelDisplayName(channel);
       }
       if (operation.isReceive()) {
         channels.push(
           <li
-            key={`${channelName}-publish`}
+            key={`${channelAddress}-publish`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-publish-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-publish-${channelAddress}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-publish-${channelName}`,
+                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `operation-publish-${channelAddress}`,
               )
             }
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-publish-${channelName}`,
+                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `operation-publish-${channelAddress}`,
               );
             }}
           >
@@ -130,21 +133,21 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
       if (operation.isSend()) {
         channels.push(
           <li
-            key={`${channelName}-subscribe`}
+            key={`${channelAddress}-subscribe`}
             className={`${NAVIGATION_SUB_SECTION_STYLE} ${
-              hash === `operation-subscribe-${channelName}` ? 'bg-gray-800' : ''
+              hash === `operation-subscribe-${channelAddress}` ? 'bg-gray-800' : ''
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-subscribe-${channelName}`,
+                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `operation-subscribe-${channelAddress}`,
               )
             }
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ')  navigationSvc.scrollTo(
-                `/channels/${channelName.replace(/\//g, '~1')}`,
-                `operation-subscribe-${channelName}`,
+                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `operation-subscribe-${channelAddress}`,
               );
             }}
           >
