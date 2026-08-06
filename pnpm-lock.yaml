@@ -176,8 +176,8 @@ importers:
         specifier: ^3.0.18
         version: 3.0.18
       '@asyncapi/parser':
-        specifier: ^3.6.0
-        version: 3.6.0
+        specifier: ^3.6.2
+        version: 3.6.2
       '@asyncapi/protobuf-schema-parser':
         specifier: ^3.8.1
         version: 3.8.1
@@ -628,8 +628,8 @@ packages:
   '@asyncapi/parser@3.0.0-next-major-spec.8':
     resolution: {integrity: sha512-d8ebYM08BCsx3Q4AeLke6naU/NrcAXFEVpS6b3EWcKRdUDce+v0X5k9aDH+YXWCaQApEF28UzcxhlSOJvhIFgQ==}
 
-  '@asyncapi/parser@3.6.0':
-    resolution: {integrity: sha512-6S0Yr8vI418a1IrpGsOYbfWVo9+aHvSqN2oSkiY0YJltS/C7oDOt9e0mo6hSld8bg+EeKrtgkVmpW4obh1JFvA==}
+  '@asyncapi/parser@3.6.2':
+    resolution: {integrity: sha512-ys9QOqjkKuX3Z0rwpaw/exejXSHBIq3lZE1Ts6SsjihYYank4AVRpo17HsK/UvyZxgzBbcUNe5+xIRQnJHvGrw==}
 
   '@asyncapi/protobuf-schema-parser@3.8.1':
     resolution: {integrity: sha512-XWJut95UYKQqVXwkaAISIYoULY+FmdwnPi7y+tAoE43JQxm83PIH0H8Vl11+X3laPIIy0O7A28zdqanUSnNFOQ==}
@@ -4341,20 +4341,12 @@ packages:
     resolution: {integrity: sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==}
     engines: {node: '>=8'}
 
-  '@stoplight/spectral-core@1.20.0':
-    resolution: {integrity: sha512-5hBP81nCC1zn1hJXL/uxPNRKNcB+/pEIHgCjPRpl/w/qy9yC9ver04tw1W0l/PMiv0UeB5dYgozXVQ4j5a6QQQ==}
-    engines: {node: ^16.20 || ^18.18 || >= 20.17}
-
   '@stoplight/spectral-core@1.23.1':
     resolution: {integrity: sha512-VLC8OhpO/pMJKb6IHhurxJjXO1qB56Ng1unIb8b+hNxdw0+SEcASvmR+RpjfHYX/jv/DfSaA1x8QhFBJBmqBOQ==}
     engines: {node: ^16.20 || ^18.18 || >= 20.17}
 
   '@stoplight/spectral-formats@1.8.5':
     resolution: {integrity: sha512-xaC0rCH0p7/bzNJsz+JgLSj+Cp6uwYGWpePQxdLkF2G6a8Zyp3OyS7umkGYNiimEwKrOjvCNNTFJpeuiENZSBA==}
-    engines: {node: ^16.20 || ^18.18 || >= 20.17}
-
-  '@stoplight/spectral-functions@1.10.1':
-    resolution: {integrity: sha512-obu8ZfoHxELOapfGsCJixKZXZcffjg+lSoNuttpmUFuDzVLT3VmH8QkPXfOGOL5Pz80BR35ClNAToDkdnYIURg==}
     engines: {node: ^16.20 || ^18.18 || >= 20.17}
 
   '@stoplight/spectral-functions@1.10.5':
@@ -5238,9 +5230,6 @@ packages:
 
   '@types/node@20.4.6':
     resolution: {integrity: sha512-q0RkvNgMweWWIvSMDiXhflGUKMdIxBo2M2tYM/0kEGDueQByFzK4KZAgu5YHGFNxziTlppNpTIBcqHQAxlfHdA==}
-
-  '@types/node@25.2.1':
-    resolution: {integrity: sha512-CPrnr8voK8vC6eEtyRzvMpgp3VyVRhgclonE7qYi6P9sXwYb59ucfrnmFBTaP0yUi8Gk4yZg/LlTJULGxvTNsg==}
 
   '@types/node@26.1.1':
     resolution: {integrity: sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw==}
@@ -7438,10 +7427,6 @@ packages:
   es-array-method-boxes-properly@1.0.0:
     resolution: {integrity: sha512-wd6JXUmyHmt8T5a2xreUwKcGPq6f1f+WwIJkijUqiGcJz1qqnZgP6XIK+QyIWU5lT7imeNxUll48bziG+TSYcA==}
 
-  es-define-property@1.0.0:
-    resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
-    engines: {node: '>= 0.4'}
-
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
     engines: {node: '>= 0.4'}
@@ -8337,9 +8322,6 @@ packages:
     resolution: {integrity: sha512-4UpC0NdGyAFqLNPnhCT2iHpza2q+RAY3GV85a/mRPdzyPQMsj0KmMMuetdIkzWRbJ+Hgau1EZztq8ImmiMGhsg==}
     peerDependencies:
       csstype: ^3.0.10
-
-  gopd@1.0.1:
-    resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -9340,11 +9322,6 @@ packages:
 
   jsonfile@6.2.0:
     resolution: {integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==}
-
-  jsonpath-plus@10.3.0:
-    resolution: {integrity: sha512-8TNmfeTCk2Le33A3vRRwtuworG/L5RrgMvdjhKZxvyShO+mBu2fP50OWUjRLNtvw344DdDarFh9buFAZs5ujeA==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
 
   jsonpath-plus@10.4.0:
     resolution: {integrity: sha512-T92WWatJXmhBbKsgH/0hl+jxjdXrifi5IKeMY02DWggRxX0UElcbVzPlmgLTbvsPeW1PasQ6xE2Q75stkhGbsA==}
@@ -11868,10 +11845,6 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  simple-eval@1.0.1:
-    resolution: {integrity: sha512-LH7FpTAkeD+y5xQC4fzS+tFtaNlvt3Ib1zKzvhjv/Y+cioV4zIuw4IZr2yhRLu67CWL7FR9/6KXKnjRoZTvGGQ==}
-    engines: {node: '>=12'}
-
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -12766,9 +12739,6 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
-
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
@@ -13525,7 +13495,7 @@ snapshots:
 
   '@asyncapi/avro-schema-parser@3.0.19':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@types/json-schema': 7.0.15
       avsc: 5.7.7
     transitivePeerDependencies:
@@ -13533,7 +13503,7 @@ snapshots:
 
   '@asyncapi/avro-schema-parser@3.0.24':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@types/json-schema': 7.0.15
       avsc: 5.7.9
     transitivePeerDependencies:
@@ -13541,7 +13511,7 @@ snapshots:
 
   '@asyncapi/converter@2.0.1':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       js-yaml: 3.15.0
       path: 0.12.7
     transitivePeerDependencies:
@@ -13587,7 +13557,7 @@ snapshots:
 
   '@asyncapi/generator-react-sdk@1.1.2(@types/babel__core@7.20.5)':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@babel/core': 7.12.9
       '@babel/preset-env': 7.29.0(@babel/core@7.12.9)
       '@babel/preset-react': 7.28.5(@babel/core@7.12.9)
@@ -13618,7 +13588,7 @@ snapshots:
   '@asyncapi/html-template@3.5.6(@types/babel__core@7.20.5)(typescript@5.1.6)':
     dependencies:
       '@asyncapi/generator-react-sdk': 1.1.2(@types/babel__core@7.20.5)
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@asyncapi/react-component': 3.1.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       highlight.js: 10.7.3
       puppeteer: 24.31.0(typescript@5.1.6)
@@ -13697,7 +13667,7 @@ snapshots:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 11.7.0
       '@apidevtools/swagger-parser': 10.1.0(openapi-types@9.3.0)
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@smoya/multi-parser': 5.0.9
       '@swc/core': 1.7.26(@swc/helpers@0.5.15)
       '@swc/jest': 0.2.36(@swc/core@1.7.26(@swc/helpers@0.5.15))
@@ -13735,7 +13705,7 @@ snapshots:
 
   '@asyncapi/openapi-schema-parser@3.0.18':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       ajv: 8.17.1
       ajv-errors: 3.0.0(ajv@8.17.1)
@@ -13745,7 +13715,7 @@ snapshots:
 
   '@asyncapi/openapi-schema-parser@3.0.24':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       ajv: 8.20.0
       ajv-errors: 3.0.0(ajv@8.20.0)
@@ -13774,8 +13744,8 @@ snapshots:
       '@stoplight/json': 3.21.7
       '@stoplight/json-ref-readers': 1.2.2
       '@stoplight/json-ref-resolver': 3.1.6
-      '@stoplight/spectral-core': 1.20.0
-      '@stoplight/spectral-functions': 1.10.1
+      '@stoplight/spectral-core': 1.23.1
+      '@stoplight/spectral-functions': 1.10.5
       '@stoplight/spectral-parsers': 1.0.5
       '@stoplight/spectral-ref-resolver': 1.0.5
       '@stoplight/types': 13.20.0
@@ -13813,33 +13783,33 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/parser@3.6.0':
+  '@asyncapi/parser@3.6.2':
     dependencies:
       '@asyncapi/specs': 6.11.1
       '@openapi-contrib/openapi-schema-to-json-schema': 3.2.0
       '@stoplight/json': 3.21.0
       '@stoplight/json-ref-readers': 1.2.2
       '@stoplight/json-ref-resolver': 3.1.6
-      '@stoplight/spectral-core': 1.20.0
-      '@stoplight/spectral-functions': 1.10.1
+      '@stoplight/spectral-core': 1.23.1
+      '@stoplight/spectral-functions': 1.10.5
       '@stoplight/spectral-parsers': 1.0.5
       '@stoplight/spectral-ref-resolver': 1.0.5
       '@stoplight/types': 13.20.0
       '@types/json-schema': 7.0.15
       '@types/urijs': 1.19.26
-      ajv: 8.17.1
-      ajv-errors: 3.0.0(ajv@8.17.1)
-      ajv-formats: 2.1.1(ajv@8.17.1)
+      ajv: 8.20.0
+      ajv-errors: 3.0.0(ajv@8.20.0)
+      ajv-formats: 2.1.1(ajv@8.20.0)
       avsc: 5.7.9
       js-yaml: 4.3.0
-      jsonpath-plus: 10.3.0
+      jsonpath-plus: 10.4.0
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
 
   '@asyncapi/protobuf-schema-parser@3.8.1':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@types/protocol-buffers-schema': 3.4.3
       protobufjs: 8.7.1
     transitivePeerDependencies:
@@ -13853,7 +13823,7 @@ snapshots:
 
   '@asyncapi/raml-dt-schema-parser@4.0.24':
     dependencies:
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       js-yaml: 4.3.0
       ramldt2jsonschema: 1.2.3
       webapi-parser: 0.5.0
@@ -13864,7 +13834,7 @@ snapshots:
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@asyncapi/protobuf-schema-parser': 3.8.1
       highlight.js: 10.7.3
       isomorphic-dompurify: 2.19.0
@@ -13885,7 +13855,7 @@ snapshots:
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.0.24
-      '@asyncapi/parser': 3.6.0
+      '@asyncapi/parser': 3.6.2
       '@asyncapi/protobuf-schema-parser': 3.8.1
       highlight.js: 10.7.3
       isomorphic-dompurify: 2.19.0
@@ -19290,7 +19260,7 @@ snapshots:
       '@asyncapi/raml-dt-schema-parser': 4.0.24
       parserapiv1: '@asyncapi/parser@2.1.2'
       parserapiv2: '@asyncapi/parser@3.0.0-next-major-spec.8'
-      parserapiv3: '@asyncapi/parser@3.6.0'
+      parserapiv3: '@asyncapi/parser@3.6.2'
     transitivePeerDependencies:
       - encoding
 
@@ -19342,32 +19312,6 @@ snapshots:
 
   '@stoplight/path@1.3.2': {}
 
-  '@stoplight/spectral-core@1.20.0':
-    dependencies:
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.20.0)
-      '@stoplight/json': 3.21.7
-      '@stoplight/path': 1.3.2
-      '@stoplight/spectral-parsers': 1.0.5
-      '@stoplight/spectral-ref-resolver': 1.0.5
-      '@stoplight/spectral-runtime': 1.1.6
-      '@stoplight/types': 13.6.0
-      '@types/es-aggregate-error': 1.0.6
-      '@types/json-schema': 7.0.15
-      ajv: 8.20.0
-      ajv-errors: 3.0.0(ajv@8.20.0)
-      ajv-formats: 2.1.1(ajv@8.20.0)
-      es-aggregate-error: 1.0.14
-      jsonpath-plus: 10.4.0
-      lodash: 4.17.23
-      lodash.topath: 4.5.2
-      minimatch: 3.1.2
-      nimma: 0.2.3
-      pony-cause: 1.1.1
-      simple-eval: 1.0.1
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - encoding
-
   '@stoplight/spectral-core@1.23.1':
     dependencies:
       '@scarf/scarf': 1.4.0
@@ -19401,22 +19345,6 @@ snapshots:
       '@stoplight/json': 3.21.7
       '@stoplight/spectral-core': 1.23.1
       '@types/json-schema': 7.0.15
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@stoplight/spectral-functions@1.10.1':
-    dependencies:
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.20.0)
-      '@stoplight/json': 3.21.7
-      '@stoplight/spectral-core': 1.23.1
-      '@stoplight/spectral-formats': 1.8.5
-      '@stoplight/spectral-runtime': 1.1.6
-      ajv: 8.20.0
-      ajv-draft-04: 1.0.0(ajv@8.20.0)
-      ajv-errors: 3.0.0(ajv@8.20.0)
-      ajv-formats: 2.1.1(ajv@8.20.0)
-      lodash: 4.17.23
       tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
@@ -19748,7 +19676,7 @@ snapshots:
       '@storybook/preview': 7.6.18
       '@storybook/preview-api': 7.6.18
       '@swc/core': 1.7.26(@swc/helpers@0.5.15)
-      '@types/node': 18.19.54
+      '@types/node': 18.19.130
       '@types/semver': 7.5.8
       babel-loader: 9.2.1(@babel/core@7.28.5)(webpack@5.105.0(@swc/core@1.7.26(@swc/helpers@0.5.15))(esbuild@0.18.20))
       browser-assert: 1.2.1
@@ -20294,7 +20222,7 @@ snapshots:
       '@storybook/node-logger': 7.6.18
       '@storybook/react': 7.6.18(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.1.6)
       '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.1.6)(webpack@5.105.0(@swc/core@1.7.26(@swc/helpers@0.5.15))(esbuild@0.18.20))
-      '@types/node': 18.19.54
+      '@types/node': 18.19.130
       '@types/semver': 7.5.8
       babel-plugin-add-react-displayname: 0.0.5
       fs-extra: 11.2.0
@@ -20437,13 +20365,13 @@ snapshots:
       '@storybook/types': 7.6.18
       '@types/escodegen': 0.0.6
       '@types/estree': 0.0.51
-      '@types/node': 18.19.54
+      '@types/node': 18.19.130
       acorn: 7.4.1
       acorn-jsx: 5.3.2(acorn@7.4.1)
       acorn-walk: 7.2.0
       escodegen: 2.1.0
       html-tags: 3.3.1
-      lodash: 4.17.21
+      lodash: 4.18.1
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -20846,7 +20774,7 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 25.2.1
+      '@types/node': 20.4.6
 
   '@types/body-parser@1.19.6':
     dependencies:
@@ -21038,7 +20966,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 25.2.1
+      '@types/node': 20.4.6
       '@types/qs': 6.9.16
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -21160,10 +21088,6 @@ snapshots:
 
   '@types/node@20.4.6': {}
 
-  '@types/node@25.2.1':
-    dependencies:
-      undici-types: 7.16.0
-
   '@types/node@26.1.1':
     dependencies:
       undici-types: 8.3.0
@@ -21244,7 +21168,7 @@ snapshots:
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 25.2.1
+      '@types/node': 20.4.6
       '@types/send': 0.17.4
 
   '@types/sinonjs__fake-timers@8.1.1': {}
@@ -22501,7 +22425,7 @@ snapshots:
 
   call-bind@1.0.7:
     dependencies:
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
       es-errors: 1.3.0
       function-bind: 1.1.2
       get-intrinsic: 1.3.0
@@ -23474,9 +23398,9 @@ snapshots:
 
   define-data-property@1.1.4:
     dependencies:
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
       es-errors: 1.3.0
-      gopd: 1.0.1
+      gopd: 1.2.0
 
   define-lazy-prop@2.0.0: {}
 
@@ -23822,10 +23746,6 @@ snapshots:
       set-function-name: 2.0.2
 
   es-array-method-boxes-properly@1.0.0: {}
-
-  es-define-property@1.0.0:
-    dependencies:
-      get-intrinsic: 1.3.0
 
   es-define-property@1.0.1: {}
 
@@ -25202,10 +25122,6 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
-  gopd@1.0.1:
-    dependencies:
-      get-intrinsic: 1.3.0
-
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -26513,12 +26429,6 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
-
-  jsonpath-plus@10.3.0:
-    dependencies:
-      '@jsep-plugin/assignment': 1.3.0(jsep@1.4.0)
-      '@jsep-plugin/regex': 1.0.4(jsep@1.4.0)
-      jsep: 1.4.0
 
   jsonpath-plus@10.4.0:
     dependencies:
@@ -29251,8 +29161,8 @@ snapshots:
   schema-utils@3.3.0:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 6.12.6
-      ajv-keywords: 3.5.2(ajv@6.12.6)
+      ajv: 6.15.0
+      ajv-keywords: 3.5.2(ajv@6.15.0)
 
   schema-utils@4.3.3:
     dependencies:
@@ -29481,10 +29391,6 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
-
-  simple-eval@1.0.1:
-    dependencies:
-      jsep: 1.4.0
 
   sisteransi@1.0.5: {}
 
@@ -30642,8 +30548,6 @@ snapshots:
   underscore@1.13.6: {}
 
   undici-types@5.26.5: {}
-
-  undici-types@7.16.0: {}
 
   undici-types@8.3.0:
     optional: true
