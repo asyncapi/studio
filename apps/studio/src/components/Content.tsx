@@ -92,7 +92,6 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
             />
             <aside
               className="absolute inset-y-0 left-0 z-30 w-[min(85vw,20rem)] max-w-full overflow-hidden bg-gray-800 shadow-2xl"
-              onClick={closeNavigation}
             >
               {isV3
                 ? <Navigationv3 className="w-full" />

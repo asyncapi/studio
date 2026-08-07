@@ -107,14 +107,14 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `/channels/${channelAddress.replaceAll('/', '~1')}`,
                 `operation-publish-${channelAddress}`,
               )
             }
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') navigationSvc.scrollTo(
-                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `/channels/${channelAddress.replaceAll('/', '~1')}`,
                 `operation-publish-${channelAddress}`,
               );
             }}
@@ -139,14 +139,14 @@ const OperationsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
             }`}
             onClick={() =>
               navigationSvc.scrollTo(
-                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `/channels/${channelAddress.replaceAll('/', '~1')}`,
                 `operation-subscribe-${channelAddress}`,
               )
             }
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ')  navigationSvc.scrollTo(
-                `/channels/${channelAddress.replace(/\//g, '~1')}`,
+                `/channels/${channelAddress.replaceAll('/', '~1')}`,
                 `operation-subscribe-${channelAddress}`,
               );
             }}

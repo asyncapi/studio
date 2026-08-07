@@ -11,44 +11,50 @@ import { type FunctionComponent, type ReactNode } from 'react';
 import type { PanelsState } from '@/state/panels.state';
 import { driverObj } from '@/helpers/driver';
 
-function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
+type PanelVisibility = PanelsState['show'];
+type SecondaryPanelType = PanelsState['secondaryPanelType'];
+
+function updateMobileState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
+  const settingsState = panelsState.getState();
+  const newShow = { ...settingsState.show };
+  let secondaryPanelType = settingsState.secondaryPanelType;
+
+  if (panelName === 'primarySidebar') {
+    newShow.primarySidebar = !newShow.primarySidebar;
+  } else if (panelName === 'primaryPanel') {
+    newShow.primaryPanel = true;
+    newShow.secondaryPanel = false;
+    newShow.primarySidebar = false;
+  } else if (panelName === 'secondaryPanel' && type) {
+    secondaryPanelType = type;
+    newShow.primaryPanel = false;
+    newShow.secondaryPanel = true;
+    newShow.primarySidebar = false;
+  } else {
+    newShow[panelName] = !newShow[panelName];
+  }
+
+  panelsState.setState({ show: newShow, secondaryPanelType });
+}
+
+function updateDesktopState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
   const settingsState = panelsState.getState();
   let secondaryPanelType = settingsState.secondaryPanelType;
   const newShow = { ...settingsState.show };
-  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  const isSecondaryPanelType = type === 'template' || type === 'visualiser' || type === 'avro';
 
-  if (isMobile) {
-    if (panelName === 'primarySidebar') {
-      newShow.primarySidebar = !newShow.primarySidebar;
-    } else if (panelName === 'primaryPanel') {
-      newShow.primaryPanel = true;
-      newShow.secondaryPanel = false;
-      newShow.primarySidebar = false;
-    } else if (panelName === 'secondaryPanel' && type) {
-      secondaryPanelType = type;
-      newShow.primaryPanel = false;
-      newShow.secondaryPanel = true;
-      newShow.primarySidebar = false;
-    } else {
-      newShow[panelName] = !newShow[panelName];
-    }
-
-    panelsState.setState({ show: newShow, secondaryPanelType });
-    return;
-  }
-
-  if (type === 'template' || type === 'visualiser' || type === 'avro') {
+  if (isSecondaryPanelType) {
     // on current type
     if (secondaryPanelType === type) {
-      newShow[`${panelName}`] = !newShow[`${panelName}`];
+      newShow[panelName] = !newShow[panelName];
     } else {
       secondaryPanelType = type;
-      if (newShow[`${panelName}`] === false) {
-        newShow[`${panelName}`] = true;
+      if (newShow[panelName] === false) {
+        newShow[panelName] = true;
       }
     }
   } else {
-    newShow[`${panelName}`] = !newShow[`${panelName}`];
+    newShow[panelName] = !newShow[panelName];
   }
 
   if (!newShow.primaryPanel && !newShow.secondaryPanel) {
@@ -59,6 +65,15 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
     show: newShow,
     secondaryPanelType,
   });
+}
+
+function updateState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
+  if (window.matchMedia('(max-width: 767px)').matches) {
+    updateMobileState(panelName, type);
+    return;
+  }
+
+  updateDesktopState(panelName, type);
 }
 
 interface NavItem {
