@@ -15,6 +15,27 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
   const settingsState = panelsState.getState();
   let secondaryPanelType = settingsState.secondaryPanelType;
   const newShow = { ...settingsState.show };
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+  if (isMobile) {
+    if (panelName === 'primarySidebar') {
+      newShow.primarySidebar = !newShow.primarySidebar;
+    } else if (panelName === 'primaryPanel') {
+      newShow.primaryPanel = true;
+      newShow.secondaryPanel = false;
+      newShow.primarySidebar = false;
+    } else if (panelName === 'secondaryPanel' && type) {
+      secondaryPanelType = type;
+      newShow.primaryPanel = false;
+      newShow.secondaryPanel = true;
+      newShow.primarySidebar = false;
+    } else {
+      newShow[panelName] = !newShow[panelName];
+    }
+
+    panelsState.setState({ show: newShow, secondaryPanelType });
+    return;
+  }
 
   if (type === 'template' || type === 'visualiser' || type === 'avro') {
     // on current type
@@ -126,7 +147,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
   }
   
   return (
-    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
+    <div className="z-40 flex w-14 flex-none flex-col justify-between border-r border-gray-700 bg-gray-800 shadow-lg" id="sidebar">
       <div className="flex flex-col">
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>

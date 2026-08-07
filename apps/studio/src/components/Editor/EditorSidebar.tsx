@@ -32,17 +32,17 @@ export const EditorSidebar: React.FunctionComponent<
 
   return (
     <div
-      className="flex flex-row items justify-between bg-gray-800 border-b border-gray-700 text-sm"
+      className="flex flex-none flex-row items-center justify-between overflow-hidden bg-gray-800 border-b border-gray-700 text-sm"
       style={{ height: '30px', lineHeight: '30px' }}
     >
       <div
-        className="ml-2 text-gray-500 text-xs italic"
+        className="ml-2 min-w-0 flex-1 truncate text-gray-500 text-xs italic"
         style={{ height: '30px', lineHeight: '30px' }}
       >
         {documentFromText}
       </div>
       <div
-        className="flex flex-row items-center"
+        className="flex flex-none flex-row items-center"
         style={{ height: '30px', lineHeight: '30px' }}
       >
         <div id="editor-dropdown">
