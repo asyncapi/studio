@@ -187,6 +187,9 @@ importers:
       '@asyncapi/specs':
         specifier: ^6.11.1
         version: 6.11.1
+      '@asyncapi/studio-ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@codemirror/view':
         specifier: ^6.26.3
         version: 6.26.3
