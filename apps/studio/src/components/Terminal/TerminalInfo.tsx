@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { VscRadioTower } from 'react-icons/vsc'; 
 import { show } from '@ebay/nice-modal-react';
+import { AlertIcon, ErrorIcon } from '@asyncapi/studio-ui/icons';
 
 import { ConvertToLatestModal } from '../Modals';
 
@@ -41,18 +42,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
       {document.diagnostics.errors.length > 0 ? (
         <div className="ml-3">
           <span className="text-red-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="inline-block h-5 w-5 mr-1 -mt-0.5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ErrorIcon className="inline-block h-5 w-5 mr-1 -mt-0.5" />
           </span>
           <span>Invalid</span>
         </div>
@@ -78,9 +68,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
       {file.modified && (
         <div className="ml-3">
           <span className="text-yellow-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
+            <AlertIcon className="inline-block h-5 w-5 mr-1 -mt-0.5" />
           </span>
           <span>Unsaved changes</span>
         </div>
@@ -93,9 +81,7 @@ export const TerminalInfo: FunctionComponent<TerminalInfoProps> = () => {
             if (event.key === 'Enter' || event.key === ' ') onNonLatestClick(event);
           }}>
           <span className="text-yellow-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-5 w-5 mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
+            <AlertIcon className="inline-block h-5 w-5 mr-1 -mt-0.5" />
           </span>
           <span>Not latest</span>
         </div>

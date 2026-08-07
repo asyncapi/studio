@@ -1,5 +1,6 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
+import { VscNewFile, VscListSelection, VscGraph, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
+import { CodeIcon, TemplateIcon } from '@asyncapi/studio-ui/icons';
 
 import { Tooltip } from './common';
 import { SettingsModal, ConfirmNewFileModal } from './Modals';
@@ -73,7 +74,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       title: 'Editor',
       isActive: show.primaryPanel,
       onClick: () => updateState('primaryPanel'),
-      icon: <VscCode className="w-5 h-5" />,
+      icon: <CodeIcon className="w-5 h-5" />,
       tooltip: 'Editor',
       enabled: true,
       dataTest: 'button-editor',
@@ -84,7 +85,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       title: 'Template preview',
       isActive: show.secondaryPanel && (secondaryPanelType === 'template' || secondaryPanelType === 'avro'),
       onClick: () => updateState('secondaryPanel', 'template'),
-      icon: <VscOpenPreview className="w-5 h-5" />,
+      icon: <TemplateIcon className="w-5 h-5" />,
       tooltip: 'Template preview',
       enabled: true,
       dataTest: 'button-template-preview',

@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useCallback, useMemo, useRef, useState } from 'react';
-import { VscError, VscWarning, VscInfo, VscLightbulb, VscSearch, VscClose, VscSettingsGear } from 'react-icons/vsc';
+import { VscLightbulb, VscSearch, VscClose, VscSettingsGear } from 'react-icons/vsc';
 import { useModal } from '@ebay/nice-modal-react';
 import { DiagnosticSeverity } from '@asyncapi/parser';
+import { AlertIcon, ErrorIcon, InformationCircleIcon } from '@asyncapi/studio-ui/icons';
 
 import { SettingsModal } from '../Modals/Settings/SettingsModal';
 
@@ -76,12 +77,12 @@ const SeverityIcon: React.FunctionComponent<SeverityIconProps> = ({ severity }) 
   switch (severity) {
   case 1: return (
     <div className='flex flex-row items-center justify-center'>
-      <VscWarning className='text-yellow-500 w-4 h-4' />
+      <AlertIcon className='text-yellow-500 w-4 h-4' />
     </div>
   );
   case 2: return (
     <div className='flex flex-row items-center justify-center'>
-      <VscInfo className='text-blue-500 w-4 h-4' />
+      <InformationCircleIcon className='text-blue-500 w-4 h-4' />
     </div>
   );
   case 3: return (
@@ -91,7 +92,7 @@ const SeverityIcon: React.FunctionComponent<SeverityIconProps> = ({ severity }) 
   );
   default: return (
     <div className='flex flex-row items-center justify-center'>
-      <VscError className='text-red-500 w-4 h-4' />
+      <ErrorIcon className='text-red-500 w-4 h-4' />
     </div>
   );
   }

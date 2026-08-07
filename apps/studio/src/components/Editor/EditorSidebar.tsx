@@ -46,7 +46,7 @@ export const EditorSidebar: React.FunctionComponent<
         style={{ height: '30px', lineHeight: '30px' }}
       >
         <div id="editor-dropdown">
-          <ul className="flex">
+          <ul className="flex items-center">
             <li>
               <ImportDropdown />
             </li>
