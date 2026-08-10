@@ -85,7 +85,7 @@
     "js-base64": "^3.7.3",
     "js-file-download": "^0.4.12",
     "js-yaml": "^5.2.2",
-    "mermaid": "^11.15.0",
+    "mermaid": "^11.16.1",
     "monaco-editor": "0.34.1",
     "monaco-yaml": "4.0.2",
     "next": "14.2.35",
