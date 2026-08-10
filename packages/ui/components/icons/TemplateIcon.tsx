@@ -1,4 +1,6 @@
-const TemplateIcon = (props: any) => (
+import type React from 'react';
+
+const TemplateIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" {...props}>
     <g transform="scale(0.571429)">
       <path d="M24.5 5.25H17.5C11.7614 5.25 8.89205 5.25 6.85811 6.8522C6.10562 7.44497 5.45111 8.18129 4.92421 9.02785C3.86587 10.7282 3.59401 12.9476 3.52417 16.625H38.4759C38.4061 12.9476 38.1342 10.7282 37.0759 9.02785C36.5489 8.18129 35.8944 7.44497 35.1419 6.8522C33.108 5.25 30.2387 5.25 24.5 5.25Z" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />

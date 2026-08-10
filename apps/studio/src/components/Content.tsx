@@ -16,7 +16,7 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
   const { show, secondaryPanelType } = usePanelsState();
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const isV3 = document?.version() === '3.0.0';
+  const isV3 = document?.version().startsWith('3.');
   const navigationEnabled = show.primarySidebar;
   const editorEnabled = show.primaryPanel;
   const viewEnabled = show.secondaryPanel;
