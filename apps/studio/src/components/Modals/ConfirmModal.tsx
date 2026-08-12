@@ -95,17 +95,17 @@ export const ConfirmModal: FunctionComponent<PropsWithChildren<ConfirmModalProps
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className={`inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-2/5 sm:p-6 ${containerClassName}`}>
+              <div className={`inline-block align-bottom bg-gray-900 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-2/5 sm:p-6 ${containerClassName}`}>
                 <div>
                   <div>
                     <Dialog.Title
                       as="h3"
-                      className="text-lg leading-6 font-medium text-gray-900"
+                      className="text-lg leading-6 font-medium text-gray-100"
                     >
                       {title}
                     </Dialog.Title>
                     {description && (
-                      <p className="text-gray-500 text-xs">{description}</p>
+                      <p className="text-gray-200 text-xs">{description}</p>
                     )}
                     {warning && (
                       <a

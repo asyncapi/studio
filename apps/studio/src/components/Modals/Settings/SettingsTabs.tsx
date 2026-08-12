@@ -28,9 +28,9 @@ export const SettingsTabs: FunctionComponent<SettingTabsProps> = ({
   return (
     <div>
       <div
-        className="flex flex-row justify-between items-center border-b border-gray-300 text-white uppercase font-bold text-xs"
+        className="flex flex-row justify-between items-center border-b-2 border-gray-400 text-white uppercase font-bold text-xs"
       >
-        <ul className="flex flex-row">
+        <ul className="flex flex-row -mb-[2px]">
           {tabs.map(tab => (
             <li
               key={tab.name}
@@ -46,7 +46,7 @@ export const SettingsTabs: FunctionComponent<SettingTabsProps> = ({
                 className={`p-2 hover:text-pink-500 ${
                   activeTab === tab.name
                     ? 'text-pink-500 border-b-2 border-pink-500'
-                    : 'text-gray-500'
+                    : 'text-gray-200'
                 }`}
               >
                 {tab.tab}
