@@ -114,7 +114,7 @@
     "@asyncapi/ts-nats-template": "^0.10.3",
     "@tailwindcss/typography": "^0.5.8",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.2.3",
     "@types/js-yaml": "^4.0.5",
