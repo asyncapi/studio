@@ -1,6 +1,6 @@
 import React from 'react';
 import toast from 'react-hot-toast';
-import { FaSave } from 'react-icons/fa';
+import { SaveIcon } from '@asyncapi/studio-ui/icons';
 
 import { Tooltip } from '../common';
 import { useServices } from '@/services';
@@ -44,15 +44,14 @@ export const SaveButton: React.FC = () => {
         disabled={!file?.modified}
         data-test="button-save-dropdown"
       >
-        <FaSave
+        <SaveIcon
           className={
             file?.modified
-              ? 'text-gray-500 hover:text-white'
-              : 'text-gray-600'
+              ? 'w-4 h-4 text-gray-500 hover:text-white'
+              : 'w-4 h-4 text-gray-600'
           }
         />
       </button>
     </Tooltip>
   );
 };
-

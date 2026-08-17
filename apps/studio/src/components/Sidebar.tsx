@@ -1,5 +1,6 @@
-import { VscListSelection, VscCode, VscOpenPreview, VscGraph, VscNewFile, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
+import { VscNewFile, VscListSelection, VscGraph, VscSettingsGear, VscPlayCircle } from 'react-icons/vsc';
 import { show as showModal } from '@ebay/nice-modal-react';
+import { CodeIcon, TemplateIcon } from '@asyncapi/studio-ui/icons';
 
 import { Tooltip } from './common';
 import { SettingsModal, ConfirmNewFileModal } from './Modals';
@@ -10,23 +11,50 @@ import { type FunctionComponent, type ReactNode } from 'react';
 import type { PanelsState } from '@/state/panels.state';
 import { driverObj } from '@/helpers/driver';
 
-function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['secondaryPanelType']) {
+type PanelVisibility = PanelsState['show'];
+type SecondaryPanelType = PanelsState['secondaryPanelType'];
+
+function updateMobileState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
+  const settingsState = panelsState.getState();
+  const newShow = { ...settingsState.show };
+  let secondaryPanelType = settingsState.secondaryPanelType;
+
+  if (panelName === 'primarySidebar') {
+    newShow.primarySidebar = !newShow.primarySidebar;
+  } else if (panelName === 'primaryPanel') {
+    newShow.primaryPanel = true;
+    newShow.secondaryPanel = false;
+    newShow.primarySidebar = false;
+  } else if (panelName === 'secondaryPanel' && type) {
+    secondaryPanelType = type;
+    newShow.primaryPanel = false;
+    newShow.secondaryPanel = true;
+    newShow.primarySidebar = false;
+  } else {
+    newShow[panelName] = !newShow[panelName];
+  }
+
+  panelsState.setState({ show: newShow, secondaryPanelType });
+}
+
+function updateDesktopState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
   const settingsState = panelsState.getState();
   let secondaryPanelType = settingsState.secondaryPanelType;
   const newShow = { ...settingsState.show };
+  const isSecondaryPanelType = type === 'template' || type === 'visualiser' || type === 'avro';
 
-  if (type === 'template' || type === 'visualiser' || type === 'avro') {
+  if (isSecondaryPanelType) {
     // on current type
     if (secondaryPanelType === type) {
-      newShow[`${panelName}`] = !newShow[`${panelName}`];
+      newShow[panelName] = !newShow[panelName];
     } else {
       secondaryPanelType = type;
-      if (newShow[`${panelName}`] === false) {
-        newShow[`${panelName}`] = true;
+      if (newShow[panelName] === false) {
+        newShow[panelName] = true;
       }
     }
   } else {
-    newShow[`${panelName}`] = !newShow[`${panelName}`];
+    newShow[panelName] = !newShow[panelName];
   }
 
   if (!newShow.primaryPanel && !newShow.secondaryPanel) {
@@ -37,6 +65,15 @@ function updateState(panelName: keyof PanelsState['show'], type?: PanelsState['s
     show: newShow,
     secondaryPanelType,
   });
+}
+
+function updateState(panelName: keyof PanelVisibility, type?: SecondaryPanelType) {
+  if (window.matchMedia('(max-width: 767px)').matches) {
+    updateMobileState(panelName, type);
+    return;
+  }
+
+  updateDesktopState(panelName, type);
 }
 
 interface NavItem {
@@ -73,7 +110,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       title: 'Editor',
       isActive: show.primaryPanel,
       onClick: () => updateState('primaryPanel'),
-      icon: <VscCode className="w-5 h-5" />,
+      icon: <CodeIcon className="w-5 h-5" />,
       tooltip: 'Editor',
       enabled: true,
       dataTest: 'button-editor',
@@ -84,7 +121,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
       title: 'Template preview',
       isActive: show.secondaryPanel && (secondaryPanelType === 'template' || secondaryPanelType === 'avro'),
       onClick: () => updateState('secondaryPanel', 'template'),
-      icon: <VscOpenPreview className="w-5 h-5" />,
+      icon: <TemplateIcon className="w-5 h-5" />,
       tooltip: 'Template preview',
       enabled: true,
       dataTest: 'button-template-preview',
@@ -125,7 +162,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = () => {
   }
   
   return (
-    <div className="flex flex-col bg-gray-800 shadow-lg border-r border-gray-700 justify-between" id="sidebar">
+    <div className="z-40 flex w-14 flex-none flex-col justify-between border-r border-gray-700 bg-gray-800 shadow-lg" id="sidebar">
       <div className="flex flex-col">
         {navigation.map(item => (
           <Tooltip content={item.tooltip} placement='right' hideOnClick={true} key={item.name}>

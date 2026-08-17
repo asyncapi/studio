@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaShareAlt } from 'react-icons/fa';
+import { ShareIcon } from '@asyncapi/studio-ui/icons';
 import { useServices } from '../../services';
 import { toast } from 'react-hot-toast';
 import { Tooltip } from '../common';
@@ -25,8 +25,8 @@ export const ShareButton: React.FunctionComponent<ShareButtonProps> = () => {
 
   return (
     <Tooltip content={'Share link'} placement="top" hideOnClick={true}>
-      <button className="bg-inherit" onClick={handleShare} data-test="button-share">
-        <FaShareAlt className="text-gray-500 hover:text-white" />
+      <button className="flex bg-inherit p-2" onClick={handleShare} data-test="button-share">
+        <ShareIcon className="w-4 h-4 text-gray-500 hover:text-white" />
       </button>
     </Tooltip>
   );

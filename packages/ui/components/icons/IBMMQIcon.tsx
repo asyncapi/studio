@@ -1,4 +1,6 @@
-const IBMMQIcon = (props: any) => (
+import type React from 'react';
+
+const IBMMQIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 50 50"

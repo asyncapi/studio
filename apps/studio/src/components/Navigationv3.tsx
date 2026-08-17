@@ -8,7 +8,7 @@ import { FileTreeView } from './FileTreeView';
 import SplitPane from './SplitPane';
 
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser';
-import { debounce } from '@/helpers';
+import { debounce, getChannelDisplayName } from '@/helpers';
 
 interface NavigationProps {
   className?: string;
@@ -118,7 +118,7 @@ const ChannelsNavigation: React.FunctionComponent<NavigationSectionProps> = ({
               {channel.id()}
             </span>
           </div>
-          <span className="truncate">{channel.address()}</span>
+          <span className="truncate">{getChannelDisplayName(channel)}</span>
         </div>
       </li>
     },

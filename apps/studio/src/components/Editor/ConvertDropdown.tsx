@@ -20,7 +20,7 @@ export const ConvertDropdown: React.FC = () => {
       opener={
         <Tooltip content="Convert" placement="top" hideOnClick={true}>
           <div className="bg-inherit">
-            <FaFileExport />
+            <FaFileExport className="w-4 h-4" />
           </div>
         </Tooltip>
       }
@@ -77,4 +77,3 @@ export const ConvertDropdown: React.FC = () => {
     </Dropdown>
   );
 }
-

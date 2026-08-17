@@ -13,7 +13,7 @@ export const Editor: React.FunctionComponent<EditorProps> = () => {
   const editorHeight = useOtherState(state => state.editorHeight);
 
   return (
-    <div className="flex flex-1">
+    <div className="flex min-w-0 flex-1 overflow-hidden">
       <SplitPane
         split="horizontal"
         minSize={29}

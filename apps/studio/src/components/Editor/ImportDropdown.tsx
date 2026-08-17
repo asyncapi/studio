@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { show } from '@ebay/nice-modal-react';
-import { FaFileImport } from 'react-icons/fa';
+import { UploadIcon } from '@asyncapi/studio-ui/icons';
 
 import {
   ImportURLModal,
@@ -22,7 +22,7 @@ export const ImportDropdown: React.FC = () => {
       opener={
         <Tooltip content="Import" placement="top" hideOnClick={true}>
           <span>
-            <FaFileImport />
+            <UploadIcon className="w-4 h-4" />
           </span>
         </Tooltip>
       }

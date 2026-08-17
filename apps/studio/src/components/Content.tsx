@@ -6,20 +6,37 @@ import { Template } from './Template';
 import { VisualiserTemplate } from './Visualiser';
 
 import { debounce } from '@/helpers';
-import { usePanelsState, useDocumentsState } from '@/state';
+import { panelsState, usePanelsState, useDocumentsState } from '@/state';
 
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect, useLayoutEffect, useState } from 'react';
 
 interface ContentProps {}
 
 export const Content: FunctionComponent<ContentProps> = () => { // eslint-disable-line sonarjs/cognitive-complexity
   const { show, secondaryPanelType } = usePanelsState();
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches);
   const document = useDocumentsState(state => state.documents['asyncapi']?.document) || null;
-  const isV3 = document?.version() === '3.0.0';
+  const isV3 = document?.version().startsWith('3.');
   const navigationEnabled = show.primarySidebar;
   const editorEnabled = show.primaryPanel;
   const viewEnabled = show.secondaryPanel;
   const viewType = secondaryPanelType === 'avro' ? 'template' : secondaryPanelType;
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handleChange = () => setIsMobile(mediaQuery.matches);
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (isMobile && panelsState.getState().show.primarySidebar) {
+      panelsState.setState(state => ({
+        show: { ...state.show, primarySidebar: false },
+      }));
+    }
+  }, [isMobile]);
 
   const splitPosLeft = 'splitPos:left';
   const splitPosRight = 'splitPos:right';
@@ -49,9 +66,46 @@ export const Content: FunctionComponent<ContentProps> = () => { // eslint-disabl
     </SplitPane>
   );
 
+  if (isMobile) {
+    const closeNavigation = () => {
+      panelsState.setState(state => ({
+        show: { ...state.show, primarySidebar: false },
+      }));
+    };
+    let mobileMainPanel = <Editor />;
+    if (!editorEnabled && viewEnabled) {
+      mobileMainPanel = viewType === 'template' ? <Template /> : <VisualiserTemplate />;
+    }
+
+    return (
+      <div className="relative flex min-w-0 flex-1 overflow-hidden">
+        <div className="flex min-w-0 flex-1 overflow-hidden">
+          {mobileMainPanel}
+        </div>
+        {navigationEnabled && (
+          <>
+            <button
+              type="button"
+              aria-label="Close navigation"
+              className="absolute inset-0 z-20 bg-black/40"
+              onClick={closeNavigation}
+            />
+            <aside
+              className="absolute inset-y-0 left-0 z-30 w-[min(85vw,20rem)] max-w-full overflow-hidden bg-gray-800 shadow-2xl"
+            >
+              {isV3
+                ? <Navigationv3 className="w-full" />
+                : <Navigation className="w-full" />}
+            </aside>
+          </>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-1 flex-row relative">
-      <div className="flex flex-1 flex-row relative">
+    <div className="flex min-w-0 flex-1 flex-row relative overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-row relative overflow-hidden">
         <SplitPane
           size={viewEnabled ? secondPaneSize : 0}
           minSize={0}
