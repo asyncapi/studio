@@ -73,7 +73,7 @@
     "@hookstate/core": "^4.0.0-rc21",
     "@monaco-editor/react": "^4.4.6",
     "@netlify/blobs": "^8.0.1",
-    "@netlify/functions": "^2.8.1",
+    "@netlify/functions": "^5.3.0",
     "@stoplight/yaml": "^4.3.0",
     "@tippyjs/react": "^4.2.6",
     "@types/node": "20.4.6",
