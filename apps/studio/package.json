@@ -95,7 +95,7 @@
     "react-hot-toast": "2.4.0",
     "react-icons": "^4.6.0",
     "reactflow": "^11.2.0",
-    "tailwindcss": "3.3.3",
+    "tailwindcss": "4.3.3",
     "tippy.js": "^6.3.7",
     "typescript": "5.1.6",
     "zustand": "^4.5.2"
@@ -138,7 +138,7 @@
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "tailwindcss": "^3.2.4",
+    "tailwindcss": "^4.3.3",
     "ts-node": "^10.9.1",
     "url": "^0.11.0",
     "util": "^0.12.5",
