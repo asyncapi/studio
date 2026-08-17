@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /apps/studio
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: next

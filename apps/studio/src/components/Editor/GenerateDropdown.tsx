@@ -1,7 +1,7 @@
 import React from 'react';
 import { show } from '@ebay/nice-modal-react';
-import { FaCode } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { CodeIcon } from '@asyncapi/studio-ui/icons';
 
 import { GeneratorModal } from '../Modals';
 import { Dropdown, Tooltip } from '../common';
@@ -19,7 +19,7 @@ export const GenerateDropdown: React.FC = () => {
       opener={
         <Tooltip content="Generate" placement="top" hideOnClick={true}>
           <div className="bg-inherit">
-            <FaCode />
+            <CodeIcon className="w-4 h-4" />
           </div>
         </Tooltip>
       }
@@ -66,4 +66,3 @@ export const GenerateDropdown: React.FC = () => {
     </Dropdown>
   );
 };
-

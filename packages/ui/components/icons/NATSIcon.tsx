@@ -1,4 +1,6 @@
-const NATSIcon = (props: any) => (
+import type React from 'react';
+
+const NATSIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="2.43 -0.32 280.39 289.64"

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /** Preloader */
 #preloader {
 	position: fixed;

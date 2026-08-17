@@ -21,7 +21,7 @@ export const AsyncAPIStudio: React.FunctionComponent<
 
   if (appState.getState().readOnly) {
     return (
-      <div className="flex flex-row flex-1 overflow-hidden w-full h-screen">
+      <div className="flex min-w-0 flex-row flex-1 overflow-hidden w-full h-screen">
         <Template />
       </div>
     );
@@ -35,8 +35,8 @@ export const AsyncAPIStudio: React.FunctionComponent<
   });
 
   return (
-    <div className="flex flex-col w-full h-screen">
-      <div className="flex flex-row flex-1 overflow-hidden">
+    <div className="flex min-w-0 flex-col w-full h-screen overflow-hidden">
+      <div className="flex min-w-0 flex-row flex-1 overflow-hidden">
         <Sidebar />
         <Content />
       </div>

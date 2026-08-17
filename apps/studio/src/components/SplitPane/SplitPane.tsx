@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useCallback, useRef } from 'react';
 
 import Pane from './Pane';
 import Resizer, { RESIZER_DEFAULT_CLASSNAME } from './Resizer';
@@ -217,14 +217,16 @@ function SplitPane(props) {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('touchmove', onTouchMove);
 
-    getSizeUpdate();
-
     return () => {
       document.removeEventListener('mouseup', onMouseUp);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('touchmove', onTouchMove);
     };
-  }, [onMouseUp, onMouseMove, onTouchMove, getSizeUpdate]);
+  }, [onMouseUp, onMouseMove, onTouchMove]);
+
+  useLayoutEffect(() => {
+    getSizeUpdate();
+  }, [getSizeUpdate]);
 
   const disabledClass = allowResize ? '' : 'disabled';
   const resizerClassNamesIncludingDefault = resizerClassName

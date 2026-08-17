@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Toolbar />
-        <main className="flex flex-col w-full h-[calc(100vh-4rem)]">
+        <main className="flex min-w-0 flex-col w-full h-[calc(100vh-4rem)] overflow-hidden">
           {children}
         </main> 
         <div id="preloader">
