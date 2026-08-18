@@ -187,9 +187,6 @@ importers:
       '@asyncapi/specs':
         specifier: ^6.11.1
         version: 6.11.1
-      '@asyncapi/studio-ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@codemirror/view':
         specifier: ^6.26.3
         version: 6.26.3
@@ -317,6 +314,9 @@ importers:
       '@asyncapi/python-paho-template':
         specifier: ^0.2.13
         version: 0.2.13
+      '@asyncapi/studio-ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@asyncapi/ts-nats-template':
         specifier: ^0.10.3
         version: 0.10.3(@swc/helpers@0.5.15)(@types/babel__core@7.20.5)
