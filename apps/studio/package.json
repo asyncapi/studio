@@ -85,7 +85,7 @@
     "js-file-download": "^0.4.12",
     "js-yaml": "^5.2.2",
     "mermaid": "^11.16.1",
-    "monaco-editor": "0.34.1",
+    "monaco-editor": "0.56.0",
     "monaco-yaml": "4.0.2",
     "next": "14.2.35",
     "postcss": "8.4.31",
