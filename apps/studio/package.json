@@ -68,7 +68,7 @@
     "@asyncapi/specs": "^6.11.1",
     "@codemirror/view": "^6.26.3",
     "@ebay/nice-modal-react": "^1.2.10",
-    "@headlessui/react": "^1.7.4",
+    "@headlessui/react": "^2.2.10",
     "@hookstate/core": "^4.0.0-rc21",
     "@monaco-editor/react": "^4.4.6",
     "@netlify/blobs": "^8.0.1",
