@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useOutsideClickCallback } from '@/helpers';
@@ -44,7 +44,7 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<CSSProperties | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const menuId = useId();
 
   const close = useCallback(() => setOpen(false), []);
@@ -67,21 +67,23 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
     setPosition({ top: nextPosition.top, left: nextPosition.left });
   }, [align]);
 
-  const setMenuNode = useCallback((node: HTMLDivElement | null) => {
-    menuRef.current = node;
-    if (node) {
-      updatePosition();
+  useLayoutEffect(() => {
+    if (!open) {
+      setPosition(null);
+      return;
     }
-  }, [updatePosition]);
+
+    updatePosition();
+    menuRef.current?.focus();
+  }, [open, updatePosition]);
 
   useEffect(() => {
     if (!open) {
-      setPosition(null);
       return undefined;
     }
 
     const handleReposition = () => updatePosition();
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         close();
         buttonRef.current?.focus();
@@ -90,12 +92,12 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
 
     window.addEventListener('resize', handleReposition);
     window.addEventListener('scroll', handleReposition, true);
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleDocumentKeyDown);
 
     return () => {
       window.removeEventListener('resize', handleReposition);
       window.removeEventListener('scroll', handleReposition, true);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleDocumentKeyDown);
     };
   }, [open, close, updatePosition]);
 
@@ -106,16 +108,26 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
     }
   };
 
+  const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+      buttonRef.current?.focus();
+    }
+  };
+
   const menu = open && typeof document !== 'undefined'
     ? createPortal(
       <div
-        ref={setMenuNode}
+        ref={menuRef}
         id={menuId}
         role="menu"
+        tabIndex={-1}
         onClick={close}
+        onKeyDown={handleMenuKeyDown}
         style={position ?? { visibility: 'hidden' }}
         data-test="dropdown-menu"
-        className="fixed w-64 rounded-md shadow-lg z-[1000]"
+        className="fixed w-64 rounded-md shadow-lg z-[1000] outline-none"
       >
         <div className="rounded-md bg-gray-800 shadow-xs">
           <div className="py-1">{children}</div>
