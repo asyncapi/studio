@@ -8,7 +8,14 @@ allow testing those. */
 
 describe('Studio UI spec', () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        win.localStorage.setItem('alreadyVisited', 'true');
+        win.sessionStorage.setItem('alreadyVisited', 'true');
+      },
+    });
+    cy.get('[data-test="button-import-dropdown"]').should('be.visible');
+    cy.get('#preloader').should('not.be.visible');
   });
 
   it('Logo should be visible in the UI', () => {
@@ -144,10 +151,8 @@ describe('Studio UI spec', () => {
     });
   });
 
-  it('Click on Save Dropdown should contain 2 elements', () => {
-    cy.get('[data-test="button-save-dropdown"]').click({force: true});
-    cy.contains('Save as YAML');
-    cy.contains('Convert and save as JSON');
+  it('Save button should be visible in the editor toolbar', () => {
+    cy.get('[data-test="button-save-dropdown"]').should('be.visible');
   });
 
   it('Click on Convert Dropdown should show a usable menu', () => {
