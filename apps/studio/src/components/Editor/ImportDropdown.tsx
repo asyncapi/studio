@@ -17,101 +17,108 @@ export const ImportDropdown: React.FC = () => {
   const { editorSvc } = useServices();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  return (
-    <Dropdown 
-      opener={
-        <Tooltip content="Import" placement="top" hideOnClick={true}>
-          <span>
-            <UploadIcon className="w-4 h-4" />
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    toast.promise(editorSvc.importFile(event.target.files), {
+      loading: 'Importing...',
+      success: (
+        <div>
+          <span className="block text-bold">
+            Document succesfully imported!
           </span>
-        </Tooltip>
-      }
-      buttonHoverClassName="text-gray-500 hover:text-white"
-      dataTest="button-import-dropdown"
-    >
-      <ul className="bg-gray-800 text-md text-white">
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Import from URL"
-            onClick={() => show(ImportURLModal)}
-          >
-            Import from URL
-          </button>
-        </li>
+        </div>
+      ),
+      error: (
+        <div>
+          <span className="block text-bold text-red-400">
+            Failed to import document. Maybe the file type is invalid.
+          </span>
+        </div>
+      ),
+    });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Open Folder"
-            onClick={() => show(OpenFolderModal)}
-          >
-            Open Folder
-          </button>
-        </li>
+  return (
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".yaml, .yml, .json, .avsc"
+        aria-hidden="true"
+        tabIndex={-1}
+        style={{ position: 'fixed', top: '-100em' }}
+        onChange={handleFileChange}
+      />
+      <Dropdown
+        opener={
+          <Tooltip content="Import" placement="top" hideOnClick={true}>
+            <span>
+              <UploadIcon className="w-4 h-4" />
+            </span>
+          </Tooltip>
+        }
+        buttonHoverClassName="text-gray-500 hover:text-white"
+        dataTest="button-import-dropdown"
+      >
+        <ul className="bg-gray-800 text-md text-white">
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title="Import from URL"
+              onClick={() => show(ImportURLModal)}
+            >
+              Import from URL
+            </button>
+          </li>
 
-        <li className="hover:bg-gray-900">
-          <label
-            className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
-            title="Import File"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept='.yaml, .yml, .json, .avsc'
-              style={{ position: 'fixed', top: '-100em' }}
-              onChange={event => {
-                toast.promise(editorSvc.importFile(event.target.files), {
-                  loading: 'Importing...',
-                  success: (
-                    <div>
-                      <span className="block text-bold">
-                      Document succesfully imported!
-                      </span>
-                    </div>
-                  ),
-                  error: (
-                    <div>
-                      <span className="block text-bold text-red-400">
-                      Failed to import document. Maybe the file type is invalid.
-                      </span>
-                    </div>
-                  ),
-                });
-                // Reset so the same file can be re-imported
-                if (fileInputRef.current) fileInputRef.current.value = '';
-              }}
-            />
-            Import File
-          </label>
-        </li>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title="Open Folder"
+              onClick={() => show(OpenFolderModal)}
+            >
+              Open Folder
+            </button>
+          </li>
 
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Import from Base64"
-            onClick={() => show(ImportBase64Modal)}
-          >
-            Import from Base64
-          </button>
-        </li>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title="Import File"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Import File
+            </button>
+          </li>
 
-        <li className="hover:bg-gray-900">
-          <button
-            type="button"
-            className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
-            title="Import from UUID"
-            onClick={() => show(ImportUUIDModal)}
-          >
-            Import from UUID
-          </button>
-        </li>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title="Import from Base64"
+              onClick={() => show(ImportBase64Modal)}
+            >
+              Import from Base64
+            </button>
+          </li>
 
-      </ul>
-            
-    </Dropdown>
+          <li className="hover:bg-gray-900">
+            <button
+              type="button"
+              className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
+              title="Import from UUID"
+              onClick={() => show(ImportUUIDModal)}
+            >
+              Import from UUID
+            </button>
+          </li>
+        </ul>
+      </Dropdown>
+    </>
   );
-}
+};
