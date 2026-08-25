@@ -1,5 +1,13 @@
 # @asyncapi/studio
 
+## 1.4.2
+
+### Patch Changes
+
+- 7e2f14e: Portal editor toolbar dropdowns so Import, Convert, and Generate menus render above overflow-clipped panes instead of disappearing on click.
+
+  Import `js-yaml` as a namespace so Studio boots against js-yaml 5, which no longer provides a default export.
+
 ## 1.4.1
 
 ### Patch Changes
