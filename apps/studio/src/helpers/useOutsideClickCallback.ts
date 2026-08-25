@@ -1,12 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import type { MutableRefObject } from 'react';
+type ClickTargetRef = { current: EventTarget | HTMLElement | null };
 
-export function useOutsideClickCallback(ref: MutableRefObject<HTMLElement | null>, callback: () => void) {
+export function useOutsideClickCallback(
+  refs: ClickTargetRef[],
+  callback: () => void,
+  enabled = true,
+) {
+  const refsRef = useRef(refs);
+  const callbackRef = useRef(callback);
+  refsRef.current = refs;
+  callbackRef.current = callback;
+
   useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as any)) {
-        callback();
+      const isInside = refsRef.current.some((ref) => {
+        const node = ref.current;
+        return node instanceof Node && node.contains(event.target as Node);
+      });
+
+      if (!isInside) {
+        callbackRef.current();
       }
     }
 
@@ -14,5 +32,5 @@ export function useOutsideClickCallback(ref: MutableRefObject<HTMLElement | null
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, [enabled]);
 }
