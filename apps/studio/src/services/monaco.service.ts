@@ -2,7 +2,7 @@ import { AbstractService } from './abstract.service';
 
 import { loader } from '@monaco-editor/react';
 import { setDiagnosticsOptions } from 'monaco-yaml';
-import YAML from 'js-yaml';
+import * as YAML from 'js-yaml';
 import avroSchema from '@/schemas/avro/avro-schema.json';
 
 import { documentsState, filesState } from '@/state';
