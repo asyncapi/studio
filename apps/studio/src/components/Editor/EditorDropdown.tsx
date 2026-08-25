@@ -51,39 +51,14 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const importFileButton = (
-    <label
-      className="block px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150 cursor-pointer"
+    <button
+      type="button"
+      className="px-4 py-1 w-full text-left text-sm rounded-md focus:outline-none transition ease-in-out duration-150"
       title="Import File"
+      onClick={() => fileInputRef.current?.click()}
     >
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept='.yaml, .yml, .json, .avsc'
-        style={{ position: 'fixed', top: '-100em' }}
-        onChange={event => {
-          toast.promise(editorSvc.importFile(event.target.files), {
-            loading: 'Importing...',
-            success: (
-              <div>
-                <span className="block text-bold">
-                Document succesfully imported!
-                </span>
-              </div>
-            ),
-            error: (
-              <div>
-                <span className="block text-bold text-red-400">
-                Failed to import document. Maybe the file type is invalid.
-                </span>
-              </div>
-            ),
-          });
-          // Reset so the same file can be re-imported
-          if (fileInputRef.current) fileInputRef.current.value = '';
-        }}
-      />
       Import File
-    </label>
+    </button>
   );
 
   const openFolderButton = (
@@ -225,53 +200,85 @@ export const EditorDropdown: React.FunctionComponent<EditorDropdownProps> = () =
   );
 
   return (
-    <Dropdown
-      opener={<FaEllipsisH />}
-      buttonHoverClassName="text-gray-500 hover:text-white"
-    >
-      <ul className="bg-gray-800 text-md text-white">
-        <div className="border-b border-gray-700">
-          <li className="hover:bg-gray-900">
-            {importUrlButton}
-          </li>
-          <li className="hover:bg-gray-900">
-            {openFolderButton}
-          </li>
-          <li className="hover:bg-gray-900">
-            {importFileButton}
-          </li>
-          <li className="hover:bg-gray-900">
-            {importBase64Button}
-          </li>
-          <li className="hover:bg-gray-900">
-            {importShareIdButton}
-          </li>
-        </div>
-        <div className="border-b border-gray-700">
-          <li className="hover:bg-gray-900">
-            {generateButton}
-          </li>
-        </div>
-        <div className="border-b border-gray-700">
-          <li className="hover:bg-gray-900">
-            {shareButtonBase64}
-          </li>
-        </div>
-        <div className="border-b border-gray-700">
-          <li className="hover:bg-gray-900">
-            {saveFileButton}
-          </li>
-        </div>
-        <div>
-          <li className="hover:bg-gray-900">
-            {convertLangButton}
-          </li>
-          <li className="hover:bg-gray-900">
-            {convertButton}
-          </li>
-        </div>
-      </ul>
-    </Dropdown>
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".yaml, .yml, .json, .avsc"
+        aria-hidden="true"
+        tabIndex={-1}
+        style={{ position: 'fixed', top: '-100em' }}
+        onChange={(event) => {
+          toast.promise(editorSvc.importFile(event.target.files), {
+            loading: 'Importing...',
+            success: (
+              <div>
+                <span className="block text-bold">
+                  Document succesfully imported!
+                </span>
+              </div>
+            ),
+            error: (
+              <div>
+                <span className="block text-bold text-red-400">
+                  Failed to import document. Maybe the file type is invalid.
+                </span>
+              </div>
+            ),
+          });
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        }}
+      />
+      <Dropdown
+        opener={<FaEllipsisH />}
+        buttonHoverClassName="text-gray-500 hover:text-white"
+      >
+        <ul className="bg-gray-800 text-md text-white">
+          <div className="border-b border-gray-700">
+            <li className="hover:bg-gray-900">
+              {importUrlButton}
+            </li>
+            <li className="hover:bg-gray-900">
+              {openFolderButton}
+            </li>
+            <li className="hover:bg-gray-900">
+              {importFileButton}
+            </li>
+            <li className="hover:bg-gray-900">
+              {importBase64Button}
+            </li>
+            <li className="hover:bg-gray-900">
+              {importShareIdButton}
+            </li>
+          </div>
+          <div className="border-b border-gray-700">
+            <li className="hover:bg-gray-900">
+              {generateButton}
+            </li>
+          </div>
+          <div className="border-b border-gray-700">
+            <li className="hover:bg-gray-900">
+              {shareButtonBase64}
+            </li>
+          </div>
+          <div className="border-b border-gray-700">
+            <li className="hover:bg-gray-900">
+              {saveFileButton}
+            </li>
+          </div>
+          <div>
+            <li className="hover:bg-gray-900">
+              {convertLangButton}
+            </li>
+            <li className="hover:bg-gray-900">
+              {convertButton}
+            </li>
+          </div>
+        </ul>
+      </Dropdown>
+    </>
   );
 };
 
