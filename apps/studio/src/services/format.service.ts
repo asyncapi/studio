@@ -1,7 +1,7 @@
 import { AbstractService } from './abstract.service';
 
 import { encode, decode } from 'js-base64';
-import YAML from 'js-yaml';
+import * as YAML from 'js-yaml';
 
 export type SpecType = 'asyncapi' | 'openapi' | 'unknown';
 
