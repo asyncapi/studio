@@ -1,6 +1,6 @@
 import sharedConfig from 'tailwind-config/tailwind.config.js';
 
-module.exports = {
+export default {
   content: ['./components/**/*.tsx'],
   presets: [sharedConfig],
   theme: {
