@@ -1,5 +1,6 @@
 
-import { IoGlobeOutline, IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
+import { WebIcon } from '@asyncapi/studio-ui/icons';
+import { IoLogoGithub, IoLogoSlack } from 'react-icons/io5';
 
 export function Toolbar() {
   return (
@@ -22,7 +23,7 @@ export function Toolbar() {
           <ul className="flex items-center text-pink-500 mr-2" id='communicate'>
             <li className="text-xl opacity-75 hover:opacity-100" data-test="button-website">
               <a href='https://asyncapi.com' title='AsyncAPI Website' target='_blank' rel="noreferrer">
-                <IoGlobeOutline />
+                <WebIcon />
               </a>
             </li>
             <li className="text-xl ml-2 opacity-75 hover:opacity-100" data-test="button-github">
