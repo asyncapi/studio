@@ -1,0 +1,103 @@
+asyncapi: 3.0.0
+info:
+  title: RabbitMQ (AMQP) Example
+  version: 1.0.0
+  description: |-
+    An example AsyncAPI specification for a RabbitMQ message broker using the AMQP 0-9-1 protocol.
+    Demonstrates exchange, routing key, and queue bindings for publishing and receiving messages.
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+defaultContentType: application/json
+servers:
+  rabbitmq:
+    host: 'rabbitmq.example.com:5672'
+    protocol: amqp
+    description: Production RabbitMQ AMQP Broker
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+channels:
+  userSignups:
+    address: 'user.signup'
+    description: Topic exchange routing key for new user registrations
+    messages:
+      UserSignedUp:
+        $ref: '#/components/messages/UserSignedUp'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: 'user.events'
+          type: topic
+          durable: true
+          autoDelete: false
+        bindingVersion: 0.3.0
+  userNotificationsQueue:
+    address: 'user.notifications'
+    description: Queue dedicated to processing user notification events
+    messages:
+      UserSignedUp:
+        $ref: '#/components/messages/UserSignedUp'
+    bindings:
+      amqp:
+        is: queue
+        queue:
+          name: 'user.notifications.queue'
+          durable: true
+          exclusive: false
+          autoDelete: false
+        bindingVersion: 0.3.0
+operations:
+  publishUserSignedUp:
+    action: send
+    channel:
+      $ref: '#/channels/userSignups'
+    summary: Publish new user sign-up event to the topic exchange
+    messages:
+      - $ref: '#/channels/userSignups/messages/UserSignedUp'
+    bindings:
+      amqp:
+        mandatory: true
+        deliveryMode: 2
+        bindingVersion: 0.3.0
+  consumeUserNotifications:
+    action: receive
+    channel:
+      $ref: '#/channels/userNotificationsQueue'
+    summary: Consume notification messages from the notification queue
+    messages:
+      - $ref: '#/channels/userNotificationsQueue/messages/UserSignedUp'
+    bindings:
+      amqp:
+        ack: true
+        bindingVersion: 0.3.0
+components:
+  messages:
+    UserSignedUp:
+      name: UserSignedUp
+      title: User Signed Up Event
+      summary: Event emitted whenever a new user creates an account
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          userId:
+            type: string
+            format: uuid
+            description: Unique identifier for the user
+          email:
+            type: string
+            format: email
+            description: Email address of the user
+          displayName:
+            type: string
+            description: Full display name of the user
+          signedUpAt:
+            type: string
+            format: date-time
+            description: ISO 8601 timestamp of registration
+        required:
+          - userId
+          - email
+          - signedUpAt
