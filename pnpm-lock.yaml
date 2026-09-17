@@ -182,8 +182,8 @@ importers:
         specifier: ^3.8.3
         version: 3.8.3
       '@asyncapi/react-component':
-        specifier: ^3.1.8
-        version: 3.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^3.2.0
+        version: 3.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@asyncapi/specs':
         specifier: ^6.11.1
         version: 6.11.1
@@ -649,8 +649,8 @@ packages:
       Project is archived. See https://github.com/asyncapi-archived-repos/raml-dt-schema-parser
       .
 
-  '@asyncapi/react-component@3.1.8':
-    resolution: {integrity: sha512-CsbOG72KJh8DId+ltWpBnrlCClEvCVhNhBzPv62KkZE76JVxgvNlqyU83kXroVv142kuQgsf+6kLUMEGW9kxCw==}
+  '@asyncapi/react-component@3.2.0':
+    resolution: {integrity: sha512-9A9BJJSSUMXYycpv6g7ueA83SwLpp1tbyxBbr9asRHX6ZpbqRawzNhKQ9OJ/LSgN4+uNJ8D6e1L7mBikVJ9Yag==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -10963,6 +10963,7 @@ packages:
 
   ramldt2jsonschema@1.2.3:
     resolution: {integrity: sha512-+wLDAV2NNv9NkfEUOYStaDu/6RYgYXeC1zLtXE+dMU/jDfjpN4iJnBGycDwFTFaIQGosOQhxph7fEX6Mpwxdug==}
+    hasBin: true
 
   randomatic@3.1.1:
     resolution: {integrity: sha512-TuDE5KxZ0J461RVjrJZCJc+J+zCkTb1MbH9AQUq68sMhOMcy9jLcb3BrZKgp9q9Ncltdg4QVqWrH02W2EFFVYw==}
@@ -13350,7 +13351,7 @@ snapshots:
     dependencies:
       '@asyncapi/generator-react-sdk': 1.1.2(@types/babel__core@7.20.5)
       '@asyncapi/parser': 3.6.2
-      '@asyncapi/react-component': 3.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@asyncapi/react-component': 3.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       highlight.js: 10.7.3
       puppeteer: 24.31.0(typescript@5.1.6)
       react: 18.3.1
@@ -13587,7 +13588,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@asyncapi/react-component@3.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@asyncapi/react-component@3.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
@@ -13608,7 +13609,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@asyncapi/react-component@3.1.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@asyncapi/react-component@3.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@asyncapi/avro-schema-parser': 3.0.24
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
