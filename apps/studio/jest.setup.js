@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom';
-import { TextEncoder, TextDecoder } from 'util';
+import v8 from 'node:v8';
+import { TextEncoder, TextDecoder } from 'node:util';
 
-if (typeof globalThis.TextEncoder === 'undefined') {
+if (globalThis.TextEncoder === undefined) {
   globalThis.TextEncoder = TextEncoder;
 }
 
-if (typeof globalThis.TextDecoder === 'undefined') {
+if (globalThis.TextDecoder === undefined) {
   globalThis.TextDecoder = TextDecoder;
 }
 
-if (typeof globalThis.structuredClone === 'undefined') {
-  globalThis.structuredClone = (val) => JSON.parse(JSON.stringify(val));
+if (globalThis.structuredClone === undefined) {
+  globalThis.structuredClone = (val) => v8.deserialize(v8.serialize(val));
 }
