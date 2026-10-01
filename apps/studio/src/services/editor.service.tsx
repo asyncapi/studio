@@ -145,7 +145,11 @@ export class EditorService extends AbstractService {
         content = await file.text();
       }
       if (!content && (/^https?:\/\//).test(uri)) {
-        content = await fetch(uri).then((res) => res.text());
+        const res = await fetch(uri);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch ${uri}: ${res.status} ${res.statusText}`);
+        }
+        content = await res.text();
       }
 
       if (typeof content !== 'string') {
@@ -375,7 +379,12 @@ export class EditorService extends AbstractService {
     globalThis.history.pushState({}, '', `${currentUrl}?url=${url}`);
 
     return fetch(url)
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+        }
+        return res.text();
+      })
       .then(async text => {
         const language = this.inferLanguageFromUri(url, text);
         const projectRoot = (() => {
