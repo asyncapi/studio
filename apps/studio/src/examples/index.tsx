@@ -6,6 +6,7 @@ import websocket from './websocket-gemini.yml';
 import mqtt from './streetlights-mqtt.yml';
 import simple from './simple.yml';
 import ibmmq from './ibmmq.yml';
+import rabbitmq from './rabbitmq-amqp.yml';
 
 // tutorial example
 import invalid from './tutorials/invalid.yml';
@@ -56,6 +57,12 @@ export default [
     title: 'IBM MQ',
     description: () => <>A robust, reliable, and secure messaging solution. IBM MQ simplifies and accelerates the integration of different applications across multiple platforms and supports a wide range of APIs and languages.</>,
     template: ibmmq,
+    type: templateTypes.protocol
+  },
+  {
+    title: 'RabbitMQ (AMQP)',
+    description: () => <>A widely used open-source message broker. Demonstrates AMQP 0-9-1 bindings with topic exchanges, routing keys, and dedicated queues.</>,
+    template: rabbitmq,
     type: templateTypes.protocol
   },
   {
