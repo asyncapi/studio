@@ -167,8 +167,8 @@ importers:
   apps/studio:
     dependencies:
       '@asyncapi/avro-schema-parser':
-        specifier: ^3.0.19
-        version: 3.0.19
+        specifier: ^3.1.0
+        version: 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/converter':
         specifier: 2.0.1
         version: 2.0.1
@@ -560,11 +560,10 @@ packages:
     peerDependencies:
       openapi-types: '>=7'
 
-  '@asyncapi/avro-schema-parser@3.0.19':
-    resolution: {integrity: sha512-1+qwxeAbSpp2OQw1TkjWemS7v646lSVM2RMJzDAh5qP5w33hM2xLXcuYC2O72l2AbCl4bkRfXTjTWLLq8qiPAA==}
-
-  '@asyncapi/avro-schema-parser@3.0.24':
-    resolution: {integrity: sha512-YMyr2S2heMrWHRyECknjHeejlZl5exUSv9nD1gTejAT13fSf0PqIRydZ9ZuoglCLBg55AeehypR2zLIBu/9kHQ==}
+  '@asyncapi/avro-schema-parser@3.1.0':
+    resolution: {integrity: sha512-b/WWyn0p4POr7cvIg//S6DN6gpkcFyq/0Xx+il3SxuujIYKg3IDnbA2c1vo7KHnvL09qcLrKzZoR/6TrWHacmg==}
+    peerDependencies:
+      '@asyncapi/parser': ^3.6.4
 
   '@asyncapi/converter@2.0.1':
     resolution: {integrity: sha512-twDn7urUww+f7S4wvDRUbbUWEeuG0pOUKnbt4tbIqfcR/4/ilZvZ6R8n7MzqdbtkEEHuECbSrA5X7lgFk9qc2g==}
@@ -5752,10 +5751,6 @@ packages:
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
-
-  avsc@5.7.7:
-    resolution: {integrity: sha512-9cYNccliXZDByFsFliVwk5GvTq058Fj513CiR4E60ndDwmuXzTJEp/Bp8FyuRmGyYupLjHLs+JA9/CBoVS4/NQ==}
-    engines: {node: '>=0.11'}
 
   avsc@5.7.9:
     resolution: {integrity: sha512-yOA4wFeI7ET3v32Di/sUybQ+ttP20JHSW3mxLuNGeO0uD6PPcvLrIQXSvy/rhJOWU5JrYh7U4OHplWMmtAtjMg==}
@@ -13301,21 +13296,17 @@ snapshots:
       call-me-maybe: 1.0.2
       openapi-types: 9.3.0
 
-  '@asyncapi/avro-schema-parser@3.0.19':
+  '@asyncapi/avro-schema-parser@3.1.0(@asyncapi/parser@2.1.2)':
     dependencies:
-      '@asyncapi/parser': 3.6.2
+      '@asyncapi/parser': 2.1.2
       '@types/json-schema': 7.0.15
-      avsc: 5.7.7
-    transitivePeerDependencies:
-      - encoding
+      avsc: 5.7.9
 
-  '@asyncapi/avro-schema-parser@3.0.24':
+  '@asyncapi/avro-schema-parser@3.1.0(@asyncapi/parser@3.6.2)':
     dependencies:
       '@asyncapi/parser': 3.6.2
       '@types/json-schema': 7.0.15
       avsc: 5.7.9
-    transitivePeerDependencies:
-      - encoding
 
   '@asyncapi/converter@2.0.1':
     dependencies:
@@ -13456,7 +13447,7 @@ snapshots:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.1.2
       '@apidevtools/swagger-parser': 10.1.0(openapi-types@9.3.0)
-      '@asyncapi/avro-schema-parser': 3.0.24
+      '@asyncapi/avro-schema-parser': 3.1.0(@asyncapi/parser@2.1.2)
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@2.1.2)
       '@asyncapi/parser': 2.1.2
       '@asyncapi/raml-dt-schema-parser': 4.0.24
@@ -13636,7 +13627,7 @@ snapshots:
 
   '@asyncapi/react-component@3.2.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@asyncapi/avro-schema-parser': 3.0.24
+      '@asyncapi/avro-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/parser': 3.6.2
       '@asyncapi/protobuf-schema-parser': 3.8.3
@@ -13657,7 +13648,7 @@ snapshots:
 
   '@asyncapi/react-component@3.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@asyncapi/avro-schema-parser': 3.0.24
+      '@asyncapi/avro-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/parser': 3.6.2
       '@asyncapi/protobuf-schema-parser': 3.8.3
@@ -17754,7 +17745,7 @@ snapshots:
     dependencies:
       string-width: 5.1.2
       string-width-cjs: string-width@4.2.3
-      strip-ansi: 7.1.2
+      strip-ansi: 7.2.0
       strip-ansi-cjs: strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
@@ -18959,7 +18950,7 @@ snapshots:
 
   '@smoya/multi-parser@5.0.9(@asyncapi/parser@3.6.2)':
     dependencies:
-      '@asyncapi/avro-schema-parser': 3.0.24
+      '@asyncapi/avro-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/openapi-schema-parser': 3.1.0(@asyncapi/parser@3.6.2)
       '@asyncapi/protobuf-schema-parser': 3.8.3
       '@asyncapi/raml-dt-schema-parser': 4.0.24
@@ -21621,8 +21612,6 @@ snapshots:
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
-
-  avsc@5.7.7: {}
 
   avsc@5.7.9: {}
 
