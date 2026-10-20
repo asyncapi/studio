@@ -107,7 +107,11 @@ export class ApplicationService extends AbstractService {
 
     let content = '';
     if (url) {
-      content = await fetch(url).then((res) => res.text());
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+      }
+      content = await res.text();
     } else if (base64) {
       content = this.svcs.formatSvc.decodeBase64(base64);
     } else if (share) {

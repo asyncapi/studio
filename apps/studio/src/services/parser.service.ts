@@ -259,7 +259,11 @@ export class ParserService extends AbstractService {
       },
       async read(uri: any): Promise<string> {
         const url = String(uri);
-        const content = await fetch(url).then((res) => res.text());
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+        }
+        const content = await res.text();
         filesState.getState().updateFile(url, {
           uri: url,
           name: url.split('/').pop() || url,
