@@ -102,6 +102,8 @@ describe('NavigationService', () => {
     });
 
     test('does not cleanup on non-url transitions', () => {
+      const { updateFile } = filesState.getState();
+      updateFile('asyncapi', { from: 'file', stat: { mtime: Date.now() } });
       updateHref('/?url=a&x=1');
 
       transitionSource('file', 'share');
