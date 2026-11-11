@@ -7,6 +7,7 @@ import { ProtoBuffSchemaParser } from '@asyncapi/protobuf-schema-parser';
 import { untilde } from '@asyncapi/parser/cjs/utils';
 
 import { debugLog } from '@/helpers/debug';
+import { fetchText } from '@/helpers/fetch-text';
 import { isDeepEqual } from '@/helpers';
 import { filesState, documentsState, settingsState } from '@/state';
 import { createLocalFileResolver } from './local-file-resolver';
@@ -259,7 +260,7 @@ export class ParserService extends AbstractService {
       },
       async read(uri: any): Promise<string> {
         const url = String(uri);
-        const content = await fetch(url).then((res) => res.text());
+        const content = await fetchText(url);
         filesState.getState().updateFile(url, {
           uri: url,
           name: url.split('/').pop() || url,

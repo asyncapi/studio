@@ -5,6 +5,7 @@ import { show } from '@ebay/nice-modal-react';
 import { RedirectedModal } from '../components/Modals';
 
 import { debugLog } from '@/helpers/debug';
+import { fetchText } from '@/helpers/fetch-text';
 import { appState, filesState } from '@/state';
 
 function inferResourceLanguage(content: string, sourceUri: string): 'json' | 'yaml' | 'markdown' {
@@ -107,11 +108,14 @@ export class ApplicationService extends AbstractService {
 
     let content = '';
     if (url) {
-      content = await fetch(url).then((res) => res.text());
+      content = await fetchText(url);
     } else if (base64) {
       content = this.svcs.formatSvc.decodeBase64(base64);
     } else if (share) {
       const response = await fetch(`/share/${share}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch shared document ${share}: ${response.status} ${response.statusText}`.trim());
+      }
       const data = await response.json();
       content = data.content;
     }
