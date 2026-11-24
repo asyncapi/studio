@@ -129,7 +129,7 @@
     "buffer": "^6.0.3",
     "cypress": "^13.10.0",
     "eslint-config-custom": "workspace:*",
-    "eslint-plugin-security": "^1.5.0",
+    "eslint-plugin-security": "^4.0.1",
     "eslint-plugin-sonarjs": "^0.16.0",
     "https-browserify": "^1.0.0",
     "markdown-toc": "^1.2.0",
