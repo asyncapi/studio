@@ -20,11 +20,16 @@ export const ImportURLModal = create(() => {
           </span>
         </div>
       ),
-      error: (
+      error: (err: unknown) => (
         <div>
           <span className="block text-bold text-red-400">
             Failed to import document.
           </span>
+          {err instanceof Error && err.message && (
+            <span className="block text-sm text-red-400">
+              {err.message}
+            </span>
+          )}
         </div>
       ),
     });
