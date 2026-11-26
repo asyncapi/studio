@@ -1,0 +1,122 @@
+asyncapi: 3.0.0
+info:
+  title: RabbitMQ (AMQP) Example
+  version: 1.0.0
+  description: |-
+    An example AsyncAPI v3 document for RabbitMQ messaging using AMQP 0-9-1 bindings.
+    Demonstrates publishing events to a topic exchange with routing keys and consuming messages from a dedicated worker queue.
+  license:
+    name: Apache License 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  rabbitmq:
+    host: 'rabbitmq.example.com:5672'
+    protocol: amqp
+    description: Production RabbitMQ AMQP broker
+channels:
+  orderCreated:
+    address: order.created
+    description: Channel for publishing order events to a topic exchange with routing keys
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: orders.exchange
+          type: topic
+          durable: true
+          autoDelete: false
+          vhost: /
+        bindingVersion: 0.3.0
+    messages:
+      OrderCreatedMessage:
+        $ref: '#/components/messages/OrderCreated'
+  orderProcessing:
+    address: orders.process
+    description: Channel for consuming orders from a dedicated worker queue
+    bindings:
+      amqp:
+        is: queue
+        queue:
+          name: orders-processing-queue
+          durable: true
+          exclusive: false
+          autoDelete: false
+          vhost: /
+        bindingVersion: 0.3.0
+    messages:
+      OrderProcessMessage:
+        $ref: '#/components/messages/OrderCreated'
+operations:
+  publishOrder:
+    action: send
+    channel:
+      $ref: '#/channels/orderCreated'
+    bindings:
+      amqp:
+        userId: orders-service
+        deliveryMode: 2
+        timestamp: true
+        priority: 5
+        bindingVersion: 0.3.0
+    messages:
+      - $ref: '#/channels/orderCreated/messages/OrderCreatedMessage'
+  processOrder:
+    action: receive
+    channel:
+      $ref: '#/channels/orderProcessing'
+    bindings:
+      amqp:
+        ack: true
+        bindingVersion: 0.3.0
+    messages:
+      - $ref: '#/channels/orderProcessing/messages/OrderProcessMessage'
+components:
+  messages:
+    OrderCreated:
+      name: OrderCreated
+      title: Order Created Event
+      summary: Notifies downstream consumer services that a new order has been created.
+      contentType: application/json
+      bindings:
+        amqp:
+          contentEncoding: utf-8
+          messageType: order.created
+          bindingVersion: 0.3.0
+      payload:
+        type: object
+        required:
+          - orderId
+          - customerId
+          - amount
+          - status
+        properties:
+          orderId:
+            type: string
+            format: uuid
+            description: Unique identifier of the order.
+          customerId:
+            type: string
+            description: Unique identifier of the customer.
+          amount:
+            type: number
+            minimum: 0
+            description: Total order amount.
+          currency:
+            type: string
+            enum:
+              - USD
+              - EUR
+              - GBP
+            default: USD
+            description: Currency code for the order amount.
+          status:
+            type: string
+            enum:
+              - placed
+              - processing
+              - completed
+            description: Current order lifecycle status.
+          createdAt:
+            type: string
+            format: date-time
+            description: ISO-8601 timestamp representing when the order was placed.
